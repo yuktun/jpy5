@@ -1,0 +1,105 @@
+:root {
+  --paper: #f8f4ec;
+  --ink: #22231f;
+  --muted: #6f7069;
+  --line: #d9d2c5;
+  --red: #c9493d;
+  --red-dark: #92352e;
+  --sage: #dfe5d8;
+  --yellow: #f0d777;
+  --white: #fffdf8;
+  --shadow: 0 14px 38px rgba(49, 42, 31, .08);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; color: var(--ink); background: var(--paper); font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif; line-height: 1.65; }
+a { color: inherit; }
+.site-header { min-height: 78px; max-width: 1180px; margin: auto; padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
+.brand { display: inline-flex; gap: 11px; align-items: center; text-decoration: none; letter-spacing: .03em; }
+.brand-mark { width: 38px; height: 38px; display: grid; place-items: center; color: white; background: var(--red); border-radius: 50%; font-family: Georgia, serif; }
+.brand b { font-weight: 500; color: var(--muted); }
+.header-note, .back-link { color: var(--muted); font-size: .84rem; letter-spacing: .08em; text-decoration: none; }
+main { overflow: hidden; }
+.hero { min-height: 610px; max-width: 1180px; margin: auto; padding: 110px 28px 100px; position: relative; }
+.hero::after { content: "十三"; position: absolute; right: 2%; top: 30px; z-index: -1; color: rgba(201,73,61,.055); font-family: "Yu Mincho", serif; font-size: clamp(15rem, 32vw, 27rem); line-height: 1; writing-mode: vertical-rl; }
+.eyebrow, .kicker { color: var(--red); text-transform: uppercase; font-size: .72rem; font-weight: 700; letter-spacing: .16em; }
+.eyebrow span { display: inline-block; padding: 4px 11px; margin-right: 10px; color: white; background: var(--red); border-radius: 2px; letter-spacing: .12em; }
+.hero h1 { max-width: 720px; margin: 24px 0; font-family: "Yu Mincho", "Noto Serif JP", Georgia, serif; font-weight: 500; font-size: clamp(3.6rem, 8.5vw, 7.2rem); line-height: 1.05; letter-spacing: -.04em; }
+.hero h1 em { color: var(--red); font-style: normal; }
+.hero > p { max-width: 560px; margin: 0 0 38px; color: var(--muted); font-size: 1.05rem; }
+.primary-button, .secondary-button { display: inline-flex; align-items: center; gap: 42px; padding: 15px 20px; color: white; background: var(--ink); border: 0; border-radius: 3px; text-decoration: none; font: inherit; cursor: pointer; }
+.primary-button:hover, .secondary-button:hover { background: var(--red-dark); }
+.lesson-preview, .grammar-section { padding: 78px max(28px, calc((100vw - 1124px) / 2)); }
+.lesson-preview { background: var(--white); }
+.section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 30px; }
+.section-heading h2 { margin: 2px 0 0; font-family: "Yu Mincho", serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 500; }
+.section-heading p { margin: 0; }
+.lesson-count, .section-heading > span { color: var(--muted); font-size: .8rem; letter-spacing: .12em; }
+.lesson-card { display: grid; grid-template-columns: 130px 1fr auto; align-items: center; gap: 32px; padding: 38px; border: 1px solid var(--line); background: var(--paper); text-decoration: none; transition: transform .2s, box-shadow .2s; }
+.lesson-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+.lesson-number { color: var(--red); font-family: Georgia, serif; font-size: 5.2rem; line-height: 1; border-right: 1px solid var(--line); }
+.lesson-copy p { margin: 0 0 3px; color: var(--red); font-size: .72rem; letter-spacing: .12em; }
+.lesson-copy h3 { margin: 0 0 17px; font-size: 1rem; font-weight: 500; }
+.round-arrow { width: 48px; height: 48px; display: grid; place-items: center; border: 1px solid var(--ink); border-radius: 50%; }
+footer { padding: 26px; color: var(--muted); text-align: center; font-size: .78rem; border-top: 1px solid var(--line); }
+footer span { padding: 0 8px; }
+
+.lesson-main { overflow: visible; }
+.lesson-hero { padding: 80px max(28px, calc((100vw - 1000px) / 2)) 56px; border-bottom: 1px solid var(--line); }
+.lesson-hero > p:last-of-type { max-width: 600px; color: var(--muted); }
+.lesson-title-row { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.chapter-label { color: var(--red); font-size: .74rem; font-weight: 700; letter-spacing: .18em; }
+.lesson-title-row h1 { margin: 3px 0 12px; font-family: "Yu Mincho", serif; font-size: clamp(2.7rem, 7vw, 5rem); font-weight: 500; }
+.progress-ring { width: 100px; height: 100px; flex: 0 0 100px; display: grid; place-content: center; text-align: center; border: 1px solid var(--red); border-radius: 50%; }
+.progress-ring strong { color: var(--red); font-family: Georgia, serif; font-size: 2rem; line-height: 1; }
+.progress-ring span { color: var(--muted); font-size: .65rem; }
+.jump-nav { display: flex; gap: 8px; margin-top: 35px; flex-wrap: wrap; }
+.jump-nav a { padding: 8px 14px; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; text-decoration: none; font-size: .78rem; }
+.jump-nav a:hover { color: var(--red); border-color: var(--red); }
+.grammar-section { padding-top: 72px; padding-bottom: 72px; }
+.grammar-section:nth-of-type(3) { background: var(--sage); }
+.grammar-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.grammar-card { display: flex; flex-direction: column; min-height: 540px; padding: 32px; background: var(--white); border: 1px solid var(--line); box-shadow: 0 3px 0 rgba(42,42,36,.03); }
+.card-topline { display: flex; justify-content: space-between; color: var(--muted); font-size: .7rem; letter-spacing: .15em; }
+.grammar-card h3 { margin: 28px 0 0; color: var(--red); font-family: "Yu Mincho", serif; font-size: 2.2rem; font-weight: 500; }
+.meaning { margin: 0 0 25px; font-size: .92rem; }
+.formation { margin-bottom: 26px; padding: 13px 16px; border-left: 3px solid var(--yellow); background: #f6f0df; font-family: "Yu Gothic", sans-serif; font-size: .88rem; }
+.example { margin: 0; padding-top: 20px; border-top: 1px solid var(--line); }
+.example-jp { display: block; font-size: 1.02rem; font-weight: 600; }
+.example-zh { display: block; color: var(--muted); font-size: .85rem; }
+.quiz { margin-top: auto; padding-top: 25px; }
+.quiz-question { margin: 0 0 12px; font-size: .88rem; font-weight: 600; }
+.options { display: grid; gap: 8px; }
+.option { width: 100%; padding: 10px 12px; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 3px; text-align: left; font: inherit; font-size: .86rem; cursor: pointer; }
+.option:hover:not(:disabled) { border-color: var(--red); }
+.option.correct { border-color: #5f7658; background: #e9f0e6; }
+.option.wrong { border-color: var(--red); background: #f8e8e5; }
+.option:disabled { cursor: default; }
+.feedback { min-height: 25px; margin: 9px 0 0; color: var(--muted); font-size: .78rem; }
+.review-section { padding: 85px 28px; text-align: center; background: var(--ink); color: white; }
+.review-section h2 { margin: 5px 0; font-family: "Yu Mincho", serif; font-size: clamp(2rem, 5vw, 3.6rem); font-weight: 500; }
+.review-section > p:not(.kicker) { max-width: 580px; margin: 8px auto 28px; color: #c8c5bc; }
+.score-box { width: min(460px, 100%); margin: 0 auto 25px; padding: 24px; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,.08); }
+.score-box strong { color: var(--yellow); font-size: 1.5rem; }
+.score-box span { font-size: .82rem; }
+.secondary-button { background: var(--red); }
+
+@media (max-width: 720px) {
+  .site-header { min-height: 66px; padding: 12px 18px; }
+  .header-note { display: none; }
+  .hero { min-height: 550px; padding: 80px 22px; }
+  .hero::after { top: 90px; font-size: 14rem; }
+  .hero h1 { font-size: clamp(3rem, 16vw, 4.5rem); }
+  .lesson-preview, .grammar-section { padding: 55px 20px; }
+  .lesson-card { grid-template-columns: 70px 1fr; gap: 20px; padding: 25px 20px; }
+  .lesson-number { font-size: 3.2rem; }
+  .round-arrow { display: none; }
+  .lesson-title-row { align-items: end; }
+  .progress-ring { width: 76px; height: 76px; flex-basis: 76px; }
+  .grammar-grid { grid-template-columns: 1fr; }
+  .grammar-card { min-height: 0; padding: 25px 20px; }
+  .score-box { flex-direction: column; gap: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
