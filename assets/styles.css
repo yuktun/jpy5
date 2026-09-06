@@ -8,6 +8,8 @@
   --sage: #dfe5d8;
   --yellow: #f0d777;
   --white: #fffdf8;
+  --button-bg: #22231f;
+  --button-text: #fffdf8;
   --shadow: 0 14px 38px rgba(49, 42, 31, .08);
 }
 
@@ -28,7 +30,7 @@ main { overflow: hidden; }
 .hero h1 { max-width: 720px; margin: 24px 0; font-family: "Yu Mincho", "Noto Serif JP", Georgia, serif; font-weight: 500; font-size: clamp(3.6rem, 8.5vw, 7.2rem); line-height: 1.05; letter-spacing: -.04em; }
 .hero h1 em { color: var(--red); font-style: normal; }
 .hero > p { max-width: 560px; margin: 0 0 38px; color: var(--muted); font-size: 1.05rem; }
-.primary-button, .secondary-button { display: inline-flex; align-items: center; gap: 42px; padding: 15px 20px; color: white; background: var(--ink); border: 0; border-radius: 3px; text-decoration: none; font: inherit; cursor: pointer; }
+.primary-button, .secondary-button { display: inline-flex; align-items: center; gap: 42px; padding: 15px 20px; color: var(--button-text); background: var(--button-bg); border: 1px solid transparent; border-radius: 3px; text-decoration: none; font: inherit; cursor: pointer; }
 .primary-button:hover, .secondary-button:hover { background: var(--red-dark); }
 .lesson-preview, .grammar-section { padding: 78px max(28px, calc((100vw - 1124px) / 2)); }
 .lesson-preview { background: var(--white); }
@@ -84,6 +86,10 @@ footer span { padding: 0 8px; }
 .score-box strong { color: var(--yellow); font-size: 1.5rem; }
 .score-box span { font-size: .82rem; }
 .secondary-button { background: var(--red); }
+.home-module-nav { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; width:min(560px,100%); margin:0 0 24px; }
+.home-module-nav a { display:flex; align-items:center; gap:9px; padding:10px 12px; color:var(--ink); background:var(--white); border:1px solid var(--line); text-decoration:none; font-size:.82rem; }
+.home-module-nav a:hover { border-color:var(--red); }
+.home-module-nav span { width:26px; height:26px; display:grid; place-items:center; color:var(--button-text); background:var(--red); border-radius:50%; font-family:"Yu Mincho",serif; }
 
 @media (max-width: 720px) {
   .site-header { min-height: 66px; padding: 12px 18px; }
@@ -126,6 +132,10 @@ footer span { padding: 0 8px; }
 .note-card{min-height:0}.usage-note{padding:12px 14px;background:var(--paper);color:var(--muted);font-size:.84rem}.examples-list .example+.example{margin-top:15px}
 .vocab-study{display:grid;grid-template-columns:minmax(320px,.8fr) minmax(420px,1.2fr);gap:35px;align-items:start}.vocab-study>div:first-child{position:sticky;top:20px}.vocab-card{width:100%;min-height:330px;padding:35px;color:var(--ink);background:var(--white);border:1px solid var(--line);box-shadow:var(--shadow);font:inherit;cursor:pointer}.vocab-card h2{font:500 2.8rem "Yu Mincho",serif;margin:15px}.vocab-card p,.vocab-card span{color:var(--muted)}.card-actions.compact{margin-top:10px}.search-input{width:100%;padding:13px 15px;color:var(--ink);background:var(--white);border:1px solid var(--line);font:inherit}.vocab-list{max-height:600px;overflow:auto;border:1px solid var(--line);border-top:0}.vocab-row{display:grid;grid-template-columns:28px 1fr 1fr auto;gap:12px;align-items:center;padding:12px 15px;background:var(--white);border-bottom:1px solid var(--line)}.vocab-row>span,.vocab-row small,.vocab-row em{color:var(--muted);font-size:.72rem}.vocab-row small{display:block}.vocab-row p{margin:0;font-size:.85rem}.vocab-row em{font-style:normal}
 .textbook-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.resource-card{padding:30px;background:var(--white);border:1px solid var(--line)}.resource-card.featured{grid-column:span 2;background:var(--ink);color:var(--white)}.resource-card h2{font:500 1.8rem "Yu Mincho",serif}.resource-card p,.resource-card li{color:var(--muted)}.featured p:not(.kicker){color:#c9c5bb}.audio-list{display:grid}.audio-list a{display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line);text-decoration:none}.audio-list span{color:var(--red);font-size:.8rem}.review-path{display:grid;gap:10px}.review-path>a{display:grid;grid-template-columns:60px 1fr auto;align-items:center;gap:22px;padding:24px 28px;color:var(--ink);background:var(--white);border:1px solid var(--line);text-decoration:none}.review-path b{color:var(--red);font:500 2rem Georgia,serif}.review-path span{color:var(--muted);font-size:.72rem}.review-path h2{margin:0;font:500 1.5rem "Yu Mincho",serif}.review-path em{font-style:normal;font-size:1.3rem}
-html[data-theme="dark"]{--paper:#191a18;--ink:#f2eee5;--muted:#aaa99f;--line:#3d3d37;--red:#e66a5c;--red-dark:#bf5146;--sage:#293128;--yellow:#e7c85f;--white:#22231f;--shadow:0 14px 38px rgba(0,0,0,.22)}
-@media(prefers-color-scheme:dark){html[data-theme="auto"]{--paper:#191a18;--ink:#f2eee5;--muted:#aaa99f;--line:#3d3d37;--red:#e66a5c;--red-dark:#bf5146;--sage:#293128;--yellow:#e7c85f;--white:#22231f;--shadow:0 14px 38px rgba(0,0,0,.22)}}
-@media(max-width:720px){.header-actions{gap:8px}.theme-control{font-size:0}.tool-grid,.textbook-grid,.vocab-study{grid-template-columns:1fr}.tool-card{min-height:0;grid-template-columns:auto 1fr auto;padding:21px;gap:15px}.resource-card.featured{grid-column:auto}.study-controls{align-items:stretch}.segmented{display:grid;grid-template-columns:1fr 1fr;width:100%}.flashcard{min-height:340px;padding:25px 18px}.question-card,.quiz-setup,.quiz-result{padding:24px 18px}.vocab-study>div:first-child{position:static}.vocab-row{grid-template-columns:24px 1fr 1fr}.vocab-row em{display:none}.runner-actions .primary-button,.runner-actions .secondary-button{flex:1;justify-content:center}.lesson-hero{padding-top:55px}}
+html[data-theme="dark"]{--paper:#121411;--ink:#f7f2e8;--muted:#c3c0b7;--line:#45483f;--red:#ff796d;--red-dark:#d95d53;--sage:#273127;--yellow:#f1d36c;--white:#20231e;--button-bg:#f06d62;--button-text:#11130f;--shadow:0 14px 38px rgba(0,0,0,.32)}
+@media(prefers-color-scheme:dark){html[data-theme="auto"]{--paper:#121411;--ink:#f7f2e8;--muted:#c3c0b7;--line:#45483f;--red:#ff796d;--red-dark:#d95d53;--sage:#273127;--yellow:#f1d36c;--white:#20231e;--button-bg:#f06d62;--button-text:#11130f;--shadow:0 14px 38px rgba(0,0,0,.32)}}
+html[data-theme="dark"] .formation,html[data-theme="dark"] .usage-note,html[data-theme="dark"] .history-answer,html[data-theme="dark"] .quiz-options button.selected,html[data-theme="dark"] .segmented,
+html[data-theme="auto"] .formation,html[data-theme="auto"] .usage-note { background:var(--paper); color:var(--ink); }
+html[data-theme="dark"] .resource-card.featured,html[data-theme="dark"] .review-section { background:#0b0d0a; color:var(--ink); }
+@media(prefers-color-scheme:dark){html[data-theme="auto"] .resource-card.featured,html[data-theme="auto"] .review-section{background:#0b0d0a;color:var(--ink)}html[data-theme="auto"] .history-answer,html[data-theme="auto"] .quiz-options button.selected,html[data-theme="auto"] .segmented{background:var(--paper);color:var(--ink)}}
+@media(max-width:720px){.header-actions{gap:8px}.theme-control{font-size:0}.tool-grid,.textbook-grid,.vocab-study{grid-template-columns:1fr}.tool-card{min-height:0;grid-template-columns:auto 1fr auto;padding:21px;gap:15px}.resource-card.featured{grid-column:auto}.study-controls{align-items:stretch}.segmented{display:grid;grid-template-columns:1fr 1fr;width:100%}.flashcard{min-height:340px;padding:25px 18px}.question-card,.quiz-setup,.quiz-result{padding:24px 18px}.vocab-study>div:first-child{position:static}.vocab-row{grid-template-columns:24px 1fr 1fr}.vocab-row em{display:none}.runner-actions .primary-button,.runner-actions .secondary-button{flex:1;justify-content:center}.lesson-hero{padding-top:55px}.hero{min-height:auto;padding:58px 22px 68px}.hero h1{font-size:clamp(2.9rem,14vw,4.1rem)}.home-module-nav{grid-template-columns:repeat(2,minmax(0,1fr))}.hero .primary-button{width:100%;justify-content:space-between;gap:12px}}
