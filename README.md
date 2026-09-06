@@ -21,7 +21,7 @@ The dependency-free static site is organized around a homepage, a Chapter 13 lea
 - Vocabulary: 31 core words from the 159-word Chapter 13 source list, searchable list, and quick cards
 - Grammar: eight source-grounded patterns, 22 example cards, two card directions, review queues, and saved progress
 - Quiz: 24 questions, practice/exam modes, filters, retry, starring, and saved history
-- Textbook: source PDF access, three listening tracks, and a guided study path
+- Textbook/listening: the Chapter 13 `3. もう一度聞こう` dialogue, five underlined expressions, focused audio replay, flashcards, multiple choice, sentence ordering, dialogue fill-in, exact dictation, and mistake review
 - Experience: responsive layout, automatic/light/dark themes, and app icons for browser/iPhone shortcuts
 
 ## Source
