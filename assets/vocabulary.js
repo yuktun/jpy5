@@ -1,0 +1,11 @@
+const vocabulary = [
+ ["しぼる","絞る","擰、榨","動詞"],["にゅうしゃする","入社する","進公司","名詞・する"],["くちにだす","口に出す","說出口","動詞"],["がまんする","我慢する","忍耐、忍受","名詞・する"],["がまんづよい","我慢強い","有忍耐力、有耐心","い形容詞"],["そうじき","掃除機","吸塵器","名詞"],["ためいき","ため息","嘆氣","名詞"],["あふれる","—","充滿、溢出","動詞"],["たまる","—","積、堆滿","動詞"],["じゅけんせい","受験生","考生","名詞"],["としん","都心","市中心","名詞"],["ふたご","双子","雙胞胎","名詞"],["せかいてき","世界的","世界性、國際性","な形容詞"],["スター","—","明星","名詞"],["シーズン","—","季節、旺季","名詞"],["やく～","約～","大約","其他"],["わり","割","比率、比例","名詞"],["きゅうか","休暇","休假","名詞"],["いとこ","—","表／堂兄弟姊妹","名詞"],["どうし","同士","彼此、同類關係","名詞"],["ルーズ","—","鬆懈、散漫","な形容詞"],["うりあげ","売り上げ","營業額","名詞"],["おちる","落ちる","下降、下滑","動詞"],["こうがくぶ","工学部","工學院","名詞"],["はいりなおす","入り直す","重新進入","動詞"],["かんけい","関係","方面、關係","名詞"],["ポテトチップス","—","薯片","名詞"],["インスタントしょくひん","インスタント食品","速成食品","名詞"],["インスタント","—","速成","名詞"],["しょくひん","食品","食品","名詞"],["あきる","—","膩、厭煩","動詞"]
+].map((v,i)=>({id:i+1,kana:v[0],kanji:v[1],meaning:v[2],type:v[3]}));
+let index=0,flipped=false,order=vocabulary;
+const $=s=>document.querySelector(s);
+function renderList(items=vocabulary){$("#vocab-list").innerHTML=items.map(v=>`<article class="vocab-row"><span>${v.id}</span><div><b lang="ja">${v.kanji==="—"?v.kana:v.kanji}</b><small>${v.kana}</small></div><p>${v.meaning}</p><em>${v.type}</em></article>`).join("");$("#vocab-count").textContent=`顯示 ${items.length} / ${vocabulary.length}`;}
+function renderCard(){const v=order[index];flipped=false;$("#vocab-card-front").hidden=false;$("#vocab-card-back").hidden=true;$("#vocab-card-number").textContent=`${index+1} / ${order.length}`;$("#vocab-card-front").innerHTML=`<p>${v.type}</p><h2 lang="ja">${v.kanji==="—"?v.kana:v.kanji}</h2><span>${v.kana}</span>`;$("#vocab-card-back").innerHTML=`<p>中文意思</p><h2>${v.meaning}</h2><span>${v.kana} · ${v.type}</span>`;}
+$("#vocab-search").oninput=e=>{const q=e.target.value.trim().toLowerCase();renderList(vocabulary.filter(v=>[v.kana,v.kanji,v.meaning,v.type].some(x=>x.toLowerCase().includes(q))));};
+$("#vocab-card").onclick=()=>{flipped=!flipped;$("#vocab-card-front").hidden=flipped;$("#vocab-card-back").hidden=!flipped;};
+$("#vocab-prev").onclick=()=>{index=(index-1+order.length)%order.length;renderCard();};$("#vocab-next").onclick=()=>{index=(index+1)%order.length;renderCard();};
+$("#vocab-shuffle").onclick=()=>{order=JPY5.shuffle(vocabulary);index=0;renderCard();};renderList();renderCard();
