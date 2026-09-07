@@ -14,9 +14,13 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+/* Prevent Safari's single-finger double-tap zoom without disabling pinch zoom. */
+html { scroll-behavior: smooth; touch-action: manipulation; -webkit-text-size-adjust: 100%; }
 body { margin: 0; color: var(--ink); background: var(--paper); font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif; line-height: 1.65; }
 a { color: inherit; }
+button, a, input, select, textarea, [role="button"] { touch-action: manipulation; }
+/* iOS zooms focused form controls when their computed font size is below 16px. */
+input, select, textarea { font-size: 1rem; }
 .site-header { min-height: 78px; max-width: 1180px; margin: auto; padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
 .brand { display: inline-flex; gap: 11px; align-items: center; text-decoration: none; letter-spacing: .03em; }
 .brand-mark { width: 38px; height: 38px; display: grid; place-items: center; color: white; background: var(--red); border-radius: 50%; font-family: Georgia, serif; }
