@@ -36,16 +36,28 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   const listenButton = (id, label="重聽原句") => `<button class="listen-button" data-listen="${id}" type="button">▶ ${label}</button>`;
 
+  function showFocusDetail(id) {
+    const x=item(id), dialog=document.querySelector("#focus-detail-dialog"); if(!x||!dialog)return;
+    dialog.querySelector("#focus-detail-number").textContent=`底線句 0${x.id}`;
+    dialog.querySelector("#focus-detail-title").textContent=x.jp;
+    dialog.querySelector("#focus-detail-kana").textContent=x.kana;
+    dialog.querySelector("#focus-detail-meaning").textContent=x.zh;
+    dialog.querySelector("#focus-detail-use").textContent=x.use;
+    dialog.querySelector("#focus-detail-point").textContent=x.point;
+    dialog.querySelector("[data-dialog-listen]").dataset.dialogListen=x.id;
+    dialog.showModal();
+  }
+
   function renderDialogue() {
     stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">完整會話</p><h2>${data.title}</h2></div><button class="chip" id="toggle-focus" type="button">隱藏底線句</button></div><div class="dialogue-list">${data.dialogue.map(row => {
       const [speaker,before,id,after] = row;
-      const focus = id ? `<mark class="focus-line" data-focus-line="${id}">${esc(item(id).jp)}</mark>` : "";
+      const focus = id ? `<button class="focus-line" data-focus-line="${id}" type="button" aria-haspopup="dialog" aria-label="查看底線句解釋：${esc(item(id).jp)}">${esc(item(id).jp)}</button>` : "";
       return `<article class="dialogue-row"><b>${esc(speaker)}</b><p>${esc(before)}${focus}${esc(after || "")}</p>${id ? listenButton(id,"播放這句") : ""}</article>`;
     }).join("")}</div>`;
     let hidden = false;
     stage.querySelector("#toggle-focus").onclick = e => {
       hidden = !hidden;
-      stage.querySelectorAll(".focus-line").forEach(x => x.textContent = hidden ? "＿＿＿＿＿＿＿＿" : item(x.dataset.focusLine).jp);
+      stage.querySelectorAll(".focus-line").forEach(x => { x.textContent = hidden ? "＿＿＿＿＿＿＿＿" : item(x.dataset.focusLine).jp; x.disabled=hidden; });
       e.currentTarget.textContent = hidden ? "顯示底線句" : "隱藏底線句";
       e.currentTarget.classList.toggle("active", hidden);
     };
@@ -132,6 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function render() {
     const renderers = {dialogue:renderDialogue,comprehension:renderComprehension,focus:renderFocus,cards:renderCards,choice:renderChoice,order:renderOrder,cloze:renderCloze,dictation:renderDictation,mistakes:renderMistakes};
     (renderers[state.mode] || renderDialogue)();
+    stage.querySelectorAll("[data-focus-line]").forEach(b => b.onclick = () => showFocusDetail(b.dataset.focusLine));
     stage.querySelectorAll("[data-listen]").forEach(b => b.onclick = () => play(b.dataset.listen));
     stage.querySelectorAll("[data-star]").forEach(b => b.onclick = () => { const id=b.dataset.star; state.stars[id] = !state.stars[id]; save(); render(); });
     stage.querySelectorAll("[data-card-nav]").forEach(b => b.onclick = () => { state.card=(state.card+(b.dataset.cardNav==="next"?1:data.items.length-1))%data.items.length; state.flipped=false; save(); render(); });
@@ -139,6 +152,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   document.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => setMode(b.dataset.mode));
+  const detailDialog=document.querySelector("#focus-detail-dialog");
+  detailDialog.querySelector("[data-dialog-close]").onclick=()=>detailDialog.close();
+  detailDialog.querySelector("[data-dialog-listen]").onclick=e=>play(e.currentTarget.dataset.dialogListen);
+  detailDialog.addEventListener("click",e=>{if(e.target===detailDialog)detailDialog.close();});
   document.querySelector("#reset-conversation").onclick = () => { if (confirm("清除本頁所有會話練習進度？")) { state=fresh(); save(); setMode("dialogue"); } };
   document.addEventListener("keydown", e => {
     if (e.target.matches("input,textarea,select")) return;

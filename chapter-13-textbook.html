@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#c9493d">
   <title>3. もう一度聞こう · 日本語 Year 5</title>
-  <link rel="stylesheet" href="assets/styles.css?v=9">
+  <link rel="stylesheet" href="assets/styles.css?v=10">
   <link rel="icon" href="assets/app-icon.png">
   <link rel="apple-touch-icon" href="assets/app-icon.png">
   <script src="assets/common.js" defer></script>
-  <script src="assets/conversation-data.js?v=2" defer></script>
-  <script src="assets/conversation.js?v=2" defer></script>
+  <script src="assets/conversation-data.js?v=3" defer></script>
+  <script src="assets/conversation.js?v=3" defer></script>
 </head>
 <body>
   <header class="site-header">
@@ -44,6 +44,14 @@
       <a class="secondary-button" href="https://drive.google.com/file/d/1AN43gwpxcxUX34QopGA7gmkkFWjcOO9Y/view" target="_blank" rel="noopener">開啟原課本 ↗</a>
     </aside>
   </main>
+  <dialog class="focus-detail-dialog" id="focus-detail-dialog" aria-labelledby="focus-detail-title">
+    <div class="focus-detail-head"><span id="focus-detail-number">底線句</span><button type="button" data-dialog-close aria-label="關閉解釋">×</button></div>
+    <h2 id="focus-detail-title" lang="ja"></h2>
+    <p class="focus-detail-kana" id="focus-detail-kana" lang="ja"></p>
+    <p class="focus-detail-meaning" id="focus-detail-meaning"></p>
+    <dl><div><dt>情境</dt><dd id="focus-detail-use"></dd></div><div><dt>重點</dt><dd id="focus-detail-point"></dd></div></dl>
+    <button class="listen-button" type="button" data-dialog-listen>▶ 播放這句</button>
+  </dialog>
   <footer>第 13 課 <span>·</span> 話す・聞く <span>·</span> 裝置內儲存進度</footer>
 </body>
 </html>
