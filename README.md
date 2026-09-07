@@ -18,7 +18,7 @@ The dependency-free static site is organized around a homepage, a Chapter 13 lea
 
 ### Current draft
 
-- Vocabulary: 31 core words from the 159-word Chapter 13 source list, searchable list, and quick cards
+- Vocabulary: 31 core words from the 159-word Chapter 13 source list, searchable list, two-way kana/kanji-or-original flashcards, keyboard controls, random order, and saved card preferences
 - Grammar: eight source-grounded patterns, 22 example cards, two card directions, review queues, and saved progress
 - Quiz: 24 questions, practice/exam modes, filters, retry, starring, and saved history
 - Reading: the complete `ゲッキョク株式会社` text, Traditional Chinese translation, furigana and font controls, comprehension, answer-finding, vocabulary cards, mock exam, and mistake review
