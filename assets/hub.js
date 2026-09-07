@@ -1,0 +1,21 @@
+document.addEventListener("DOMContentLoaded", () => {
+  const vocab = JPY5.read("vocabulary.cards.v2", {results:{}});
+  const flashcards = JPY5.read("flashcards", {results:{}});
+  const quizHistory = JPY5.read("quiz.history", []);
+  const reading = JPY5.read("reading", {answered:{},attempts:[]});
+  const conversation = JPY5.read("conversation", {attempts:0,marks:{},comprehensionAnswers:{}});
+  const set = (name, value) => { const node=document.querySelector(`[data-progress="${name}"]`); if(node)node.textContent=value; };
+  const vocabDone = Object.keys(vocab.results || {}).length;
+  const grammarDone = Object.keys(flashcards.results || {}).length;
+  const readingDone = Object.keys(reading.answered || {}).length;
+  const listeningDone = Object.keys(conversation.comprehensionAnswers || {}).length;
+  set("vocabulary", `${vocabDone}/159 已評估`);
+  set("grammar", `${grammarDone}/33 張已評估`);
+  set("reading", `${readingDone}/13 題已完成`);
+  set("listening", `${listeningDone}/7 題已完成`);
+  set("quiz", `${quizHistory.length} 次測驗紀錄`);
+  const milestones = [vocabDone/159, grammarDone/33, readingDone/13, listeningDone/7, Math.min(quizHistory.length,1)].map(value=>Math.min(1,value));
+  const overall = Math.round(milestones.reduce((sum,value)=>sum+value,0)/milestones.length*100);
+  set("overall", `${overall}%`);
+  const bar=document.querySelector("#hub-progress-bar"); if(bar)bar.style.width=`${overall}%`;
+});

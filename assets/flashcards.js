@@ -5,7 +5,7 @@ state.positions = Object.assign({}, defaults.positions, state.positions);
 state.order = state.order || {}; state.results = state.results || {}; state.starred = state.starred || [];
 let flipped = false;
 
-const summaries = patterns.map(p => ({ id:`summary-${p.id}`, pattern:p.id, label:p.title, jp:p.title, zh:p.meaning, answer:`<h3>${p.title}</h3><p>${p.meaning}</p><div class="formation">${p.formation}</div><p>${p.note}</p>` }));
+const summaries = patterns.map(p => ({ id:`summary-${p.id}`, pattern:p.id, label:p.title, jp:p.title, zh:p.meaning, answer:`<h3>${p.title}</h3><p>${p.meaning}</p><div class="formation">${p.formation}</div><p>${p.note}</p><p class="contrast-note"><b>辨析</b>${p.contrast}</p>` }));
 const examples = patterns.flatMap(p => p.examples.map(([jp,zh],i)=>({ id:`example-${p.id}-${i}`, pattern:p.id, label:p.title, jp, zh, answer:`<h3>${p.title}</h3><p class="example-jp" lang="ja">${jp}</p><p>${zh}</p><div class="formation">${p.formation}</div>` })));
 const baseDeck = () => state.deck === "summary" ? summaries : examples;
 const key = () => `${state.deck}-${state.direction}-${state.shuffled?"random":"normal"}`;

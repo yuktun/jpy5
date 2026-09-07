@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const data = window.JPY5_CONVERSATION;
   const stage = document.querySelector("#conversation-stage");
   const audio = document.querySelector("#lesson-audio");
-  const fresh = () => ({mode:"dialogue", card:0, flipped:false, attempts:0, marks:{}, mistakes:{}, stars:{}});
+  const fresh = () => ({mode:"dialogue", card:0, flipped:false, attempts:0, marks:{}, mistakes:{}, stars:{}, comprehensionAnswers:{}, comprehensionMistakes:{}});
   let state = {...fresh(), ...JPY5.read("conversation", {})};
   let current = 0;
   let built = [];
@@ -71,6 +71,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     stage.querySelector(".next-practice").onclick = () => { current = (current + 1) % data.items.length; render(); };
   }
+  function renderComprehension() {
+    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">教材問題</p><h2>內容與表現理解</h2></div><span>7 題</span></div><div class="reading-question-list">${data.comprehension.map((q,index) => {
+      const selected=state.comprehensionAnswers[q.id], answered=selected!==undefined;
+      return `<article class="reading-question" data-comprehension="${q.id}"><span>${q.kind} · ${String(index+1).padStart(2,"0")}</span><h3>${esc(q.q)}</h3><div>${q.options.map((option,i)=>`<button data-comprehension-answer="${i}" ${answered?"disabled":""} class="${answered&&i===q.answer?"correct":answered&&i===selected&&i!==q.answer?"wrong":""}">${esc(option)}</button>`).join("")}</div><p class="reading-feedback">${answered?`${selected===q.answer?"答對。":"未正確。"}${esc(q.why)}`:""}</p></article>`;
+    }).join("")}</div>`;
+    stage.querySelectorAll("[data-comprehension-answer]").forEach(button => button.onclick = () => {
+      const card=button.closest("[data-comprehension]"), q=data.comprehension.find(entry=>entry.id===card.dataset.comprehension), selected=Number(button.dataset.comprehensionAnswer), ok=selected===q.answer;
+      state.comprehensionAnswers[q.id]=selected; state.attempts+=1;
+      if(ok) delete state.comprehensionMistakes[q.id]; else state.comprehensionMistakes[q.id]=(state.comprehensionMistakes[q.id]||0)+1;
+      save(); render();
+    });
+  }
   function renderOrder() {
     const x = data.items[current % data.items.length];
     if (!orderPool.length && !built.length) orderPool = JPY5.shuffle(x.chunks);
@@ -110,12 +122,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   function renderMistakes() {
     const wrong = data.items.filter(x => state.mistakes[x.id]);
-    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">錯題重溫</p><h2>針對容易錯嘅句子</h2></div><span>${wrong.length} 句待重溫</span></div>${wrong.length ? `<div class="mistake-list">${wrong.map(x => `<article><span>錯過 ${state.mistakes[x.id]} 次</span><h3>${esc(x.jp)}</h3><p>${esc(x.zh)}</p>${listenButton(x.id)}<button class="chip" data-mastered="${x.id}">標記已掌握</button></article>`).join("")}</div>` : `<div class="empty-state"><h2>暫時冇錯題</h2><p>完成選擇題、重組或默寫後，答錯的句子會自動來到這裡。</p><button class="primary-button" data-go-choice>開始選擇題 →</button></div>`}`;
+    const comprehensionWrong=data.comprehension.filter(q=>state.comprehensionMistakes[q.id]);
+    const total=wrong.length+comprehensionWrong.length;
+    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">錯題重溫</p><h2>針對容易錯的內容</h2></div><span>${total} 項待重溫</span></div>${total ? `<div class="mistake-list">${wrong.map(x => `<article><span>句子練習 · 錯過 ${state.mistakes[x.id]} 次</span><h3>${esc(x.jp)}</h3><p>${esc(x.zh)}</p>${listenButton(x.id)}<button class="chip" data-mastered="${x.id}">標記已掌握</button></article>`).join("")}${comprehensionWrong.map(q=>`<article><span>${q.kind} · 錯過 ${state.comprehensionMistakes[q.id]} 次</span><h3>${esc(q.q)}</h3><p>答案：${esc(q.options[q.answer])}</p><p>${esc(q.why)}</p><button class="chip" data-mastered-comprehension="${q.id}">標記已掌握</button></article>`).join("")}</div>` : `<div class="empty-state"><h2>暫時沒有錯題</h2><p>完成教材問題、選擇題、重組或默寫後，錯題會自動來到這裡。</p><button class="primary-button" data-go-choice>開始選擇題 →</button></div>`}`;
     stage.querySelector("[data-go-choice]")?.addEventListener("click",()=>setMode("choice"));
     stage.querySelectorAll("[data-mastered]").forEach(b => b.onclick = () => { delete state.mistakes[b.dataset.mastered]; state.marks[b.dataset.mastered]="correct"; save(); render(); });
+    stage.querySelectorAll("[data-mastered-comprehension]").forEach(b => b.onclick = () => { delete state.comprehensionMistakes[b.dataset.masteredComprehension]; save(); render(); });
   }
   function render() {
-    const renderers = {dialogue:renderDialogue,focus:renderFocus,cards:renderCards,choice:renderChoice,order:renderOrder,cloze:renderCloze,dictation:renderDictation,mistakes:renderMistakes};
+    const renderers = {dialogue:renderDialogue,comprehension:renderComprehension,focus:renderFocus,cards:renderCards,choice:renderChoice,order:renderOrder,cloze:renderCloze,dictation:renderDictation,mistakes:renderMistakes};
     (renderers[state.mode] || renderDialogue)();
     stage.querySelectorAll("[data-listen]").forEach(b => b.onclick = () => play(b.dataset.listen));
     stage.querySelectorAll("[data-star]").forEach(b => b.onclick = () => { const id=b.dataset.star; state.stars[id] = !state.stars[id]; save(); render(); });
