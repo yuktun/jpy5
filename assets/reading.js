@@ -5,10 +5,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const esc=v=>String(v).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
   const save=()=>JPY5.write("reading",state);
   function ruby(text){
-    let out=esc(text);
-    if(!state.furigana)return out;
-    Object.entries(data.furigana).sort((a,b)=>b[0].length-a[0].length).forEach(([word,reading])=>{out=out.split(word).join(`<ruby>${word}<rt>${reading}</rt></ruby>`)});
-    return out;
+    if(!state.furigana)return esc(text);
+    const readings=new Map(Object.entries(data.furigana));
+    const words=[...readings.keys()].sort((a,b)=>b.length-a.length);
+    const pattern=new RegExp(words.map(word=>word.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|"),"g");
+    let out="",last=0;
+    for(const match of String(text).matchAll(pattern)){
+      out+=esc(String(text).slice(last,match.index));
+      out+=`<ruby>${esc(match[0])}<rt>${esc(readings.get(match[0]))}</rt></ruby>`;
+      last=match.index+match[0].length;
+    }
+    return out+esc(String(text).slice(last));
   }
   function shell(title,subtitle,body){return `<div class="reading-stage-head"><div><p class="kicker">第 13 課</p><h2>${title}</h2>${subtitle?`<p>${subtitle}</p>`:""}</div></div>${body}`}
   function original(){
