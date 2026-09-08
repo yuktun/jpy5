@@ -1,6 +1,6 @@
 # 日本語 Year 5
 
-A mobile-friendly study site for **みんなの日本語 中級Ⅱ**. Chapter 13 is the first complete published lesson, with vocabulary, grammar, reading, listening, flashcards, quizzes, history, and mixed review.
+A mobile-friendly study site for **みんなの日本語 中級Ⅱ**. Lessons 13–16 provide vocabulary, grammar, reading, listening, flashcards, quizzes, history, and mixed review.
 
 ## Run locally
 

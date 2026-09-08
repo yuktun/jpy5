@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#c9493d">
+  <title>3. もう一度聞こう · 日本語 Year 5</title>
+  <link rel="stylesheet" href="assets/styles.css?v=11">
+  <link rel="icon" href="assets/app-icon.png">
+  <link rel="apple-touch-icon" href="assets/app-icon.png">
+  <script src="assets/ch16-common.js?v=2" defer></script>
+  <script src="assets/ch16-conversation-data.js?v=4" defer></script>
+  <script src="assets/ch16-conversation.js?v=1" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html"><span class="brand-mark">五</span><span>日本語 <b>Year 5</b></span></a>
+    <div class="header-actions">
+      <a class="back-link" href="chapter-16.html">← 第 16 課</a>
+      <label class="theme-control">主題<select data-theme-select aria-label="頁面主題"><option value="auto">自動</option><option value="light">光亮</option><option value="dark">深色</option></select></label>
+    </div>
+  </header>
+  <main class="study-shell conversation-shell">
+    <section class="compact-hero conversation-hero">
+      <p class="kicker">LESSON 16 · 話す・聞く</p>
+      <h1>3. もう一度聞こう</h1>
+      <p>完整收錄カリナ與青木在富士大學教室的印刷會話、八個未核實聆聽空欄、7 題理解及四句可直接核對的自然表現。</p>
+      <div class="listening-summary" aria-live="polite">
+        <span><strong id="mastered-count">0</strong>/4 已掌握</span>
+        <span><strong id="attempt-count">0</strong> 次練習</span>
+        <button type="button" id="reset-conversation" class="text-button">重設進度</button>
+      </div>
+    </section>
+    <section class="audio-workspace" aria-label="課文音訊">
+      <div><p class="kicker">TRACK 1–11 · 富士大学の教室で</p><h2>先聽一次，再開始練習</h2><p>建議第一次不看文字；第二次跟著印刷會話；最後集中練習四句直接可見的自然表現。</p></div>
+      <audio id="lesson-audio" controls preload="metadata" src="https://ttrw.jp/static/sound/sound202406141718353506.mp3">你的瀏覽器不支援音訊播放。</audio>
+    </section>
+    <nav class="mode-tabs" aria-label="會話練習模式">
+      <button data-mode="dialogue">完整會話</button><button data-mode="comprehension">教材問題</button><button data-mode="focus">重點句子</button><button data-mode="cards">記憶卡</button><button data-mode="choice">句子選擇</button><button data-mode="order">句子重組</button><button data-mode="cloze" disabled title="八個教材空欄尚未按官方音訊核實">會話填寫（待核實）</button><button data-mode="dictation">精確默寫</button><button data-mode="mistakes">錯題重溫</button>
+    </nav>
+    <section id="conversation-stage" class="conversation-stage" aria-live="polite"></section>
+    <aside class="source-note">
+      <div><p class="kicker">SOURCE · TTRW.JP</p><h2>大家的日語 中級Ⅱ · 第 16 課</h2><p>本頁依課本「3. もう一度聞こう」及官方音訊整理。教材印刷頁有八個聆聽填空；本候選版保留空欄與 auditNote，未把推測補文當作來源原文。</p></div>
+      <a class="secondary-button" data-ch16-textbook href="#" target="_blank" rel="noopener">在 ttrw.jp 開啟原課本 ↗</a>
+    </aside>
+  </main>
+  <dialog class="focus-detail-dialog" id="focus-detail-dialog" aria-labelledby="focus-detail-title">
+    <div class="focus-detail-head"><span id="focus-detail-number">底線句</span><button type="button" data-dialog-close aria-label="關閉解釋">×</button></div>
+    <h2 id="focus-detail-title" lang="ja"></h2>
+    <p class="focus-detail-kana" id="focus-detail-kana" lang="ja"></p>
+    <p class="focus-detail-meaning" id="focus-detail-meaning"></p>
+    <dl><div><dt>情境</dt><dd id="focus-detail-use"></dd></div><div><dt>重點</dt><dd id="focus-detail-point"></dd></div></dl>
+    <button class="listen-button" type="button" data-dialog-listen>▶ 播放這句</button>
+  </dialog>
+  <footer>第 16 課 <span>·</span> 話す・聞く <span>·</span> 裝置內儲存進度</footer>
+</body>
+</html>
