@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   function play(id) {
     const x = item(id); if (!x) return;
+    if (!Number.isFinite(x.start) || !Number.isFinite(x.end) || x.end <= x.start) return;
     audio.currentTime = x.start;
     audio.play().catch(() => {});
     const stop = () => { if (audio.currentTime >= x.end) { audio.pause(); audio.removeEventListener("timeupdate", stop); } };
@@ -34,7 +35,12 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("[data-mode]").forEach(b => b.classList.toggle("active", b.dataset.mode === mode));
     render();
   }
-  const listenButton = (id, label="重聽原句") => `<button class="listen-button" data-listen="${id}" type="button">▶ ${label}</button>`;
+  const listenButton = (id, label="重聽原句") => {
+    const x=item(id);
+    return x && Number.isFinite(x.start) && Number.isFinite(x.end) && x.end>x.start
+      ? `<button class="listen-button" data-listen="${id}" type="button">▶ ${label}</button>`
+      : "";
+  };
 
   function showFocusDetail(id) {
     const x=item(id), dialog=document.querySelector("#focus-detail-dialog"); if(!x||!dialog)return;
@@ -44,7 +50,9 @@ document.addEventListener("DOMContentLoaded", () => {
     dialog.querySelector("#focus-detail-meaning").textContent=x.zh;
     dialog.querySelector("#focus-detail-use").textContent=x.use;
     dialog.querySelector("#focus-detail-point").textContent=x.point;
-    dialog.querySelector("[data-dialog-listen]").dataset.dialogListen=x.id;
+    const replay=dialog.querySelector("[data-dialog-listen]");
+    replay.dataset.dialogListen=x.id;
+    replay.hidden=!(Number.isFinite(x.start)&&Number.isFinite(x.end)&&x.end>x.start);
     dialog.showModal();
   }
 
@@ -63,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
   function renderFocus() {
-    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">重點句子</p><h2>三句重點表現</h2></div><span>星號會加入重溫</span></div><div class="focus-grid">${data.items.map(x => `<article class="focus-card"><div class="focus-number">0${x.id}</div><button class="star-button ${state.stars[x.id]?'active':''}" data-star="${x.id}" aria-label="收藏句子">${state.stars[x.id]?'★':'☆'}</button><h3>${esc(x.jp)}</h3><p class="focus-meaning">${esc(x.zh)}</p><p>${esc(x.use)}</p>${listenButton(x.id)}</article>`).join("")}</div>`;
+    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">重點句子</p><h2>三句重點表現</h2></div><span>句段時間碼尚未核實，暫停單句重播</span></div><div class="focus-grid">${data.items.map(x => `<article class="focus-card"><div class="focus-number">0${x.id}</div><button class="star-button ${state.stars[x.id]?'active':''}" data-star="${x.id}" aria-label="收藏句子">${state.stars[x.id]?'★':'☆'}</button><h3>${esc(x.jp)}</h3><p class="focus-meaning">${esc(x.zh)}</p><p>${esc(x.use)}</p>${listenButton(x.id)}</article>`).join("")}</div>`;
   }
   function renderCards() {
     const x = data.items[state.card % data.items.length];
