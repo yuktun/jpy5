@@ -1,5 +1,5 @@
 window.JPY5_CONVERSATION={
- title:"イルワンさんの右に出る人はいないということです",audio:"https://ttrw.jp/static/sound/sound202406141718353250.mp3",
+ title:"取引先とのパーティーで",audio:"https://ttrw.jp/static/sound/sound202406141718353250.mp3",
  items:[
   {id:1,jp:"そんな大したものじゃありません。",kana:"そんなたいしたものじゃありません",zh:"沒有那麼了不起。",use:"受到稱讚時謙遜回應。",point:"「～ほどのものじゃありません」同樣可降低對方評價的程度。",start:null,end:null,chunks:["そんな","大したものじゃ","ありません"],distractors:["そんなに大したのである","そんな大しただけじゃなく","そんな大したといえば"]},
   {id:2,jp:"いや、それほどでも。",kana:"いや、それほどでも",zh:"不，沒有那麼好。",use:"對稱讚作簡短、自然的謙遜回應。",point:"省略後半「ありません」，避免直接接受過高評價。",start:null,end:null,chunks:["いや","それほどでも"],distractors:["いや、それだけじゃなく","いや、それという","いや、それに関して"]},
