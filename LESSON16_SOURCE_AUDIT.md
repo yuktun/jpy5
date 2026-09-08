@@ -29,7 +29,7 @@ Status: source-faithful candidate for independent review. This lesson is **not**
 
 ## Grammar handout flags
 
-- `～とみられる` example 1 prints `厳しく追求する構えです`; in this police-investigation context `追及` is normally expected. The official example is preserved and the issue is flagged, not silently replaced.
+- `～とみられる` example 1 in `g_2_16.pdf` prints `厳しく追求する構えです`. In the context of police pursuing and investigating additional offenses, `追及` is the appropriate form, so the study version corrects the sentence to `厳しく追及する構えです` while retaining this audit record of the source wording.
 - `～としている` example 3 prints `ニュースサイドによると`; `ニュースサイト` may have been intended, but the official example is preserved.
 - The `Vたところ` explanation says example 4 illustrates `Vたところが`, while printed example 4 is `行ってみたところ、`. This appears to be an example-number or copy mismatch.
 
