@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
   function renderFocus() {
-    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">重點句子</p><h2>四句重點表現</h2></div><span>句段時間碼尚未核實，暫停單句重播</span></div><div class="focus-grid">${data.items.map(x => `<article class="focus-card"><div class="focus-number">0${x.id}</div><button class="star-button ${state.stars[x.id]?'active':''}" data-star="${x.id}" aria-label="收藏句子">${state.stars[x.id]?'★':'☆'}</button><h3>${esc(x.jp)}</h3><p class="focus-meaning">${esc(x.zh)}</p><p>${esc(x.use)}</p>${listenButton(x.id)}</article>`).join("")}</div>`;
+    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">重點句子</p><h2>五句重點表現</h2></div><span>句段時間碼尚未核實，暫停單句重播</span></div><div class="focus-grid">${data.items.map(x => `<article class="focus-card"><div class="focus-number">0${x.id}</div><button class="star-button ${state.stars[x.id]?'active':''}" data-star="${x.id}" aria-label="收藏句子">${state.stars[x.id]?'★':'☆'}</button><h3>${esc(x.jp)}</h3><p class="focus-meaning">${esc(x.zh)}</p><p>${esc(x.use)}</p>${listenButton(x.id)}</article>`).join("")}</div>`;
   }
   function renderCards() {
     const x = data.items[state.card % data.items.length];
