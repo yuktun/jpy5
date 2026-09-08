@@ -10,7 +10,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const item = id => data.items.find(x => x.id === Number(id));
   const esc = value => String(value).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
-  const clean = value => value.replace(/[\s、。！？?「」『』,.，．]/g, "").trim();
+  const clean = value => value.replace(/[\s、。！？?「」『』,.，．／/]/g, "").trim();
+  const segments = x => x.segments || [{type:"answer",text:x.jp}];
+  const answerSegments = x => segments(x).filter(part => part.type === "answer");
+  const dialogueTarget = x => segments(x).map(part => part.type === "fixed"
+    ? `<span class="focus-fixed">${esc(part.text)}</span>`
+    : `<button class="focus-line" data-focus-line="${x.id}" data-answer-text="${esc(part.text)}" type="button" aria-haspopup="dialog" aria-label="查看底線句解釋：${esc(part.text)}">${esc(part.text)}</button>`).join("");
   const save = () => { JPY5.write("conversation", state); updateSummary(); };
   function updateSummary() {
     document.querySelector("#mastered-count").textContent = Object.values(state.marks).filter(x => x === "correct").length;
@@ -59,13 +64,13 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderDialogue() {
     stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">完整會話</p><h2>${data.title}</h2></div><button class="chip" id="toggle-focus" type="button">隱藏底線句</button></div><div class="dialogue-list">${data.dialogue.map(row => {
       const [speaker,before,id,after] = row;
-      const focus = id ? `<button class="focus-line" data-focus-line="${id}" type="button" aria-haspopup="dialog" aria-label="查看底線句解釋：${esc(item(id).jp)}">${esc(item(id).jp)}</button>` : "";
+      const focus = id ? dialogueTarget(item(id)) : "";
       return `<article class="dialogue-row"><b>${esc(speaker)}</b><p>${esc(before)}${focus}${esc(after || "")}</p>${id ? listenButton(id,"播放這句") : ""}</article>`;
     }).join("")}</div>`;
     let hidden = false;
     stage.querySelector("#toggle-focus").onclick = e => {
       hidden = !hidden;
-      stage.querySelectorAll(".focus-line").forEach(x => { x.textContent = hidden ? "＿＿＿＿＿＿＿＿" : item(x.dataset.focusLine).jp; x.disabled=hidden; });
+      stage.querySelectorAll(".focus-line").forEach(x => { x.textContent = hidden ? "＿＿＿＿＿＿＿＿" : x.dataset.answerText; x.disabled=hidden; });
       e.currentTarget.textContent = hidden ? "顯示底線句" : "隱藏底線句";
       e.currentTarget.classList.toggle("active", hidden);
     };
@@ -119,14 +124,16 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderCloze() {
     stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">會話填寫</p><h2>一口氣填回八個目標</h2></div><span>${data.items.length} 個編號位置</span></div><article class="practice-panel"><div class="cloze-intro"><button class="listen-button" id="play-full" type="button">▶ 由開頭播放全段</button><p>先聽完整會話，再在編號位置輸入答案。標點及空格不影響評分。</p></div><div class="dialogue-list cloze-list">${data.dialogue.map(row => {
       const [speaker,before,id,after] = row;
-      const blank = id ? `<label class="cloze-blank"><span>底線 ${id}</span><input data-cloze="${id}" lang="ja" autocomplete="off" placeholder="輸入聽到的句子"></label>` : "";
+      const blank = id ? segments(item(id)).map((part,index) => part.type === "fixed"
+        ? `<span class="cloze-fixed">${esc(part.text)}</span>`
+        : `<label class="cloze-blank"><span>底線 ${id}${answerSegments(item(id)).length > 1 ? `-${answerSegments(item(id)).indexOf(part)+1}` : ""}</span><input data-cloze="${id}" data-cloze-part="${index}" lang="ja" autocomplete="off" placeholder="輸入聽到的句子"></label>`).join("") : "";
       return `<article class="dialogue-row"><b>${esc(speaker)}</b><p>${esc(before)}${blank}${esc(after || "")}</p></article>`;
     }).join("")}</div><div class="practice-actions"><button class="text-button" id="reveal-cloze">顯示答案</button><button class="primary-button" id="check-cloze">檢查八項</button></div><p class="answer-message"></p></article>`;
     stage.querySelector("#play-full").onclick = () => { audio.currentTime=0; audio.play().catch(()=>{}); };
-    stage.querySelector("#reveal-cloze").onclick = () => data.items.forEach(x => { stage.querySelector(`[data-cloze="${x.id}"]`).value=x.jp; });
+    stage.querySelector("#reveal-cloze").onclick = () => data.items.forEach(x => answerSegments(x).forEach(part => { stage.querySelector(`[data-cloze="${x.id}"][data-cloze-part="${segments(x).indexOf(part)}"]`).value=part.text; }));
     stage.querySelector("#check-cloze").onclick = () => {
       let score=0;
-      data.items.forEach(x => { const input=stage.querySelector(`[data-cloze="${x.id}"]`); const ok=clean(input.value)===clean(x.jp); input.classList.toggle("correct",ok); input.classList.toggle("wrong",!ok); record(x.id,ok); if(ok)score++; });
+      data.items.forEach(x => { const inputs=[...stage.querySelectorAll(`[data-cloze="${x.id}"]`)]; const answers=answerSegments(x); const ok=inputs.every((input,index)=>clean(input.value)===clean(answers[index].text)); inputs.forEach(input=>{ input.classList.toggle("correct",ok); input.classList.toggle("wrong",!ok); }); record(x.id,ok); if(ok)score++; });
       stage.querySelector(".answer-message").textContent = score===data.items.length ? "八項全部正確！" : `答對 ${score}/${data.items.length}。紅色位置可以去「重點句子」重溫。`;
     };
   }
