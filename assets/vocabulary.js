@@ -73,7 +73,7 @@ function renderCard() {
     $("#vocab-star").textContent = "☆"; save(); return;
   }
   $("#vocab-card-front").hidden = flipped; $("#vocab-card-back").hidden = !flipped;
-  $("#vocab-card-front").innerHTML = `<p>${state.direction === "normal" ? "平假名／片假名" : "漢字／外語原寫"}</p><h2 lang="ja">${frontText(item)}</h2><span>${item.note || "點擊翻面查看答案"}</span>`;
+  $("#vocab-card-front").innerHTML = `<p>${state.direction === "normal" ? "平假名／片假名" : "漢字／外語原寫"}</p><h2 lang="ja">${frontText(item)}</h2><span>點擊翻面查看答案</span>`;
   $("#vocab-card-back").innerHTML = `<p>${state.direction === "normal" ? scriptLabel(item) : "平假名／片假名"}</p><h2 lang="ja">${backTitle(item)}</h2>${item.original ? `<span class="vocab-writing">日文表記 · ${item.written}</span>` : ""}<strong>${item.meaning}</strong><span>${item.type}${item.note ? ` · ${item.note}` : ""}</span>`;
   $("#vocab-star").textContent = state.starred.includes(item.id) ? "★" : "☆"; save();
 }
