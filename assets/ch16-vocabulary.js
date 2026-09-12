@@ -77,8 +77,7 @@ function renderCard() {
   }
   $("#vocab-card-front").hidden = flipped; $("#vocab-card-back").hidden = !flipped;
   $("#vocab-card-front").innerHTML = `<p>${frontLabel()}</p><h2 lang="ja">${frontText(item)}</h2><span>點擊翻面查看答案</span>`;
-  const sameForm = frontText(item) === backTitle(item);
-  $("#vocab-card-back").innerHTML = `<h2 class="card-retained-prompt" lang="ja">${frontText(item)}</h2>${sameForm ? `<span class="same-form-answer">✓ 讀音、寫法相同</span>` : `<h2 class="card-revealed-answer" lang="ja">${backTitle(item)}</h2>`}${!sameForm && item.original ? `<span class="vocab-writing">日文表記 · ${item.written}</span>` : ""}<strong>${item.meaning}</strong><span>${item.type}${item.note ? ` · ${item.note}` : ""}</span>`;
+  $("#vocab-card-back").innerHTML = `<h2 class="card-retained-prompt" lang="ja">${frontText(item)}</h2><h2 class="card-revealed-answer" lang="ja">${backTitle(item)}</h2>${item.original ? `<span class="vocab-writing">日文表記 · ${item.written}</span>` : ""}<strong>${item.meaning}</strong><span>${item.type}${item.note ? ` · ${item.note}` : ""}</span>`;
   $("#vocab-star").textContent = state.starred.includes(item.id) ? "★" : "☆"; save();
 }
 
