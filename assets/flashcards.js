@@ -51,6 +51,7 @@ document.querySelectorAll("[data-direction]").forEach(b=>b.onclick=()=>{state.di
 document.querySelectorAll("[data-filter]").forEach(b=>b.onclick=()=>{state.filter=b.dataset.filter;state.positions[state.deck]=0;render();});
 document.querySelector("#shuffle-toggle").onclick=()=>{state.shuffled=!state.shuffled;state.positions[state.deck]=0;render();};
 document.querySelector("#flashcard").onclick=flip; document.querySelector("#prev-card").onclick=()=>move(-1); document.querySelector("#next-card").onclick=()=>move(1);
+JPY5.bindSwipe(document.querySelector("#flashcard"),{next:()=>move(1),previous:()=>move(-1)});
 document.querySelector("#mark-right").onclick=()=>mark("right"); document.querySelector("#mark-wrong").onclick=()=>mark("wrong");
 document.querySelector("#star-card").onclick=()=>{const c=activeDeck()[currentIndex()];if(!c)return;state.starred=state.starred.includes(c.id)?state.starred.filter(id=>id!==c.id):[...state.starred,c.id];render();};
 document.querySelector("#card-jump").onchange=e=>{state.positions[state.deck]=Math.max(0,Number(e.target.value)-1);render();};

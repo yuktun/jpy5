@@ -90,6 +90,7 @@ function mark(value) {
 $("#vocab-search").addEventListener("input", renderList);
 $("#list-section").addEventListener("change", renderList);
 $("#vocab-card").onclick = () => { if(current()){flipped=!flipped;renderCard();} };
+JPY5.bindSwipe($("#vocab-card"), {next:()=>move(1), previous:()=>move(-1)});
 $("#vocab-prev").onclick = () => move(-1); $("#vocab-next").onclick = () => move(1);
 $("#vocab-right").onclick = () => mark("right"); $("#vocab-wrong").onclick = () => mark("wrong");
 $("#vocab-star").onclick = () => { const item=current(); if(!item)return; state.starred=state.starred.includes(item.id)?state.starred.filter(id=>id!==item.id):[...state.starred,item.id]; renderCard(); };

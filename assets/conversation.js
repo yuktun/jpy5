@@ -148,6 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
     stage.querySelectorAll("[data-listen]").forEach(b => b.onclick = () => play(b.dataset.listen));
     stage.querySelectorAll("[data-star]").forEach(b => b.onclick = () => { const id=b.dataset.star; state.stars[id] = !state.stars[id]; save(); render(); });
     stage.querySelectorAll("[data-card-nav]").forEach(b => b.onclick = () => { state.card=(state.card+(b.dataset.cardNav==="next"?1:data.items.length-1))%data.items.length; state.flipped=false; save(); render(); });
+    JPY5.bindSwipe(stage.querySelector("#conversation-card"),{next:()=>stage.querySelector('[data-card-nav="next"]')?.click(),previous:()=>stage.querySelector('[data-card-nav="prev"]')?.click()});
     stage.querySelectorAll("[data-mark]").forEach(b => b.onclick = () => { record(data.items[state.card].id,b.dataset.mark==="correct"); state.card=(state.card+1)%data.items.length; state.flipped=false; save(); render(); });
   }
 
