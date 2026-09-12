@@ -23,6 +23,13 @@ function activeDeck() {
 }
 function currentIndex() { const deck=activeDeck(); return Math.min(Math.max(0,state.positions[state.deck]||0),Math.max(0,deck.length-1)); }
 function save() { JPY5.write("flashcards",state); }
+function frontMarkup(card) { return state.direction==="jp"?`<h2 lang="ja">${card.jp}</h2><p>這句使用甚麼文法？</p>`:`<h2>${card.zh}</h2><p>想出日文句型或例句。</p>`; }
+function backMarkup(card) {
+  let details=card.answer;
+  if(state.direction==="jp") details=details.replace(state.deck==="summary"?`<h3>${card.jp}</h3>`:`<p class="example-jp" lang="ja">${card.jp}</p>`,"");
+  else details=details.replace(`<p>${card.zh}</p>`,"");
+  return `<div class="card-retained-block"><small>題目</small>${frontMarkup(card)}</div><div class="card-revealed-details"><small>答案與詳解</small>${details}</div>`;
+}
 function render() {
   const deck=activeDeck(), index=currentIndex(), card=deck[index]; flipped=false;
   document.querySelectorAll("[data-deck]").forEach(b=>b.classList.toggle("active",b.dataset.deck===state.deck));
@@ -38,8 +45,8 @@ function render() {
   const el=document.querySelector("#flashcard"); el.disabled=!card;
   if(!card){ document.querySelector("#card-kicker").textContent="沒有卡片"; document.querySelector("#card-front").innerHTML="<h2>這個分類暫時是空的。</h2><p>先回答或標記一些卡片，再回來重溫。</p>"; document.querySelector("#card-back").hidden=true; document.querySelector("#flip-hint").hidden=true; return; }
   document.querySelector("#card-kicker").textContent=`${card.label} · ${index+1}/${deck.length}`;
-  document.querySelector("#card-front").innerHTML=state.direction==="jp"?`<h2 lang="ja">${card.jp}</h2><p>這句使用甚麼文法？</p>`:`<h2>${card.zh}</h2><p>想出日文句型或例句。</p>`;
-  document.querySelector("#card-back").innerHTML=card.answer; document.querySelector("#card-front").hidden=false; document.querySelector("#card-back").hidden=true; document.querySelector("#flip-hint").hidden=false;
+  document.querySelector("#card-front").innerHTML=frontMarkup(card);
+  document.querySelector("#card-back").innerHTML=backMarkup(card); document.querySelector("#card-front").hidden=false; document.querySelector("#card-back").hidden=true; document.querySelector("#flip-hint").hidden=false;
   document.querySelector("#star-card").textContent=state.starred.includes(card.id)?"★":"☆";
   save();
 }
