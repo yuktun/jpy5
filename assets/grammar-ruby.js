@@ -22,7 +22,24 @@ window.JPY5GrammarRuby = (() => {
     ["要修飾「報酬」，哪個接續正確？", "要修飾「<ruby>報酬<rt>ほうしゅう</rt></ruby>」，哪個接續正確？"],
     ["本課「不況によって経営が悪化した」的「によって」表示甚麼？", "本課「<ruby>不況<rt>ふきょう</rt></ruby>によって<ruby>経営<rt>けいえい</rt></ruby>が<ruby>悪化<rt>あっか</rt></ruby>した」的「によって」表示甚麼？"],
     ["要從『北海道』引出相關聯想，最自然的是？", "要從『<ruby>北海道<rt>ほっかいどう</rt></ruby>』引出相關聯想，最自然的是？"],
-    ["修飾『本』時哪個接續正確？", "修飾『<ruby>本<rt>ほん</rt></ruby>』時哪個接續正確？"]
+    ["修飾『本』時哪個接續正確？", "修飾『<ruby>本<rt>ほん</rt></ruby>』時哪個接續正確？"],
+    ["当店ではお客様のご予算に応じて料理をご用意いたします。", "<ruby>当店<rt>とうてん</rt></ruby>では<ruby>お客様<rt>おきゃくさま</rt></ruby>の<ruby>ご予算<rt>ごよさん</rt></ruby>に<ruby>応じ<rt>おうじ</rt></ruby>て<ruby>料理<rt>りょうり</rt></ruby>を<ruby>ご用意<rt>ごようい</rt></ruby>いたします。"],
+    ["アルバイト料は労働時間に応じて計算される。", "アルバイト<ruby>料<rt>りょう</rt></ruby>は<ruby>労働時間<rt>ろうどうじかん</rt></ruby>に<ruby>応じ<rt>おうじ</rt></ruby>て<ruby>計算<rt>けいさん</rt></ruby>される。"],
+    ["私の不注意な発言によって、彼を傷つけてしまった。", "<ruby>私<rt>わたし</rt></ruby>の<ruby>不注意<rt>ふちゅうい</rt></ruby>な<ruby>発言<rt>はつげん</rt></ruby>によって、<ruby>彼<rt>かれ</rt></ruby>を<ruby>傷つけ<rt>きずつけ</rt></ruby>てしまった。"],
+    ["踏切事故によって、電車は3時間も遅れました。", "<ruby>踏切事故<rt>ふみきりじこ</rt></ruby>によって、<ruby>電車<rt>でんしゃ</rt></ruby>は3<ruby>時間<rt>じかん</rt></ruby>も<ruby>遅れ<rt>おくれ</rt></ruby>ました。"],
+    ["警察は、A容疑者にはまだ余罪があるとみて、厳しく追及する構えです。", "<ruby>警察<rt>けいさつ</rt></ruby>は、A<ruby>容疑者<rt>ようぎしゃ</rt></ruby>にはまだ<ruby>余罪<rt>よざい</rt></ruby>があるとみて、<ruby>厳しく<rt>きびしく</rt></ruby><ruby>追及<rt>ついきゅう</rt></ruby>する<ruby>構え<rt>かまえ</rt></ruby>です。"],
+    ["国際原子力機関（IAEA）は、イランが高性能爆薬など核兵器開発に向けた実験を行ったとみられるとする報告書をまとめた。", "<ruby>国際原子力機関<rt>こくさいげんしりょくきかん</rt></ruby>（IAEA）は、イランが<ruby>高性能爆薬<rt>こうせいのうばくやく</rt></ruby>など<ruby>核兵器<rt>かくへいき</rt></ruby><ruby>開発<rt>かいはつ</rt></ruby>に<ruby>向け<rt>むけ</rt></ruby>た<ruby>実験<rt>じっけん</rt></ruby>を<ruby>行っ<rt>おこなっ</rt></ruby>たとみられるとする<ruby>報告書<rt>ほうこくしょ</rt></ruby>をまとめた。"],
+    ["円高や世界景気の減速傾向を受け、企業が設備投資を縮小させたとみられる。", "<ruby>円高<rt>えんだか</rt></ruby>や<ruby>世界景気<rt>せかいけいき</rt></ruby>の<ruby>減速傾向<rt>げんそくけいこう</rt></ruby>を<ruby>受け<rt>うけ</rt></ruby>、<ruby>企業<rt>きぎょう</rt></ruby>が<ruby>設備投資<rt>せつびとうし</rt></ruby>を<ruby>縮小<rt>しゅくしょう</rt></ruby>させたとみられる。"],
+    ["調達資金は物流関連費用に充当するとしている。", "<ruby>調達資金<rt>ちょうたつしきん</rt></ruby>は<ruby>物流関連費用<rt>ぶつりゅうかんれんひよう</rt></ruby>に<ruby>充当<rt>じゅうとう</rt></ruby>するとしている。"],
+    ["米政府は「カダフィ大佐が国を去ったとの情報はない」としている。", "<ruby>米政府<rt>べいせいふ</rt></ruby>は「カダフィ<ruby>大佐<rt>たいさ</rt></ruby>が<ruby>国<rt>くに</rt></ruby>を<ruby>去っ<rt>さっ</rt></ruby>たとの<ruby>情報<rt>じょうほう</rt></ruby>はない」としている。"],
+    ["ニュースサイドによると、上海市中心部の繁華街でガス管の爆発が原因とみられる火災が起きた。地元メディアは死傷者はいないもようだとしている。", "ニュースサイドによると、<ruby>上海市中心部<rt>しゃんはいしちゅうしんぶ</rt></ruby>の<ruby>繁華街<rt>はんかがい</rt></ruby>でガス<ruby>管<rt>かん</rt></ruby>の<ruby>爆発<rt>ばくはつ</rt></ruby>が<ruby>原因<rt>げんいん</rt></ruby>とみられる<ruby>火災<rt>かさい</rt></ruby>が<ruby>起き<rt>おき</rt></ruby>た。<ruby>地元<rt>じもと</rt></ruby>メディアは<ruby>死傷者<rt>ししょうしゃ</rt></ruby>はいないもようだとしている。"],
+    ["悪条件にもかかわらず、無事登頂に成功した。", "<ruby>悪条件<rt>あくじょうけん</rt></ruby>にもかかわらず、<ruby>無事<rt>ぶじ</rt></ruby><ruby>登頂<rt>とうちょう</rt></ruby>に<ruby>成功<rt>せいこう</rt></ruby>した。"],
+    ["国の経済力の発展とともに、国民の生活も豊かになった。", "<ruby>国<rt>くに</rt></ruby>の<ruby>経済力<rt>けいざいりょく</rt></ruby>の<ruby>発展<rt>はってん</rt></ruby>とともに、<ruby>国民<rt>こくみん</rt></ruby>の<ruby>生活<rt>せいかつ</rt></ruby>も<ruby>豊か<rt>ゆたか</rt></ruby>になった。"],
+    ["年をとるとともに記憶力が衰えてきた。", "<ruby>年<rt>とし</rt></ruby>をとるとともに<ruby>記憶力<rt>きおくりょく</rt></ruby>が<ruby>衰え<rt>おとろえ</rt></ruby>てきた。"],
+    ["自動車が普及するとともに、交通事故も増えてきた。", "<ruby>自動車<rt>じどうしゃ</rt></ruby>が<ruby>普及<rt>ふきゅう</rt></ruby>するとともに、<ruby>交通事故<rt>こうつうじこ</rt></ruby>も<ruby>増え<rt>ふえ</rt></ruby>てきた。"],
+    ["駅の遺失物係に問い合わせたところ、届いているとのことだ。", "<ruby>駅<rt>えき</rt></ruby>の<ruby>遺失物係<rt>いしつぶつがかり</rt></ruby>に<ruby>問い合わせ<rt>といあわせ</rt></ruby>たところ、<ruby>届い<rt>とどい</rt></ruby>ているとのことだ。"],
+    ["もし気づくのが遅かったら、大惨事になるところだった。", "もし<ruby>気づく<rt>きづく</rt></ruby>のが<ruby>遅かっ<rt>おそかっ</rt></ruby>たら、<ruby>大惨事<rt>だいさんじ</rt></ruby>になるところだった。"],
+    ["あのレストランは年中無休なのに、行ってみたら今日に限って休みだった。", "あのレストランは<ruby>年中無休<rt>ねんじゅうむきゅう</rt></ruby>なのに、<ruby>行っ<rt>いっ</rt></ruby>てみたら<ruby>今日<rt>きょう</rt></ruby>に<ruby>限っ<rt>かぎっ</rt></ruby>て<ruby>休み<rt>やすみ</rt></ruby>だった。"]
   );
   const map = new Map(entries);
   const escape = value => String(value ?? "").replace(/[&<>"']/g, character => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[character]);
