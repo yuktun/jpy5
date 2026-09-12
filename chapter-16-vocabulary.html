@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f8f4ec">
   <title>第 16 課完整詞彙 · 日本語 Year 5</title>
-  <link rel="stylesheet" href="assets/styles.css?v=12">
+  <link rel="stylesheet" href="assets/styles.css?v=13">
   <link rel="icon" href="assets/app-icon.png">
   <link rel="apple-touch-icon" href="assets/app-icon.png">
   <script src="assets/ch16-common.js?v=3" defer></script>
   <script src="assets/ch16-vocabulary-data.js?v=2" defer></script>
-  <script src="assets/ch16-vocabulary.js?v=3" defer></script>
+  <script src="assets/pronunciation.js?v=1" defer></script>
+  <script src="assets/ch16-vocabulary.js?v=4" defer></script>
 </head>
 <body>
   <header class="site-header">
@@ -37,7 +38,7 @@
           <button class="chip" id="vocab-shuffle" type="button">循序模式</button>
         </div>
         <div class="filter-row vocab-review-filters" aria-label="重溫分類"><button data-vocab-filter="all">全部</button><button data-vocab-filter="wrong">答錯</button><button data-vocab-filter="right">答對</button><button data-vocab-filter="starred">收藏</button></div>
-        <button class="vocab-card" id="vocab-card" type="button"><span id="vocab-card-number"></span><div id="vocab-card-front"></div><div id="vocab-card-back" hidden></div><small>點擊或按 Space 翻面</small></button>
+        <div class="vocab-card-wrap"><button class="vocab-card" id="vocab-card" type="button"><span id="vocab-card-number"></span><div id="vocab-card-front"></div><div id="vocab-card-back" hidden></div><small>點擊或按 Space 翻面</small></button><span id="vocab-card-speaker"></span></div>
         <div class="jump-row"><label for="vocab-jump">跳至</label><input id="vocab-jump" type="number" min="1" inputmode="numeric"><span id="vocab-total"></span></div>
         <div class="card-actions compact"><button id="vocab-prev" aria-label="上一個">←</button><button class="danger" id="vocab-wrong" aria-label="標記答錯">×</button><button id="vocab-star" aria-label="收藏">☆</button><button class="success" id="vocab-right" aria-label="標記答對">✓</button><button id="vocab-next" aria-label="下一個">→</button></div>
         <button class="text-button" id="reset-vocabulary" type="button">清除詞彙進度</button>

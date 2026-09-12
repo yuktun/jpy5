@@ -6,6 +6,7 @@ let flipped = false;
 
 const $ = selector => document.querySelector(selector);
 const byId = id => vocabulary.find(item => item.id === id);
+const pronunciation = window.JPY5Pronunciation;
 const save = () => JPY5.write("vocabulary.cards.v2", state);
 const sectionItems = () => state.section === "all" ? vocabulary : vocabulary.filter(item => item.section === state.section);
 const orderKey = () => `${state.section}-${state.random ? "random" : "normal"}`;
@@ -52,7 +53,7 @@ function renderList() {
     const inSection = selectedSection === "all" || item.section === selectedSection;
     return inSection && [item.kana,item.written,item.original,item.meaning,item.type,item.note,sectionLabel(item)].some(value => value.toLowerCase().includes(query));
   });
-  $("#vocab-list").innerHTML = matches.map(item => `<article class="vocab-row"><span>${item.id}</span><div><b lang="ja">${item.original || item.written}</b><small>${item.kana}${item.original ? ` · ${item.written}` : ""}</small></div><p>${item.meaning}${item.note ? `<small>${item.note}</small>` : ""}</p><em>${item.type}<small>${sectionLabel(item)}</small></em></article>`).join("");
+  $("#vocab-list").innerHTML = matches.map(item => `<article class="vocab-row"><span>${item.id}</span><div><b lang="ja">${item.original || item.written}</b><small>${item.kana}${item.original ? ` · ${item.written}` : ""}</small></div>${pronunciation.button(item, "vocab-row-speak", `data-vocab-speak="${item.id}"`)}<p>${item.meaning}${item.note ? `<small>${item.note}</small>` : ""}</p><em>${item.type}<small>${sectionLabel(item)}</small></em></article>`).join("");
   $("#vocab-count").textContent = `顯示 ${matches.length} / ${vocabulary.length}`;
 }
 
@@ -66,6 +67,7 @@ function renderCard() {
   $("#vocab-jump").max = deck.length || 1; $("#vocab-jump").value = item ? state.index + 1 : ""; $("#vocab-total").textContent = `/ ${deck.length}`;
   updateStats();
   const card = $("#vocab-card"); card.disabled = !item;
+  $("#vocab-card-speaker").innerHTML = item ? pronunciation.button(item, "vocab-card-speak") : "";
   $("#vocab-card-number").textContent = item ? `${sectionLabel(item)} · ${state.index + 1} / ${deck.length}` : "沒有卡片";
   if (!item) {
     $("#vocab-card-front").hidden = false; $("#vocab-card-back").hidden = true;
@@ -89,6 +91,10 @@ function mark(value) {
 
 $("#vocab-search").addEventListener("input", renderList);
 $("#list-section").addEventListener("change", renderList);
+$("#vocab-card-speaker").addEventListener("pointerdown", event => event.stopPropagation());
+$("#vocab-card-speaker").addEventListener("click", event => { event.preventDefault(); event.stopPropagation(); const item=current(); if(item)pronunciation.speak(item); });
+$("#vocab-list").addEventListener("pointerdown", event => { if(event.target.closest("[data-vocab-speak]"))event.stopPropagation(); });
+$("#vocab-list").addEventListener("click", event => { const button=event.target.closest("[data-vocab-speak]"); if(!button)return; event.preventDefault(); event.stopPropagation(); const item=byId(Number(button.dataset.vocabSpeak)); if(item)pronunciation.speak(item); });
 $("#vocab-card").onclick = () => { if(current()){flipped=!flipped;renderCard();} };
 JPY5.bindSwipe($("#vocab-card"), {next:()=>move(1), previous:()=>move(-1)});
 $("#vocab-prev").onclick = () => move(-1); $("#vocab-next").onclick = () => move(1);
