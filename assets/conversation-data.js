@@ -71,8 +71,11 @@ window.JPY5_CONVERSATION = {
 };
 
 Object.assign(window.JPY5_CONVERSATION.furigana,{
-  "今":"いま","次":"つぎ","暮らした":"くらした","聞いた":"きいた","間違い":"まちがい","おばあさん":"おばあさん","言う":"いう","言ったら":"いったら","言ってた":"いってた","言われて":"いわれて","言います":"いいます","私":"わたし","食べ":"たべ","思って":"おもって","焼けました":"やけました"
+  "今":"いま","次":"つぎ","暮らした":"くらした","聞いた":"きいた","間違い":"まちがい","おばあさん":"おばあさん","言う":"いう","言ったら":"いったら","言ってた":"いってた","言われて":"いわれて","言います":"いいます","私":"わたし","食べ":"たべ","思って":"おもって","焼けました":"やけました","お好み焼き":"おこのみやき"
 });
+delete window.JPY5_CONVERSATION.furigana.好み焼き;
+window.JPY5_CONVERSATION.furiganaSegments["お好み焼き"]=[["お"],["好","この"],["み"],["焼","や"],["き"]];
+delete window.JPY5_CONVERSATION.furiganaSegments.好み焼き;
 delete window.JPY5_CONVERSATION.furigana.諺語;
 delete window.JPY5_CONVERSATION.furigana.巴西;
 delete window.JPY5_CONVERSATION.furigana.愛喝酒;
