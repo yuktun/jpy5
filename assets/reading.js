@@ -25,10 +25,10 @@ document.addEventListener("DOMContentLoaded", () => {
       return `<ruby>${esc(part)}<rt>${esc(kana)}</rt></ruby>`;
     }).join("");
   }
-  function ruby(text,{revealTsukigime=true}={}){
+  function ruby(text,{furiganaContext}={}){
     if(!state.furigana)return esc(text);
     const readings=new Map(Object.entries(data.furigana));
-    if(revealTsukigime)readings.set("月極","つきぎめ");
+    Object.entries(data.furiganaContexts?.[furiganaContext]||{}).forEach(([word,reading])=>readings.set(word,reading));
     const words=[...readings.keys()].sort((a,b)=>b.length-a.length);
     const pattern=new RegExp(words.map(word=>word.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|"),"g");
     let out="",last=0;
@@ -40,8 +40,8 @@ document.addEventListener("DOMContentLoaded", () => {
     return out+esc(String(text).slice(last));
   }
   function shell(title,subtitle,body){return `<div class="reading-stage-head"><div><p class="kicker">第 13 課</p><h2>${title}</h2>${subtitle?`<p>${subtitle}</p>`:""}</div></div>${body}`}
-  const paragraphRuby=p=>ruby(p.jp,{revealTsukigime:p.id>=4});
-  const questionRuby=q=>ruby(q.q,{revealTsukigime:q.revealTsukigime!==false});
+  const paragraphRuby=p=>ruby(p.jp,{furiganaContext:p.furiganaContext});
+  const questionRuby=q=>ruby(q.q,{furiganaContext:q.revealTsukigime!==false?"monthlyParking":undefined});
   const optionText=(question,option)=>question.optionLanguage==="zh"?esc(option):ruby(option);
   function original(){
     return shell(ruby(data.title),"先掌握時間線：來日初期 → 活動範圍擴大 → 在日第六年解開誤會。",`<article class="reading-paper" style="--reading-size:${[.98,1.1,1.24][state.font]}rem"><div class="reading-badge">第13課</div>${data.paragraphs.map(p=>`<p data-paragraph="${p.id}">${paragraphRuby(p)}</p>`).join("")}<footer>（${ruby(data.author)}）</footer>`);
