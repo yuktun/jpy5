@@ -26,6 +26,22 @@ input, select, textarea { font-size: 1rem; }
 .brand-mark { width: 38px; height: 38px; display: grid; place-items: center; color: white; background: var(--red); border-radius: 50%; font-family: Georgia, serif; }
 .brand b { font-weight: 500; color: var(--muted); }
 .header-note, .back-link { color: var(--muted); font-size: .84rem; letter-spacing: .08em; text-decoration: none; }
+/*
+ * `touch-action` is negotiated from the touched element through its ancestors;
+ * it is not inherited. Put the double-tap-safe value on the shared content
+ * root and real study surfaces so text, whitespace, and card descendants get
+ * the same behavior as their buttons without disabling pinch zoom.
+ */
+main,
+.lesson-card, .tool-card, .resource-card, .review-path > a,
+.flashcard, .vocab-card, .vocab-row, .grammar-card,
+.quiz-setup, .quiz-runner, .quiz-result, .question-card,
+.dialogue-row, .focus-card, .conversation-card, .practice-panel,
+.sentence-build, .word-bank, .mistake-list article,
+.reading-paper, .translation-list article, .reading-question,
+.reading-vocab-card, .exam-list article {
+  touch-action: manipulation;
+}
 main { overflow: hidden; }
 .hero { min-height: 610px; max-width: 1180px; margin: auto; padding: 110px 28px 100px; position: relative; }
 .hero::after { content: "十三"; position: absolute; right: 2%; top: 30px; z-index: -1; color: rgba(201,73,61,.055); font-family: "Yu Mincho", serif; font-size: clamp(15rem, 32vw, 27rem); line-height: 1; writing-mode: vertical-rl; }

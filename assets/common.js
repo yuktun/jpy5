@@ -16,7 +16,9 @@ window.JPY5 = (() => {
   function bindSwipe(element, {next, previous, threshold=60}={}) {
     if (!element) return () => {};
     let gesture=null, suppressClickUntil=0;
-    element.style.touchAction="pan-y";
+    // Keep vertical scrolling and browser pinch zoom; horizontal movement is
+    // left to this handler for card navigation.
+    element.style.touchAction="pan-y pinch-zoom";
     const onPointerDown=event=>{if(event.pointerType==="mouse"||event.isPrimary===false)return;gesture={id:event.pointerId,x:event.clientX,y:event.clientY}};
     const onPointerUp=event=>{if(!gesture||event.pointerId!==gesture.id)return;const dx=event.clientX-gesture.x,dy=event.clientY-gesture.y;gesture=null;if(Math.abs(dx)<threshold||Math.abs(dx)<=Math.abs(dy)*1.25)return;suppressClickUntil=Date.now()+500;(dx<0?next:previous)?.()};
     const onPointerCancel=()=>{gesture=null};
