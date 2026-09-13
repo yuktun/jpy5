@@ -4,6 +4,22 @@ document.addEventListener("DOMContentLoaded", () => {
   let state={...defaults(),...JPY5.read("reading",{})}, findIndex=0, examAnswers={};
   const esc=v=>String(v).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
   const save=()=>JPY5.write("reading",state);
+  const kanjiRun=/[\u3400-\u9fff々〆ヶ]/;
+  function segmentedRuby(word,reading){
+    const explicit=data.furiganaSegments?.[word];
+    if(explicit)return explicit.map(([base,kana])=>kana===undefined?esc(base):`<ruby>${esc(base)}<rt>${esc(kana)}</rt></ruby>`).join("");
+    if(!kanjiRun.test(word))return esc(word);
+    const parts=word.match(/[\u3400-\u9fff々〆ヶ]+|[^\u3400-\u9fff々〆ヶ]+/g)||[word];
+    if(parts.length===1)return `<ruby>${esc(word)}<rt>${esc(reading)}</rt></ruby>`;
+    let remaining=reading;
+    return parts.map((part,index)=>{
+      if(!kanjiRun.test(part)){if(remaining.startsWith(part))remaining=remaining.slice(part.length);return esc(part)}
+      const next=parts.slice(index+1).find(piece=>!kanjiRun.test(piece));
+      const length=next?Math.max(0,remaining.indexOf(next)):remaining.length;
+      const kana=remaining.slice(0,length);remaining=remaining.slice(length);
+      return `<ruby>${esc(part)}<rt>${esc(kana)}</rt></ruby>`;
+    }).join("");
+  }
   function ruby(text){
     if(!state.furigana)return esc(text);
     const readings=new Map(Object.entries(data.furigana));
@@ -12,12 +28,14 @@ document.addEventListener("DOMContentLoaded", () => {
     let out="",last=0;
     for(const match of String(text).matchAll(pattern)){
       out+=esc(String(text).slice(last,match.index));
-      out+=`<ruby>${esc(match[0])}<rt>${esc(readings.get(match[0]))}</rt></ruby>`;
+      out+=segmentedRuby(match[0],readings.get(match[0]));
       last=match.index+match[0].length;
     }
     return out+esc(String(text).slice(last));
   }
   function shell(title,subtitle,body){return `<div class="reading-stage-head"><div><p class="kicker">第 15 課</p><h2>${title}</h2>${subtitle?`<p>${subtitle}</p>`:""}</div></div>${body}`}
+  const questionText=q=>esc(q.q);
+  const optionText=(q,option)=>esc(option);
   function original(){
     return shell(ruby(data.title),"先掌握論述：動畫發展 → 漫畫產業 → 表現手法 → 世界品牌。",`<article class="reading-paper" style="--reading-size:${[.98,1.1,1.24][state.font]}rem"><div class="reading-badge">第15課</div>${data.paragraphs.map(p=>`<p data-paragraph="${p.id}">${ruby(p.jp)}</p>`).join("")}<footer>（${esc(data.author)}）</footer></article>`);
   }
