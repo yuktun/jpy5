@@ -1,5 +1,6 @@
 const { patterns } = window.JPY5_DATA;
 const ruby = window.JPY5GrammarRuby.render;
+const renderExample = window.JPY5GrammarRuby.renderExample;
 const defaults = { deck:"summary", direction:"jp", shuffled:false, filter:"all", positions:{summary:0,examples:0}, order:{}, results:{}, starred:[] };
 let state = Object.assign({}, defaults, JPY5.read("flashcards", {}));
 state.positions = Object.assign({}, defaults.positions, state.positions);
@@ -7,7 +8,7 @@ state.order = state.order || {}; state.results = state.results || {}; state.star
 let flipped = false;
 
 const summaries = patterns.map(p => ({ id:`summary-${p.id}`, pattern:p.id, label:p.title, jp:p.title, zh:p.meaning, answer:`<h3 lang="ja">${ruby(p.title)}</h3><p>${p.meaning}</p><div class="formation" lang="ja">${ruby(p.formation)}</div><p>${p.note}</p><p class="contrast-note"><b>辨析</b>${p.contrast}</p>` }));
-const examples = patterns.flatMap(p => p.examples.map(([jp,zh],i)=>({ id:`example-${p.id}-${i}`, pattern:p.id, label:p.title, jp, zh, answer:`<h3 lang="ja">${ruby(p.title)}</h3><p class="example-jp" lang="ja">${ruby(jp)}</p><p>${zh}</p><div class="formation" lang="ja">${ruby(p.formation)}</div>` })));
+const examples = patterns.flatMap(p => p.examples.map(([jp,zh],i)=>({ id:`example-${p.id}-${i}`, pattern:p.id, label:p.title, jp, zh, answer:`<h3 lang="ja">${ruby(p.title)}</h3><p class="example-jp" lang="ja">${renderExample(jp,p.id)}</p><p>${zh}</p><div class="formation" lang="ja">${ruby(p.formation)}</div>` })));
 const baseDeck = () => state.deck === "summary" ? summaries : examples;
 const key = () => `${state.deck}-${state.direction}-${state.shuffled?"random":"normal"}`;
 function orderedDeck() {
@@ -24,12 +25,12 @@ function activeDeck() {
 }
 function currentIndex() { const deck=activeDeck(); return Math.min(Math.max(0,state.positions[state.deck]||0),Math.max(0,deck.length-1)); }
 function save() { JPY5.write("flashcards",state); }
-function frontMarkup(card) { return state.direction==="jp"?`<h2 lang="ja">${ruby(card.jp)}</h2><p>這句使用甚麼文法？</p>`:`<h2>${card.zh}</h2><p>想出日文句型或例句。</p>`; }
+function frontMarkup(card, reveal=false) { const jp=reveal&&state.deck==="examples"?renderExample(card.jp,card.pattern):ruby(card.jp); return state.direction==="jp"?`<h2 lang="ja">${jp}</h2><p>這句使用甚麼文法？</p>`:`<h2>${card.zh}</h2><p>想出日文句型或例句。</p>`; }
 function backMarkup(card) {
   let details=card.answer;
-  if(state.direction==="jp") details=details.replace(state.deck==="summary"?`<h3 lang="ja">${ruby(card.jp)}</h3>`:`<p class="example-jp" lang="ja">${ruby(card.jp)}</p>`,"");
+  if(state.direction==="jp") details=details.replace(state.deck==="summary"?`<h3 lang="ja">${ruby(card.jp)}</h3>`:`<p class="example-jp" lang="ja">${renderExample(card.jp,card.pattern)}</p>`,"");
   else details=details.replace(`<p>${card.zh}</p>`,"");
-  return `<div class="card-retained-block"><small>題目</small>${frontMarkup(card)}</div><div class="card-revealed-details"><small>答案與詳解</small>${details}</div>`;
+  return `<div class="card-retained-block"><small>題目</small>${frontMarkup(card,true)}</div><div class="card-revealed-details"><small>答案與詳解</small>${details}</div>`;
 }
 function render() {
   const deck=activeDeck(), index=currentIndex(), card=deck[index]; flipped=false;
