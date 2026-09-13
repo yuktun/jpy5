@@ -53,4 +53,4 @@ window.JPY5_CONVERSATION.furiganaSegments={
 };
 window.JPY5_CONVERSATION.embeddedJapanese=["銀河鉄道999","星野鉄郎","主人公は","っていう少年","アンドロメダ","クレア","メーテル"];
 Object.assign(window.JPY5_CONVERSATION.furigana,{"小川":"おがわ","人":"ひと","最初":"さいしょ","何":"なに","機械人間":"きかいにんげん","言わない":"いわない","待って":"まって"});
-Object.assign(window.JPY5_CONVERSATION.furiganaSegments,{"言わない":[["言","い"],["わない"]],"待って":[["待","ま"],["って"]]});
+Object.assign(window.JPY5_CONVERSATION.furiganaSegments,{"銀河鉄道999":[["銀河鉄道","ぎんがてつどう"],["999","すりーないん"]],"言わない":[["言","い"],["わない"]],"待って":[["待","ま"],["って"]]});
