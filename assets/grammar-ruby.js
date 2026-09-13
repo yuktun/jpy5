@@ -466,7 +466,7 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "『普遍的』とはどんな場合にも広く一般的に当てはまるという意味だ。",
-    "『<ruby>普遍的<rt>ふへんてき</rt></ruby>』とはどんな<ruby>場合<rt>ばあい</rt></ruby>にも<ruby>広<rt>ひろ</rt></ruby>く<ruby>一般<rt>いっぱん</rt></ruby><ruby>的<rt>てき</rt></ruby>に<ruby>当<rt>あ</rt></ruby>てはまるという<ruby>意味<rt>いみ</rt></ruby>だ。"
+    "『<ruby>普遍的<rt>ふへんてき</rt></ruby>』とはどんな<ruby>場合<rt>ばあい</rt></ruby>にも<ruby>広<rt>ひろ</rt></ruby>く<ruby>一般的<rt>いっぱんてき</rt></ruby>に<ruby>当<rt>あ</rt></ruby>てはまるという<ruby>意味<rt>いみ</rt></ruby>だ。"
   ],
   [
     "～において／～における",
