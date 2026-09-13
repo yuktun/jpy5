@@ -18,7 +18,7 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "ここのパンは焼きたてで、おいしい。",
-    "ここのパンは<ruby>焼きたて<rt>やきたて</rt></ruby>で、おいしい。"
+    "ここのパンは<ruby>焼<rt>や</rt></ruby>きたてで、おいしい。"
   ],
   [
     "たとえ～ても",
@@ -26,19 +26,19 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "たとえ ＋ V ても ｜ いAくても ｜ なAでも ｜ Nでも ｜ 普通形 ＋ としても",
-    "たとえ＋Vても｜いAくても｜なAでも｜Nでも｜<ruby>普通<rt>ふつう</rt></ruby><ruby>形<rt>けい</rt></ruby>＋としても"
+    "たとえ＋Vても｜いAくても｜なAでも｜Nでも｜<ruby>普通形<rt>ふつうけい</rt></ruby>＋としても"
   ],
   [
     "たとえ命を落としても、犯人を捕まえてみせる。",
-    "たとえ<ruby>命<rt>いのち</rt></ruby>を<ruby>落とし<rt>おとし</rt></ruby>ても、<ruby>犯人<rt>はんにん</rt></ruby>を<ruby>捕まえ<rt>つかまえ</rt></ruby>てみせる。"
+    "たとえ<ruby>命<rt>いのち</rt></ruby>を<ruby>落<rt>お</rt></ruby>としても、<ruby>犯人<rt>はんにん</rt></ruby>を<ruby>捕<rt>つか</rt></ruby>まえてみせる。"
   ],
   [
     "たとえ子どもでも、やったことの責任はとらなくてはいけない。",
-    "たとえ<ruby>子ども<rt>こども</rt></ruby>でも、やったことの<ruby>責任<rt>せきにん</rt></ruby>はとらなくてはいけない。"
+    "たとえ<ruby>子<rt>こ</rt></ruby>どもでも、やったことの<ruby>責任<rt>せきにん</rt></ruby>はとらなくてはいけない。"
   ],
   [
     "たとえその事実を知っていたとしても、私の気持ちは変わらなかっただろう。",
-    "たとえその<ruby>事実<rt>じじつ</rt></ruby>を<ruby>知っ<rt>しっ</rt></ruby>ていたとしても、<ruby>私<rt>わたし</rt></ruby>の<ruby>気持ち<rt>きもち</rt></ruby>は<ruby>変わら<rt>かわら</rt></ruby>なかっただろう。"
+    "たとえその<ruby>事実<rt>じじつ</rt></ruby>を<ruby>知<rt>し</rt></ruby>っていたとしても、<ruby>私<rt>わたし</rt></ruby>の<ruby>気持<rt>きも</rt></ruby>ちは<ruby>変<rt>か</rt></ruby>わらなかっただろう。"
   ],
   [
     "～たりしない",
@@ -50,11 +50,11 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "今回失敗しても、絶対に諦めたりしない。",
-    "<ruby>今回<rt>こんかい</rt></ruby><ruby>失敗<rt>しっぱい</rt></ruby>しても、<ruby>絶対<rt>ぜったい</rt></ruby>に<ruby>諦め<rt>あきらめ</rt></ruby>たりしない。"
+    "<ruby>今回<rt>こんかい</rt></ruby><ruby>失敗<rt>しっぱい</rt></ruby>しても、<ruby>絶対<rt>ぜったい</rt></ruby>に<ruby>諦<rt>あきら</rt></ruby>めたりしない。"
   ],
   [
     "彼に何と言われても、泣いたりしない。",
-    "<ruby>彼<rt>かれ</rt></ruby>に<ruby>何<rt>なん</rt></ruby>と<ruby>言わ<rt>いわ</rt></ruby>れても、<ruby>泣い<rt>ない</rt></ruby>たりしない。"
+    "<ruby>彼<rt>かれ</rt></ruby>に<ruby>何<rt>なん</rt></ruby>と<ruby>言<rt>い</rt></ruby>われても、<ruby>泣<rt>な</rt></ruby>いたりしない。"
   ],
   [
     "～ほど",
@@ -62,19 +62,19 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "N ＋ ほど ｜ いA ＋ ほど ｜ なA ＋ な ＋ ほど ｜ V 普通形 ＋ ほど",
-    "N＋ほど｜いA＋ほど｜なA＋な＋ほど｜V<ruby>普通<rt>ふつう</rt></ruby><ruby>形<rt>けい</rt></ruby>＋ほど"
+    "N＋ほど｜いA＋ほど｜なA＋な＋ほど｜V<ruby>普通形<rt>ふつうけい</rt></ruby>＋ほど"
   ],
   [
     "今日は死ぬほど疲れた。",
-    "<ruby>今日<rt>きょう</rt></ruby>は<ruby>死ぬ<rt>しぬ</rt></ruby>ほど<ruby>疲れ<rt>つかれ</rt></ruby>た。"
+    "<ruby>今日<rt>きょう</rt></ruby>は<ruby>死<rt>し</rt></ruby>ぬほど<ruby>疲<rt>つか</rt></ruby>れた。"
   ],
   [
     "そのニュースを聞いて、彼は飛び上がるほど驚いた。",
-    "そのニュースを<ruby>聞い<rt>きい</rt></ruby>て、<ruby>彼<rt>かれ</rt></ruby>は<ruby>飛び上がる<rt>とびあがる</rt></ruby>ほど<ruby>驚い<rt>おどろい</rt></ruby>た。"
+    "そのニュースを<ruby>聞<rt>き</rt></ruby>いて、<ruby>彼<rt>かれ</rt></ruby>は<ruby>飛<rt>と</rt></ruby>び<ruby>上<rt>あ</rt></ruby>がるほど<ruby>驚<rt>おどろ</rt></ruby>いた。"
   ],
   [
     "この商品はおもしろいほどよく売れる。",
-    "この<ruby>商品<rt>しょうひん</rt></ruby>はおもしろいほどよく<ruby>売れる<rt>うれる</rt></ruby>。"
+    "この<ruby>商品<rt>しょうひん</rt></ruby>はおもしろいほどよく<ruby>売<rt>う</rt></ruby>れる。"
   ],
   [
     "～んだって",
@@ -86,7 +86,7 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "山田さん、お酒が嫌いなんだって。",
-    "<ruby>山田<rt>やまだ</rt></ruby>さん、お<ruby>酒<rt>さけ</rt></ruby>が<ruby>嫌い<rt>きらい</rt></ruby>なんだって。"
+    "<ruby>山田<rt>やまだ</rt></ruby>さん、お<ruby>酒<rt>さけ</rt></ruby>が<ruby>嫌<rt>きら</rt></ruby>いなんだって。"
   ],
   [
     "あの人、先生なんだって？",
@@ -106,7 +106,7 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "すぐ近くまで行きながら、結局実家には寄らずに帰ってきた。",
-    "すぐ<ruby>近く<rt>ちかく</rt></ruby>まで<ruby>行き<rt>いき</rt></ruby>ながら、<ruby>結局<rt>けっきょく</rt></ruby><ruby>実家<rt>じっか</rt></ruby>には<ruby>寄ら<rt>よら</rt></ruby>ずに<ruby>帰っ<rt>かえっ</rt></ruby>てきた。"
+    "すぐ<ruby>近<rt>ちか</rt></ruby>くまで<ruby>行<rt>い</rt></ruby>きながら、<ruby>結局<rt>けっきょく</rt></ruby><ruby>実家<rt>じっか</rt></ruby>には<ruby>寄<rt>よ</rt></ruby>らずに<ruby>帰<rt>かえ</rt></ruby>ってきた。"
   ],
   [
     "このバイクは小型ながら、馬力がある。",
@@ -114,19 +114,19 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "学生の身分でありながら、高級車で通学している。",
-    "<ruby>学生<rt>がくせい</rt></ruby>の<ruby>身分<rt>みぶん</rt></ruby>でありながら、<ruby>高級<rt>こうきゅう</rt></ruby><ruby>車<rt>しゃ</rt></ruby>で<ruby>通学<rt>つうがく</rt></ruby>している。"
+    "<ruby>学生<rt>がくせい</rt></ruby>の<ruby>身分<rt>みぶん</rt></ruby>でありながら、<ruby>高級車<rt>こうきゅうしゃ</rt></ruby>で<ruby>通学<rt>つうがく</rt></ruby>している。"
   ],
   [
     "残念ながら、結婚式には出席できません。",
-    "<ruby>残念<rt>ざんねん</rt></ruby>ながら、<ruby>結婚<rt>けっこん</rt></ruby><ruby>式<rt>しき</rt></ruby>には<ruby>出席<rt>しゅっせき</rt></ruby>できません。"
+    "<ruby>残念<rt>ざんねん</rt></ruby>ながら、<ruby>結婚式<rt>けっこんしき</rt></ruby>には<ruby>出席<rt>しゅっせき</rt></ruby>できません。"
   ],
   [
     "狭いながらも、ようやく自分の持ち家を手に入れることができた。",
-    "<ruby>狭い<rt>せまい</rt></ruby>ながらも、ようやく<ruby>自分<rt>じぶん</rt></ruby>の<ruby>持ち家<rt>もちいえ</rt></ruby>を<ruby>手<rt>て</rt></ruby>に<ruby>入れる<rt>いれる</rt></ruby>ことができた。"
+    "<ruby>狭<rt>せま</rt></ruby>いながらも、ようやく<ruby>自分<rt>じぶん</rt></ruby>の<ruby>持<rt>も</rt></ruby>ち<ruby>家<rt>いえ</rt></ruby>を<ruby>手<rt>て</rt></ruby>に<ruby>入<rt>い</rt></ruby>れることができた。"
   ],
   [
     "ゆっくりながらも、作業は少しずつ進んでいる。",
-    "ゆっくりながらも、<ruby>作業<rt>さぎょう</rt></ruby>は<ruby>少し<rt>すこし</rt></ruby>ずつ<ruby>進ん<rt>すすん</rt></ruby>でいる。"
+    "ゆっくりながらも、<ruby>作業<rt>さぎょう</rt></ruby>は<ruby>少<rt>すこ</rt></ruby>しずつ<ruby>進<rt>すす</rt></ruby>んでいる。"
   ],
   [
     "つまり～ってことだ／ということだ",
@@ -134,15 +134,15 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "つまり ＋ 普通形 ＋ ってことだ／ということだ",
-    "つまり＋<ruby>普通<rt>ふつう</rt></ruby><ruby>形<rt>けい</rt></ruby>＋ってことだ／ということだ"
+    "つまり＋<ruby>普通形<rt>ふつうけい</rt></ruby>＋ってことだ／ということだ"
   ],
   [
     "つまり、引き受けていただけないということですね。",
-    "つまり、<ruby>引き受け<rt>ひきうけ</rt></ruby>ていただけないということですね。"
+    "つまり、<ruby>引<rt>ひ</rt></ruby>き<ruby>受<rt>う</rt></ruby>けていただけないということですね。"
   ],
   [
     "つまり、社員はその犠牲者だってことです。",
-    "つまり、<ruby>社員<rt>しゃいん</rt></ruby>はその<ruby>犠牲<rt>ぎせい</rt></ruby><ruby>者<rt>しゃ</rt></ruby>だってことです。"
+    "つまり、<ruby>社員<rt>しゃいん</rt></ruby>はその<ruby>犠牲者<rt>ぎせいしゃ</rt></ruby>だってことです。"
   ],
   [
     "～よね",
@@ -154,11 +154,11 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "日本語って難しいよね。",
-    "<ruby>日本<rt>にほん</rt></ruby><ruby>語<rt>ご</rt></ruby>って<ruby>難しい<rt>むずかしい</rt></ruby>よね。"
+    "<ruby>日本語<rt>にほんご</rt></ruby>って<ruby>難<rt>むずか</rt></ruby>しいよね。"
   ],
   [
     "ぼく、さっきここに置いたよね。",
-    "ぼく、さっきここに<ruby>置い<rt>おい</rt></ruby>たよね。"
+    "ぼく、さっきここに<ruby>置<rt>お</rt></ruby>いたよね。"
   ],
   [
     "昨日の会議、出席しましたよね。",
@@ -166,7 +166,7 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "V辭書形＋たて",
-    "V<ruby>辭<rt>じ</rt></ruby><ruby>書<rt>しょ</rt></ruby><ruby>形<rt>けい</rt></ruby>＋たて"
+    "V<ruby>辭書形<rt>じしょけい</rt></ruby>＋たて"
   ],
   [
     "Vます形去ます＋たて",
@@ -178,19 +178,19 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "降りたて",
-    "<ruby>降りたて<rt>ふりたて</rt></ruby>"
+    "<ruby>降<rt>ふ</rt></ruby>りたて"
   ],
   [
     "降るほど",
-    "<ruby>降る<rt>ふる</rt></ruby>ほど"
+    "<ruby>降<rt>ふ</rt></ruby>るほど"
   ],
   [
     "降っても",
-    "<ruby>降っ<rt>ふっ</rt></ruby>ても"
+    "<ruby>降<rt>ふ</rt></ruby>っても"
   ],
   [
     "降るよね",
-    "<ruby>降る<rt>ふる</rt></ruby>よね"
+    "<ruby>降<rt>ふ</rt></ruby>るよね"
   ],
   [
     "Vます形＋たりしない",
@@ -206,23 +206,23 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "V辭書形＋ほど",
-    "V<ruby>辭<rt>じ</rt></ruby><ruby>書<rt>しょ</rt></ruby><ruby>形<rt>けい</rt></ruby>＋ほど"
+    "V<ruby>辭書形<rt>じしょけい</rt></ruby>＋ほど"
   ],
   [
     "泣きたてだ",
-    "<ruby>泣きたて<rt>なきたて</rt></ruby>だ"
+    "<ruby>泣<rt>な</rt></ruby>きたてだ"
   ],
   [
     "泣いたりしない",
-    "<ruby>泣い<rt>ない</rt></ruby>たりしない"
+    "<ruby>泣<rt>な</rt></ruby>いたりしない"
   ],
   [
     "泣くんだって",
-    "<ruby>泣く<rt>なく</rt></ruby>んだって"
+    "<ruby>泣<rt>な</rt></ruby>くんだって"
   ],
   [
     "泣くよね",
-    "<ruby>泣く<rt>なく</rt></ruby>よね"
+    "<ruby>泣<rt>な</rt></ruby>くよね"
   ],
   [
     "Vます形去ます限定",
@@ -250,27 +250,27 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "狭いながらも",
-    "<ruby>狭い<rt>せまい</rt></ruby>ながらも"
+    "<ruby>狭<rt>せま</rt></ruby>いながらも"
   ],
   [
     "狭いたて",
-    "<ruby>狭い<rt>せまい</rt></ruby>たて"
+    "<ruby>狭<rt>せま</rt></ruby>いたて"
   ],
   [
     "狭いんだって",
-    "<ruby>狭い<rt>せまい</rt></ruby>んだって"
+    "<ruby>狭<rt>せま</rt></ruby>いんだって"
   ],
   [
     "狭いよねだけ",
-    "<ruby>狭い<rt>せまい</rt></ruby>よねだけ"
+    "<ruby>狭<rt>せま</rt></ruby>いよねだけ"
   ],
   [
     "焼きたて",
-    "<ruby>焼きたて<rt>やきたて</rt></ruby>"
+    "<ruby>焼<rt>や</rt></ruby>きたて"
   ],
   [
     "焼きたてのパン",
-    "<ruby>焼きたて<rt>やきたて</rt></ruby>のパン"
+    "<ruby>焼<rt>や</rt></ruby>きたてのパン"
   ],
   [
     "先生になりたてだ",
@@ -278,35 +278,35 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "読みたての本",
-    "<ruby>読み<rt>よみ</rt></ruby>たての<ruby>本<rt>ほん</rt></ruby>"
+    "<ruby>読<rt>よ</rt></ruby>みたての<ruby>本<rt>ほん</rt></ruby>"
   ],
   [
     "焼くほど",
-    "<ruby>焼く<rt>やく</rt></ruby>ほど"
+    "<ruby>焼<rt>や</rt></ruby>くほど"
   ],
   [
     "焼いたりしない",
-    "<ruby>焼い<rt>やい</rt></ruby>たりしない"
+    "<ruby>焼<rt>や</rt></ruby>いたりしない"
   ],
   [
     "焼くんだって",
-    "<ruby>焼く<rt>やく</rt></ruby>んだって"
+    "<ruby>焼<rt>や</rt></ruby>くんだって"
   ],
   [
     "泣きたりしない",
-    "<ruby>泣き<rt>なき</rt></ruby>たりしない"
+    "<ruby>泣<rt>な</rt></ruby>きたりしない"
   ],
   [
     "泣いてたりしない",
-    "<ruby>泣い<rt>ない</rt></ruby>てたりしない"
+    "<ruby>泣<rt>な</rt></ruby>いてたりしない"
   ],
   [
     "泣くだったりしない",
-    "<ruby>泣く<rt>なく</rt></ruby>だったりしない"
+    "<ruby>泣<rt>な</rt></ruby>くだったりしない"
   ],
   [
     "V辭書形",
-    "V<ruby>辭<rt>じ</rt></ruby><ruby>書<rt>しょ</rt></ruby><ruby>形<rt>けい</rt></ruby>"
+    "V<ruby>辭書形<rt>じしょけい</rt></ruby>"
   ],
   [
     "～際（に）・～際の",
@@ -314,7 +314,7 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "V 辭書形／た形 ＋ 際（は／に）｜N の＋際（は／に）｜際の＋N",
-    "V<ruby>辭<rt>じ</rt></ruby><ruby>書<rt>しょ</rt></ruby><ruby>形<rt>けい</rt></ruby>／た<ruby>形<rt>けい</rt></ruby>＋<ruby>際<rt>さい</rt></ruby>（は／に）｜Nの＋<ruby>際<rt>さい</rt></ruby>（は／に）｜<ruby>際<rt>さい</rt></ruby>の＋N"
+    "V<ruby>辭書形<rt>じしょけい</rt></ruby>／た<ruby>形<rt>けい</rt></ruby>＋<ruby>際<rt>さい</rt></ruby>（は／に）｜Nの＋<ruby>際<rt>さい</rt></ruby>（は／に）｜<ruby>際<rt>さい</rt></ruby>の＋N"
   ],
   [
     "これはパスポートを申請する際に必要です。",
@@ -322,19 +322,19 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "カードを紛失した際はカード会社にすぐ知らせたほうがいい。",
-    "カードを<ruby>紛失<rt>ふんしつ</rt></ruby>した<ruby>際<rt>さい</rt></ruby>はカード<ruby>会社<rt>かいしゃ</rt></ruby>にすぐ<ruby>知ら<rt>しら</rt></ruby>せたほうがいい。"
+    "カードを<ruby>紛失<rt>ふんしつ</rt></ruby>した<ruby>際<rt>さい</rt></ruby>はカード<ruby>会社<rt>かいしゃ</rt></ruby>にすぐ<ruby>知<rt>し</rt></ruby>らせたほうがいい。"
   ],
   [
     "非常の際はエレベーターを使わずに、階段をご利用ください。",
-    "<ruby>非常<rt>ひじょう</rt></ruby>の<ruby>際<rt>さい</rt></ruby>はエレベーターを<ruby>使わ<rt>つかわ</rt></ruby>ずに、<ruby>階段<rt>かいだん</rt></ruby>をご<ruby>利用<rt>りよう</rt></ruby>ください。"
+    "<ruby>非常<rt>ひじょう</rt></ruby>の<ruby>際<rt>さい</rt></ruby>はエレベーターを<ruby>使<rt>つか</rt></ruby>わずに、<ruby>階段<rt>かいだん</rt></ruby>をご<ruby>利用<rt>りよう</rt></ruby>ください。"
   ],
   [
     "外出の際、必ずかぎをかけてください。",
-    "<ruby>外出<rt>がいしゅつ</rt></ruby>の<ruby>際<rt>さい</rt></ruby>、<ruby>必ず<rt>かならず</rt></ruby>かぎをかけてください。"
+    "<ruby>外出<rt>がいしゅつ</rt></ruby>の<ruby>際<rt>さい</rt></ruby>、<ruby>必<rt>かなら</rt></ruby>ずかぎをかけてください。"
   ],
   [
     "私の国へお越しの際は、ぜひご連絡ください。",
-    "<ruby>私<rt>わたし</rt></ruby>の<ruby>国<rt>くに</rt></ruby>へお<ruby>越し<rt>こし</rt></ruby>の<ruby>際<rt>さい</rt></ruby>は、ぜひご<ruby>連絡<rt>れんらく</rt></ruby>ください。"
+    "<ruby>私<rt>わたし</rt></ruby>の<ruby>国<rt>くに</rt></ruby>へお<ruby>越<rt>こ</rt></ruby>しの<ruby>際<rt>さい</rt></ruby>は、ぜひご<ruby>連絡<rt>れんらく</rt></ruby>ください。"
   ],
   [
     "～といった",
@@ -346,11 +346,11 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "東京、ニューヨークといった大都市ではゴミ問題が深刻だ。",
-    "<ruby>東京<rt>とうきょう</rt></ruby>、ニューヨークといった<ruby>大<rt>だい</rt></ruby><ruby>都市<rt>とし</rt></ruby>ではゴミ<ruby>問題<rt>もんだい</rt></ruby>が<ruby>深刻<rt>しんこく</rt></ruby>だ。"
+    "<ruby>東京<rt>とうきょう</rt></ruby>、ニューヨークといった<ruby>大都市<rt>だいとし</rt></ruby>ではゴミ<ruby>問題<rt>もんだい</rt></ruby>が<ruby>深刻<rt>しんこく</rt></ruby>だ。"
   ],
   [
     "北京には故宮、万里の長城といった観光地がある。",
-    "<ruby>北京<rt>ぺきん</rt></ruby>には<ruby>故宮<rt>こきゅう</rt></ruby>、<ruby>万里<rt>ばんり</rt></ruby>の<ruby>長城<rt>ちょうじょう</rt></ruby>といった<ruby>観光<rt>かんこう</rt></ruby><ruby>地<rt>ち</rt></ruby>がある。"
+    "<ruby>北京<rt>ぺきん</rt></ruby>には<ruby>故宮<rt>こきゅう</rt></ruby>、<ruby>万里<rt>ばんり</rt></ruby>の<ruby>長城<rt>ちょうじょう</rt></ruby>といった<ruby>観光地<rt>かんこうち</rt></ruby>がある。"
   ],
   [
     "香港のセントラルにはグッチ、シャネルといった有名ブランド店がある。",
@@ -366,19 +366,19 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "チンさんは病気のため、2か月にわたって学校を休んだ。",
-    "チンさんは<ruby>病気<rt>びょうき</rt></ruby>のため、<ruby>2か月<rt>にかげつ</rt></ruby>にわたって<ruby>学校<rt>がっこう</rt></ruby>を<ruby>休ん<rt>やすん</rt></ruby>だ。"
+    "チンさんは<ruby>病気<rt>びょうき</rt></ruby>のため、<ruby>2か月<rt>にかげつ</rt></ruby>にわたって<ruby>学校<rt>がっこう</rt></ruby>を<ruby>休<rt>やす</rt></ruby>んだ。"
   ],
   [
     "西日本全域にわたり、台風の被害を受けた。",
-    "<ruby>西<rt>にし</rt></ruby><ruby>日本<rt>にほん</rt></ruby><ruby>全域<rt>ぜんいき</rt></ruby>にわたり、<ruby>台風<rt>たいふう</rt></ruby>の<ruby>被害<rt>ひがい</rt></ruby>を<ruby>受け<rt>うけ</rt></ruby>た。"
+    "<ruby>西日本全域<rt>にしにほんぜんいき</rt></ruby>にわたり、<ruby>台風<rt>たいふう</rt></ruby>の<ruby>被害<rt>ひがい</rt></ruby>を<ruby>受<rt>う</rt></ruby>けた。"
   ],
   [
     "母は5時間にわたる大手術を受けた。",
-    "<ruby>母<rt>はは</rt></ruby>は<ruby>5時間<rt>ごじかん</rt></ruby>にわたる<ruby>大手術<rt>だいしゅじゅつ</rt></ruby>を<ruby>受け<rt>うけ</rt></ruby>た。"
+    "<ruby>母<rt>はは</rt></ruby>は<ruby>5時間<rt>ごじかん</rt></ruby>にわたる<ruby>大手術<rt>だいしゅじゅつ</rt></ruby>を<ruby>受<rt>う</rt></ruby>けた。"
   ],
   [
     "広範囲にわたる海の汚染が深刻な問題になっている。",
-    "<ruby>広<rt>こう</rt></ruby><ruby>範囲<rt>はんい</rt></ruby>にわたる<ruby>海<rt>うみ</rt></ruby>の<ruby>汚染<rt>おせん</rt></ruby>が<ruby>深刻<rt>しんこく</rt></ruby>な<ruby>問題<rt>もんだい</rt></ruby>になっている。"
+    "<ruby>広範囲<rt>こうはんい</rt></ruby>にわたる<ruby>海<rt>うみ</rt></ruby>の<ruby>汚染<rt>おせん</rt></ruby>が<ruby>深刻<rt>しんこく</rt></ruby>な<ruby>問題<rt>もんだい</rt></ruby>になっている。"
   ],
   [
     "～うちに",
@@ -386,39 +386,39 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "V 辭書形／ない形／ている＋うちに｜いA＋うちに｜なA な＋うちに｜N の＋うちに",
-    "V<ruby>辭<rt>じ</rt></ruby><ruby>書<rt>しょ</rt></ruby><ruby>形<rt>けい</rt></ruby>／ない<ruby>形<rt>けい</rt></ruby>／ている＋うちに｜いA＋うちに｜なAな＋うちに｜Nの＋うちに"
+    "V<ruby>辭書形<rt>じしょけい</rt></ruby>／ない<ruby>形<rt>けい</rt></ruby>／ている＋うちに｜いA＋うちに｜なAな＋うちに｜Nの＋うちに"
   ],
   [
     "寒かったが、走っているうちに体が温かくなった。",
-    "<ruby>寒かっ<rt>さむかっ</rt></ruby>たが、<ruby>走っ<rt>はしっ</rt></ruby>ているうちに<ruby>体<rt>からだ</rt></ruby>が<ruby>温かく<rt>あたたかく</rt></ruby>なった。"
+    "<ruby>寒<rt>さむ</rt></ruby>かったが、<ruby>走<rt>はし</rt></ruby>っているうちに<ruby>体<rt>からだ</rt></ruby>が<ruby>温<rt>あたた</rt></ruby>かくなった。"
   ],
   [
     "彼女の話を聞いているうちに、涙が出てきました。",
-    "<ruby>彼女<rt>かのじょ</rt></ruby>の<ruby>話<rt>はなし</rt></ruby>を<ruby>聞い<rt>きい</rt></ruby>ているうちに、<ruby>涙<rt>なみだ</rt></ruby>が<ruby>出<rt>で</rt></ruby>てきました。"
+    "<ruby>彼女<rt>かのじょ</rt></ruby>の<ruby>話<rt>はなし</rt></ruby>を<ruby>聞<rt>き</rt></ruby>いているうちに、<ruby>涙<rt>なみだ</rt></ruby>が<ruby>出<rt>で</rt></ruby>てきました。"
   ],
   [
     "何度も話し合ううちに、互いの理解が深まった。",
-    "<ruby>何<rt>なん</rt></ruby><ruby>度<rt>ど</rt></ruby>も<ruby>話し合う<rt>はなしあう</rt></ruby>うちに、<ruby>互い<rt>たがい</rt></ruby>の<ruby>理解<rt>りかい</rt></ruby>が<ruby>深まっ<rt>ふかまっ</rt></ruby>た。"
+    "<ruby>何度<rt>なんど</rt></ruby>も<ruby>話<rt>はな</rt></ruby>し<ruby>合<rt>あ</rt></ruby>ううちに、<ruby>互<rt>たが</rt></ruby>いの<ruby>理解<rt>りかい</rt></ruby>が<ruby>深<rt>ふか</rt></ruby>まった。"
   ],
   [
     "しばらく会わないうちに、日本語が上手になりました。",
-    "しばらく<ruby>会わ<rt>あわ</rt></ruby>ないうちに、<ruby>日本<rt>にほん</rt></ruby><ruby>語<rt>ご</rt></ruby>が<ruby>上手<rt>じょうず</rt></ruby>になりました。"
+    "しばらく<ruby>会<rt>あ</rt></ruby>わないうちに、<ruby>日本語<rt>にほんご</rt></ruby>が<ruby>上手<rt>じょうず</rt></ruby>になりました。"
   ],
   [
     "日本にいるうちに、一度京都を訪ねたいと思っている。",
-    "<ruby>日本<rt>にほん</rt></ruby>にいるうちに、<ruby>一<rt>いち</rt></ruby><ruby>度<rt>ど</rt></ruby><ruby>京都<rt>きょうと</rt></ruby>を<ruby>訪ね<rt>たずね</rt></ruby>たいと<ruby>思っ<rt>おもっ</rt></ruby>ている。"
+    "<ruby>日本<rt>にほん</rt></ruby>にいるうちに、<ruby>一度<rt>いちど</rt></ruby><ruby>京都<rt>きょうと</rt></ruby>を<ruby>訪<rt>たず</rt></ruby>ねたいと<ruby>思<rt>おも</rt></ruby>っている。"
   ],
   [
     "子どもが寝ているうちに、掃除をしてしまいましょう。",
-    "<ruby>子ども<rt>こども</rt></ruby>が<ruby>寝<rt>ね</rt></ruby>ているうちに、<ruby>掃除<rt>そうじ</rt></ruby>をしてしまいましょう。"
+    "<ruby>子<rt>こ</rt></ruby>どもが<ruby>寝<rt>ね</rt></ruby>ているうちに、<ruby>掃除<rt>そうじ</rt></ruby>をしてしまいましょう。"
   ],
   [
     "若いうちに、いろいろ経験したほうがいい。",
-    "<ruby>若い<rt>わかい</rt></ruby>うちに、いろいろ<ruby>経験<rt>けいけん</rt></ruby>したほうがいい。"
+    "<ruby>若<rt>わか</rt></ruby>いうちに、いろいろ<ruby>経験<rt>けいけん</rt></ruby>したほうがいい。"
   ],
   [
     "花がきれいなうちに、花見に行きたい。",
-    "<ruby>花<rt>はな</rt></ruby>がきれいなうちに、<ruby>花見<rt>はなみ</rt></ruby>に<ruby>行き<rt>いき</rt></ruby>たい。"
+    "<ruby>花<rt>はな</rt></ruby>がきれいなうちに、<ruby>花見<rt>はなみ</rt></ruby>に<ruby>行<rt>い</rt></ruby>きたい。"
   ],
   [
     "今日のうちに、旅行の準備をしておこう。",
@@ -426,7 +426,7 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "冷めないうちに、どうぞ召し上がってください。",
-    "<ruby>冷め<rt>さめ</rt></ruby>ないうちに、どうぞ<ruby>召し上がっ<rt>めしあがっ</rt></ruby>てください。"
+    "<ruby>冷<rt>さ</rt></ruby>めないうちに、どうぞ<ruby>召<rt>め</rt></ruby>し<ruby>上<rt>あ</rt></ruby>がってください。"
   ],
   [
     "～にとって／～にとっての",
@@ -442,7 +442,7 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "社員にとっては給料は高いほうがいい。",
-    "<ruby>社員<rt>しゃいん</rt></ruby>にとっては<ruby>給料<rt>きゅうりょう</rt></ruby>は<ruby>高い<rt>たかい</rt></ruby>ほうがいい。"
+    "<ruby>社員<rt>しゃいん</rt></ruby>にとっては<ruby>給料<rt>きゅうりょう</rt></ruby>は<ruby>高<rt>たか</rt></ruby>いほうがいい。"
   ],
   [
     "だれにとっても一番大切なのは健康です。",
@@ -450,7 +450,7 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "環境問題は人間にとっての課題だ。",
-    "<ruby>環境<rt>かんきょう</rt></ruby><ruby>問題<rt>もんだい</rt></ruby>は<ruby>人間<rt>にんげん</rt></ruby>にとっての<ruby>課題<rt>かだい</rt></ruby>だ。"
+    "<ruby>環境問題<rt>かんきょうもんだい</rt></ruby>は<ruby>人間<rt>にんげん</rt></ruby>にとっての<ruby>課題<rt>かだい</rt></ruby>だ。"
   ],
   [
     "～とは",
@@ -462,11 +462,11 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "パソコンとは個人で使える小型コンピューターのことだ。",
-    "パソコンとは<ruby>個人<rt>こじん</rt></ruby>で<ruby>使える<rt>つかえる</rt></ruby><ruby>小型<rt>こがた</rt></ruby>コンピューターのことだ。"
+    "パソコンとは<ruby>個人<rt>こじん</rt></ruby>で<ruby>使<rt>つか</rt></ruby>える<ruby>小型<rt>こがた</rt></ruby>コンピューターのことだ。"
   ],
   [
     "『普遍的』とはどんな場合にも広く一般的に当てはまるという意味だ。",
-    "『<ruby>普遍<rt>ふへん</rt></ruby><ruby>的<rt>てき</rt></ruby>』とはどんな<ruby>場合<rt>ばあい</rt></ruby>にも<ruby>広く<rt>ひろく</rt></ruby><ruby>一般<rt>いっぱん</rt></ruby><ruby>的<rt>てき</rt></ruby>に<ruby>当てはまる<rt>あてはまる</rt></ruby>という<ruby>意味<rt>いみ</rt></ruby>だ。"
+    "『<ruby>普遍的<rt>ふへんてき</rt></ruby>』とはどんな<ruby>場合<rt>ばあい</rt></ruby>にも<ruby>広<rt>ひろ</rt></ruby>く<ruby>一般<rt>いっぱん</rt></ruby><ruby>的<rt>てき</rt></ruby>に<ruby>当<rt>あ</rt></ruby>てはまるという<ruby>意味<rt>いみ</rt></ruby>だ。"
   ],
   [
     "～において／～における",
@@ -482,7 +482,7 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "わが国においても、青少年犯罪が増えている。",
-    "わが<ruby>国<rt>くに</rt></ruby>においても、<ruby>青少年<rt>せいしょうねん</rt></ruby><ruby>犯罪<rt>はんざい</rt></ruby>が<ruby>増え<rt>ふえ</rt></ruby>ている。"
+    "わが<ruby>国<rt>くに</rt></ruby>においても、<ruby>青少年犯罪<rt>せいしょうねんはんざい</rt></ruby>が<ruby>増<rt>ふ</rt></ruby>えている。"
   ],
   [
     "それは私の人生における最良の日であった。",
@@ -494,19 +494,19 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "V・いA 普通形＋わけだ｜なA・N＋な／である＋わけだ",
-    "V・いA<ruby>普通<rt>ふつう</rt></ruby><ruby>形<rt>けい</rt></ruby>＋わけだ｜なA・N＋な／である＋わけだ"
+    "V・いA<ruby>普通形<rt>ふつうけい</rt></ruby>＋わけだ｜なA・N＋な／である＋わけだ"
   ],
   [
     "ジョンさんはお母さんが日本人ですから、日本語が上手なわけです。",
-    "ジョンさんはお<ruby>母<rt>はは</rt></ruby>さんが<ruby>日本<rt>にほん</rt></ruby><ruby>人<rt>にん</rt></ruby>ですから、<ruby>日本<rt>にほん</rt></ruby><ruby>語<rt>ご</rt></ruby>が<ruby>上手<rt>じょうず</rt></ruby>なわけです。"
+    "ジョンさんはお<ruby>母<rt>はは</rt></ruby>さんが<ruby>日本人<rt>にほんにん</rt></ruby>ですから、<ruby>日本語<rt>にほんご</rt></ruby>が<ruby>上手<rt>じょうず</rt></ruby>なわけです。"
   ],
   [
     "暗いわけだ。蛍光灯が1本切れている。",
-    "<ruby>暗い<rt>くらい</rt></ruby>わけだ。<ruby>蛍光灯<rt>けいこうとう</rt></ruby>が<ruby>1本<rt>いっぽん</rt></ruby><ruby>切れ<rt>きれ</rt></ruby>ている。"
+    "<ruby>暗<rt>くら</rt></ruby>いわけだ。<ruby>蛍光灯<rt>けいこうとう</rt></ruby>が<ruby>1本<rt>いっぽん</rt></ruby><ruby>切<rt>き</rt></ruby>れている。"
   ],
   [
     "このスケジュール表を見ると、京都には1泊しかしないから水曜日の午前中には東京へ戻って来られるわけだ。",
-    "このスケジュール<ruby>表<rt>ひょう</rt></ruby>を<ruby>見る<rt>みる</rt></ruby>と、<ruby>京都<rt>きょうと</rt></ruby>には<ruby>1泊<rt>いっぱく</rt></ruby>しかしないから<ruby>水曜日<rt>すいようび</rt></ruby>の<ruby>午前中<rt>ごぜんちゅう</rt></ruby>には<ruby>東京<rt>とうきょう</rt></ruby>へ<ruby>戻っ<rt>もどっ</rt></ruby>て<ruby>来<rt>こ</rt></ruby>られるわけだ。"
+    "このスケジュール<ruby>表<rt>ひょう</rt></ruby>を<ruby>見<rt>み</rt></ruby>ると、<ruby>京都<rt>きょうと</rt></ruby>には<ruby>1泊<rt>いっぱく</rt></ruby>しかしないから<ruby>水曜日<rt>すいようび</rt></ruby>の<ruby>午前中<rt>ごぜんちゅう</rt></ruby>には<ruby>東京<rt>とうきょう</rt></ruby>へ<ruby>戻<rt>もど</rt></ruby>って<ruby>来<rt>こ</rt></ruby>られるわけだ。"
   ],
   [
     "もともとファッションモデルだったんだから、スタイルがいいわけだ。",
@@ -518,15 +518,15 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "V・いA 普通形＋のではないだろうか｜なA・N＋な＋のではないだろうか",
-    "V・いA<ruby>普通<rt>ふつう</rt></ruby><ruby>形<rt>けい</rt></ruby>＋のではないだろうか｜なA・N＋な＋のではないだろうか"
+    "V・いA<ruby>普通形<rt>ふつうけい</rt></ruby>＋のではないだろうか｜なA・N＋な＋のではないだろうか"
   ],
   [
     "この本は子どもにはまだ難しいのではないだろうか。",
-    "この<ruby>本<rt>ほん</rt></ruby>は<ruby>子ども<rt>こども</rt></ruby>にはまだ<ruby>難しい<rt>むずかしい</rt></ruby>のではないだろうか。"
+    "この<ruby>本<rt>ほん</rt></ruby>は<ruby>子<rt>こ</rt></ruby>どもにはまだ<ruby>難<rt>むずか</rt></ruby>しいのではないだろうか。"
   ],
   [
     "不況は長引くのではないだろうか。",
-    "<ruby>不況<rt>ふきょう</rt></ruby>は<ruby>長引く<rt>ながびく</rt></ruby>のではないだろうか。"
+    "<ruby>不況<rt>ふきょう</rt></ruby>は<ruby>長引<rt>ながび</rt></ruby>くのではないだろうか。"
   ],
   [
     "～っけ",
@@ -534,7 +534,7 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "V た＋っけ｜いA かった＋っけ｜なA・N＋だ（った）っけ｜普通形＋んだ（った）っけ",
-    "Vた＋っけ｜いAかった＋っけ｜なA・N＋だ（った）っけ｜<ruby>普通<rt>ふつう</rt></ruby><ruby>形<rt>けい</rt></ruby>＋んだ（った）っけ"
+    "Vた＋っけ｜いAかった＋っけ｜なA・N＋だ（った）っけ｜<ruby>普通形<rt>ふつうけい</rt></ruby>＋んだ（った）っけ"
   ],
   [
     "あの人、鈴木先生だっけ？",
@@ -542,15 +542,15 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "加藤さん、これ嫌いだったっけ？",
-    "<ruby>加藤<rt>かとう</rt></ruby>さん、これ<ruby>嫌い<rt>きらい</rt></ruby>だったっけ？"
+    "<ruby>加藤<rt>かとう</rt></ruby>さん、これ<ruby>嫌<rt>きら</rt></ruby>いだったっけ？"
   ],
   [
     "この前の日曜日、寒かったっけ？",
-    "この<ruby>前<rt>まえ</rt></ruby>の<ruby>日曜日<rt>にちようび</rt></ruby>、<ruby>寒かっ<rt>さむかっ</rt></ruby>たっけ？"
+    "この<ruby>前<rt>まえ</rt></ruby>の<ruby>日曜日<rt>にちようび</rt></ruby>、<ruby>寒<rt>さむ</rt></ruby>かったっけ？"
   ],
   [
     "明日、田中さんも来るんだっけ？",
-    "<ruby>明日<rt>あした</rt></ruby>、<ruby>田中<rt>たなか</rt></ruby>さんも<ruby>来る<rt>くる</rt></ruby>んだっけ？"
+    "<ruby>明日<rt>あした</rt></ruby>、<ruby>田中<rt>たなか</rt></ruby>さんも<ruby>来<rt>く</rt></ruby>るんだっけ？"
   ],
   [
     "来週はクイズだったっけ？",
@@ -566,11 +566,11 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "陽子さんは楽しげに初めての海外旅行の話をしてくれた。",
-    "<ruby>陽子<rt>ようこ</rt></ruby>さんは<ruby>楽し<rt>たのし</rt></ruby>げに<ruby>初めて<rt>はじめて</rt></ruby>の<ruby>海外<rt>かいがい</rt></ruby><ruby>旅行<rt>りょこう</rt></ruby>の<ruby>話<rt>はなし</rt></ruby>をしてくれた。"
+    "<ruby>陽子<rt>ようこ</rt></ruby>さんは<ruby>楽<rt>たの</rt></ruby>しげに<ruby>初<rt>はじ</rt></ruby>めての<ruby>海外旅行<rt>かいがいりょこう</rt></ruby>の<ruby>話<rt>はなし</rt></ruby>をしてくれた。"
   ],
   [
     "高い熱がある広志くんは私と話すのも苦しげだった。",
-    "<ruby>高い<rt>たかい</rt></ruby><ruby>熱<rt>ねつ</rt></ruby>がある<ruby>広志<rt>ひろし</rt></ruby>くんは<ruby>私<rt>わたし</rt></ruby>と<ruby>話す<rt>はなす</rt></ruby>のも<ruby>苦し<rt>くるし</rt></ruby>げだった。"
+    "<ruby>高<rt>たか</rt></ruby>い<ruby>熱<rt>ねつ</rt></ruby>がある<ruby>広志<rt>ひろし</rt></ruby>くんは<ruby>私<rt>わたし</rt></ruby>と<ruby>話<rt>はな</rt></ruby>すのも<ruby>苦<rt>くる</rt></ruby>しげだった。"
   ],
   [
     "会議のあと、彼は不満ありげな顔をしていた。",
@@ -578,7 +578,7 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "子どもは悲しげな顔をしていた。",
-    "<ruby>子ども<rt>こども</rt></ruby>は<ruby>悲し<rt>かなし</rt></ruby>げな<ruby>顔<rt>かお</rt></ruby>をしていた。"
+    "<ruby>子<rt>こ</rt></ruby>どもは<ruby>悲<rt>かな</rt></ruby>しげな<ruby>顔<rt>かお</rt></ruby>をしていた。"
   ],
   [
     "只可接動詞ます形",
@@ -594,7 +594,7 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "普通形＋という",
-    "<ruby>普通<rt>ふつう</rt></ruby><ruby>形<rt>けい</rt></ruby>＋という"
+    "<ruby>普通形<rt>ふつうけい</rt></ruby>＋という"
   ],
   [
     "オバマ氏は、ハーバード大出身のエリートだという。",
@@ -602,11 +602,11 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "彼は卒業後郷里へ帰って母校の教師をしているという。",
-    "<ruby>彼<rt>かれ</rt></ruby>は<ruby>卒業<rt>そつぎょう</rt></ruby><ruby>後<rt>ご</rt></ruby><ruby>郷里<rt>きょうり</rt></ruby>へ<ruby>帰っ<rt>かえっ</rt></ruby>て<ruby>母校<rt>ぼこう</rt></ruby>の<ruby>教師<rt>きょうし</rt></ruby>をしているという。"
+    "<ruby>彼<rt>かれ</rt></ruby>は<ruby>卒業後<rt>そつぎょうご</rt></ruby><ruby>郷里<rt>きょうり</rt></ruby>へ<ruby>帰<rt>かえ</rt></ruby>って<ruby>母校<rt>ぼこう</rt></ruby>の<ruby>教師<rt>きょうし</rt></ruby>をしているという。"
   ],
   [
     "アイルランドに蛇がいないのはセントパトリックが追い払ったからだという。",
-    "アイルランドに<ruby>蛇<rt>へび</rt></ruby>がいないのはセントパトリックが<ruby>追い払っ<rt>おいはらっ</rt></ruby>たからだという。"
+    "アイルランドに<ruby>蛇<rt>へび</rt></ruby>がいないのはセントパトリックが<ruby>追<rt>お</rt></ruby>い<ruby>払<rt>はら</rt></ruby>ったからだという。"
   ],
   [
     "～たびに",
@@ -614,43 +614,43 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "N の＋たびに｜V 辭書形＋たびに",
-    "Nの＋たびに｜V<ruby>辭<rt>じ</rt></ruby><ruby>書<rt>しょ</rt></ruby><ruby>形<rt>けい</rt></ruby>＋たびに"
+    "Nの＋たびに｜V<ruby>辭書形<rt>じしょけい</rt></ruby>＋たびに"
   ],
   [
     "健康診断のたびに、太りすぎだといわれる。",
-    "<ruby>健康<rt>けんこう</rt></ruby><ruby>診断<rt>しんだん</rt></ruby>のたびに、<ruby>太り<rt>ふとり</rt></ruby>すぎだといわれる。"
+    "<ruby>健康診断<rt>けんこうしんだん</rt></ruby>のたびに、<ruby>太<rt>ふと</rt></ruby>りすぎだといわれる。"
   ],
   [
     "山に行くたびに雨に降られる。",
-    "<ruby>山<rt>やま</rt></ruby>に<ruby>行く<rt>いく</rt></ruby>たびに<ruby>雨<rt>あめ</rt></ruby>に<ruby>降ら<rt>ふら</rt></ruby>れる。"
+    "<ruby>山<rt>やま</rt></ruby>に<ruby>行<rt>い</rt></ruby>くたびに<ruby>雨<rt>あめ</rt></ruby>に<ruby>降<rt>ふ</rt></ruby>られる。"
   ],
   [
     "この写真を見るたびに昔を思い出す。",
-    "この<ruby>写真<rt>しゃしん</rt></ruby>を<ruby>見る<rt>みる</rt></ruby>たびに<ruby>昔<rt>むかし</rt></ruby>を<ruby>思い出す<rt>おもいだす</rt></ruby>。"
+    "この<ruby>写真<rt>しゃしん</rt></ruby>を<ruby>見<rt>み</rt></ruby>るたびに<ruby>昔<rt>むかし</rt></ruby>を<ruby>思<rt>おも</rt></ruby>い<ruby>出<rt>だ</rt></ruby>す。"
   ],
   [
     "～に関する／に関して",
-    "～に<ruby>関する<rt>かんする</rt></ruby>／に<ruby>関し<rt>かんし</rt></ruby>て"
+    "～に<ruby>関<rt>かん</rt></ruby>する／に<ruby>関<rt>かん</rt></ruby>して"
   ],
   [
     "N＋に関する＋N｜N＋に関しての＋N｜N＋に関して……",
-    "N＋に<ruby>関する<rt>かんする</rt></ruby>＋N｜N＋に<ruby>関し<rt>かんし</rt></ruby>ての＋N｜N＋に<ruby>関し<rt>かんし</rt></ruby>て……"
+    "N＋に<ruby>関<rt>かん</rt></ruby>する＋N｜N＋に<ruby>関<rt>かん</rt></ruby>しての＋N｜N＋に<ruby>関<rt>かん</rt></ruby>して……"
   ],
   [
     "歴史に関する本を読んでいる。",
-    "<ruby>歴史<rt>れきし</rt></ruby>に<ruby>関する<rt>かんする</rt></ruby><ruby>本<rt>ほん</rt></ruby>を<ruby>読ん<rt>よん</rt></ruby>でいる。"
+    "<ruby>歴史<rt>れきし</rt></ruby>に<ruby>関<rt>かん</rt></ruby>する<ruby>本<rt>ほん</rt></ruby>を<ruby>読<rt>よ</rt></ruby>んでいる。"
   ],
   [
     "コンピューターに関する彼の知識は相当なものだ。",
-    "コンピューターに<ruby>関する<rt>かんする</rt></ruby><ruby>彼<rt>かれ</rt></ruby>の<ruby>知識<rt>ちしき</rt></ruby>は<ruby>相当<rt>そうとう</rt></ruby>なものだ。"
+    "コンピューターに<ruby>関<rt>かん</rt></ruby>する<ruby>彼<rt>かれ</rt></ruby>の<ruby>知識<rt>ちしき</rt></ruby>は<ruby>相当<rt>そうとう</rt></ruby>なものだ。"
   ],
   [
     "その事件に関しての報告はまだ受けていない。",
-    "その<ruby>事件<rt>じけん</rt></ruby>に<ruby>関し<rt>かんし</rt></ruby>ての<ruby>報告<rt>ほうこく</rt></ruby>はまだ<ruby>受け<rt>うけ</rt></ruby>ていない。"
+    "その<ruby>事件<rt>じけん</rt></ruby>に<ruby>関<rt>かん</rt></ruby>しての<ruby>報告<rt>ほうこく</rt></ruby>はまだ<ruby>受<rt>う</rt></ruby>けていない。"
   ],
   [
     "その課題に関して質問したいことがある。",
-    "その<ruby>課題<rt>かだい</rt></ruby>に<ruby>関し<rt>かんし</rt></ruby>て<ruby>質問<rt>しつもん</rt></ruby>したいことがある。"
+    "その<ruby>課題<rt>かだい</rt></ruby>に<ruby>関<rt>かん</rt></ruby>して<ruby>質問<rt>しつもん</rt></ruby>したいことがある。"
   ],
   [
     "～わけではない",
@@ -658,27 +658,27 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "V・いA 普通形＋わけではない｜なA・N＋な／である＋わけではない",
-    "V・いA<ruby>普通<rt>ふつう</rt></ruby><ruby>形<rt>けい</rt></ruby>＋わけではない｜なA・N＋な／である＋わけではない"
+    "V・いA<ruby>普通形<rt>ふつうけい</rt></ruby>＋わけではない｜なA・N＋な／である＋わけではない"
   ],
   [
     "このレストランはいつも客がいっぱいだが、だからといって特別に美味しいわけではない。",
-    "このレストランはいつも<ruby>客<rt>きゃく</rt></ruby>がいっぱいだが、だからといって<ruby>特別<rt>とくべつ</rt></ruby>に<ruby>美味しい<rt>おいしい</rt></ruby>わけではない。"
+    "このレストランはいつも<ruby>客<rt>きゃく</rt></ruby>がいっぱいだが、だからといって<ruby>特別<rt>とくべつ</rt></ruby>に<ruby>美味<rt>おい</rt></ruby>しいわけではない。"
   ],
   [
     "わたしは本をたくさん持っているが、全部を読んだわけではない。",
-    "わたしは<ruby>本<rt>ほん</rt></ruby>をたくさん<ruby>持っ<rt>もっ</rt></ruby>ているが、<ruby>全部<rt>ぜんぶ</rt></ruby>を<ruby>読ん<rt>よん</rt></ruby>だわけではない。"
+    "わたしは<ruby>本<rt>ほん</rt></ruby>をたくさん<ruby>持<rt>も</rt></ruby>っているが、<ruby>全部<rt>ぜんぶ</rt></ruby>を<ruby>読<rt>よ</rt></ruby>んだわけではない。"
   ],
   [
     "お酒をまったく飲まないわけではありませんが、あまり好きじゃないんです。",
-    "お<ruby>酒<rt>さけ</rt></ruby>をまったく<ruby>飲ま<rt>のま</rt></ruby>ないわけではありませんが、あまり<ruby>好き<rt>すき</rt></ruby>じゃないんです。"
+    "お<ruby>酒<rt>さけ</rt></ruby>をまったく<ruby>飲<rt>の</rt></ruby>まないわけではありませんが、あまり<ruby>好<rt>す</rt></ruby>きじゃないんです。"
   ],
   [
     "甘いものが嫌いなわけではないけど、最近ダイエットしているんだ。",
-    "<ruby>甘い<rt>あまい</rt></ruby>ものが<ruby>嫌い<rt>きらい</rt></ruby>なわけではないけど、<ruby>最近<rt>さいきん</rt></ruby>ダイエットしているんだ。"
+    "<ruby>甘<rt>あま</rt></ruby>いものが<ruby>嫌<rt>きら</rt></ruby>いなわけではないけど、<ruby>最近<rt>さいきん</rt></ruby>ダイエットしているんだ。"
   ],
   [
     "生活に困っているわけではないが、貯金する余裕はない。",
-    "<ruby>生活<rt>せいかつ</rt></ruby>に<ruby>困っ<rt>こまっ</rt></ruby>ているわけではないが、<ruby>貯金<rt>ちょきん</rt></ruby>する<ruby>余裕<rt>よゆう</rt></ruby>はない。"
+    "<ruby>生活<rt>せいかつ</rt></ruby>に<ruby>困<rt>こま</rt></ruby>っているわけではないが、<ruby>貯金<rt>ちょきん</rt></ruby>する<ruby>余裕<rt>よゆう</rt></ruby>はない。"
   ],
   [
     "～のではないか",
@@ -686,11 +686,11 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "V・いA 普通形＋のではないか｜なA・N＋な＋のではないか",
-    "V・いA<ruby>普通<rt>ふつう</rt></ruby><ruby>形<rt>けい</rt></ruby>＋のではないか｜なA・N＋な＋のではないか"
+    "V・いA<ruby>普通形<rt>ふつうけい</rt></ruby>＋のではないか｜なA・N＋な＋のではないか"
   ],
   [
     "もしかしたら、和子は本当に義男が好きなのではないか。",
-    "もしかしたら、<ruby>和子<rt>かずこ</rt></ruby>は<ruby>本当<rt>ほんとう</rt></ruby>に<ruby>義男<rt>よしお</rt></ruby>が<ruby>好き<rt>すき</rt></ruby>なのではないか。"
+    "もしかしたら、<ruby>和子<rt>かずこ</rt></ruby>は<ruby>本当<rt>ほんとう</rt></ruby>に<ruby>義男<rt>よしお</rt></ruby>が<ruby>好<rt>す</rt></ruby>きなのではないか。"
   ],
   [
     "この話は結局ハッピーエンドになるのではないか。",
@@ -698,11 +698,11 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "この品質でこの値段は、ちょっと高いのではないか。",
-    "この<ruby>品質<rt>ひんしつ</rt></ruby>でこの<ruby>値段<rt>ねだん</rt></ruby>は、ちょっと<ruby>高い<rt>たかい</rt></ruby>のではないか。"
+    "この<ruby>品質<rt>ひんしつ</rt></ruby>でこの<ruby>値段<rt>ねだん</rt></ruby>は、ちょっと<ruby>高<rt>たか</rt></ruby>いのではないか。"
   ],
   [
     "これからますます環境問題は重要になるのではないか。",
-    "これからますます<ruby>環境<rt>かんきょう</rt></ruby><ruby>問題<rt>もんだい</rt></ruby>は<ruby>重要<rt>じゅうよう</rt></ruby>になるのではないか。"
+    "これからますます<ruby>環境問題<rt>かんきょうもんだい</rt></ruby>は<ruby>重要<rt>じゅうよう</rt></ruby>になるのではないか。"
   ],
   [
     "～のである",
@@ -710,7 +710,7 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "V・いA 普通形＋のである｜なA・N＋な＋のである",
-    "V・いA<ruby>普通<rt>ふつう</rt></ruby><ruby>形<rt>けい</rt></ruby>＋のである｜なA・N＋な＋のである"
+    "V・いA<ruby>普通形<rt>ふつうけい</rt></ruby>＋のである｜なA・N＋な＋のである"
   ],
   [
     "解決には時間がかかりそうだ。問題は簡単ではないのである。",
@@ -718,7 +718,7 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "結局のところ、政局に大きな変化は期待できないのである。",
-    "<ruby>結局<rt>けっきょく</rt></ruby>のところ、<ruby>政局<rt>せいきょく</rt></ruby>に<ruby>大きな<rt>おおきな</rt></ruby><ruby>変化<rt>へんか</rt></ruby>は<ruby>期待<rt>きたい</rt></ruby>できないのである。"
+    "<ruby>結局<rt>けっきょく</rt></ruby>のところ、<ruby>政局<rt>せいきょく</rt></ruby>に<ruby>大<rt>おお</rt></ruby>きな<ruby>変化<rt>へんか</rt></ruby>は<ruby>期待<rt>きたい</rt></ruby>できないのである。"
   ],
   [
     "～ほどのものじゃありません",
@@ -726,23 +726,23 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "V 辭書形／ない形＋ほどの＋N／こと／もの＋ではない",
-    "V<ruby>辭<rt>じ</rt></ruby><ruby>書<rt>しょ</rt></ruby><ruby>形<rt>けい</rt></ruby>／ない<ruby>形<rt>けい</rt></ruby>＋ほどの＋N／こと／もの＋ではない"
+    "V<ruby>辭書形<rt>じしょけい</rt></ruby>／ない<ruby>形<rt>けい</rt></ruby>＋ほどの＋N／こと／もの＋ではない"
   ],
   [
     "医者に行くほどのけがではない。",
-    "<ruby>医者<rt>いしゃ</rt></ruby>に<ruby>行く<rt>いく</rt></ruby>ほどのけがではない。"
+    "<ruby>医者<rt>いしゃ</rt></ruby>に<ruby>行<rt>い</rt></ruby>くほどのけがではない。"
   ],
   [
     "そんなに深刻に悩むほどの問題ではない。",
-    "そんなに<ruby>深刻<rt>しんこく</rt></ruby>に<ruby>悩む<rt>なやむ</rt></ruby>ほどの<ruby>問題<rt>もんだい</rt></ruby>ではない。"
+    "そんなに<ruby>深刻<rt>しんこく</rt></ruby>に<ruby>悩<rt>なや</rt></ruby>むほどの<ruby>問題<rt>もんだい</rt></ruby>ではない。"
   ],
   [
     "今回の試合で負けたからって、泣くほどのものじゃない。",
-    "<ruby>今回<rt>こんかい</rt></ruby>の<ruby>試合<rt>しあい</rt></ruby>で<ruby>負け<rt>まけ</rt></ruby>たからって、<ruby>泣く<rt>なく</rt></ruby>ほどのものじゃない。"
+    "<ruby>今回<rt>こんかい</rt></ruby>の<ruby>試合<rt>しあい</rt></ruby>で<ruby>負<rt>ま</rt></ruby>けたからって、<ruby>泣<rt>な</rt></ruby>くほどのものじゃない。"
   ],
   [
     "趣味で作ったものですから、そんなにほめてもらえるほどのものじゃありませんよ。",
-    "<ruby>趣味<rt>しゅみ</rt></ruby>で<ruby>作っ<rt>つくっ</rt></ruby>たものですから、そんなにほめてもらえるほどのものじゃありませんよ。"
+    "<ruby>趣味<rt>しゅみ</rt></ruby>で<ruby>作<rt>つく</rt></ruby>ったものですから、そんなにほめてもらえるほどのものじゃありませんよ。"
   ],
   [
     "～だけじゃなく……も",
@@ -750,23 +750,23 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "N（＋助詞）＋だけじゃなく｜なA＋な＋だけじゃなく｜V・いA 普通形＋だけじゃなく……も",
-    "N（＋助詞）＋だけじゃなく｜なA＋な＋だけじゃなく｜V・いA<ruby>普通<rt>ふつう</rt></ruby><ruby>形<rt>けい</rt></ruby>＋だけじゃなく……も"
+    "N（＋助詞）＋だけじゃなく｜なA＋な＋だけじゃなく｜V・いA<ruby>普通形<rt>ふつうけい</rt></ruby>＋だけじゃなく……も"
   ],
   [
     "肉だけじゃなく、野菜も食べなければいけない。",
-    "<ruby>肉<rt>にく</rt></ruby>だけじゃなく、<ruby>野菜<rt>やさい</rt></ruby>も<ruby>食べ<rt>たべ</rt></ruby>なければいけない。"
+    "<ruby>肉<rt>にく</rt></ruby>だけじゃなく、<ruby>野菜<rt>やさい</rt></ruby>も<ruby>食<rt>た</rt></ruby>べなければいけない。"
   ],
   [
     "彼は歌が上手なだけじゃなく、自分で曲も作る。",
-    "<ruby>彼<rt>かれ</rt></ruby>は<ruby>歌<rt>うた</rt></ruby>が<ruby>上手<rt>じょうず</rt></ruby>なだけじゃなく、<ruby>自分<rt>じぶん</rt></ruby>で<ruby>曲<rt>きょく</rt></ruby>も<ruby>作る<rt>つくる</rt></ruby>。"
+    "<ruby>彼<rt>かれ</rt></ruby>は<ruby>歌<rt>うた</rt></ruby>が<ruby>上手<rt>じょうず</rt></ruby>なだけじゃなく、<ruby>自分<rt>じぶん</rt></ruby>で<ruby>曲<rt>きょく</rt></ruby>も<ruby>作<rt>つく</rt></ruby>る。"
   ],
   [
     "今度の台風で、村は田畑だけでなく、家屋も大きな被害を受けた。",
-    "<ruby>今度<rt>こんど</rt></ruby>の<ruby>台風<rt>たいふう</rt></ruby>で、<ruby>村<rt>むら</rt></ruby>は<ruby>田畑<rt>たはた</rt></ruby>だけでなく、<ruby>家屋<rt>かおく</rt></ruby>も<ruby>大きな<rt>おおきな</rt></ruby><ruby>被害<rt>ひがい</rt></ruby>を<ruby>受け<rt>うけ</rt></ruby>た。"
+    "<ruby>今度<rt>こんど</rt></ruby>の<ruby>台風<rt>たいふう</rt></ruby>で、<ruby>村<rt>むら</rt></ruby>は<ruby>田畑<rt>たはた</rt></ruby>だけでなく、<ruby>家屋<rt>かおく</rt></ruby>も<ruby>大<rt>おお</rt></ruby>きな<ruby>被害<rt>ひがい</rt></ruby>を<ruby>受<rt>う</rt></ruby>けた。"
   ],
   [
     "授賞式に彼は招待を受けただけでなく、スピーチも頼まれた。",
-    "<ruby>授賞<rt>じゅしょう</rt></ruby><ruby>式<rt>しき</rt></ruby>に<ruby>彼<rt>かれ</rt></ruby>は<ruby>招待<rt>しょうたい</rt></ruby>を<ruby>受け<rt>うけ</rt></ruby>ただけでなく、スピーチも<ruby>頼ま<rt>たのま</rt></ruby>れた。"
+    "<ruby>授賞式<rt>じゅしょうしき</rt></ruby>に<ruby>彼<rt>かれ</rt></ruby>は<ruby>招待<rt>しょうたい</rt></ruby>を<ruby>受<rt>う</rt></ruby>けただけでなく、スピーチも<ruby>頼<rt>たの</rt></ruby>まれた。"
   ],
   [
     "～といえば／というと／といったら",
@@ -778,11 +778,11 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "北海道といえば、安くておいしい魚料理を思い出す。",
-    "<ruby>北海道<rt>ほっかいどう</rt></ruby>といえば、<ruby>安く<rt>やすく</rt></ruby>ておいしい<ruby>魚<rt>さかな</rt></ruby><ruby>料理<rt>りょうり</rt></ruby>を<ruby>思い出す<rt>おもいだす</rt></ruby>。"
+    "<ruby>北海道<rt>ほっかいどう</rt></ruby>といえば、<ruby>安<rt>やす</rt></ruby>くておいしい<ruby>魚料理<rt>さかなりょうり</rt></ruby>を<ruby>思<rt>おも</rt></ruby>い<ruby>出<rt>だ</rt></ruby>す。"
   ],
   [
     "村上春樹というと、『ノルウェーの森』という小説を思い出す人も多いだろう。",
-    "<ruby>村上<rt>むらかみ</rt></ruby><ruby>春樹<rt>はるき</rt></ruby>というと、『ノルウェーの<ruby>森<rt>もり</rt></ruby>』という<ruby>小説<rt>しょうせつ</rt></ruby>を<ruby>思い出す<rt>おもいだす</rt></ruby><ruby>人<rt>ひと</rt></ruby>も<ruby>多い<rt>おおい</rt></ruby>だろう。"
+    "<ruby>村上春樹<rt>むらかみはるき</rt></ruby>というと、『ノルウェーの<ruby>森<rt>もり</rt></ruby>』という<ruby>小説<rt>しょうせつ</rt></ruby>を<ruby>思<rt>おも</rt></ruby>い<ruby>出<rt>だ</rt></ruby>す<ruby>人<rt>ひと</rt></ruby>も<ruby>多<rt>おお</rt></ruby>いだろう。"
   ],
   [
     "テストといったら、みんないやな顔をする。",
@@ -790,35 +790,35 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "全部を読んだわけではない。",
-    "<ruby>全部<rt>ぜんぶ</rt></ruby>を<ruby>読ん<rt>よん</rt></ruby>だわけではない。"
+    "<ruby>全部<rt>ぜんぶ</rt></ruby>を<ruby>読<rt>よ</rt></ruby>んだわけではない。"
   ],
   [
     "全部を読むたびに。",
-    "<ruby>全部<rt>ぜんぶ</rt></ruby>を<ruby>読む<rt>よむ</rt></ruby>たびに。"
+    "<ruby>全部<rt>ぜんぶ</rt></ruby>を<ruby>読<rt>よ</rt></ruby>むたびに。"
   ],
   [
     "全部を読むのである。",
-    "<ruby>全部<rt>ぜんぶ</rt></ruby>を<ruby>読む<rt>よむ</rt></ruby>のである。"
+    "<ruby>全部<rt>ぜんぶ</rt></ruby>を<ruby>読<rt>よ</rt></ruby>むのである。"
   ],
   [
     "全部に関して読む。",
-    "<ruby>全部<rt>ぜんぶ</rt></ruby>に<ruby>関し<rt>かんし</rt></ruby>て<ruby>読む<rt>よむ</rt></ruby>。"
+    "<ruby>全部<rt>ぜんぶ</rt></ruby>に<ruby>関<rt>かん</rt></ruby>して<ruby>読<rt>よ</rt></ruby>む。"
   ],
   [
     "環境問題は重要になるのではないか。",
-    "<ruby>環境<rt>かんきょう</rt></ruby><ruby>問題<rt>もんだい</rt></ruby>は<ruby>重要<rt>じゅうよう</rt></ruby>になるのではないか。"
+    "<ruby>環境問題<rt>かんきょうもんだい</rt></ruby>は<ruby>重要<rt>じゅうよう</rt></ruby>になるのではないか。"
   ],
   [
     "環境問題は重要なわけではない。",
-    "<ruby>環境<rt>かんきょう</rt></ruby><ruby>問題<rt>もんだい</rt></ruby>は<ruby>重要<rt>じゅうよう</rt></ruby>なわけではない。"
+    "<ruby>環境問題<rt>かんきょうもんだい</rt></ruby>は<ruby>重要<rt>じゅうよう</rt></ruby>なわけではない。"
   ],
   [
     "環境問題に関して。",
-    "<ruby>環境<rt>かんきょう</rt></ruby><ruby>問題<rt>もんだい</rt></ruby>に<ruby>関し<rt>かんし</rt></ruby>て。"
+    "<ruby>環境問題<rt>かんきょうもんだい</rt></ruby>に<ruby>関<rt>かん</rt></ruby>して。"
   ],
   [
     "環境問題だけじゃなく。",
-    "<ruby>環境<rt>かんきょう</rt></ruby><ruby>問題<rt>もんだい</rt></ruby>だけじゃなく。"
+    "<ruby>環境問題<rt>かんきょうもんだい</rt></ruby>だけじゃなく。"
   ],
   [
     "北海道といえば……",
@@ -838,55 +838,55 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "歴史に関する本",
-    "<ruby>歴史<rt>れきし</rt></ruby>に<ruby>関する<rt>かんする</rt></ruby><ruby>本<rt>ほん</rt></ruby>"
+    "<ruby>歴史<rt>れきし</rt></ruby>に<ruby>関<rt>かん</rt></ruby>する<ruby>本<rt>ほん</rt></ruby>"
   ],
   [
     "歴史に関して本",
-    "<ruby>歴史<rt>れきし</rt></ruby>に<ruby>関し<rt>かんし</rt></ruby>て<ruby>本<rt>ほん</rt></ruby>"
+    "<ruby>歴史<rt>れきし</rt></ruby>に<ruby>関<rt>かん</rt></ruby>して<ruby>本<rt>ほん</rt></ruby>"
   ],
   [
     "歴史に関す本",
-    "<ruby>歴史<rt>れきし</rt></ruby>に<ruby>関す<rt>かんす</rt></ruby><ruby>本<rt>ほん</rt></ruby>"
+    "<ruby>歴史<rt>れきし</rt></ruby>に<ruby>関<rt>かん</rt></ruby>す<ruby>本<rt>ほん</rt></ruby>"
   ],
   [
     "歴史の関する本",
-    "<ruby>歴史<rt>れきし</rt></ruby>の<ruby>関する<rt>かんする</rt></ruby><ruby>本<rt>ほん</rt></ruby>"
+    "<ruby>歴史<rt>れきし</rt></ruby>の<ruby>関<rt>かん</rt></ruby>する<ruby>本<rt>ほん</rt></ruby>"
   ],
   [
     "山に行きたびに雨に降られる。",
-    "<ruby>山<rt>やま</rt></ruby>に<ruby>行き<rt>いき</rt></ruby>たびに<ruby>雨<rt>あめ</rt></ruby>に<ruby>降ら<rt>ふら</rt></ruby>れる。"
+    "<ruby>山<rt>やま</rt></ruby>に<ruby>行<rt>い</rt></ruby>きたびに<ruby>雨<rt>あめ</rt></ruby>に<ruby>降<rt>ふ</rt></ruby>られる。"
   ],
   [
     "山に行ったのたびに雨に降られる。",
-    "<ruby>山<rt>やま</rt></ruby>に<ruby>行っ<rt>いっ</rt></ruby>たのたびに<ruby>雨<rt>あめ</rt></ruby>に<ruby>降ら<rt>ふら</rt></ruby>れる。"
+    "<ruby>山<rt>やま</rt></ruby>に<ruby>行<rt>い</rt></ruby>ったのたびに<ruby>雨<rt>あめ</rt></ruby>に<ruby>降<rt>ふ</rt></ruby>られる。"
   ],
   [
     "山に行くたび雨に降られる。",
-    "<ruby>山<rt>やま</rt></ruby>に<ruby>行く<rt>いく</rt></ruby>たび<ruby>雨<rt>あめ</rt></ruby>に<ruby>降ら<rt>ふら</rt></ruby>れる。"
+    "<ruby>山<rt>やま</rt></ruby>に<ruby>行<rt>い</rt></ruby>くたび<ruby>雨<rt>あめ</rt></ruby>に<ruby>降<rt>ふ</rt></ruby>られる。"
   ],
   [
     "～に応じて",
-    "～に<ruby>応じ<rt>おうじ</rt></ruby>て"
+    "～に<ruby>応<rt>おう</rt></ruby>じて"
   ],
   [
     "N＋に応じて｜N＋に応じた＋N",
-    "N＋に<ruby>応じ<rt>おうじ</rt></ruby>て｜N＋に<ruby>応じ<rt>おうじ</rt></ruby>た＋N"
+    "N＋に<ruby>応<rt>おう</rt></ruby>じて｜N＋に<ruby>応<rt>おう</rt></ruby>じた＋N"
   ],
   [
     "物価の変動に応じて給料を上げる。",
-    "<ruby>物価<rt>ぶっか</rt></ruby>の<ruby>変動<rt>へんどう</rt></ruby>に<ruby>応じ<rt>おうじ</rt></ruby>て<ruby>給料<rt>きゅうりょう</rt></ruby>を<ruby>上げる<rt>あげる</rt></ruby>。"
+    "<ruby>物価<rt>ぶっか</rt></ruby>の<ruby>変動<rt>へんどう</rt></ruby>に<ruby>応<rt>おう</rt></ruby>じて<ruby>給料<rt>きゅうりょう</rt></ruby>を<ruby>上<rt>あ</rt></ruby>げる。"
   ],
   [
     "当店ではお客様のご予算に応じて料理をご用意いたします。",
-    "<ruby>当店<rt>とうてん</rt></ruby>では<ruby>お客様<rt>おきゃくさま</rt></ruby>の<ruby>ご予算<rt>ごよさん</rt></ruby>に<ruby>応じ<rt>おうじ</rt></ruby>て<ruby>料理<rt>りょうり</rt></ruby>を<ruby>ご用意<rt>ごようい</rt></ruby>いたします。"
+    "<ruby>当店<rt>とうてん</rt></ruby>ではお<ruby>客様<rt>きゃくさま</rt></ruby>のご<ruby>予算<rt>よさん</rt></ruby>に<ruby>応<rt>おう</rt></ruby>じて<ruby>料理<rt>りょうり</rt></ruby>をご<ruby>用意<rt>ようい</rt></ruby>いたします。"
   ],
   [
     "アルバイト料は労働時間に応じて計算される。",
-    "アルバイト<ruby>料<rt>りょう</rt></ruby>は<ruby>労働時間<rt>ろうどうじかん</rt></ruby>に<ruby>応じ<rt>おうじ</rt></ruby>て<ruby>計算<rt>けいさん</rt></ruby>される。"
+    "アルバイト<ruby>料<rt>りょう</rt></ruby>は<ruby>労働時間<rt>ろうどうじかん</rt></ruby>に<ruby>応<rt>おう</rt></ruby>じて<ruby>計算<rt>けいさん</rt></ruby>される。"
   ],
   [
     "功績に応じた報酬を与える。",
-    "<ruby>功績<rt>こうせき</rt></ruby>に<ruby>応じ<rt>おうじ</rt></ruby>た<ruby>報酬<rt>ほうしゅう</rt></ruby>を<ruby>与える<rt>あたえる</rt></ruby>。"
+    "<ruby>功績<rt>こうせき</rt></ruby>に<ruby>応<rt>おう</rt></ruby>じた<ruby>報酬<rt>ほうしゅう</rt></ruby>を<ruby>与<rt>あた</rt></ruby>える。"
   ],
   [
     "～によって〈原因〉",
@@ -902,11 +902,11 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "私の不注意な発言によって、彼を傷つけてしまった。",
-    "<ruby>私<rt>わたし</rt></ruby>の<ruby>不注意<rt>ふちゅうい</rt></ruby>な<ruby>発言<rt>はつげん</rt></ruby>によって、<ruby>彼<rt>かれ</rt></ruby>を<ruby>傷つけ<rt>きずつけ</rt></ruby>てしまった。"
+    "<ruby>私<rt>わたし</rt></ruby>の<ruby>不注意<rt>ふちゅうい</rt></ruby>な<ruby>発言<rt>はつげん</rt></ruby>によって、<ruby>彼<rt>かれ</rt></ruby>を<ruby>傷<rt>きず</rt></ruby>つけてしまった。"
   ],
   [
     "踏切事故によって、電車は3時間も遅れました。",
-    "<ruby>踏切事故<rt>ふみきりじこ</rt></ruby>によって、<ruby>電車<rt>でんしゃ</rt></ruby>は<ruby>3時間<rt>さんじかん</rt></ruby>も<ruby>遅れ<rt>おくれ</rt></ruby>ました。"
+    "<ruby>踏切事故<rt>ふみきりじこ</rt></ruby>によって、<ruby>電車<rt>でんしゃ</rt></ruby>は<ruby>3時間<rt>さんじかん</rt></ruby>も<ruby>遅<rt>おく</rt></ruby>れました。"
   ],
   [
     "～とみられる",
@@ -914,19 +914,19 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "普通形＋とみる｜普通形＋とみられる",
-    "<ruby>普通<rt>ふつう</rt></ruby><ruby>形<rt>けい</rt></ruby>＋とみる｜<ruby>普通<rt>ふつう</rt></ruby><ruby>形<rt>けい</rt></ruby>＋とみられる"
+    "<ruby>普通形<rt>ふつうけい</rt></ruby>＋とみる｜<ruby>普通形<rt>ふつうけい</rt></ruby>＋とみられる"
   ],
   [
     "警察は、A容疑者にはまだ余罪があるとみて、厳しく追及する構えです。",
-    "<ruby>警察<rt>けいさつ</rt></ruby>は、A<ruby>容疑者<rt>ようぎしゃ</rt></ruby>にはまだ<ruby>余罪<rt>よざい</rt></ruby>があるとみて、<ruby>厳しく<rt>きびしく</rt></ruby><ruby>追及<rt>ついきゅう</rt></ruby>する<ruby>構え<rt>かまえ</rt></ruby>です。"
+    "<ruby>警察<rt>けいさつ</rt></ruby>は、A<ruby>容疑者<rt>ようぎしゃ</rt></ruby>にはまだ<ruby>余罪<rt>よざい</rt></ruby>があるとみて、<ruby>厳<rt>きび</rt></ruby>しく<ruby>追及<rt>ついきゅう</rt></ruby>する<ruby>構<rt>かま</rt></ruby>えです。"
   ],
   [
     "国際原子力機関（IAEA）は、イランが高性能爆薬など核兵器開発に向けた実験を行ったとみられるとする報告書をまとめた。",
-    "<ruby>国際原子力機関<rt>こくさいげんしりょくきかん</rt></ruby>（IAEA）は、イランが<ruby>高性能爆薬<rt>こうせいのうばくやく</rt></ruby>など<ruby>核兵器<rt>かくへいき</rt></ruby><ruby>開発<rt>かいはつ</rt></ruby>に<ruby>向け<rt>むけ</rt></ruby>た<ruby>実験<rt>じっけん</rt></ruby>を<ruby>行っ<rt>おこなっ</rt></ruby>たとみられるとする<ruby>報告書<rt>ほうこくしょ</rt></ruby>をまとめた。"
+    "<ruby>国際原子力機関<rt>こくさいげんしりょくきかん</rt></ruby>（IAEA）は、イランが<ruby>高性能爆薬<rt>こうせいのうばくやく</rt></ruby>など<ruby>核兵器開発<rt>かくへいきかいはつ</rt></ruby>に<ruby>向<rt>む</rt></ruby>けた<ruby>実験<rt>じっけん</rt></ruby>を<ruby>行<rt>おこな</rt></ruby>ったとみられるとする<ruby>報告書<rt>ほうこくしょ</rt></ruby>をまとめた。"
   ],
   [
     "円高や世界景気の減速傾向を受け、企業が設備投資を縮小させたとみられる。",
-    "<ruby>円高<rt>えんだか</rt></ruby>や<ruby>世界景気<rt>せかいけいき</rt></ruby>の<ruby>減速傾向<rt>げんそくけいこう</rt></ruby>を<ruby>受け<rt>うけ</rt></ruby>、<ruby>企業<rt>きぎょう</rt></ruby>が<ruby>設備投資<rt>せつびとうし</rt></ruby>を<ruby>縮小<rt>しゅくしょう</rt></ruby>させたとみられる。"
+    "<ruby>円高<rt>えんだか</rt></ruby>や<ruby>世界景気<rt>せかいけいき</rt></ruby>の<ruby>減速傾向<rt>げんそくけいこう</rt></ruby>を<ruby>受<rt>う</rt></ruby>け、<ruby>企業<rt>きぎょう</rt></ruby>が<ruby>設備投資<rt>せつびとうし</rt></ruby>を<ruby>縮小<rt>しゅくしょう</rt></ruby>させたとみられる。"
   ],
   [
     "～としている",
@@ -942,11 +942,11 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "米政府は「カダフィ大佐が国を去ったとの情報はない」としている。",
-    "<ruby>米政府<rt>べいせいふ</rt></ruby>は「カダフィ<ruby>大佐<rt>たいさ</rt></ruby>が<ruby>国<rt>くに</rt></ruby>を<ruby>去っ<rt>さっ</rt></ruby>たとの<ruby>情報<rt>じょうほう</rt></ruby>はない」としている。"
+    "<ruby>米政府<rt>べいせいふ</rt></ruby>は「カダフィ<ruby>大佐<rt>たいさ</rt></ruby>が<ruby>国<rt>くに</rt></ruby>を<ruby>去<rt>さ</rt></ruby>ったとの<ruby>情報<rt>じょうほう</rt></ruby>はない」としている。"
   ],
   [
     "ニュースサイドによると、上海市中心部の繁華街でガス管の爆発が原因とみられる火災が起きた。地元メディアは死傷者はいないもようだとしている。",
-    "ニュースサイドによると、<ruby>上海市中心部<rt>しゃんはいしちゅうしんぶ</rt></ruby>の<ruby>繁華街<rt>はんかがい</rt></ruby>でガス<ruby>管<rt>かん</rt></ruby>の<ruby>爆発<rt>ばくはつ</rt></ruby>が<ruby>原因<rt>げんいん</rt></ruby>とみられる<ruby>火災<rt>かさい</rt></ruby>が<ruby>起き<rt>おき</rt></ruby>た。<ruby>地元<rt>じもと</rt></ruby>メディアは<ruby>死傷者<rt>ししょうしゃ</rt></ruby>はいないもようだとしている。"
+    "ニュースサイドによると、<ruby>上海市中心部<rt>しゃんはいしちゅうしんぶ</rt></ruby>の<ruby>繁華街<rt>はんかがい</rt></ruby>でガス<ruby>管<rt>かん</rt></ruby>の<ruby>爆発<rt>ばくはつ</rt></ruby>が<ruby>原因<rt>げんいん</rt></ruby>とみられる<ruby>火災<rt>かさい</rt></ruby>が<ruby>起<rt>お</rt></ruby>きた。<ruby>地元<rt>じもと</rt></ruby>メディアは<ruby>死傷者<rt>ししょうしゃ</rt></ruby>はいないもようだとしている。"
   ],
   [
     "～にもかかわらず",
@@ -954,7 +954,7 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "V・いA普通形＋にもかかわらず｜なA・N＋である／N＋にもかかわらず",
-    "V・いA<ruby>普通<rt>ふつう</rt></ruby><ruby>形<rt>けい</rt></ruby>＋にもかかわらず｜なA・N＋である／N＋にもかかわらず"
+    "V・いA<ruby>普通形<rt>ふつうけい</rt></ruby>＋にもかかわらず｜なA・N＋である／N＋にもかかわらず"
   ],
   [
     "悪条件にもかかわらず、無事登頂に成功した。",
@@ -962,7 +962,7 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "親が反対したにもかかわらず、彼女は一人でアフリカに行ってしまった。",
-    "<ruby>親<rt>おや</rt></ruby>が<ruby>反対<rt>はんたい</rt></ruby>したにもかかわらず、<ruby>彼女<rt>かのじょ</rt></ruby>は<ruby>一人<rt>ひとり</rt></ruby>でアフリカに<ruby>行っ<rt>いっ</rt></ruby>てしまった。"
+    "<ruby>親<rt>おや</rt></ruby>が<ruby>反対<rt>はんたい</rt></ruby>したにもかかわらず、<ruby>彼女<rt>かのじょ</rt></ruby>は<ruby>一人<rt>ひとり</rt></ruby>でアフリカに<ruby>行<rt>い</rt></ruby>ってしまった。"
   ],
   [
     "彼は熱があるにもかかわらず、サッカーの試合に出場した。",
@@ -970,11 +970,11 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "あれだけ努力したにもかかわらず、すべて失敗に終わってしまった。",
-    "あれだけ<ruby>努力<rt>どりょく</rt></ruby>したにもかかわらず、すべて<ruby>失敗<rt>しっぱい</rt></ruby>に<ruby>終わっ<rt>おわっ</rt></ruby>てしまった。"
+    "あれだけ<ruby>努力<rt>どりょく</rt></ruby>したにもかかわらず、すべて<ruby>失敗<rt>しっぱい</rt></ruby>に<ruby>終<rt>お</rt></ruby>わってしまった。"
   ],
   [
     "危険な場所だと十分注意されていた。にもかかわらず、軽装で出かけて遭難するはめになった。",
-    "<ruby>危険<rt>きけん</rt></ruby>な<ruby>場所<rt>ばしょ</rt></ruby>だと<ruby>十分<rt>じゅうぶん</rt></ruby><ruby>注意<rt>ちゅうい</rt></ruby>されていた。にもかかわらず、<ruby>軽装<rt>けいそう</rt></ruby>で<ruby>出かけ<rt>でかけ</rt></ruby>て<ruby>遭難<rt>そうなん</rt></ruby>するはめになった。"
+    "<ruby>危険<rt>きけん</rt></ruby>な<ruby>場所<rt>ばしょ</rt></ruby>だと<ruby>十分<rt>じゅうぶん</rt></ruby><ruby>注意<rt>ちゅうい</rt></ruby>されていた。にもかかわらず、<ruby>軽装<rt>けいそう</rt></ruby>で<ruby>出<rt>で</rt></ruby>かけて<ruby>遭難<rt>そうなん</rt></ruby>するはめになった。"
   ],
   [
     "～とともに",
@@ -982,7 +982,7 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "N＋とともに｜V辭書形＋とともに",
-    "N＋とともに｜V<ruby>辭<rt>じ</rt></ruby><ruby>書<rt>しょ</rt></ruby><ruby>形<rt>けい</rt></ruby>＋とともに"
+    "N＋とともに｜V<ruby>辭書形<rt>じしょけい</rt></ruby>＋とともに"
   ],
   [
     "地震の発生とともに津波が発生することがある。",
@@ -990,15 +990,15 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "国の経済力の発展とともに、国民の生活も豊かになった。",
-    "<ruby>国<rt>くに</rt></ruby>の<ruby>経済力<rt>けいざいりょく</rt></ruby>の<ruby>発展<rt>はってん</rt></ruby>とともに、<ruby>国民<rt>こくみん</rt></ruby>の<ruby>生活<rt>せいかつ</rt></ruby>も<ruby>豊か<rt>ゆたか</rt></ruby>になった。"
+    "<ruby>国<rt>くに</rt></ruby>の<ruby>経済力<rt>けいざいりょく</rt></ruby>の<ruby>発展<rt>はってん</rt></ruby>とともに、<ruby>国民<rt>こくみん</rt></ruby>の<ruby>生活<rt>せいかつ</rt></ruby>も<ruby>豊<rt>ゆた</rt></ruby>かになった。"
   ],
   [
     "年をとるとともに記憶力が衰えてきた。",
-    "<ruby>年<rt>とし</rt></ruby>をとるとともに<ruby>記憶力<rt>きおくりょく</rt></ruby>が<ruby>衰え<rt>おとろえ</rt></ruby>てきた。"
+    "<ruby>年<rt>とし</rt></ruby>をとるとともに<ruby>記憶力<rt>きおくりょく</rt></ruby>が<ruby>衰<rt>おとろ</rt></ruby>えてきた。"
   ],
   [
     "自動車が普及するとともに、交通事故も増えてきた。",
-    "<ruby>自動車<rt>じどうしゃ</rt></ruby>が<ruby>普及<rt>ふきゅう</rt></ruby>するとともに、<ruby>交通事故<rt>こうつうじこ</rt></ruby>も<ruby>増え<rt>ふえ</rt></ruby>てきた。"
+    "<ruby>自動車<rt>じどうしゃ</rt></ruby>が<ruby>普及<rt>ふきゅう</rt></ruby>するとともに、<ruby>交通事故<rt>こうつうじこ</rt></ruby>も<ruby>増<rt>ふ</rt></ruby>えてきた。"
   ],
   [
     "～たところ",
@@ -1010,19 +1010,19 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "先生にお願いしたところ、早速承諾の返事をいただいた。",
-    "<ruby>先生<rt>せんせい</rt></ruby>にお<ruby>願い<rt>ねがい</rt></ruby>したところ、<ruby>早速<rt>さっそく</rt></ruby><ruby>承諾<rt>しょうだく</rt></ruby>の<ruby>返事<rt>へんじ</rt></ruby>をいただいた。"
+    "<ruby>先生<rt>せんせい</rt></ruby>にお<ruby>願<rt>ねが</rt></ruby>いしたところ、<ruby>早速<rt>さっそく</rt></ruby><ruby>承諾<rt>しょうだく</rt></ruby>の<ruby>返事<rt>へんじ</rt></ruby>をいただいた。"
   ],
   [
     "駅の遺失物係に問い合わせたところ、届いているとのことだ。",
-    "<ruby>駅<rt>えき</rt></ruby>の<ruby>遺失物係<rt>いしつぶつがかり</rt></ruby>に<ruby>問い合わせ<rt>といあわせ</rt></ruby>たところ、<ruby>届い<rt>とどい</rt></ruby>ているとのことだ。"
+    "<ruby>駅<rt>えき</rt></ruby>の<ruby>遺失物係<rt>いしつぶつがかり</rt></ruby>に<ruby>問<rt>と</rt></ruby>い<ruby>合<rt>あ</rt></ruby>わせたところ、<ruby>届<rt>とど</rt></ruby>いているとのことだ。"
   ],
   [
     "ホテルに電話したところ、そのような名前の人は泊まっていないそうだ。",
-    "ホテルに<ruby>電話<rt>でんわ</rt></ruby>したところ、そのような<ruby>名前<rt>なまえ</rt></ruby>の<ruby>人<rt>ひと</rt></ruby>は<ruby>泊まっ<rt>とまっ</rt></ruby>ていないそうだ。"
+    "ホテルに<ruby>電話<rt>でんわ</rt></ruby>したところ、そのような<ruby>名前<rt>なまえ</rt></ruby>の<ruby>人<rt>ひと</rt></ruby>は<ruby>泊<rt>と</rt></ruby>まっていないそうだ。"
   ],
   [
     "教室に行ってみたところ、学生はひとりも来ていなかった。",
-    "<ruby>教室<rt>きょうしつ</rt></ruby>に<ruby>行っ<rt>いっ</rt></ruby>てみたところ、<ruby>学生<rt>がくせい</rt></ruby>はひとりも<ruby>来<rt>き</rt></ruby>ていなかった。"
+    "<ruby>教室<rt>きょうしつ</rt></ruby>に<ruby>行<rt>い</rt></ruby>ってみたところ、<ruby>学生<rt>がくせい</rt></ruby>はひとりも<ruby>来<rt>き</rt></ruby>ていなかった。"
   ],
   [
     "あんまり……から",
@@ -1038,19 +1038,19 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "ここのカレーはあまりにまずくて、とても食べられたものではない。",
-    "ここのカレーはあまりにまずくて、とても<ruby>食べ<rt>たべ</rt></ruby>られたものではない。"
+    "ここのカレーはあまりにまずくて、とても<ruby>食<rt>た</rt></ruby>べられたものではない。"
   ],
   [
     "熱がないので大丈夫だと思っていたが、あんまりのどが痛いので、病院へ行った。",
-    "<ruby>熱<rt>ねつ</rt></ruby>がないので<ruby>大丈夫<rt>だいじょうぶ</rt></ruby>だと<ruby>思っ<rt>おもっ</rt></ruby>ていたが、あんまりのどが<ruby>痛い<rt>いたい</rt></ruby>ので、<ruby>病院<rt>びょういん</rt></ruby>へ<ruby>行っ<rt>いっ</rt></ruby>た。"
+    "<ruby>熱<rt>ねつ</rt></ruby>がないので<ruby>大丈夫<rt>だいじょうぶ</rt></ruby>だと<ruby>思<rt>おも</rt></ruby>っていたが、あんまりのどが<ruby>痛<rt>いた</rt></ruby>いので、<ruby>病院<rt>びょういん</rt></ruby>へ<ruby>行<rt>い</rt></ruby>った。"
   ],
   [
     "彼があんまり僕の失敗を笑うから、だんだん腹が立ってきて殴ってしまった。",
-    "<ruby>彼<rt>かれ</rt></ruby>があんまり<ruby>僕<rt>ぼく</rt></ruby>の<ruby>失敗<rt>しっぱい</rt></ruby>を<ruby>笑う<rt>わらう</rt></ruby>から、だんだん<ruby>腹<rt>はら</rt></ruby>が<ruby>立っ<rt>たっ</rt></ruby>てきて<ruby>殴っ<rt>なぐっ</rt></ruby>てしまった。"
+    "<ruby>彼<rt>かれ</rt></ruby>があんまり<ruby>僕<rt>ぼく</rt></ruby>の<ruby>失敗<rt>しっぱい</rt></ruby>を<ruby>笑<rt>わら</rt></ruby>うから、だんだん<ruby>腹<rt>はら</rt></ruby>が<ruby>立<rt>た</rt></ruby>ってきて<ruby>殴<rt>なぐ</rt></ruby>ってしまった。"
   ],
   [
     "その人の申し出はあんまりにも急な話だったので、すぐにOKするのは躊躇した。",
-    "その<ruby>人<rt>ひと</rt></ruby>の<ruby>申し出<rt>もうしで</rt></ruby>はあんまりにも<ruby>急<rt>きゅう</rt></ruby>な<ruby>話<rt>はなし</rt></ruby>だったので、すぐにOKするのは<ruby>躊躇<rt>ちゅうちょ</rt></ruby>した。"
+    "その<ruby>人<rt>ひと</rt></ruby>の<ruby>申<rt>もう</rt></ruby>し<ruby>出<rt>で</rt></ruby>はあんまりにも<ruby>急<rt>きゅう</rt></ruby>な<ruby>話<rt>はなし</rt></ruby>だったので、すぐにOKするのは<ruby>躊躇<rt>ちゅうちょ</rt></ruby>した。"
   ],
   [
     "～ところだった",
@@ -1058,83 +1058,83 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "V辭書形＋ところだった｜Vていた＋ところだった",
-    "V<ruby>辭<rt>じ</rt></ruby><ruby>書<rt>しょ</rt></ruby><ruby>形<rt>けい</rt></ruby>＋ところだった｜Vていた＋ところだった"
+    "V<ruby>辭書形<rt>じしょけい</rt></ruby>＋ところだった｜Vていた＋ところだった"
   ],
   [
     "もし気づくのが遅かったら、大惨事になるところだった。",
-    "もし<ruby>気づく<rt>きづく</rt></ruby>のが<ruby>遅かっ<rt>おそかっ</rt></ruby>たら、<ruby>大惨事<rt>だいさんじ</rt></ruby>になるところだった。"
+    "もし<ruby>気<rt>き</rt></ruby>づくのが<ruby>遅<rt>おそ</rt></ruby>かったら、<ruby>大惨事<rt>だいさんじ</rt></ruby>になるところだった。"
   ],
   [
     "あっ、あなたに大事な話があるのを思い出した。うっかり忘れるところだった。",
-    "あっ、あなたに<ruby>大事<rt>だいじ</rt></ruby>な<ruby>話<rt>はなし</rt></ruby>があるのを<ruby>思い出し<rt>おもいだし</rt></ruby>た。うっかり<ruby>忘れる<rt>わすれる</rt></ruby>ところだった。"
+    "あっ、あなたに<ruby>大事<rt>だいじ</rt></ruby>な<ruby>話<rt>はなし</rt></ruby>があるのを<ruby>思<rt>おも</rt></ruby>い<ruby>出<rt>だ</rt></ruby>した。うっかり<ruby>忘<rt>わす</rt></ruby>れるところだった。"
   ],
   [
     "ありがとうございます。注意していただかなければ忘れていたところでした。",
-    "ありがとうございます。<ruby>注意<rt>ちゅうい</rt></ruby>していただかなければ<ruby>忘れ<rt>わすれ</rt></ruby>ていたところでした。"
+    "ありがとうございます。<ruby>注意<rt>ちゅうい</rt></ruby>していただかなければ<ruby>忘<rt>わす</rt></ruby>れていたところでした。"
   ],
   [
     "～に限って",
-    "～に<ruby>限っ<rt>かぎっ</rt></ruby>て"
+    "～に<ruby>限<rt>かぎ</rt></ruby>って"
   ],
   [
     "N＋に限って",
-    "N＋に<ruby>限っ<rt>かぎっ</rt></ruby>て"
+    "N＋に<ruby>限<rt>かぎ</rt></ruby>って"
   ],
   [
     "いつもは時間どおりに来るバスが、急いでいるときに限って遅れて来る。",
-    "いつもは<ruby>時間<rt>じかん</rt></ruby>どおりに<ruby>来る<rt>くる</rt></ruby>バスが、<ruby>急い<rt>いそい</rt></ruby>でいるときに<ruby>限っ<rt>かぎっ</rt></ruby>て<ruby>遅れ<rt>おくれ</rt></ruby>て<ruby>来る<rt>くる</rt></ruby>。"
+    "いつもは<ruby>時間<rt>じかん</rt></ruby>どおりに<ruby>来<rt>く</rt></ruby>るバスが、<ruby>急<rt>いそ</rt></ruby>いでいるときに<ruby>限<rt>かぎ</rt></ruby>って<ruby>遅<rt>おく</rt></ruby>れて<ruby>来<rt>く</rt></ruby>る。"
   ],
   [
     "忙しいときに限って、ミスばかりする。",
-    "<ruby>忙しい<rt>いそがしい</rt></ruby>ときに<ruby>限っ<rt>かぎっ</rt></ruby>て、ミスばかりする。"
+    "<ruby>忙<rt>いそが</rt></ruby>しいときに<ruby>限<rt>かぎ</rt></ruby>って、ミスばかりする。"
   ],
   [
     "傘を持ってない日に限って、雨が降る。",
-    "<ruby>傘<rt>かさ</rt></ruby>を<ruby>持っ<rt>もっ</rt></ruby>てない<ruby>日<rt>ひ</rt></ruby>に<ruby>限っ<rt>かぎっ</rt></ruby>て、<ruby>雨<rt>あめ</rt></ruby>が<ruby>降る<rt>ふる</rt></ruby>。"
+    "<ruby>傘<rt>かさ</rt></ruby>を<ruby>持<rt>も</rt></ruby>ってない<ruby>日<rt>ひ</rt></ruby>に<ruby>限<rt>かぎ</rt></ruby>って、<ruby>雨<rt>あめ</rt></ruby>が<ruby>降<rt>ふ</rt></ruby>る。"
   ],
   [
     "うちの子に限ってそんなことをするはずがない。",
-    "うちの<ruby>子<rt>こ</rt></ruby>に<ruby>限っ<rt>かぎっ</rt></ruby>てそんなことをするはずがない。"
+    "うちの<ruby>子<rt>こ</rt></ruby>に<ruby>限<rt>かぎ</rt></ruby>ってそんなことをするはずがない。"
   ],
   [
     "あの人に限って、人をだますようなことはしない。",
-    "あの<ruby>人<rt>ひと</rt></ruby>に<ruby>限っ<rt>かぎっ</rt></ruby>て、<ruby>人<rt>ひと</rt></ruby>をだますようなことはしない。"
+    "あの<ruby>人<rt>ひと</rt></ruby>に<ruby>限<rt>かぎ</rt></ruby>って、<ruby>人<rt>ひと</rt></ruby>をだますようなことはしない。"
   ],
   [
     "あのレストランは年中無休なのに、行ってみたら今日に限って休みだった。",
-    "あのレストランは<ruby>年中無休<rt>ねんじゅうむきゅう</rt></ruby>なのに、<ruby>行っ<rt>いっ</rt></ruby>てみたら<ruby>今日<rt>きょう</rt></ruby>に<ruby>限っ<rt>かぎっ</rt></ruby>て<ruby>休み<rt>やすみ</rt></ruby>だった。"
+    "あのレストランは<ruby>年中無休<rt>ねんじゅうむきゅう</rt></ruby>なのに、<ruby>行<rt>い</rt></ruby>ってみたら<ruby>今日<rt>きょう</rt></ruby>に<ruby>限<rt>かぎ</rt></ruby>って<ruby>休<rt>やす</rt></ruby>みだった。"
   ],
   [
     "功績に応じて報酬",
-    "<ruby>功績<rt>こうせき</rt></ruby>に<ruby>応じ<rt>おうじ</rt></ruby>て<ruby>報酬<rt>ほうしゅう</rt></ruby>"
+    "<ruby>功績<rt>こうせき</rt></ruby>に<ruby>応<rt>おう</rt></ruby>じて<ruby>報酬<rt>ほうしゅう</rt></ruby>"
   ],
   [
     "功績に応じた報酬",
-    "<ruby>功績<rt>こうせき</rt></ruby>に<ruby>応じ<rt>おうじ</rt></ruby>た<ruby>報酬<rt>ほうしゅう</rt></ruby>"
+    "<ruby>功績<rt>こうせき</rt></ruby>に<ruby>応<rt>おう</rt></ruby>じた<ruby>報酬<rt>ほうしゅう</rt></ruby>"
   ],
   [
     "功績に応じるの報酬",
-    "<ruby>功績<rt>こうせき</rt></ruby>に<ruby>応じる<rt>おうじる</rt></ruby>の<ruby>報酬<rt>ほうしゅう</rt></ruby>"
+    "<ruby>功績<rt>こうせき</rt></ruby>に<ruby>応<rt>おう</rt></ruby>じるの<ruby>報酬<rt>ほうしゅう</rt></ruby>"
   ],
   [
     "功績を応じた報酬",
-    "<ruby>功績<rt>こうせき</rt></ruby>を<ruby>応じ<rt>おうじ</rt></ruby>た<ruby>報酬<rt>ほうしゅう</rt></ruby>"
+    "<ruby>功績<rt>こうせき</rt></ruby>を<ruby>応<rt>おう</rt></ruby>じた<ruby>報酬<rt>ほうしゅう</rt></ruby>"
   ],
   [
     "忘れたところだった。",
-    "<ruby>忘れ<rt>わすれ</rt></ruby>たところだった。"
+    "<ruby>忘<rt>わす</rt></ruby>れたところだった。"
   ],
   [
     "忘れるところだった。",
-    "<ruby>忘れる<rt>わすれる</rt></ruby>ところだった。"
+    "<ruby>忘<rt>わす</rt></ruby>れるところだった。"
   ],
   [
     "忘れたところ、思い出した。",
-    "<ruby>忘れ<rt>わすれ</rt></ruby>たところ、<ruby>思い出し<rt>おもいだし</rt></ruby>た。"
+    "<ruby>忘<rt>わす</rt></ruby>れたところ、<ruby>思<rt>おも</rt></ruby>い<ruby>出<rt>だ</rt></ruby>した。"
   ],
   [
     "忘れところだった。",
-    "<ruby>忘れ<rt>わすれ</rt></ruby>ところだった。"
+    "<ruby>忘<rt>わす</rt></ruby>れところだった。"
   ],
   [
     "政府は……としている。",
@@ -1142,7 +1142,7 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "政府は……に限って。",
-    "<ruby>政府<rt>せいふ</rt></ruby>は……に<ruby>限っ<rt>かぎっ</rt></ruby>て。"
+    "<ruby>政府<rt>せいふ</rt></ruby>は……に<ruby>限<rt>かぎ</rt></ruby>って。"
   ],
   [
     "政府は……あんまり。",
@@ -1154,19 +1154,19 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "急いでいるときとともにバスが遅れる。",
-    "<ruby>急い<rt>いそい</rt></ruby>でいるときとともにバスが<ruby>遅れる<rt>おくれる</rt></ruby>。"
+    "<ruby>急<rt>いそ</rt></ruby>いでいるときとともにバスが<ruby>遅<rt>おく</rt></ruby>れる。"
   ],
   [
     "急いでいるときによってバスが遅れる。",
-    "<ruby>急い<rt>いそい</rt></ruby>でいるときによってバスが<ruby>遅れる<rt>おくれる</rt></ruby>。"
+    "<ruby>急<rt>いそ</rt></ruby>いでいるときによってバスが<ruby>遅<rt>おく</rt></ruby>れる。"
   ],
   [
     "急いでいるときに限ってバスが遅れる。",
-    "<ruby>急い<rt>いそい</rt></ruby>でいるときに<ruby>限っ<rt>かぎっ</rt></ruby>てバスが<ruby>遅れる<rt>おくれる</rt></ruby>。"
+    "<ruby>急<rt>いそ</rt></ruby>いでいるときに<ruby>限<rt>かぎ</rt></ruby>ってバスが<ruby>遅<rt>おく</rt></ruby>れる。"
   ],
   [
     "急いでいるときに応じてバスが遅れる。",
-    "<ruby>急い<rt>いそい</rt></ruby>でいるときに<ruby>応じ<rt>おうじ</rt></ruby>てバスが<ruby>遅れる<rt>おくれる</rt></ruby>。"
+    "<ruby>急<rt>いそ</rt></ruby>いでいるときに<ruby>応<rt>おう</rt></ruby>じてバスが<ruby>遅<rt>おく</rt></ruby>れる。"
   ],
   [
     "雨にもかかわらず",
@@ -1178,23 +1178,23 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "静かだにもかかわらず",
-    "<ruby>静か<rt>しずか</rt></ruby>だにもかかわらず"
+    "<ruby>静<rt>しず</rt></ruby>かだにもかかわらず"
   ],
   [
     "静かであるにもかかわらず",
-    "<ruby>静か<rt>しずか</rt></ruby>であるにもかかわらず"
+    "<ruby>静<rt>しず</rt></ruby>かであるにもかかわらず"
   ],
   [
     "問い合わせたところ、届いていた。",
-    "<ruby>問い合わせ<rt>といあわせ</rt></ruby>たところ、<ruby>届い<rt>とどい</rt></ruby>ていた。"
+    "<ruby>問<rt>と</rt></ruby>い<ruby>合<rt>あ</rt></ruby>わせたところ、<ruby>届<rt>とど</rt></ruby>いていた。"
   ],
   [
     "行ってみたところ、誰もいなかった。",
-    "<ruby>行っ<rt>いっ</rt></ruby>てみたところ、<ruby>誰<rt>だれ</rt></ruby>もいなかった。"
+    "<ruby>行<rt>い</rt></ruby>ってみたところ、<ruby>誰<rt>だれ</rt></ruby>もいなかった。"
   ],
   [
     "明日問い合わせたところ、分かるだろう。",
-    "<ruby>明日<rt>あした</rt></ruby><ruby>問い合わせ<rt>といあわせ</rt></ruby>たところ、<ruby>分かる<rt>わかる</rt></ruby>だろう。"
+    "<ruby>明日<rt>あした</rt></ruby><ruby>問<rt>と</rt></ruby>い<ruby>合<rt>あ</rt></ruby>わせたところ、<ruby>分<rt>わ</rt></ruby>かるだろう。"
   ],
   [
     "電話したところ、留守だった。",
@@ -1218,23 +1218,23 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "たとえ雨が＿＿、試合は行います。",
-    "たとえ<ruby>雨<rt>あめ</rt></ruby>が＿＿、<ruby>試合<rt>しあい</rt></ruby>は<ruby>行い<rt>おこない</rt></ruby>ます。"
+    "たとえ<ruby>雨<rt>あめ</rt></ruby>が＿＿、<ruby>試合<rt>しあい</rt></ruby>は<ruby>行<rt>おこな</rt></ruby>います。"
   ],
   [
     "彼に何と言われても、＿＿。",
-    "<ruby>彼<rt>かれ</rt></ruby>に<ruby>何<rt>なん</rt></ruby>と<ruby>言わ<rt>いわ</rt></ruby>れても、＿＿。"
+    "<ruby>彼<rt>かれ</rt></ruby>に<ruby>何<rt>なん</rt></ruby>と<ruby>言<rt>い</rt></ruby>われても、＿＿。"
   ],
   [
     "彼は飛び上がる＿＿驚いた。",
-    "<ruby>彼<rt>かれ</rt></ruby>は<ruby>飛び上がる<rt>とびあがる</rt></ruby>＿＿<ruby>驚い<rt>おどろい</rt></ruby>た。"
+    "<ruby>彼<rt>かれ</rt></ruby>は<ruby>飛<rt>と</rt></ruby>び<ruby>上<rt>あ</rt></ruby>がる＿＿<ruby>驚<rt>おどろ</rt></ruby>いた。"
   ],
   [
     "聽說山田不喜歡酒：山田さん、お酒が嫌い＿＿。",
-    "聽說山田不喜歡酒：<ruby>山田<rt>やまだ</rt></ruby>さん、お<ruby>酒<rt>さけ</rt></ruby>が<ruby>嫌い<rt>きらい</rt></ruby>＿＿。"
+    "聽說山田不喜歡酒：<ruby>山田<rt>やまだ</rt></ruby>さん、お<ruby>酒<rt>さけ</rt></ruby>が<ruby>嫌<rt>きら</rt></ruby>い＿＿。"
   ],
   [
     "＿＿、ようやく自分の家を持てた。",
-    "＿＿、ようやく<ruby>自分<rt>じぶん</rt></ruby>の<ruby>家<rt>いえ</rt></ruby>を<ruby>持て<rt>もて</rt></ruby>た。"
+    "＿＿、ようやく<ruby>自分<rt>じぶん</rt></ruby>の<ruby>家<rt>いえ</rt></ruby>を<ruby>持<rt>も</rt></ruby>てた。"
   ],
   [
     "＿＿、社員はその犠牲者だってことです。",
@@ -1246,27 +1246,27 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "たとえ子ども＿＿、責任はとらなくてはいけない。",
-    "たとえ<ruby>子ども<rt>こども</rt></ruby>＿＿、<ruby>責任<rt>せきにん</rt></ruby>はとらなくてはいけない。"
+    "たとえ<ruby>子<rt>こ</rt></ruby>ども＿＿、<ruby>責任<rt>せきにん</rt></ruby>はとらなくてはいけない。"
   ],
   [
     "「たとえ事実を知っていたとしても」表示：",
-    "「たとえ<ruby>事実<rt>じじつ</rt></ruby>を<ruby>知っ<rt>しっ</rt></ruby>ていたとしても」表示："
+    "「たとえ<ruby>事実<rt>じじつ</rt></ruby>を<ruby>知<rt>し</rt></ruby>っていたとしても」表示："
   ],
   [
     "「絶対に諦めたりしない」的語氣是：",
-    "「<ruby>絶対<rt>ぜったい</rt></ruby>に<ruby>諦め<rt>あきらめ</rt></ruby>たりしない」的語氣是："
+    "「<ruby>絶対<rt>ぜったい</rt></ruby>に<ruby>諦<rt>あきら</rt></ruby>めたりしない」的語氣是："
   ],
   [
     "「泣く」接～たりしない時應變成：",
-    "「<ruby>泣く<rt>なく</rt></ruby>」接～たりしない時應變成："
+    "「<ruby>泣<rt>な</rt></ruby>く」接～たりしない時應變成："
   ],
   [
     "今日は死ぬ＿＿疲れた。",
-    "<ruby>今日<rt>きょう</rt></ruby>は<ruby>死ぬ<rt>しぬ</rt></ruby>＿＿<ruby>疲れ<rt>つかれ</rt></ruby>た。"
+    "<ruby>今日<rt>きょう</rt></ruby>は<ruby>死<rt>し</rt></ruby>ぬ＿＿<ruby>疲<rt>つか</rt></ruby>れた。"
   ],
   [
     "「おもしろいほどよく売れる」表示：",
-    "「おもしろいほどよく<ruby>売れる<rt>うれる</rt></ruby>」表示："
+    "「おもしろいほどよく<ruby>売<rt>う</rt></ruby>れる」表示："
   ],
   [
     "「あの人、先生なんだって？」用升調是為了：",
@@ -1278,15 +1278,15 @@ window.JPY5GrammarRuby = (() => {
   ],
   [
     "＿＿、作業は少しずつ進んでいる。",
-    "＿＿、<ruby>作業<rt>さぎょう</rt></ruby>は少しずつ<ruby>進ん<rt>すすん</rt></ruby>でいる。"
+    "＿＿、<ruby>作業<rt>さぎょう</rt></ruby>は少しずつ<ruby>進<rt>すす</rt></ruby>んでいる。"
   ],
   [
     "對方婉拒後說「つまり、引き受けていただけない＿＿」最自然的是：",
-    "對方婉拒後說「つまり、<ruby>引き受け<rt>ひきうけ</rt></ruby>ていただけない＿＿」最自然的是："
+    "對方婉拒後說「つまり、<ruby>引<rt>ひ</rt></ruby>き<ruby>受<rt>う</rt></ruby>けていただけない＿＿」最自然的是："
   ],
   [
     "「日本語って難しいよね」期待對方：",
-    "「<ruby>日本語<rt>にほんご</rt></ruby>って<ruby>難しい<rt>むずかしい</rt></ruby>よね」期待對方："
+    "「<ruby>日本語<rt>にほんご</rt></ruby>って<ruby>難<rt>むずか</rt></ruby>しいよね」期待對方："
   ]
 ];
   const map = new Map(entries);
