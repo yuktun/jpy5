@@ -1,0 +1,10 @@
+{
+  "name": "日本語 Year 5",
+  "short_name": "日本語 Year 5",
+  "start_url": "/jpy5/",
+  "scope": "/jpy5/",
+  "display": "standalone",
+  "background_color": "#f8f4ec",
+  "theme_color": "#f8f4ec",
+  "icons": [{ "src": "assets/app-icon.png", "sizes": "any", "type": "image/png", "purpose": "any maskable" }]
+}
