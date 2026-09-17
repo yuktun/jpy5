@@ -7,15 +7,28 @@
   let reloading = false;
   let status;
 
-  function setStatus(text, state) {
+  const statusDetails = {
+    ready: { label: "Offline", description: "離線內容已準備好" },
+    offline: { label: "Offline", description: "目前離線；可使用已準備好的離線內容" },
+    pending: { label: "準備中", description: "正在準備離線內容" },
+    error: { label: "未完成", description: "離線內容尚未準備完成" }
+  };
+
+  function setStatus(state) {
+    const detail = statusDetails[state];
     if (!status) {
-      status = document.createElement("p");
+      status = document.createElement("span");
       status.className = "pwa-status";
       status.setAttribute("role", "status");
-      document.body.append(status);
+      status.innerHTML = '<span class="pwa-status-dot" aria-hidden="true"></span><span class="pwa-status-label"></span>';
+      const header = document.querySelector(".site-header");
+      const brand = header?.querySelector(".brand");
+      if (header && brand) brand.insertAdjacentElement("afterend", status);
+      else document.body.append(status);
     }
     status.dataset.state = state;
-    status.textContent = text;
+    status.setAttribute("aria-label", detail.description);
+    status.querySelector(".pwa-status-label").textContent = detail.label;
   }
 
   function showUpdate(waiting) {
@@ -49,12 +62,12 @@
     }
   });
   navigator.serviceWorker.addEventListener("message", event => {
-    if (event.data?.type === "JPY5_OFFLINE_READY") setStatus("離線內容已準備好", "ready");
+    if (event.data?.type === "JPY5_OFFLINE_READY") setStatus(navigator.onLine ? "ready" : "offline");
   });
 
   async function register() {
     try {
-      setStatus("正在準備離線內容…", "pending");
+      setStatus(navigator.onLine ? "pending" : "offline");
       registration = await navigator.serviceWorker.register(`${root}sw.js`, { scope: root, updateViaCache: "none" });
       inspect(registration);
       registration.addEventListener("updatefound", () => {
@@ -65,9 +78,9 @@
       });
       await navigator.serviceWorker.ready;
       navigator.serviceWorker.controller?.postMessage({ type: "JPY5_CACHE_STATUS" });
-      if (!navigator.serviceWorker.controller) setStatus("離線內容已準備好", "ready");
+      if (!navigator.serviceWorker.controller) setStatus(navigator.onLine ? "ready" : "offline");
     } catch (error) {
-      setStatus("離線內容尚未準備完成；請連線後重新開啟 App。", "error");
+      setStatus(navigator.onLine ? "error" : "offline");
     }
   }
 
@@ -75,6 +88,7 @@
     registration?.update().catch(() => {});
   }
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") checkForUpdate(); });
-  window.addEventListener("online", checkForUpdate);
+  window.addEventListener("online", () => { setStatus("pending"); checkForUpdate(); });
+  window.addEventListener("offline", () => setStatus("offline"));
   window.addEventListener("DOMContentLoaded", register, { once: true });
 })();

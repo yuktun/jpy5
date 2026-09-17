@@ -10,6 +10,7 @@ const assetMatches = [...manifestSource.matchAll(/^  "([^"]+)"/gm)].map(match =>
 const manifest = JSON.parse(await readFile(join(root, "manifest.webmanifest"), "utf8"));
 const serviceWorker = await readFile(join(root, "sw.js"), "utf8");
 const pwa = await readFile(join(root, "assets", "pwa.js"), "utf8");
+const styles = await readFile(join(root, "assets", "styles.css"), "utf8");
 
 assert.equal(new Set(assetMatches).size, assetMatches.length, "offline inventory has duplicate entries");
 for (const asset of assetMatches) await stat(join(root, asset));
@@ -33,5 +34,11 @@ assert.match(pwa, /visibilitychange/);
 assert.match(pwa, /addEventListener\("online"/);
 assert.match(pwa, /立即更新/);
 assert.match(pwa, /稍後/);
+assert.match(pwa, /brand\.insertAdjacentElement\("afterend", status\)/, "status must be placed after the header brand");
+assert.match(pwa, /label: "Offline"/);
+assert.match(pwa, /label: "準備中"/);
+assert.match(pwa, /label: "未完成"/);
+assert.match(styles, /\.pwa-status\{display:inline-flex/);
+assert.match(styles, /\.pwa-status\{grid-column:1\/-1;grid-row:2/, "narrow headers need a second status row");
 
 console.log(`PWA checks passed: ${pages.length} pages and ${assetMatches.length} cached resources.`);
