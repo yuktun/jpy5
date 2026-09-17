@@ -11,6 +11,7 @@ const manifest = JSON.parse(await readFile(join(root, "manifest.webmanifest"), "
 const serviceWorker = await readFile(join(root, "sw.js"), "utf8");
 const pwa = await readFile(join(root, "assets", "pwa.js"), "utf8");
 const styles = await readFile(join(root, "assets", "styles.css"), "utf8");
+const analytics = await readFile(join(root, "assets", "analytics.js"), "utf8");
 
 assert.equal(new Set(assetMatches).size, assetMatches.length, "offline inventory has duplicate entries");
 for (const asset of assetMatches) await stat(join(root, asset));
@@ -18,6 +19,7 @@ for (const page of pages) {
   const html = await readFile(join(root, page), "utf8");
   assert.match(html, /<link rel="manifest" href="manifest\.webmanifest">/, `${page} has no app manifest`);
   assert.match(html, /<script src="assets\/pwa\.js" defer><\/script>/, `${page} does not register the PWA`);
+  assert.match(html, /<script src="assets\/analytics\.js" defer><\/script>/, `${page} does not load production analytics`);
   assert(assetMatches.includes(page), `${page} is missing from the offline inventory`);
 }
 assert.equal(pages.length, 37, "unexpected page count; review the offline inventory");
@@ -41,5 +43,11 @@ assert.match(pwa, /label: "下載中"/);
 assert.match(pwa, /label: "下載未完成"/);
 assert.match(styles, /\.pwa-status\{display:inline-flex/);
 assert.match(styles, /\.pwa-status\{grid-column:1\/-1;grid-row:2/, "narrow headers need a second status row");
+assert.match(analytics, /location\.origin !== "https:\/\/yuktun\.github\.io"/);
+assert.match(analytics, /location\.pathname\.startsWith\("\/jpy5\/"\)/);
+assert.match(analytics, /https:\/\/sasukimm-jp5y\.goatcounter\.com\/count/);
+assert.match(analytics, /https:\/\/gc\.zgo\.at\/count\.js/);
+assert.match(analytics, /__JPY5_GOATCOUNTER_LOADED/);
+assert.doesNotMatch(analytics, /sasukimm\.goatcounter\.com/);
 
 console.log(`PWA checks passed: ${pages.length} pages and ${assetMatches.length} cached resources.`);
