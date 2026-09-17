@@ -35,9 +35,10 @@ assert.match(pwa, /addEventListener\("online"/);
 assert.match(pwa, /立即更新/);
 assert.match(pwa, /稍後/);
 assert.match(pwa, /brand\.insertAdjacentElement\("afterend", status\)/, "status must be placed after the header brand");
-assert.match(pwa, /label: "Offline"/);
-assert.match(pwa, /label: "準備中"/);
-assert.match(pwa, /label: "未完成"/);
+assert.match(pwa, /label: "已下載"/);
+assert.match(pwa, /label: "離線可用"/);
+assert.match(pwa, /label: "下載中"/);
+assert.match(pwa, /label: "下載未完成"/);
 assert.match(styles, /\.pwa-status\{display:inline-flex/);
 assert.match(styles, /\.pwa-status\{grid-column:1\/-1;grid-row:2/, "narrow headers need a second status row");
 

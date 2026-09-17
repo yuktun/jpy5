@@ -8,10 +8,10 @@
   let status;
 
   const statusDetails = {
-    ready: { label: "Offline", description: "離線內容已準備好" },
-    offline: { label: "Offline", description: "目前離線；可使用已準備好的離線內容" },
-    pending: { label: "準備中", description: "正在準備離線內容" },
-    error: { label: "未完成", description: "離線內容尚未準備完成" }
+    ready: { label: "已下載", description: "離線內容已下載並準備好" },
+    offline: { label: "離線可用", description: "目前離線；已下載的離線內容可以使用" },
+    pending: { label: "下載中", description: "正在下載離線內容" },
+    error: { label: "下載未完成", description: "離線內容下載未完成" }
   };
 
   function setStatus(state) {
