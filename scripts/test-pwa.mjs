@@ -22,7 +22,7 @@ for (const page of pages) {
   assert.match(html, /<script src="assets\/analytics\.js" defer><\/script>/, `${page} does not load production analytics`);
   assert(assetMatches.includes(page), `${page} is missing from the offline inventory`);
 }
-assert.equal(pages.length, 47, "unexpected page count; review the offline inventory");
+assert.equal(pages.length, 46, "unexpected page count; review the offline inventory");
 assert.equal(manifest.scope, "/jpy5/");
 assert.equal(manifest.start_url, "/jpy5/");
 assert.match(serviceWorker, /importScripts\("assets\/offline-assets\.js"\)/);
