@@ -12,9 +12,10 @@ document.addEventListener("DOMContentLoaded", () => {
   set("vocabulary", `${vocabDone}/152 已評估`);
   set("grammar", `${grammarDone}/46 張已評估`);
   set("reading", `${readingDone}/8 題已完成`);
-  set("listening", `${listeningDone}/0 題已完成`);
+  set("listening", "Beta：答案待音訊核實，暫不評分");
   set("quiz", `${quizHistory.length} 次測驗紀錄`);
-  const milestones = [vocabDone/152, grammarDone/46, readingDone/8, listeningDone/0, Math.min(quizHistory.length,1)].map(value=>Math.min(1,value));
+  const finiteRatio=(done,total)=>Number.isFinite(done)&&total>0?Math.min(1,Math.max(0,done/total)):0;
+  const milestones = [finiteRatio(vocabDone,152), finiteRatio(grammarDone,46), finiteRatio(readingDone,8), Math.min(quizHistory.length,1)];
   const overall = Math.round(milestones.reduce((sum,value)=>sum+value,0)/milestones.length*100);
   set("overall", `${overall}%`);
   const bar=document.querySelector("#hub-progress-bar"); if(bar)bar.style.width=`${overall}%`;

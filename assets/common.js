@@ -29,15 +29,11 @@ window.JPY5 = (() => {
     element.addEventListener("click",onClick,true);
     return ()=>{element.removeEventListener("pointerdown",onPointerDown);element.removeEventListener("pointerup",onPointerUp);element.removeEventListener("pointercancel",onPointerCancel);element.removeEventListener("click",onClick,true)};
   }
-  function setTheme(theme) {
-    document.documentElement.dataset.theme = theme;
-    write("theme", theme);
-    document.querySelectorAll("[data-theme-select]").forEach(s => s.value = theme);
-  }
+  function effectiveTheme(theme,hour=(new Date()).getHours()){return theme==="auto"?(hour>=18||hour<6?"dark":"light"):theme;} function applyTheme(theme){document.documentElement.dataset.theme=effectiveTheme(theme);document.documentElement.dataset.themePreference=theme;document.querySelectorAll("[data-theme-select]").forEach(s=>s.value=theme);} function setTheme(theme){write("theme",theme);applyTheme(theme);}
   function initTheme() {
     const theme = read("theme", "auto");
-    document.documentElement.dataset.theme = theme;
-    document.querySelectorAll("[data-theme-select]").forEach(s => { s.value=theme; s.addEventListener("change", () => setTheme(s.value)); });
+    applyTheme(theme);
+    document.querySelectorAll("[data-theme-select]").forEach(s=>s.addEventListener("change",()=>setTheme(s.value))); setInterval(()=>{if(read("theme","auto")==="auto")applyTheme("auto")},60000); window.addEventListener("focus",()=>{if(read("theme","auto")==="auto")applyTheme("auto")});
   }
   function initIcons() {
     if (!document.querySelector('link[rel="icon"]')) {
@@ -57,6 +53,8 @@ window.JPY5 = (() => {
       const credit=document.createElement("a"); credit.className="source-credit"; credit.href=sources.home; credit.target="_blank"; credit.rel="noopener"; credit.textContent="ttrw.jp"; footer.append(credit);
     }
   }
-  document.addEventListener("DOMContentLoaded", () => { initTheme(); initIcons(); initSources(); });
+  function initLessonSwitchers(){document.querySelectorAll(".module-lesson-switcher,.reading-controls .lesson-pills").forEach(nav=>{const module=(location.pathname.match(/chapter-(?:13|14|15|16|17)-([^./]+)\.html/)||[])[1];const lesson=(location.pathname.match(/chapter-(\d+)-/)||[])[1];if(!module||!lesson)return;nav.innerHTML=[13,14,15,16,17].map(n=>`<a class="${String(n)===lesson?"active":""}" ${String(n)===lesson?'aria-current="page"':""} href="chapter-${n}-${module}.html">第${n}課</a>`).join("")+`<span class="lesson-pill-disabled" aria-disabled="true">第18課・準備中</span>`;});}
+  document.addEventListener("DOMContentLoaded", () => { initTheme(); initIcons(); initSources(); initLessonSwitchers(); });
   return { read, write, remove, shuffle, bindSwipe, setTheme, sources };
 })();
+
