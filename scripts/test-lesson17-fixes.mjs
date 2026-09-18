@@ -16,6 +16,9 @@ assert.equal((conversation.match(/[①②③④⑤⑥⑦⑧⑨]/g)||[]).length,9
 assert.match(conversation,/items:\[\]/);
 for(const common of ["assets/common.js","assets/ch14-common.js","assets/ch15-common.js","assets/ch16-common.js","assets/ch17-common.js"]){
  const source=await readFile(`${root}/${common}`,"utf8");
- assert.match(source,/hour>=18\|\|hour<6/);assert.match(source,/第18課・準備中/);
+ assert.match(source,/hour>=18\|\|hour<6/);assert.match(source,/第18課<br><small>準備中<\/small>/);
 }
+const styles=await readFile(`${root}/assets/styles.css`,`utf8`);
+assert.match(styles,/grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
+assert.match(styles,/min-height:48px/);
 console.log("Lesson 17 fixes passed: navigation targets, finite progress, theme boundaries, and unscored listening draft.");
