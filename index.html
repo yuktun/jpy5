@@ -9,7 +9,7 @@
     <link rel="apple-touch-icon" href="assets/app-icon.png">
     <link rel="stylesheet" href="assets/styles.css?v=22">
     <script src="assets/common.js?v=4" defer></script>
-    <script src="assets/learning-guide.js?v=1" defer></script>
+    <script src="assets/learning-guide.js?v=2" defer></script>
       <link rel="manifest" href="manifest.webmanifest">
     <script src="assets/pwa.js" defer></script>
     <script src="assets/analytics.js" defer></script>
@@ -20,7 +20,10 @@
         <span class="brand-mark">五</span>
         <span>日本語 <b>Year 5</b></span>
       </a>
-      <label class="theme-control">主題<select data-theme-select aria-label="頁面主題"><option value="auto">自動</option><option value="light">光亮</option><option value="dark">深色</option></select></label>
+      <div class="header-actions home-header-actions">
+        <button class="header-guide-button learning-guide-open" type="button" aria-haspopup="dialog">學習指南</button>
+        <label class="theme-control">主題<select data-theme-select aria-label="頁面主題"><option value="auto">自動</option><option value="light">光亮</option><option value="dark">深色</option></select></label>
+      </div>
     </header>
 
     <main>
@@ -38,13 +41,6 @@
         <a class="primary-button" href="chapter-13.html?v=2">
           開啟第 13 課學習中心 <span aria-hidden="true">→</span>
         </a>
-      </section>
-
-      <section class="learning-guide-preview" aria-labelledby="learning-guide-heading">
-        <div class="learning-guide-preview-head">
-          <div><p class="kicker">LEARNING GUIDE · MINNA NO NIHONGO INTERMEDIATE II</p><h2 id="learning-guide-heading">🎓 Year 5 學習指南</h2><p>由「識文法」進步到「識運用日文」</p></div>
-          <button class="secondary-button learning-guide-open" type="button" aria-haspopup="dialog">📖 查看學習指南 <span aria-hidden="true">→</span></button>
-        </div>
       </section>
 
       <section class="lesson-preview" aria-labelledby="lesson-heading">

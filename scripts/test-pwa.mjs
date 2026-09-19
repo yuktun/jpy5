@@ -66,9 +66,9 @@ assert.match(quickSwitcher, /\["textbook", "聆聽"\]/, "Listening must remain i
 assert.match(quickSwitcher, /\["review", "複習"\]/, "Review must remain in module navigation");
 assert.match(quickSwitcher, /document\.querySelectorAll\("\.module-lesson-switcher,.reading-controls \.lesson-pills"\)\.forEach\(nav => nav\.remove\(\)\)/, "legacy duplicate lesson navigation must be removed");
 assert.doesNotMatch(quickSwitcher, /const lessons\s*=\s*\[/, "available lessons must not be hardcoded in the browser navigation");
-assert.match(home, /查看學習指南/, "homepage must retain the compact learning guide trigger");
-assert.doesNotMatch(home, /learning-guide-card/, "homepage preview must not render the full guide cards");
-assert(home.indexOf("learning-guide-preview") < home.indexOf("lesson-preview"), "learning guide preview must appear before lesson selection");
+assert.match(home, /class="header-guide-button learning-guide-open"/, "homepage header must retain the learning guide trigger");
+assert.doesNotMatch(home, /learning-guide-preview|learning-guide-card/, "homepage must not render a learning guide content section");
+assert(home.indexOf("header-guide-button") < home.indexOf("<main>"), "learning guide access must stay outside homepage content");
 assert.match(learningGuide, /document\.documentElement\.classList\.add\("learning-guide-open"\)/, "guide opening must lock root scrolling");
 assert.match(learningGuide, /document\.documentElement\.classList\.remove\("learning-guide-open"\)/, "guide closing must restore root scrolling");
 assert.match(learningGuide, /window\.scrollTo\(0, savedScrollY\)/, "guide closing must restore the prior scroll position");
