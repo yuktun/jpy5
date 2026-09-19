@@ -51,11 +51,13 @@
   </main>
   <dialog class="focus-detail-dialog" id="focus-detail-dialog" aria-labelledby="focus-detail-title">
     <div class="focus-detail-head"><span id="focus-detail-number">底線句</span><button type="button" data-dialog-close aria-label="關閉解釋">×</button></div>
-    <h2 id="focus-detail-title" lang="ja"></h2>
-    <p class="focus-detail-kana" id="focus-detail-kana" lang="ja"></p>
-    <p class="focus-detail-meaning" id="focus-detail-meaning"></p>
-    <dl><div><dt>情境</dt><dd id="focus-detail-use"></dd></div><div><dt>重點</dt><dd id="focus-detail-point"></dd></div></dl>
-    <button class="listen-button" type="button" data-dialog-listen>▶ 播放這句</button>
+    <div class="focus-detail-body">
+      <h2 id="focus-detail-title" lang="ja"></h2>
+      <p class="focus-detail-kana" id="focus-detail-kana" lang="ja"></p>
+      <p class="focus-detail-meaning" id="focus-detail-meaning"></p>
+      <dl><div><dt>情境</dt><dd id="focus-detail-use"></dd></div><div><dt>重點</dt><dd id="focus-detail-point"></dd></div></dl>
+    </div>
+    <div class="focus-detail-footer"><button class="secondary-button" type="button" data-dialog-close>關閉</button><button class="listen-button" type="button" data-dialog-listen>▶ 播放這句</button></div>
   </dialog>
   <footer>第 17 課 <span>·</span> 話す・聞く <span>·</span> 裝置內儲存進度</footer>
 </body>

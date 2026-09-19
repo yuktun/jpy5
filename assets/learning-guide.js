@@ -4,6 +4,7 @@
   if (!triggers.length || !HTMLDialogElement.prototype.showModal) return;
   const steps = [["預習","上堂前快速閱讀課文及文法。唔需要全部背熟，先建立基本印象。"],["理解","上堂時留意老師點樣解釋文法、語境及例句。"],["比較","每課揀一至兩組容易混淆嘅文法做比較。"],["運用","每個主要文法最少自己造一句。盡量使用日常生活、工作或個人經歷。"],["輸出","用日文講一段約一分鐘嘅內容，或者用三句日文概括課文。"],["重溫","一星期後重新測試自己。特別重溫之前答錯嘅生字同文法。"]];
   let returnFocus = null;
+  let savedScrollY = 0;
   let progress;
   try { progress = JSON.parse(localStorage.getItem(storageKey)); } catch { progress = []; }
   if (!Array.isArray(progress)) progress = [];
@@ -21,8 +22,10 @@
 <section class="grammar-extra-section"><h3>④ 聽力：唔需要每個字都聽得清楚</h3><p>聽力練習時，先理解整體意思，再處理細節。</p><p><b>特別留意：</b></p><ul><li>講者想表達咩？</li><li>呢句係提問、確認，定係轉述？</li><li>語氣有冇表達驚訝、認同或不滿？</li><li>有冇使用口語縮約？</li></ul><p class="guide-flow" lang="ja">～んだって？　～ってこと？　～よね？</p><p>練習理解佢哋喺對話中嘅功能，而唔係只背中文翻譯。</p></section>
 <section class="grammar-extra-section guide-routine"><div class="guide-routine-head"><div><h3>每課建議溫習流程</h3><p>呢個係可重複使用嘅學習指南清單，進度會儲存喺呢部裝置；唔係按課次分開。</p></div><button type="button" class="text-button" data-guide-reset>重設清單</button></div><div class="guide-checklist">${checklist()}</div></section><section class="guide-motivation"><span>Year 5 嘅目標：</span><strong>由「我明白呢句日文」</strong><em>進步到</em><strong>「我可以自然地用日文解釋自己嘅想法。」</strong></section></div><div class="grammar-extra-footer"><button type="button" class="secondary-button" data-guide-close>關閉</button></div>`;
   document.body.append(dialog);
-  const close = () => { if (dialog.open) dialog.close(); returnFocus?.focus({ preventScroll: true }); returnFocus = null; };
-  triggers.forEach(trigger => trigger.addEventListener("click", () => { returnFocus = document.activeElement; dialog.showModal(); dialog.querySelector("[data-guide-close]").focus(); }));
+  const lockBackground = () => { savedScrollY = window.scrollY; document.body.classList.add("grammar-extra-open"); document.body.style.top = `-${savedScrollY}px`; };
+  const unlockBackground = () => { document.body.classList.remove("grammar-extra-open"); document.body.style.top = ""; window.scrollTo(0, savedScrollY); };
+  const close = () => { if (dialog.open) dialog.close(); unlockBackground(); returnFocus?.focus({ preventScroll: true }); returnFocus = null; };
+  triggers.forEach(trigger => trigger.addEventListener("click", () => { returnFocus = document.activeElement; lockBackground(); dialog.showModal(); dialog.querySelector("[data-guide-close]").focus(); }));
   dialog.addEventListener("click", event => { if (event.target === dialog || event.target.closest("[data-guide-close]")) close(); });
   dialog.addEventListener("cancel", event => { event.preventDefault(); close(); });
   dialog.addEventListener("change", event => { const input = event.target.closest("[data-guide-step]"); if (input) { progress[Number(input.dataset.guideStep)] = input.checked; save(); } });
