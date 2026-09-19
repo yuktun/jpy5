@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="assets/styles.css?v=22">
     <script src="assets/common.js?v=4" defer></script>
     <script src="assets/learning-guide.js?v=2" defer></script>
+    <script src="assets/install-app.js?v=1" defer></script>
       <link rel="manifest" href="manifest.webmanifest">
     <script src="assets/pwa.js" defer></script>
     <script src="assets/analytics.js" defer></script>
@@ -112,6 +113,20 @@
           </div>
           <span class="round-arrow" aria-hidden="true">↗</span>
         </a>
+      </section>
+
+      <section class="install-app-section" data-install-app-section aria-labelledby="install-app-heading">
+        <div class="install-app-card">
+          <span class="install-app-icon" aria-hidden="true">📲</span>
+          <div>
+            <h2 id="install-app-heading">將 JPY5 加入桌面</h2>
+            <p>將日文學習工具加入主畫面，下次一按即可開啟。</p>
+          </div>
+          <button class="install-app-button primary-button" type="button" data-install-app>
+            <span aria-hidden="true">📲</span> 安裝桌面 App
+          </button>
+          <p class="install-app-feedback" data-install-app-feedback aria-live="polite"></p>
+        </div>
       </section>
     </main>
 
