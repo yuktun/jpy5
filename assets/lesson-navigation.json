@@ -1,0 +1,54 @@
+{
+  "lessons": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+  ],
+  "routes": {
+    "13": {
+      "notes": "chapter-13-notes.html",
+      "reading": "chapter-13-reading.html",
+      "review": "chapter-13-review.html",
+      "textbook": "chapter-13-textbook.html",
+      "vocabulary": "chapter-13-vocabulary.html"
+    },
+    "14": {
+      "notes": "chapter-14-notes.html",
+      "reading": "chapter-14-reading.html",
+      "review": "chapter-14-review.html",
+      "textbook": "chapter-14-textbook.html",
+      "vocabulary": "chapter-14-vocabulary.html"
+    },
+    "15": {
+      "notes": "chapter-15-notes.html",
+      "reading": "chapter-15-reading.html",
+      "review": "chapter-15-review.html",
+      "textbook": "chapter-15-textbook.html",
+      "vocabulary": "chapter-15-vocabulary.html"
+    },
+    "16": {
+      "notes": "chapter-16-notes.html",
+      "reading": "chapter-16-reading.html",
+      "review": "chapter-16-review.html",
+      "textbook": "chapter-16-textbook.html",
+      "vocabulary": "chapter-16-vocabulary.html"
+    },
+    "17": {
+      "notes": "chapter-17-notes.html",
+      "reading": "chapter-17-reading.html",
+      "review": "chapter-17-review.html",
+      "textbook": "chapter-17-textbook.html",
+      "vocabulary": "chapter-17-vocabulary.html"
+    },
+    "18": {
+      "notes": "chapter-18-notes.html",
+      "reading": "chapter-18-reading.html",
+      "review": "chapter-18-review.html",
+      "textbook": "chapter-18-textbook.html",
+      "vocabulary": "chapter-18-vocabulary.html"
+    }
+  }
+}

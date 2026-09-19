@@ -13,6 +13,8 @@ const serviceWorker = await readFile(join(root, "sw.js"), "utf8");
 const pwa = await readFile(join(root, "assets", "pwa.js"), "utf8");
 const styles = await readFile(join(root, "assets", "styles.css"), "utf8");
 const analytics = await readFile(join(root, "assets", "analytics.js"), "utf8");
+const navigation = JSON.parse(await readFile(join(root, "assets", "lesson-navigation.json"), "utf8"));
+const quickSwitcher = await readFile(join(root, "assets", "lesson-quick-switcher.js"), "utf8");
 
 assert.equal(new Set(assetMatches).size, assetMatches.length, "offline inventory has duplicate entries");
 for (const asset of assetMatches) await stat(join(root, asset));
@@ -46,6 +48,22 @@ assert.match(styles, /\.pwa-status\{display:inline-flex/);
 assert.match(styles, /\.pwa-status\{grid-column:1\/-1;grid-row:2/, "narrow headers need a second status row");
 assert.match(styles, /@media\(max-width:1200px\)\{\.vocab-complete-layout\{grid-template-columns:minmax\(0,1fr\)/, "iPad vocabulary panels must stack");
 assert.match(styles, /\.vocab-row em\{display:block;grid-column:2\/-1\}/, "mobile rows must retain the word type");
+assert.deepEqual(navigation.lessons, [13, 14, 15, 16, 17, 18], "lesson navigation must be generated from the available lesson pages");
+for (const lesson of navigation.lessons) {
+  for (const module of ["vocabulary", "notes", "reading", "textbook", "review"]) {
+    assert.equal(navigation.routes[lesson][module], `chapter-${lesson}-${module}.html`, `lesson ${lesson} is missing ${module} navigation`);
+  }
+}
+const mainModulePages = pages.filter(page => /^chapter-\d+-(vocabulary|notes|reading|textbook|review)\.html$/.test(page));
+for (const page of mainModulePages) {
+  const html = await readFile(join(root, page), "utf8");
+  assert.match(html, /assets\/lesson-quick-switcher\.js\?v=2/, `${page} must load the consolidated navigation`);
+}
+assert.equal(mainModulePages.length, 30, "all five modules must have one consolidated navigation entry per lesson");
+assert.match(quickSwitcher, /\["textbook", "聆聽"\]/, "Listening must remain in module navigation");
+assert.match(quickSwitcher, /\["review", "複習"\]/, "Review must remain in module navigation");
+assert.match(quickSwitcher, /document\.querySelectorAll\("\.module-lesson-switcher,.reading-controls \.lesson-pills"\)\.forEach\(nav => nav\.remove\(\)\)/, "legacy duplicate lesson navigation must be removed");
+assert.doesNotMatch(quickSwitcher, /const lessons\s*=\s*\[/, "available lessons must not be hardcoded in the browser navigation");
 assert.match(analytics, /location\.origin !== "https:\/\/sasukimm\.github\.io"/);
 assert.match(analytics, /location\.pathname\.startsWith\("\/jpy5\/"\)/);
 assert.match(analytics, /https:\/\/sasukimm-jp5y\.goatcounter\.com\/count/);

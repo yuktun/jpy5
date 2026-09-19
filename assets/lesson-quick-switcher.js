@@ -1,5 +1,5 @@
 (() => {
-  const match = location.pathname.match(/chapter-(\d+)-(vocabulary|notes|reading)\.html$/);
+  const match = location.pathname.match(/chapter-(\d+)-(vocabulary|notes|reading|textbook|review)\.html$/);
   if (!match) return;
 
   const lesson = Number(match[1]);
@@ -7,38 +7,35 @@
   const modules = [
     ["vocabulary", "詞彙"],
     ["notes", "文法"],
-    ["reading", "閱讀"]
+    ["reading", "閱讀"],
+    ["textbook", "聆聽"],
+    ["review", "複習"]
   ];
-  const lessons = [13, 14, 15, 16, 17, 18];
-  const scrollKey = `jpy5-quick-switcher-scroll:${location.pathname}`;
-  const pageFor = (targetLesson, targetModule) => `chapter-${targetLesson}-${targetModule}.html`;
-  const lessonIndex = lessons.indexOf(lesson);
-  const previousLesson = lessons[lessonIndex - 1];
-  const nextLesson = lessons[lessonIndex + 1];
-
-  const link = (href, label, current = false) => `<a href="${href}"${current ? ' class="active" aria-current="page"' : ""}>${label}</a>`;
-  const lessonLink = (targetLesson, direction) => targetLesson
-    ? `<a href="${pageFor(targetLesson, module)}" aria-label="${direction === "previous" ? "上一課" : "下一課"}">${direction === "previous" ? "←" : ""} 第${targetLesson}課 ${direction === "next" ? "→" : ""}</a>`
-    : `<span aria-disabled="true">${direction === "previous" ? "← 上一課" : "下一課 →"}</span>`;
-
-  const switcher = document.createElement("nav");
-  switcher.className = "lesson-quick-switcher";
-  switcher.setAttribute("aria-label", `第 ${lesson} 課快速切換`);
-  switcher.innerHTML = `<div class="lesson-quick-sections" aria-label="學習部分">${modules.map(([name, label]) => link(pageFor(lesson, name), label, name === module)).join("")}</div><div class="lesson-quick-lessons">${lessonLink(previousLesson, "previous")}<span class="lesson-quick-current">第 ${lesson} 課</span>${lessonLink(nextLesson, "next")}</div>`;
-
-  const header = document.querySelector(".site-header");
-  if (!header) return;
-  header.insertAdjacentElement("afterend", switcher);
-
-  const saveScrollPosition = () => {
-    try { sessionStorage.setItem(scrollKey, String(window.scrollY)); } catch {}
+  const render = navigation => {
+    const routeFor = (targetLesson, targetModule) => navigation.routes[String(targetLesson)]?.[targetModule];
+    const fallbackFor = targetLesson => `chapter-${targetLesson}.html`;
+    const link = (href, label, current = false) => href
+      ? `<a href="${href}"${current ? ' class="active" aria-current="page"' : ""}>${label}</a>`
+      : `<span class="lesson-module-unavailable" aria-disabled="true">${label}</span>`;
+    const selectOptions = navigation.lessons.map(targetLesson => `<option value="${targetLesson}"${targetLesson === lesson ? " selected" : ""}>第 ${targetLesson} 課</option>`).join("");
+    const switcher = document.createElement("nav");
+    switcher.className = "lesson-quick-switcher";
+    switcher.setAttribute("aria-label", `第 ${lesson} 課學習導覽`);
+    switcher.innerHTML = `<label class="lesson-select-label">課次<select class="lesson-select" aria-label="選擇課次">${selectOptions}</select></label><div class="lesson-quick-sections" aria-label="學習模組">${modules.map(([name, label]) => link(routeFor(lesson, name), label, name === module)).join("")}</div><p class="lesson-navigation-status" aria-live="polite"></p>`;
+    const header = document.querySelector(".site-header");
+    if (!header) return;
+    document.querySelectorAll(".module-lesson-switcher,.reading-controls .lesson-pills").forEach(nav => nav.remove());
+    header.insertAdjacentElement("afterend", switcher);
+    switcher.querySelector(".lesson-select").addEventListener("change", event => {
+      const targetLesson = Number(event.currentTarget.value);
+      const destination = routeFor(targetLesson, module);
+      if (destination) { location.assign(destination); return; }
+      switcher.querySelector(".lesson-navigation-status").textContent = `第 ${targetLesson} 課未設有${modules.find(([name]) => name === module)?.[1] || "此"}模組，將開啟該課學習中心。`;
+      location.assign(fallbackFor(targetLesson));
+    });
   };
-  window.addEventListener("pagehide", saveScrollPosition);
-  window.addEventListener("beforeunload", saveScrollPosition);
-  window.addEventListener("load", () => {
-    try {
-      const saved = sessionStorage.getItem(scrollKey);
-      if (saved !== null) window.scrollTo({ top: Number(saved), behavior: "auto" });
-    } catch {}
-  }, { once: true });
+  fetch("assets/lesson-navigation.json", { cache: "no-store" })
+    .then(response => response.ok ? response.json() : Promise.reject(new Error("Navigation data unavailable")))
+    .then(render)
+    .catch(() => {});
 })();
