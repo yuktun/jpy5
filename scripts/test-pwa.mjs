@@ -15,6 +15,8 @@ const styles = await readFile(join(root, "assets", "styles.css"), "utf8");
 const analytics = await readFile(join(root, "assets", "analytics.js"), "utf8");
 const navigation = JSON.parse(await readFile(join(root, "assets", "lesson-navigation.json"), "utf8"));
 const quickSwitcher = await readFile(join(root, "assets", "lesson-quick-switcher.js"), "utf8");
+const home = await readFile(join(root, "index.html"), "utf8");
+const learningGuide = await readFile(join(root, "assets", "learning-guide.js"), "utf8");
 
 assert.equal(new Set(assetMatches).size, assetMatches.length, "offline inventory has duplicate entries");
 for (const asset of assetMatches) await stat(join(root, asset));
@@ -64,6 +66,15 @@ assert.match(quickSwitcher, /\["textbook", "聆聽"\]/, "Listening must remain i
 assert.match(quickSwitcher, /\["review", "複習"\]/, "Review must remain in module navigation");
 assert.match(quickSwitcher, /document\.querySelectorAll\("\.module-lesson-switcher,.reading-controls \.lesson-pills"\)\.forEach\(nav => nav\.remove\(\)\)/, "legacy duplicate lesson navigation must be removed");
 assert.doesNotMatch(quickSwitcher, /const lessons\s*=\s*\[/, "available lessons must not be hardcoded in the browser navigation");
+assert.match(home, /查看學習指南/, "homepage must retain the compact learning guide trigger");
+assert.doesNotMatch(home, /learning-guide-card/, "homepage preview must not render the full guide cards");
+assert(home.indexOf("learning-guide-preview") < home.indexOf("lesson-preview"), "learning guide preview must appear before lesson selection");
+assert.match(learningGuide, /document\.documentElement\.classList\.add\("learning-guide-open"\)/, "guide opening must lock root scrolling");
+assert.match(learningGuide, /document\.documentElement\.classList\.remove\("learning-guide-open"\)/, "guide closing must restore root scrolling");
+assert.match(learningGuide, /window\.scrollTo\(0, savedScrollY\)/, "guide closing must restore the prior scroll position");
+assert.match(styles, /\.learning-guide-dialog\[open\]\{position:fixed;inset:0\}/, "guide dialog must be centred independently of page scroll");
+assert.match(styles, /html\.learning-guide-open\{overflow:hidden\}/, "guide modal must prevent background scrolling");
+assert.match(styles, /\.grammar-extra-body\{flex:1 1 auto;min-height:0;max-height:none;overflow-x:hidden;overflow-y:auto\}/, "only the modal body may scroll");
 assert.match(analytics, /location\.origin !== "https:\/\/sasukimm\.github\.io"/);
 assert.match(analytics, /location\.pathname\.startsWith\("\/jpy5\/"\)/);
 assert.match(analytics, /https:\/\/sasukimm-jp5y\.goatcounter\.com\/count/);

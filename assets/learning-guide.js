@@ -22,8 +22,8 @@
 <section class="grammar-extra-section"><h3>④ 聽力：唔需要每個字都聽得清楚</h3><p>聽力練習時，先理解整體意思，再處理細節。</p><p><b>特別留意：</b></p><ul><li>講者想表達咩？</li><li>呢句係提問、確認，定係轉述？</li><li>語氣有冇表達驚訝、認同或不滿？</li><li>有冇使用口語縮約？</li></ul><p class="guide-flow" lang="ja">～んだって？　～ってこと？　～よね？</p><p>練習理解佢哋喺對話中嘅功能，而唔係只背中文翻譯。</p></section>
 <section class="grammar-extra-section guide-routine"><div class="guide-routine-head"><div><h3>每課建議溫習流程</h3><p>呢個係可重複使用嘅學習指南清單，進度會儲存喺呢部裝置；唔係按課次分開。</p></div><button type="button" class="text-button" data-guide-reset>重設清單</button></div><div class="guide-checklist">${checklist()}</div></section><section class="guide-motivation"><span>Year 5 嘅目標：</span><strong>由「我明白呢句日文」</strong><em>進步到</em><strong>「我可以自然地用日文解釋自己嘅想法。」</strong></section></div><div class="grammar-extra-footer"><button type="button" class="secondary-button" data-guide-close>關閉</button></div>`;
   document.body.append(dialog);
-  const lockBackground = () => { savedScrollY = window.scrollY; document.body.classList.add("grammar-extra-open"); document.body.style.top = `-${savedScrollY}px`; };
-  const unlockBackground = () => { document.body.classList.remove("grammar-extra-open"); document.body.style.top = ""; window.scrollTo(0, savedScrollY); };
+  const lockBackground = () => { savedScrollY = window.scrollY; document.documentElement.classList.add("learning-guide-open"); document.body.classList.add("grammar-extra-open"); document.body.style.top = `-${savedScrollY}px`; };
+  const unlockBackground = () => { document.documentElement.classList.remove("learning-guide-open"); document.body.classList.remove("grammar-extra-open"); document.body.style.top = ""; window.scrollTo(0, savedScrollY); };
   const close = () => { if (dialog.open) dialog.close(); unlockBackground(); returnFocus?.focus({ preventScroll: true }); returnFocus = null; };
   triggers.forEach(trigger => trigger.addEventListener("click", () => { returnFocus = document.activeElement; lockBackground(); dialog.showModal(); dialog.querySelector("[data-guide-close]").focus(); }));
   dialog.addEventListener("click", event => { if (event.target === dialog || event.target.closest("[data-guide-close]")) close(); });
