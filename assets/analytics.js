@@ -1,7 +1,7 @@
 (() => {
   // Analytics are deliberately limited to the published GitHub Pages origin.
   // This keeps localhost, preview, and other development environments private.
-  if (location.origin !== "https://yuktun.github.io" || !location.pathname.startsWith("/jpy5/")) return;
+  if (location.origin !== "https://sasukimm.github.io" || !location.pathname.startsWith("/jpy5/")) return;
   if (window.__JPY5_GOATCOUNTER_LOADED || document.querySelector("script[data-jpy5-goatcounter]")) return;
 
   window.__JPY5_GOATCOUNTER_LOADED = true;

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import assert from "node:assert/strict";
+import vm from "node:vm";
 import { readdir, readFile, stat } from "node:fs/promises";
 import { join } from "node:path";
 
@@ -45,12 +46,33 @@ assert.match(styles, /\.pwa-status\{display:inline-flex/);
 assert.match(styles, /\.pwa-status\{grid-column:1\/-1;grid-row:2/, "narrow headers need a second status row");
 assert.match(styles, /@media\(max-width:1200px\)\{\.vocab-complete-layout\{grid-template-columns:minmax\(0,1fr\)/, "iPad vocabulary panels must stack");
 assert.match(styles, /\.vocab-row em\{display:block;grid-column:2\/-1\}/, "mobile rows must retain the word type");
-assert.match(analytics, /location\.origin !== "https:\/\/yuktun\.github\.io"/);
+assert.match(analytics, /location\.origin !== "https:\/\/sasukimm\.github\.io"/);
 assert.match(analytics, /location\.pathname\.startsWith\("\/jpy5\/"\)/);
 assert.match(analytics, /https:\/\/sasukimm-jp5y\.goatcounter\.com\/count/);
 assert.match(analytics, /https:\/\/gc\.zgo\.at\/count\.js/);
 assert.match(analytics, /__JPY5_GOATCOUNTER_LOADED/);
 assert.doesNotMatch(analytics, /sasukimm\.goatcounter\.com/);
+
+function analyticsLoads(origin, pathname) {
+  const appended = [];
+  const context = {
+    location: { origin, pathname },
+    window: {},
+    document: {
+      querySelector: () => null,
+      createElement: () => ({ dataset: {} }),
+      head: { append: script => appended.push(script) }
+    }
+  };
+  vm.runInNewContext(analytics, context);
+  return appended;
+}
+const publicScripts = analyticsLoads("https://sasukimm.github.io", "/jpy5/");
+assert.equal(publicScripts.length, 1, "public GitHub Pages deployment must load GoatCounter");
+assert.equal(publicScripts[0].dataset.goatcounter, "https://sasukimm-jp5y.goatcounter.com/count");
+assert.equal(analyticsLoads("https://yuktun.github.io", "/jpy5/").length, 0, "development GitHub Pages must not load GoatCounter");
+assert.equal(analyticsLoads("http://localhost:8765", "/jpy5/").length, 0, "localhost must not load GoatCounter");
+assert.equal(analyticsLoads("https://sasukimm.github.io", "/other/").length, 0, "unrelated public paths must not load GoatCounter");
 
 console.log(`PWA checks passed: ${pages.length} pages and ${assetMatches.length} cached resources.`);
 
