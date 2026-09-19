@@ -209,7 +209,9 @@ html[data-theme="dark"] .reading-shell{background:linear-gradient(180deg,#101a22
 html.learning-guide-open{overflow:hidden}@media(max-width:720px){.home-header-actions{gap:8px}.header-guide-button{padding:7px 9px;font-size:.74rem}.learning-guide-dialog{width:calc(100vw - 16px)}.guide-routine-head{align-items:stretch;flex-direction:column}.guide-routine-head .text-button{text-align:left}.guide-motivation{padding:22px 16px}}
 
 /* Modal scrolling: the dialog is a fixed flex frame; only its content pane scrolls. */
-.grammar-extra-dialog{display:flex;flex-direction:column;height:min(88dvh,900px);max-height:calc(100dvh - 32px);overflow:hidden}
+.grammar-extra-dialog{height:min(88dvh,900px);max-height:calc(100dvh - 32px);overflow:hidden}
+.grammar-extra-dialog:not([open]){display:none}
+.grammar-extra-dialog[open]{display:flex;flex-direction:column}
 .grammar-extra-head,.grammar-extra-footer{flex:0 0 auto}
 .grammar-extra-body{flex:1 1 auto;min-height:0;max-height:none;overflow-x:hidden;overflow-y:auto}
 .learning-guide-body{max-height:none}

@@ -75,6 +75,9 @@ assert.match(learningGuide, /window\.scrollTo\(0, savedScrollY\)/, "guide closin
 assert.match(styles, /\.learning-guide-dialog\[open\]\{position:fixed;inset:0\}/, "guide dialog must be centred independently of page scroll");
 assert.match(styles, /html\.learning-guide-open\{overflow:hidden\}/, "guide modal must prevent background scrolling");
 assert.match(styles, /\.grammar-extra-body\{flex:1 1 auto;min-height:0;max-height:none;overflow-x:hidden;overflow-y:auto\}/, "only the modal body may scroll");
+assert.match(styles, /\.grammar-extra-dialog:not\(\[open\]\)\{display:none\}/, "closed grammar dialogs must not enter the page layout");
+assert.match(styles, /\.grammar-extra-dialog\[open\]\{display:flex;flex-direction:column\}/, "grammar dialogs must use the flex frame only while open");
+assert.match(await readFile(join(root, "assets", "notes.js"), "utf8"), /dialog\.replaceChildren\(\)/, "closed grammar dialogs must discard their generated content");
 assert.match(analytics, /location\.origin !== "https:\/\/sasukimm\.github\.io"/);
 assert.match(analytics, /location\.pathname\.startsWith\("\/jpy5\/"\)/);
 assert.match(analytics, /https:\/\/sasukimm-jp5y\.goatcounter\.com\/count/);
