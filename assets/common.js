@@ -53,7 +53,7 @@ window.JPY5 = (() => {
       const credit=document.createElement("a"); credit.className="source-credit"; credit.href=sources.home; credit.target="_blank"; credit.rel="noopener"; credit.textContent="ttrw.jp"; footer.append(credit);
     }
   }
-  function initLessonSwitchers(){document.querySelectorAll(".module-lesson-switcher,.reading-controls .lesson-pills").forEach(nav=>{const module=(location.pathname.match(/chapter-(?:13|14|15|16|17)-([^./]+)\.html/)||[])[1];const lesson=(location.pathname.match(/chapter-(\d+)-/)||[])[1];if(!module||!lesson)return;nav.innerHTML=[13,14,15,16,17].map(n=>`<a class="${String(n)===lesson?"active":""}" ${String(n)===lesson?'aria-current="page"':""} href="chapter-${n}-${module}.html">第${n}課</a>`).join("")+`<span class="lesson-pill-disabled" aria-disabled="true">第18課<br><small>準備中</small></span>`;});}
+  function initLessonSwitchers(){document.querySelectorAll(".module-lesson-switcher,.reading-controls .lesson-pills").forEach(nav=>{const module=(location.pathname.match(/chapter-(?:13|14|15|16|17|18)-([^./]+)\.html/)||[])[1];const lesson=(location.pathname.match(/chapter-(\d+)-/)||[])[1];if(!module||!lesson)return;nav.innerHTML=[13,14,15,16,17,18].map(n=>`<a class="${String(n)===lesson?"active":""}" ${String(n)===lesson?'aria-current="page"':""} href="chapter-${n}-${module}.html">第${n}課</a>`).join("");});}
   document.addEventListener("DOMContentLoaded", () => { initTheme(); initIcons(); initSources(); initLessonSwitchers(); });
   return { read, write, remove, shuffle, bindSwipe, setTheme, sources };
 })();

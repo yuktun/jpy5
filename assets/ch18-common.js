@@ -1,8 +1,8 @@
 window.JPY5 = (() => {
-  const prefix = "jpy5.chapter17.";
+  const prefix = "jpy5.chapter18.";
   const sources = Object.freeze({
     home: "https://ttrw.jp/",
-    textbook: "https://ttrw.jp/static/textbook/1031/%E5%A4%A7%E5%AE%B6%E7%9A%84%E6%97%A5%E8%AF%AD%E4%B8%AD%E7%BA%A72%E7%AC%AC17%E8%AF%BE.pdf"
+    textbook: "https://ttrw.jp/static/textbook/1032/%E5%A4%A7%E5%AE%B6%E7%9A%84%E6%97%A5%E8%AF%AD%E4%B8%AD%E7%BA%A72%E7%AC%AC18%E8%AF%BE.pdf"
   });
   const read=(key,fallback)=>{try{const value=localStorage.getItem(prefix+key);return value===null?fallback:JSON.parse(value)}catch{return fallback}};
   const write=(key,value)=>{try{localStorage.setItem(prefix+key,JSON.stringify(value))}catch{}};
@@ -13,11 +13,9 @@ window.JPY5 = (() => {
   function initLessonSwitchers(){document.querySelectorAll(".module-lesson-switcher,.reading-controls .lesson-pills").forEach(nav=>{const module=(location.pathname.match(/chapter-(?:13|14|15|16|17|18)-([^./]+)\.html/)||[])[1];if(!module)return;const lesson=(location.pathname.match(/chapter-(\d+)-/)||[])[1];nav.innerHTML=[13,14,15,16,17,18].map(n=>`<a class="${String(n)===lesson?"active":""}" ${String(n)===lesson?"aria-current=\"page\"":""} href="chapter-${n}-${module}.html">第${n}課</a>`).join("")})} document.addEventListener("DOMContentLoaded",()=>{initLessonSwitchers();
     const theme=read("theme","auto");applyTheme(theme);
     document.querySelectorAll("[data-theme-select]").forEach(node=>node.addEventListener("change",()=>setTheme(node.value)));setInterval(()=>{if(read("theme","auto")==="auto")applyTheme("auto")},60000);window.addEventListener("focus",()=>{if(read("theme","auto")==="auto")applyTheme("auto")});
-    document.querySelectorAll("[data-ch17-textbook], [data-textbook-lesson]").forEach(node=>node.href=sources.textbook);
+    document.querySelectorAll("[data-ch18-textbook], [data-textbook-lesson]").forEach(node=>node.href=sources.textbook);
   });
   return {read,write,remove,shuffle,bindSwipe,setTheme,sources};
 })();
-
-
 
 
