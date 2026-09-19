@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const clean = value => value.replace(/[\s、。！？?「」『』,.，．]/g, "").trim();
   const save = () => { JPY5.write("conversation", state); updateSummary(); };
   function updateSummary() {
-    document.querySelector("#mastered-count").textContent = Object.values(state.marks).filter(x => x === "correct").length;
     document.querySelector("#attempt-count").textContent = state.attempts || 0;
   }
   function record(id, correct) {
