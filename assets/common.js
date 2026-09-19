@@ -33,7 +33,7 @@ window.JPY5 = (() => {
   function initTheme() {
     const theme = read("theme", "auto");
     applyTheme(theme);
-    document.querySelectorAll("[data-theme-select]").forEach(s=>s.addEventListener("change",()=>setTheme(s.value))); setInterval(()=>{if(read("theme","auto")==="auto")applyTheme("auto")},60000); window.addEventListener("focus",()=>{if(read("theme","auto")==="auto")applyTheme("auto")});
+    document.querySelectorAll("[data-theme-select]").forEach(s=>s.addEventListener("change",()=>setTheme(s.value))); const refreshAutoTheme=()=>{if(read("theme","auto")==="auto")applyTheme("auto")}; setInterval(refreshAutoTheme,60000); window.addEventListener("focus",refreshAutoTheme); document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")refreshAutoTheme()});
   }
   function initIcons() {
     if (!document.querySelector('link[rel="icon"]')) {
