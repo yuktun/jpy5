@@ -4,7 +4,7 @@
   "start_url": "/jpy5/",
   "scope": "/jpy5/",
   "display": "standalone",
-  "background_color": "#f8f4ec",
-  "theme_color": "#f8f4ec",
+  "background_color": "#FAF9F3",
+  "theme_color": "#829D34",
   "icons": [{ "src": "assets/app-icon.png", "sizes": "any", "type": "image/png", "purpose": "any maskable" }]
 }

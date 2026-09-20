@@ -1,16 +1,34 @@
 :root {
-  --paper: #f8f4ec;
-  --ink: #22231f;
-  --muted: #6f7069;
-  --line: #d9d2c5;
-  --red: #c9493d;
-  --red-dark: #92352e;
-  --sage: #dfe5d8;
-  --yellow: #f0d777;
-  --white: #fffdf8;
-  --button-bg: #22231f;
-  --button-text: #fffdf8;
-  --shadow: 0 14px 38px rgba(49, 42, 31, .08);
+  /* Year 5 textbook palette. Components below inherit from these semantic tokens. */
+  --primary: #829d34;
+  --primary-dark: #34412b;
+  --primary-light: #dce8d3;
+  --background: #faf9f3;
+  --accent: #795583;
+  --success: #e5f1db;
+  --success-strong: #3f693c;
+  --danger: #b94843;
+  --danger-dark: #722c29;
+  --danger-light: #f9e7e4;
+  --ink: #263026;
+  --muted: #667064;
+  --line: #cbd7c3;
+  --paper: var(--background);
+  --sage: var(--primary-light);
+  --yellow: #d5bd62;
+  --white: #fffef9;
+  --button-bg: var(--primary-dark);
+  --button-text: #fffef9;
+  /* Compatibility aliases for existing shared component selectors. */
+  --red: var(--primary);
+  --red-dark: var(--primary-dark);
+  --shadow: 0 14px 38px rgba(52, 65, 43, .10);
+  --reading-surface: #f1f6ed;
+  --reading-border: #c2d3b7;
+  --reading-deep: var(--primary-dark);
+  --reading-mid: #557334;
+  --reading-pale: #dce8d3;
+  --success-text: #254c2b;
 }
 
 * { box-sizing: border-box; }
@@ -249,3 +267,23 @@ html[data-theme="dark"] .grammar-target{background:rgba(240,215,119,.22)}
 .lesson-quick-switcher{position:sticky;top:max(8px,env(safe-area-inset-top));z-index:20;display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:center;width:min(1120px,calc(100% - 40px));margin:10px auto 4px;padding:9px 11px;background:color-mix(in srgb,var(--white) 94%,transparent);border:1px solid var(--line);border-radius:12px;box-shadow:0 5px 18px rgba(42,42,36,.09);backdrop-filter:blur(10px)}.lesson-select-label{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:.75rem;font-weight:700;white-space:nowrap}.lesson-select{min-height:38px;padding:6px 28px 6px 10px;color:var(--ink);background:var(--white);border:1px solid var(--line);border-radius:8px;font:inherit;font-weight:700}.lesson-quick-sections{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.lesson-quick-sections a,.lesson-module-unavailable{display:flex;align-items:center;justify-content:center;min-height:38px;padding:7px 9px;color:var(--muted);background:var(--paper);border:1px solid var(--line);border-radius:8px;font-size:.82rem;font-weight:700;line-height:1.15;text-align:center;text-decoration:none}.lesson-quick-sections a:hover,.lesson-quick-sections a:focus-visible{color:var(--ink);border-color:var(--red)}.lesson-quick-sections a.active{color:var(--button-text);background:var(--button-bg);border-color:var(--button-bg)}.lesson-module-unavailable{border-style:dashed;opacity:.6}.lesson-navigation-status{grid-column:1/-1;margin:0;color:var(--muted);font-size:.78rem}
 @media(max-width:900px){.lesson-quick-switcher{grid-template-columns:1fr}.lesson-select-label{justify-content:center}.lesson-quick-sections{grid-template-columns:repeat(5,minmax(0,1fr))}}
 @media(max-width:520px){.lesson-quick-switcher{top:max(6px,env(safe-area-inset-top));width:calc(100% - 24px);margin-top:8px;padding:8px}.lesson-quick-sections{gap:4px}.lesson-quick-sections a,.lesson-module-unavailable{min-height:38px;padding:6px 3px;font-size:.74rem}.lesson-select{min-height:36px}.lesson-navigation-status{font-size:.72rem}}
+
+/* Year 5 textbook green theme: component-level semantic overrides. */
+.hero::after{color:color-mix(in srgb,var(--primary) 12%,transparent)}
+.formation{border-left-color:var(--primary);background:color-mix(in srgb,var(--primary-light) 58%,var(--white))}
+.option.correct,.quiz-options button.correct,.conversation-options button.correct,.cloze-blank input.correct,.reading-question button.correct,.find-passages button.correct{border-color:var(--success-strong);background:var(--success);color:var(--success-text)}
+.option.wrong,.quiz-options button.wrong,.conversation-options button.wrong,.cloze-blank input.wrong,.reading-question button.wrong,.find-passages button.wrong{border-color:var(--danger);background:var(--danger-light);color:var(--danger-dark)}
+.accent-red .tool-icon{background:var(--primary)}.accent-sage .tool-icon{background:var(--accent)}.reading-tool .tool-icon{background:var(--reading-mid)}.reading-tool{border-color:var(--reading-border)}
+.card-actions .success{color:var(--success-strong)}.card-actions .danger,.danger-text{color:var(--danger)}.history-answer{border-left-color:var(--success-strong)}.history-answer.is-wrong{border-color:var(--danger)}
+.progress-bar i,.hub-progress span{background:var(--primary)}.quiz-options button.selected{border-color:var(--primary-dark);background:var(--primary-light)}
+.grammar-extra-option.is-correct{color:var(--success-text);background:var(--success);border-color:var(--success-strong)}.grammar-extra-option.is-incorrect{color:var(--danger-dark);background:var(--danger-light);border-color:var(--danger)}
+.pwa-status[data-state="ready"],.pwa-status[data-state="offline"]{color:var(--success-text);border-color:var(--success-strong)}.pwa-status[data-state="ready"] .pwa-status-dot,.pwa-status[data-state="offline"] .pwa-status-dot{background:var(--success-strong)}.pwa-status[data-state="offline"] .pwa-status-dot{box-shadow:0 0 0 2px color-mix(in srgb,var(--success-strong) 18%,transparent)}.pwa-status[data-state="error"]{color:var(--danger-dark);border-color:var(--danger)}.pwa-status[data-state="error"] .pwa-status-dot{background:var(--danger)}
+
+/* Reading uses the same palette rather than its former independent blue treatment. */
+.reading-shell{background:linear-gradient(180deg,var(--reading-surface) 0,var(--background) 520px)}.reading-hero{background:linear-gradient(135deg,var(--reading-deep),var(--reading-mid));box-shadow:0 18px 45px color-mix(in srgb,var(--primary-dark) 18%,transparent)}.reading-hero .kicker{color:var(--primary-light)}.reading-hero p:last-child,.reading-audio-workspace p:last-child,.find-prompt p{color:#e4eddf}
+.reading-controls,.reading-paper,.translation-list article,.reading-question,.find-passages button,.reading-vocab-card,.exam-list article,.exam-submit{border-color:var(--reading-border)}.lesson-pills a:hover,.lesson-pills a:focus-visible{color:var(--primary-dark);border-color:var(--primary)}.lesson-pills a.active{color:var(--primary-dark);background:var(--primary-light);border-color:var(--primary)}.reading-tabs button.active,.reading-audio-workspace,.find-prompt,.reading-vocab-card.flipped,.reading-result{background:var(--reading-deep)}.reading-stage-head h2,.reading-badge{color:var(--primary-dark)}.reading-badge{background:var(--primary-light)}.translation-list span,.reading-question>span,.exam-list article>span,.find-passages span,.reading-vocab-card>span{color:var(--reading-mid)}.vocab-overview button.active{background:var(--reading-mid)}.reading-vocab-card .reading-card-answer{color:var(--accent)}.reading-vocab-card.flipped small,.reading-result p{color:#e4eddf}
+
+/* Preserve the dark-mode option while retaining green rather than pink accents. */
+html[data-theme="dark"],html[data-theme="auto"]{--primary:#a4be62;--primary-dark:#dce8d3;--primary-light:#30452d;--accent:#c4a6ca;--success:#294226;--success-strong:#8eba78;--danger:#ef817a;--danger-dark:#ffd4cf;--danger-light:#4d2926;--background:#121711;--paper:#121711;--ink:#f4f7ed;--muted:#c6d0c1;--line:#475640;--sage:#30452d;--white:#1d261b;--button-bg:#a4be62;--button-text:#172014;--red:var(--primary);--red-dark:#dce8d3;--reading-surface:#172116;--reading-border:#526849;--reading-deep:#263d25;--reading-mid:#789b55;--reading-pale:#30452d;--success-text:#edf8e9}
+html[data-theme="dark"] .reading-shell{background:linear-gradient(180deg,var(--reading-surface) 0,var(--paper) 520px)}html[data-theme="dark"] .reading-stage-head h2{color:var(--primary-dark)}html[data-theme="dark"] .lesson-pills a.active{color:var(--primary-dark);background:var(--primary-light);border-color:var(--primary)}
+@media(prefers-color-scheme:dark){html[data-theme="auto"] .reading-shell{background:linear-gradient(180deg,var(--reading-surface) 0,var(--paper) 520px)}html[data-theme="auto"] .reading-stage-head h2{color:var(--primary-dark)}html[data-theme="auto"] .lesson-pills a.active{color:var(--primary-dark);background:var(--primary-light);border-color:var(--primary)}}
