@@ -25,22 +25,25 @@ document.addEventListener("DOMContentLoaded", () => {
       return `<ruby>${esc(part)}<rt>${esc(kana)}</rt></ruby>`;
     }).join("");
   }
-  function ruby(text,{furiganaContext}={}){
+  function ruby(text,{furiganaContext,furiganaOverrides=[]}={}){
     if(!state.furigana)return esc(text);
     const readings=new Map(Object.entries(data.furigana));
     Object.entries(data.furiganaContexts?.[furiganaContext]||{}).forEach(([word,reading])=>readings.set(word,reading));
     const words=[...readings.keys()].sort((a,b)=>b.length-a.length);
     const pattern=new RegExp(words.map(word=>word.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|"),"g");
-    let out="",last=0;
+    let out="",last=0,occurrences=new Map;
     for(const match of String(text).matchAll(pattern)){
       out+=esc(String(text).slice(last,match.index));
-      out+=segmentedRuby(match[0],readings.get(match[0]));
+      const occurrence=(occurrences.get(match[0])||0)+1;
+      occurrences.set(match[0],occurrence);
+      const override=furiganaOverrides.find(entry=>entry.word===match[0]&&entry.occurrence===occurrence);
+      out+=segmentedRuby(match[0],override?.reading||readings.get(match[0]));
       last=match.index+match[0].length;
     }
     return out+esc(String(text).slice(last));
   }
   function shell(title,subtitle,body){return `<div class="reading-stage-head"><div><p class="kicker">第 13 課</p><h2>${title}</h2>${subtitle?`<p>${subtitle}</p>`:""}</div></div>${body}`}
-  const paragraphRuby=p=>ruby(p.jp,{furiganaContext:p.furiganaContext});
+  const paragraphRuby=p=>ruby(p.jp,{furiganaContext:p.furiganaContext,furiganaOverrides:p.furiganaOverrides});
   const questionRuby=q=>ruby(q.q,{furiganaContext:q.revealTsukigime!==false?"monthlyParking":undefined});
   const optionText=(question,option)=>question.optionLanguage==="zh"?esc(option):ruby(option);
   function original(){

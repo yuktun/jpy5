@@ -18,6 +18,7 @@ const quickSwitcher = await readFile(join(root, "assets", "lesson-quick-switcher
 const home = await readFile(join(root, "index.html"), "utf8");
 const learningGuide = await readFile(join(root, "assets", "learning-guide.js"), "utf8");
 const notes = await readFile(join(root, "assets", "notes.js"), "utf8");
+const reading = await readFile(join(root, "assets", "reading.js"), "utf8");
 const grammarExtraFiles = [13, 14, 15, 16, 17, 18].map(lesson => `ch${lesson}-grammar-extra-data.js`);
 const conversationModules = ["conversation.js", ...[14, 15, 16, 17, 18].map(lesson => `ch${lesson}-conversation.js`)];
 const conversationDataFiles = ["conversation-data.js", ...[14, 15, 16, 17, 18].map(lesson => `ch${lesson}-conversation-data.js`)];
@@ -96,6 +97,12 @@ assert.match(notes, /root\.style\.scrollBehavior = "auto"/, "grammar modal resto
 assert.match(notes, /focus\(\{ preventScroll: true \}\)/, "grammar modal focus restoration must not scroll the page");
 assert.match(styles, /\.grammar-extra-option\.is-correct/, "grammar quiz feedback must visibly mark correct options");
 assert.match(styles, /\.grammar-extra-option\.is-incorrect/, "grammar quiz feedback must visibly mark incorrect options");
+const readingContext = { window: {} };
+vm.runInNewContext(await readFile(join(root, "assets", "reading-data.js"), "utf8"), readingContext);
+const finalReadingParagraph = readingContext.window.JPY5_READING.paragraphs.find(paragraph => paragraph.id === 5);
+assert.deepEqual(JSON.parse(JSON.stringify(finalReadingParagraph.furiganaOverrides)), [{ word: "月極", occurrence: 2, reading: "ゲッキョク" }], "only the standalone final 月極 must use ゲッキョク");
+assert.equal(readingContext.window.JPY5_READING.furiganaContexts.monthlyParking["月極"], "つきぎめ", "the earlier 月極駐車場 reading must remain つきぎめ");
+assert.match(reading, /const override=furiganaOverrides\.find\(entry=>entry\.word===match\[0\]&&entry\.occurrence===occurrence\)/, "reading renderer must support occurrence-specific furigana overrides");
 assert.match(styles, /\.focus-detail-dialog:not\(\[open\]\)\{display:none\}/, "closed listening dialogs must not enter the page layout");
 assert.match(styles, /\.focus-detail-dialog\[open\]\{display:flex;position:fixed;top:50%;left:50%;flex-direction:column;margin:0;transform:translate\(-50%,-50%\)\}/, "open listening dialogs must be viewport-centred flex frames");
 assert.doesNotMatch(styles, /\.focus-detail-dialog\{display:flex;flex-direction:column;height:/, "listening dialogs must not force a viewport-sized empty body");
