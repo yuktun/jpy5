@@ -17,6 +17,7 @@ const navigation = JSON.parse(await readFile(join(root, "assets", "lesson-naviga
 const quickSwitcher = await readFile(join(root, "assets", "lesson-quick-switcher.js"), "utf8");
 const home = await readFile(join(root, "index.html"), "utf8");
 const learningGuide = await readFile(join(root, "assets", "learning-guide.js"), "utf8");
+const notes = await readFile(join(root, "assets", "notes.js"), "utf8");
 
 assert.equal(new Set(assetMatches).size, assetMatches.length, "offline inventory has duplicate entries");
 for (const asset of assetMatches) await stat(join(root, asset));
@@ -77,7 +78,15 @@ assert.match(styles, /html\.learning-guide-open\{overflow:hidden\}/, "guide moda
 assert.match(styles, /\.grammar-extra-body\{flex:1 1 auto;min-height:0;max-height:none;overflow-x:hidden;overflow-y:auto\}/, "only the modal body may scroll");
 assert.match(styles, /\.grammar-extra-dialog:not\(\[open\]\)\{display:none\}/, "closed grammar dialogs must not enter the page layout");
 assert.match(styles, /\.grammar-extra-dialog\[open\]\{display:flex;flex-direction:column\}/, "grammar dialogs must use the flex frame only while open");
-assert.match(await readFile(join(root, "assets", "notes.js"), "utf8"), /dialog\.replaceChildren\(\)/, "closed grammar dialogs must discard their generated content");
+assert.match(notes, /dialog\.replaceChildren\(\)/, "closed grammar dialogs must discard their generated content");
+assert.match(notes, /✗ 未作答。正確答案：/, "grammar quizzes must reveal correct answers for unanswered questions");
+assert.match(notes, /classList\.add\("is-correct"\)/, "grammar quizzes must mark correct options");
+assert.match(notes, /classList\.add\("is-incorrect"\)/, "grammar quizzes must mark incorrect selections");
+assert.match(notes, /input\.disabled = false/, "grammar quiz retry must re-enable questions");
+assert.match(notes, /root\.style\.scrollBehavior = "auto"/, "grammar modal restoration must bypass global smooth scrolling");
+assert.match(notes, /focus\(\{ preventScroll: true \}\)/, "grammar modal focus restoration must not scroll the page");
+assert.match(styles, /\.grammar-extra-option\.is-correct/, "grammar quiz feedback must visibly mark correct options");
+assert.match(styles, /\.grammar-extra-option\.is-incorrect/, "grammar quiz feedback must visibly mark incorrect options");
 assert.match(analytics, /location\.origin !== "https:\/\/sasukimm\.github\.io"/);
 assert.match(analytics, /location\.pathname\.startsWith\("\/jpy5\/"\)/);
 assert.match(analytics, /https:\/\/sasukimm-jp5y\.goatcounter\.com\/count/);

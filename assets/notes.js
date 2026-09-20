@@ -16,19 +16,54 @@ function list(items) { return `<ul>${items.map(item => `<li>${escapeHtml(item)}<
 function comparisonTable(comparison) { const [left, right] = comparison.headings; return `<div class="grammar-extra-table-wrap"><table class="grammar-extra-table"><thead><tr><th scope="col"></th><th scope="col">${escapeHtml(left)}</th><th scope="col">${escapeHtml(right)}</th></tr></thead><tbody>${comparison.rows.map(([label, first, second]) => `<tr><th scope="row">${escapeHtml(label)}</th><td>${escapeHtml(first)}</td><td>${escapeHtml(second)}</td></tr>`).join("")}</tbody></table></div>`; }
 function examples(items) { return `<div class="grammar-extra-examples">${items.map(([jp, zh]) => `<article><p lang="ja">${escapeHtml(jp)}</p><p>${escapeHtml(zh)}</p></article>`).join("")}</div>`; }
 function dialogue(items) { return `<div class="grammar-extra-dialogue">${items.map(([speaker, jp, zh]) => `<article><b>${escapeHtml(speaker)}</b><p lang="ja">${escapeHtml(jp)}</p><small>${escapeHtml(zh)}</small></article>`).join("")}</div>`; }
-function quiz(exercises) { if (!exercises?.length) return ""; return section("小練習（可選）", `<form class="grammar-extra-quiz">${exercises.map((exercise, question) => `<fieldset data-answer="${exercise.answer}"><legend>${question + 1}. ${escapeHtml(exercise.prompt)}</legend>${exercise.options.map((option, index) => `<label><input type="radio" name="extra-answer-${question}" value="${index}"> ${escapeHtml(option)}</label>`).join("")}<p class="grammar-extra-explanation" hidden>${escapeHtml(exercise.explanation)}</p></fieldset>`).join("")}<div><button class="secondary-button" type="submit">提交答案</button><button class="text-button" type="button" data-quiz-retry>再試一次</button></div><p class="grammar-extra-feedback" aria-live="polite"></p></form>`); }
+function quiz(exercises) { if (!exercises?.length) return ""; return section("小練習（可選）", `<form class="grammar-extra-quiz">${exercises.map((exercise, question) => `<fieldset data-answer="${exercise.answer}"><legend>${question + 1}. ${escapeHtml(exercise.prompt)}</legend>${exercise.options.map((option, index) => `<label class="grammar-extra-option"><input type="radio" name="extra-answer-${question}" value="${index}"> ${escapeHtml(option)}</label>`).join("")}<p class="grammar-extra-question-feedback" hidden></p><p class="grammar-extra-explanation" hidden>${escapeHtml(exercise.explanation)}</p></fieldset>`).join("")}<div><button class="secondary-button" type="submit">提交答案</button><button class="text-button" type="button" data-quiz-retry>再試一次</button></div><p class="grammar-extra-feedback" aria-live="polite"></p></form>`); }
 function modalContent(extra) { const lesson = document.title.match(/第\s*(\d+)\s*課/)?.[1] || "13"; return `<div class="grammar-extra-head"><div><span>延伸學習 · 第 ${lesson} 課</span><h2 id="grammar-extra-title" lang="ja">${escapeHtml(extra.title)}</h2></div><button type="button" class="grammar-extra-icon-close" aria-label="關閉附加資訊">×</button></div><div class="grammar-extra-body"><p class="grammar-extra-summary">${escapeHtml(extra.summary)}</p>${section("核心說明", extra.explanation.map(text => `<p>${escapeHtml(text)}</p>`).join(""))}${section("接續", list(extra.formation))}${section("比較", comparisonTable(extra.comparison))}${section("實用例句", examples(extra.examples))}${extra.dialogue ? section("職場情境對話", dialogue(extra.dialogue)) : ""}${section("常見誤解與重點", list(extra.commonMistakes))}${section("一句記住", `<p class="grammar-extra-takeaway">${escapeHtml(extra.keyTakeaway)}</p>`)}${quiz(extra.exercises)}</div><div class="grammar-extra-footer"><button type="button" class="secondary-button" data-extra-close>關閉</button></div>`; }
 function lockBackground() { savedScrollY = window.scrollY; document.body.classList.add("grammar-extra-open"); document.body.style.top = `-${savedScrollY}px`; }
-function unlockBackground() { document.body.classList.remove("grammar-extra-open"); document.body.style.top = ""; window.scrollTo(0, savedScrollY); }
+function unlockBackground() {
+  const root = document.documentElement, previousScrollBehavior = root.style.scrollBehavior;
+  // The site normally scrolls smoothly. Restoring the fixed body's offset must not
+  // inherit that animation or the page visibly travels to its saved position.
+  root.style.scrollBehavior = "auto";
+  document.body.classList.remove("grammar-extra-open");
+  document.body.style.top = "";
+  window.scrollTo({ left: 0, top: savedScrollY, behavior: "auto" });
+  requestAnimationFrame(() => { root.style.scrollBehavior = previousScrollBehavior; });
+}
 function focusable(dialog) { return [...dialog.querySelectorAll('button:not([disabled]), input:not([disabled]), [href], select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')]; }
 function trapFocus(event) { if (event.key !== "Tab") return; const items = focusable(event.currentTarget); if (!items.length) return; const first = items[0], last = items.at(-1); if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); } else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); } }
-function closeExtra(dialog) { if (!dialog.open) return; dialog.close(); dialog.replaceChildren(); unlockBackground(); returnFocus?.focus({ preventScroll: true }); returnFocus = null; }
+function closeExtra(dialog) { if (!dialog.open) return; dialog.close(); returnFocus?.focus({ preventScroll: true }); unlockBackground(); dialog.replaceChildren(); returnFocus = null; }
 function openExtra(patternId) { const extra = extraFor(patternId); if (!extra) return; const dialog = document.querySelector("#grammar-extra-dialog"); returnFocus = document.activeElement; dialog.innerHTML = modalContent(extra); lockBackground(); dialog.showModal(); dialog.querySelector(".grammar-extra-icon-close").focus(); }
 document.querySelectorAll("[data-group]").forEach(grid => { grid.innerHTML = patterns.map((pattern, index) => pattern.group === grid.dataset.group ? noteCard(pattern, index) : "").join(""); });
 document.body.insertAdjacentHTML("beforeend", `<dialog id="grammar-extra-dialog" class="grammar-extra-dialog" aria-labelledby="grammar-extra-title"></dialog>`);
 const dialog = document.querySelector("#grammar-extra-dialog");
-document.addEventListener("click", event => { const trigger = event.target.closest("[data-extra-id]"); if (trigger) openExtra(trigger.dataset.extraId); if (event.target.closest("[data-extra-close], .grammar-extra-icon-close")) closeExtra(dialog); if (event.target.matches("[data-quiz-retry]")) { const form = event.target.closest("form"); form.reset(); form.querySelector(".grammar-extra-feedback").textContent = ""; form.querySelectorAll(".grammar-extra-explanation").forEach(node => node.hidden = true); } });
+document.addEventListener("click", event => { const trigger = event.target.closest("[data-extra-id]"); if (trigger) openExtra(trigger.dataset.extraId); if (event.target.closest("[data-extra-close], .grammar-extra-icon-close")) closeExtra(dialog); if (event.target.matches("[data-quiz-retry]")) { const form = event.target.closest("form"); form.reset(); form.querySelector(".grammar-extra-feedback").textContent = ""; form.querySelectorAll("input").forEach(input => { input.disabled = false; }); form.querySelectorAll(".grammar-extra-option").forEach(option => option.classList.remove("is-correct", "is-incorrect")); form.querySelectorAll(".grammar-extra-question-feedback").forEach(node => { node.textContent = ""; node.hidden = true; }); form.querySelectorAll(".grammar-extra-explanation").forEach(node => { node.hidden = true; }); form.querySelector("button[type=submit]").disabled = false; } });
 dialog.addEventListener("click", event => { if (event.target === dialog) closeExtra(dialog); });
 dialog.addEventListener("cancel", event => { event.preventDefault(); closeExtra(dialog); });
 dialog.addEventListener("keydown", trapFocus);
-dialog.addEventListener("submit", event => { if (!event.target.matches(".grammar-extra-quiz")) return; event.preventDefault(); const questions = [...event.target.querySelectorAll("fieldset")], feedback = event.target.querySelector(".grammar-extra-feedback"); if (questions.some(question => !question.querySelector("input:checked"))) { feedback.textContent = "請先完成全部題目。"; return; } let score = 0; questions.forEach(question => { const correct = Number(question.dataset.answer), selected = Number(question.querySelector("input:checked").value); if (selected === correct) score++; question.querySelector(".grammar-extra-explanation").hidden = false; }); feedback.textContent = `答對 ${score}／${questions.length} 題。${score === questions.length ? "做得好！" : "看看每題說明後可再試一次。"}`; });
+dialog.addEventListener("submit", event => {
+  if (!event.target.matches(".grammar-extra-quiz")) return;
+  event.preventDefault();
+  const questions = [...event.target.querySelectorAll("fieldset")], feedback = event.target.querySelector(".grammar-extra-feedback");
+  let score = 0;
+  questions.forEach(question => {
+    const correct = Number(question.dataset.answer), selectedInput = question.querySelector("input:checked");
+    const options = [...question.querySelectorAll(".grammar-extra-option")], correctOption = options[correct];
+    const questionFeedback = question.querySelector(".grammar-extra-question-feedback"), explanation = question.querySelector(".grammar-extra-explanation");
+    options.forEach(option => option.classList.remove("is-correct", "is-incorrect"));
+    correctOption.classList.add("is-correct");
+    question.querySelectorAll("input").forEach(input => { input.disabled = true; });
+    if (selectedInput && Number(selectedInput.value) === correct) {
+      score++;
+      questionFeedback.textContent = "✓ 正確！";
+    } else if (selectedInput) {
+      selectedInput.closest(".grammar-extra-option").classList.add("is-incorrect");
+      questionFeedback.textContent = `✗ 答錯了。正確答案：${correctOption.textContent.trim()}`;
+    } else {
+      questionFeedback.textContent = `✗ 未作答。正確答案：${correctOption.textContent.trim()}`;
+    }
+    questionFeedback.hidden = false;
+    explanation.hidden = false;
+  });
+  event.target.querySelector("button[type=submit]").disabled = true;
+  feedback.textContent = `答對 ${score} / ${questions.length} 題`;
+});
