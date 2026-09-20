@@ -19,6 +19,8 @@ const home = await readFile(join(root, "index.html"), "utf8");
 const learningGuide = await readFile(join(root, "assets", "learning-guide.js"), "utf8");
 const notes = await readFile(join(root, "assets", "notes.js"), "utf8");
 const grammarExtraFiles = [13, 14, 15, 16, 17, 18].map(lesson => `ch${lesson}-grammar-extra-data.js`);
+const conversationModules = ["conversation.js", ...[14, 15, 16, 17, 18].map(lesson => `ch${lesson}-conversation.js`)];
+const conversationDataFiles = ["conversation-data.js", ...[14, 15, 16, 17, 18].map(lesson => `ch${lesson}-conversation-data.js`)];
 
 async function grammarExtras(file) {
   const context = { window: {} };
@@ -94,6 +96,21 @@ assert.match(notes, /root\.style\.scrollBehavior = "auto"/, "grammar modal resto
 assert.match(notes, /focus\(\{ preventScroll: true \}\)/, "grammar modal focus restoration must not scroll the page");
 assert.match(styles, /\.grammar-extra-option\.is-correct/, "grammar quiz feedback must visibly mark correct options");
 assert.match(styles, /\.grammar-extra-option\.is-incorrect/, "grammar quiz feedback must visibly mark incorrect options");
+assert.match(styles, /\.focus-detail-dialog:not\(\[open\]\)\{display:none\}/, "closed listening dialogs must not enter the page layout");
+assert.match(styles, /\.focus-detail-dialog\[open\]\{display:flex;position:fixed;top:50%;left:50%;flex-direction:column;margin:0;transform:translate\(-50%,-50%\)\}/, "open listening dialogs must be viewport-centred flex frames");
+assert.doesNotMatch(styles, /\.focus-detail-dialog\{display:flex;flex-direction:column;height:/, "listening dialogs must not force a viewport-sized empty body");
+assert.match(styles, /\.focus-detail-body\{flex:1 1 auto;min-height:0;overflow-x:hidden;overflow-y:auto/, "only the listening dialog body may scroll");
+for (const module of conversationModules) {
+  const source = await readFile(join(root, "assets", module), "utf8");
+  assert.match(source, /root\.style\.scrollBehavior="auto"/, `${module} must restore background scroll without smooth animation`);
+  assert.match(source, /focus\(\{preventScroll:true\}\)/, `${module} must restore focus without moving the page`);
+  assert.match(source, /detailDialog\.addEventListener\("cancel"/, `${module} must retain Escape-to-close behavior`);
+}
+for (const file of conversationDataFiles) {
+  const context = { window: {} };
+  vm.runInNewContext(await readFile(join(root, "assets", file), "utf8"), context);
+  assert(context.window.JPY5_CONVERSATION.items.every(item => item.zh && item.use && item.point), `${file} must retain the listening popup explanation, 情境, and 重點 data`);
+}
 assert.match(notes, /const hasRowLabel = comparison\.rows\.every\(row => row\.length === comparison\.headings\.length \+ 1\)/, "comparison tables must detect the optional row-label column from the data shape");
 for (const file of grammarExtraFiles) {
   const extras = await grammarExtras(file);

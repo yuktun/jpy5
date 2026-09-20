@@ -7,9 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let current = 0;
   let built = [];
   let orderPool = [];
-  let detailScrollY = 0;
+  let detailScrollY = 0, detailReturnFocus = null;
   const lockDetailBackground = () => { detailScrollY = window.scrollY; document.body.classList.add("grammar-extra-open"); document.body.style.top = "-" + detailScrollY + "px"; };
-  const unlockDetailBackground = () => { document.body.classList.remove("grammar-extra-open"); document.body.style.top = ""; window.scrollTo(0, detailScrollY); };
+  const unlockDetailBackground = () => { const root=document.documentElement, previous=root.style.scrollBehavior; root.style.scrollBehavior="auto"; document.body.classList.remove("grammar-extra-open"); document.body.style.top=""; window.scrollTo({left:0,top:detailScrollY,behavior:"auto"}); requestAnimationFrame(()=>{root.style.scrollBehavior=previous;}); };
 
   const item = id => data.items.find(x => x.id === Number(id));
   const esc = value => String(value).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const replay=dialog.querySelector("[data-dialog-listen]");
     replay.dataset.dialogListen=x.id;
     replay.hidden=!(Number.isFinite(x.start)&&Number.isFinite(x.end)&&x.end>x.start);
-    lockDetailBackground();
+    detailReturnFocus=document.activeElement; lockDetailBackground();
     dialog.showModal();
   }
 
@@ -173,10 +173,12 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#furigana-toggle").onclick=e=>{state.furigana=!state.furigana;e.currentTarget.textContent=`假名 ${state.furigana?'ON':'OFF'}`;save();render();};
   document.querySelector("#furigana-toggle").textContent=`假名 ${state.furigana?'ON':'OFF'}`;
   const detailDialog=document.querySelector("#focus-detail-dialog");
-  detailDialog.querySelectorAll("[data-dialog-close]").forEach(button => { button.onclick = () => detailDialog.close(); });
-  detailDialog.addEventListener("close", unlockDetailBackground);
+  const closeDetail = () => { if (detailDialog.open) detailDialog.close(); };
+  detailDialog.querySelectorAll("[data-dialog-close]").forEach(button => { button.onclick = closeDetail; });
+  detailDialog.addEventListener("close", () => { detailReturnFocus?.focus({preventScroll:true}); unlockDetailBackground(); detailReturnFocus=null; });
   detailDialog.querySelector("[data-dialog-listen]").onclick=e=>play(e.currentTarget.dataset.dialogListen);
-  detailDialog.addEventListener("click",e=>{if(e.target===detailDialog)detailDialog.close();});
+  detailDialog.addEventListener("click",e=>{if(e.target===detailDialog)closeDetail();});
+  detailDialog.addEventListener("cancel",e=>{e.preventDefault();closeDetail();});
   document.querySelector("#reset-conversation").onclick = () => { if (confirm("清除本頁所有會話練習進度？")) { state=fresh(); save(); setMode("dialogue"); } };
   document.addEventListener("keydown", e => {
     if (e.target.matches("input,textarea,select")) return;
