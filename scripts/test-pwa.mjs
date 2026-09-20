@@ -18,6 +18,13 @@ const quickSwitcher = await readFile(join(root, "assets", "lesson-quick-switcher
 const home = await readFile(join(root, "index.html"), "utf8");
 const learningGuide = await readFile(join(root, "assets", "learning-guide.js"), "utf8");
 const notes = await readFile(join(root, "assets", "notes.js"), "utf8");
+const grammarExtraFiles = [13, 14, 15, 16, 17, 18].map(lesson => `ch${lesson}-grammar-extra-data.js`);
+
+async function grammarExtras(file) {
+  const context = { window: {} };
+  vm.runInNewContext(await readFile(join(root, "assets", file), "utf8"), context);
+  return context.window.JPY5_GRAMMAR_EXTRA;
+}
 
 assert.equal(new Set(assetMatches).size, assetMatches.length, "offline inventory has duplicate entries");
 for (const asset of assetMatches) await stat(join(root, asset));
@@ -87,6 +94,27 @@ assert.match(notes, /root\.style\.scrollBehavior = "auto"/, "grammar modal resto
 assert.match(notes, /focus\(\{ preventScroll: true \}\)/, "grammar modal focus restoration must not scroll the page");
 assert.match(styles, /\.grammar-extra-option\.is-correct/, "grammar quiz feedback must visibly mark correct options");
 assert.match(styles, /\.grammar-extra-option\.is-incorrect/, "grammar quiz feedback must visibly mark incorrect options");
+assert.match(notes, /const hasRowLabel = comparison\.rows\.every\(row => row\.length === comparison\.headings\.length \+ 1\)/, "comparison tables must detect the optional row-label column from the data shape");
+for (const file of grammarExtraFiles) {
+  const extras = await grammarExtras(file);
+  for (const extra of extras) {
+    const { headings, rows } = extra.comparison;
+    assert(rows.every(row => row.length === headings.length || row.length === headings.length + 1), `${file} ${extra.title} contains an unsupported comparison row`);
+    assert(rows.every(row => row.length === rows[0].length), `${file} ${extra.title} must use a consistent comparison-table structure`);
+  }
+}
+const lesson13Extras = await grammarExtras("ch13-grammar-extra-data.js");
+const listeningExpressions = lesson13Extras.find(extra => extra.title === "聽講？即係話？係咪呀？");
+assert.deepEqual(JSON.parse(JSON.stringify(listeningExpressions.comparison)), {
+  headings: ["表達", "功能"],
+  rows: [
+    ["～んだって？", "確認從別處聽到的消息"],
+    ["つまり～ってこと？", "總結並確認自己的理解"],
+    ["～よね", "確認共享資訊／尋求認同"]
+  ]
+}, "Lesson 13 listening-expression comparison must remain a two-column table without undefined cells");
+assert(notes.includes('const [label, ...values] = row;'), "two-column comparisons must render one row header and one value cell");
+assert(notes.includes('values.map(value => `<td>${escapeHtml(value)}</td>`).join("")'), "three-column comparisons must retain every comparison value");
 assert.match(analytics, /location\.origin !== "https:\/\/sasukimm\.github\.io"/);
 assert.match(analytics, /location\.pathname\.startsWith\("\/jpy5\/"\)/);
 assert.match(analytics, /https:\/\/sasukimm-jp5y\.goatcounter\.com\/count/);

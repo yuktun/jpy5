@@ -13,7 +13,15 @@ function noteCard(pattern, index) {
 }
 function section(title, content) { return `<section class="grammar-extra-section"><h3>${title}</h3>${content}</section>`; }
 function list(items) { return `<ul>${items.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`; }
-function comparisonTable(comparison) { const [left, right] = comparison.headings; return `<div class="grammar-extra-table-wrap"><table class="grammar-extra-table"><thead><tr><th scope="col"></th><th scope="col">${escapeHtml(left)}</th><th scope="col">${escapeHtml(right)}</th></tr></thead><tbody>${comparison.rows.map(([label, first, second]) => `<tr><th scope="row">${escapeHtml(label)}</th><td>${escapeHtml(first)}</td><td>${escapeHtml(second)}</td></tr>`).join("")}</tbody></table></div>`; }
+function comparisonTable(comparison) {
+  const hasRowLabel = comparison.rows.every(row => row.length === comparison.headings.length + 1);
+  const header = `<tr>${hasRowLabel ? '<th scope="col"></th>' : ""}${comparison.headings.map(heading => `<th scope="col">${escapeHtml(heading)}</th>`).join("")}</tr>`;
+  const rows = comparison.rows.map(row => {
+    const [label, ...values] = row;
+    return `<tr><th scope="row">${escapeHtml(label)}</th>${values.map(value => `<td>${escapeHtml(value)}</td>`).join("")}</tr>`;
+  });
+  return `<div class="grammar-extra-table-wrap"><table class="grammar-extra-table"><thead>${header}</thead><tbody>${rows.join("")}</tbody></table></div>`;
+}
 function examples(items) { return `<div class="grammar-extra-examples">${items.map(([jp, zh]) => `<article><p lang="ja">${escapeHtml(jp)}</p><p>${escapeHtml(zh)}</p></article>`).join("")}</div>`; }
 function dialogue(items) { return `<div class="grammar-extra-dialogue">${items.map(([speaker, jp, zh]) => `<article><b>${escapeHtml(speaker)}</b><p lang="ja">${escapeHtml(jp)}</p><small>${escapeHtml(zh)}</small></article>`).join("")}</div>`; }
 function quiz(exercises) { if (!exercises?.length) return ""; return section("小練習（可選）", `<form class="grammar-extra-quiz">${exercises.map((exercise, question) => `<fieldset data-answer="${exercise.answer}"><legend>${question + 1}. ${escapeHtml(exercise.prompt)}</legend>${exercise.options.map((option, index) => `<label class="grammar-extra-option"><input type="radio" name="extra-answer-${question}" value="${index}"> ${escapeHtml(option)}</label>`).join("")}<p class="grammar-extra-question-feedback" hidden></p><p class="grammar-extra-explanation" hidden>${escapeHtml(exercise.explanation)}</p></fieldset>`).join("")}<div><button class="secondary-button" type="submit">提交答案</button><button class="text-button" type="button" data-quiz-retry>再試一次</button></div><p class="grammar-extra-feedback" aria-live="polite"></p></form>`); }
