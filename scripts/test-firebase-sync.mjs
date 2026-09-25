@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
 import {CLOUD_SCHEMA_VERSION,cloudState,hasProgress,mergeSnapshots} from '../assets/firebase-sync.mjs';
 
 const local={
@@ -19,4 +20,14 @@ assert.equal(hasProgress(local),true,'existing guest progress is detected for up
 const record=cloudState(merged,'server timestamp');
 assert.equal(record.schemaVersion,CLOUD_SCHEMA_VERSION,'cloud documents carry a version for future migration');
 assert.deepEqual(record.progress,merged,'the document stores the exact existing localStorage payloads without rewriting lesson schemas');
+for(const file of ['assets/common.js',...['14','15','16','17','18'].map(lesson=>`assets/ch${lesson}-common.js`)]){
+  const source=await readFile(file,'utf8');
+  assert.match(source,/import\("\.\/firebase-sync\.mjs"\)/,`${file} loads the sync module from its own assets directory`);
+  assert.doesNotMatch(source,/import\("\.\/assets\/firebase-sync\.mjs"\)/,`${file} must not resolve a duplicate assets directory`);
+}
+const home=await readFile('index.html','utf8');
+const syncSource=await readFile('assets/firebase-sync.mjs','utf8');
+assert.match(home,/data-sync-guest-status[^>]*aria-live="polite"/,'signed-out users receive visible live login status');
+assert.match(syncSource,/正在開啟 Google 登入…/,'opening the login popup is reported to guest users');
+assert.match(syncSource,/signInWithPopup/,'the Google button uses Firebase popup login');
 console.log('Firebase sync adapter tests passed.');

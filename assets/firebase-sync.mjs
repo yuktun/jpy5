@@ -50,13 +50,14 @@ async function createService(onUser){
 }
 
 function homeUi(sync){
-  const guest=document.querySelector('[data-sync-guest]'),account=document.querySelector('[data-sync-account]'),name=document.querySelector('[data-sync-name]'),email=document.querySelector('[data-sync-email]'),status=document.querySelector('[data-sync-status]');
+  const guest=document.querySelector('[data-sync-guest]'),account=document.querySelector('[data-sync-account]'),name=document.querySelector('[data-sync-name]'),email=document.querySelector('[data-sync-email]'),status=document.querySelector('[data-sync-status]'),guestStatus=document.querySelector('[data-sync-guest-status]');
   if(!guest||!account)return;
   sync.render=({user,state='guest',message='進度保存在此裝置'})=>{
     guest.hidden=Boolean(user);account.hidden=!user;
+    if(!user&&guestStatus){guestStatus.textContent=message;guestStatus.dataset.state=state;}
     if(user){name.textContent=user.displayName||'Google 帳戶';email.textContent=user.email||'';status.textContent=message;status.dataset.state=state;}
   };
-  document.querySelector('[data-sync-login]')?.addEventListener('click',async event=>{event.currentTarget.disabled=true;try{await sync.login();}catch(error){sync.status('error',error.message||'Google 登入失敗，請稍後再試。');}finally{event.currentTarget.disabled=false;}});
+  document.querySelector('[data-sync-login]')?.addEventListener('click',async event=>{event.currentTarget.disabled=true;sync.status('pending','正在開啟 Google 登入…');try{await sync.login();}catch(error){sync.status('error',error.message||'Google 登入失敗，請稍後再試。');}finally{event.currentTarget.disabled=false;}});
   document.querySelector('[data-sync-now]')?.addEventListener('click',()=>sync.flush());
   document.querySelector('[data-sync-logout]')?.addEventListener('click',async()=>{try{await sync.logout();}catch(error){sync.status('error',error.message||'尚有未同步進度，請連線後重試。');}});
 }

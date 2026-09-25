@@ -15,7 +15,7 @@ window.JPY5 = (() => {
     document.querySelectorAll("[data-theme-select]").forEach(node=>node.addEventListener("change",()=>setTheme(node.value)));const refreshAutoTheme=()=>{if(read("theme","auto")==="auto")applyTheme("auto")};setInterval(refreshAutoTheme,60000);window.addEventListener("focus",refreshAutoTheme);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")refreshAutoTheme()});
     document.querySelectorAll("[data-ch18-textbook], [data-textbook-lesson]").forEach(node=>node.href=sources.textbook);
   });
-  import("./assets/firebase-sync.mjs").then(({initialiseFirebaseSync})=>initialiseFirebaseSync()).catch(error=>console.warn("JPY5 progress sync:",error));return {read,write,remove,shuffle,bindSwipe,setTheme,sources};
+  import("./firebase-sync.mjs").then(({initialiseFirebaseSync})=>initialiseFirebaseSync()).catch(error=>console.warn("JPY5 progress sync:",error));return {read,write,remove,shuffle,bindSwipe,setTheme,sources};
 })();
 
 
