@@ -16,7 +16,7 @@ Then open <http://localhost:8000>.
 
 Open the published site once while online and wait for the small **「離線內容已準備好」** status. It then saves the complete same-origin study app for offline startup: the homepage, all 36 lesson pages, local CSS and JavaScript (including vocabulary, grammar, flashcards, quizzes, reading, notes, review and history data), and the app icon. The generated inventory currently contains 86 resources and is checked in at `assets/offline-assets.js`.
 
-When a release is available, it is downloaded and validated in a separate cache while the current version continues to run. The app shows **「發現新版本」** only after that download succeeds. Select **「立即更新」** to activate it and reload; select **「稍後」** to continue studying. Existing quiz, review, bookmark, remark, answer and preference data remain in the existing browser-local `jpy5.chapter13.`–`jpy5.chapter16.` keys. Nothing is synced between devices.
+When a release is available, it is downloaded and validated in a separate cache while the current version continues to run. The app shows **「發現新版本」** only after that download succeeds. Select **「立即更新」** to activate it and reload; select **「稍後」** to continue studying. Existing quiz, review, bookmark, remark, answer and preference data remain in the existing browser-local `jpy5.chapter13.`–`jpy5.chapter18.` keys. Google progress sync is optional; without login, nothing is sent to another device.
 
 For contributors: after changing any page or `assets/` resource, run the following before committing so the new release receives a new, complete cache version:
 
@@ -57,3 +57,8 @@ Most lesson material and audio are adapted for study use from [ttrw.jp](https://
 - Lesson 14: [大家的日语中级2第14课](https://ttrw.jp/static/textbook//1028/%E5%A4%A7%E5%AE%B6%E7%9A%84%E6%97%A5%E8%AF%AD%E4%B8%AD%E7%BA%A72%E7%AC%AC14%E8%AF%BE.pdf)
 - Lesson 15: [大家的日语中级2第15课](https://ttrw.jp/static/textbook//1029/%E5%A4%A7%E5%AE%B6%E7%9A%84%E6%97%A5%E8%AF%AD%E4%B8%AD%E7%BA%A72%E7%AC%AC15%E8%AF%BE.pdf)
 - Lesson 16: [大家的日语中级2第16课](https://ttrw.jp/static/textbook//1030/%E5%A4%A7%E5%AE%B6%E7%9A%84%E6%97%A5%E8%AF%AD%E4%B8%AD%E7%BA%A72%E7%AC%AC16%E8%AF%BE.pdf)
+# Optional Google progress sync
+
+JPY5 works without an account and retains progress in browser localStorage. Google login is optional; after first login the app merges the existing local records with the account's cloud records, keeps a local guest snapshot for sign-out, and writes future changes locally first before batching them to Firestore. Cloud state is one owner-only document at `jpy5Users/{uid}` with `schemaVersion`, `progress` (the existing localStorage payloads keyed by their original localStorage keys), and a server `updatedAt` timestamp.
+
+Before releasing, enable Google in Firebase Authentication, add `yuktun.github.io` as an authorized domain, and deploy `firestore.rules` from this repository. The web configuration is public by design; Firebase Authentication and the owner-only Firestore rules enforce access control.

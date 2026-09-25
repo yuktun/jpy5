@@ -8,7 +8,7 @@
   let progress;
   try { progress = JSON.parse(localStorage.getItem(storageKey)); } catch { progress = []; }
   if (!Array.isArray(progress)) progress = [];
-  const save = () => localStorage.setItem(storageKey, JSON.stringify(progress));
+  const save = () => { localStorage.setItem(storageKey, JSON.stringify(progress)); window.JPY5Sync?.localChanged(); };
   const checklist = () => steps.map(([title, text], index) => `<label class="guide-check-item"><input type="checkbox" data-guide-step="${index}" ${progress[index] ? "checked" : ""}><span><b><i>0${index + 1}</i>${title}</b><small>${text}</small></span></label>`).join("");
   const dialog = document.createElement("dialog");
   dialog.id = "learning-guide-dialog";

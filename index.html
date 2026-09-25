@@ -128,6 +128,25 @@
           <p class="install-app-feedback" data-install-app-feedback aria-live="polite"></p>
         </div>
       </section>
+
+      <section class="progress-sync-section" aria-labelledby="progress-sync-heading">
+        <div class="progress-sync-card">
+          <div>
+            <p class="kicker">OPTIONAL · GOOGLE SYNC</p>
+            <h2 id="progress-sync-heading">跨裝置保存學習進度</h2>
+            <p>不登入也可以照常使用；使用 Google 登入後，進度會安全地同步到你的其他裝置。</p>
+          </div>
+          <div data-sync-guest>
+            <button class="primary-button" type="button" data-sync-login>使用 Google 登入</button>
+            <small>你的現有本機進度會保留並合併。</small>
+          </div>
+          <div data-sync-account hidden>
+            <b data-sync-name></b><small data-sync-email></small>
+            <p class="progress-sync-status" data-sync-status role="status" aria-live="polite">正在準備同步…</p>
+            <div class="progress-sync-actions"><button type="button" data-sync-now>立即同步</button><button type="button" data-sync-logout>登出</button></div>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer>日本語 Year 5 <span>·</span> 小步前進，長久累積。</footer>
