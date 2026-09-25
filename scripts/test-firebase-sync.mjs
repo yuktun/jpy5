@@ -28,6 +28,10 @@ for(const file of ['assets/common.js',...['14','15','16','17','18'].map(lesson=>
 const home=await readFile('index.html','utf8');
 const syncSource=await readFile('assets/firebase-sync.mjs','utf8');
 assert.match(home,/data-sync-guest-status[^>]*aria-live="polite"/,'signed-out users receive visible live login status');
+assert.match(home,/data-sync-login disabled/,'login remains disabled until Firebase is ready');
 assert.match(syncSource,/正在開啟 Google 登入…/,'opening the login popup is reported to guest users');
 assert.match(syncSource,/signInWithPopup/,'the Google button uses Firebase popup login');
+assert.match(syncSource,/service=result;/,'the resolved Firebase service is retained before use');
+assert.match(syncSource,/onAuthStateChanged\(service\.auth,handleUser\)/,'the auth observer starts only after the Firebase service exists');
+assert.match(syncSource,/Google 同步服務暫時不可用/,'initialisation failure remains visible to guest users');
 console.log('Firebase sync adapter tests passed.');

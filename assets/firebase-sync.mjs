@@ -39,25 +39,26 @@ export function mergeSnapshots(local={},cloud={}){
 }
 export function cloudState(progress,updatedAt){return {schemaVersion:CLOUD_SCHEMA_VERSION,progress,updatedAt};}
 
-async function createService(onUser){
+async function createService(){
   const [appSdk,authSdk,firestoreSdk]=await Promise.all([import(`${SDK}/firebase-app.js`),import(`${SDK}/firebase-auth.js`),import(`${SDK}/firebase-firestore.js`)]);
   const app=appSdk.getApps().length?appSdk.getApp():appSdk.initializeApp(firebaseConfig);
   let db;
   try{db=firestoreSdk.initializeFirestore(app,{localCache:firestoreSdk.persistentLocalCache({tabManager:firestoreSdk.persistentMultipleTabManager()})});}
   catch{db=firestoreSdk.getFirestore(app);}
-  const auth=authSdk.getAuth(app);await authSdk.setPersistence(auth,authSdk.browserLocalPersistence);authSdk.onAuthStateChanged(auth,onUser);
+  const auth=authSdk.getAuth(app);await authSdk.setPersistence(auth,authSdk.browserLocalPersistence);
   return {auth,authSdk,db,firestoreSdk};
 }
 
 function homeUi(sync){
-  const guest=document.querySelector('[data-sync-guest]'),account=document.querySelector('[data-sync-account]'),name=document.querySelector('[data-sync-name]'),email=document.querySelector('[data-sync-email]'),status=document.querySelector('[data-sync-status]'),guestStatus=document.querySelector('[data-sync-guest-status]');
+  const guest=document.querySelector('[data-sync-guest]'),account=document.querySelector('[data-sync-account]'),name=document.querySelector('[data-sync-name]'),email=document.querySelector('[data-sync-email]'),status=document.querySelector('[data-sync-status]'),guestStatus=document.querySelector('[data-sync-guest-status]'),loginButton=document.querySelector('[data-sync-login]');
   if(!guest||!account)return;
   sync.render=({user,state='guest',message='進度保存在此裝置'})=>{
     guest.hidden=Boolean(user);account.hidden=!user;
     if(!user&&guestStatus){guestStatus.textContent=message;guestStatus.dataset.state=state;}
     if(user){name.textContent=user.displayName||'Google 帳戶';email.textContent=user.email||'';status.textContent=message;status.dataset.state=state;}
   };
-  document.querySelector('[data-sync-login]')?.addEventListener('click',async event=>{event.currentTarget.disabled=true;sync.status('pending','正在開啟 Google 登入…');try{await sync.login();}catch(error){sync.status('error',error.message||'Google 登入失敗，請稍後再試。');}finally{event.currentTarget.disabled=false;}});
+  sync.setLoginReady=ready=>{if(loginButton)loginButton.disabled=!ready;};
+  loginButton?.addEventListener('click',async event=>{event.currentTarget.disabled=true;sync.status('pending','正在開啟 Google 登入…');try{await sync.login();}catch(error){sync.status('error',error.message||'Google 登入失敗，請稍後再試。');}finally{event.currentTarget.disabled=!sync.ready;}});
   document.querySelector('[data-sync-now]')?.addEventListener('click',()=>sync.flush());
   document.querySelector('[data-sync-logout]')?.addEventListener('click',async()=>{try{await sync.logout();}catch(error){sync.status('error',error.message||'尚有未同步進度，請連線後重試。');}});
 }
@@ -66,7 +67,7 @@ export function initialiseFirebaseSync(){
   if(window.JPY5Sync)return window.JPY5Sync;
   let service,user=null,active=false,timer=null,pending=false,guestSession=false;
   const sync={
-    user:null,render:null,
+    user:null,ready:false,render:null,setLoginReady:()=>{},
     status(state,message){sync.render?.({user,state,message});},
     localChanged(){if(!active)return;pending=true;sync.status('pending','尚未同步');clearTimeout(timer);timer=setTimeout(()=>sync.flush(),1200);},
     async flush(){
@@ -77,15 +78,16 @@ export function initialiseFirebaseSync(){
       catch(error){pending=true;sync.status(navigator.onLine?'error':'offline',navigator.onLine?'同步失敗，請重試':'等待網絡連線');console.warn('JPY5 progress sync:',error);return false;}
     },
     async login(){
+      if(!service)throw new Error('正在準備 Google 登入…');
       const provider=new service.authSdk.GoogleAuthProvider();provider.setCustomParameters({prompt:'select_account'});
       try{return await service.authSdk.signInWithPopup(service.auth,provider);}
       catch(error){if(['auth/popup-closed-by-user','auth/cancelled-popup-request'].includes(error.code))throw new Error('已取消 Google 登入。');if(error.code==='auth/popup-blocked')throw new Error('登入視窗被封鎖，請允許彈出視窗後重試。');throw new Error('Google 登入失敗，請稍後再試。');}
     },
     async logout(){if(!await sync.flush())throw new Error('尚有未同步進度。');return service.authSdk.signOut(service.auth);}
   };
-  window.JPY5Sync=sync;homeUi(sync);sync.status('guest','進度保存在此裝置');
+  window.JPY5Sync=sync;homeUi(sync);sync.status('pending','正在準備 Google 登入…');
   window.addEventListener('online',()=>sync.flush());
-  createService(async nextUser=>{
+  const handleUser=async nextUser=>{
     active=false;pending=false;user=nextUser;sync.user=user;
     try{
       if(!user){
@@ -101,7 +103,14 @@ export function initialiseFirebaseSync(){
       if(!marker){const merged=mergeSnapshots(local,cloud);applySnapshot(merged);localStorage.setItem(`jpy5-sync-backup-${user.uid}`,JSON.stringify({createdAt:new Date().toISOString(),local,cloud}));localStorage.setItem(migrationKey(user.uid),'merged');active=true;pending=true;await sync.flush();}
       else {if(hasProgress(cloud))applySnapshot(cloud);active=true;sync.status('synced','已同步');}
     }catch(error){sync.status('error','同步失敗，請重試');console.warn('JPY5 progress sync:',error);}
-  }).catch(error=>{sync.status('unavailable','同步服務暫時不可用');console.warn('JPY5 progress sync:',error);});
+  };
+  createService().then(result=>{
+    service=result;
+    // Subscribe only after `service` is assigned: Firebase can invoke this
+    // callback immediately for a persisted signed-in account.
+    service.authSdk.onAuthStateChanged(service.auth,handleUser);
+    sync.ready=true;sync.setLoginReady(true);sync.status('guest','進度保存在此裝置');
+  }).catch(error=>{sync.ready=false;sync.setLoginReady(false);sync.status('unavailable','Google 同步服務暫時不可用');console.warn('JPY5 progress sync:',error);});
   return sync;
 }
 
