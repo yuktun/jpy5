@@ -100,8 +100,13 @@ assert.match(styles, /\.grammar-extra-option\.is-incorrect/, "grammar quiz feedb
 const readingContext = { window: {} };
 vm.runInNewContext(await readFile(join(root, "assets", "reading-data.js"), "utf8"), readingContext);
 const finalReadingParagraph = readingContext.window.JPY5_READING.paragraphs.find(paragraph => paragraph.id === 5);
-assert.equal(finalReadingParagraph.furiganaOverrides, undefined, "the final paragraph must not override 月極 with the old mistaken reading");
-assert.equal(readingContext.window.JPY5_READING.furiganaContexts.monthlyParking["月極"], "つきぎめ", "both written final-paragraph 月極 occurrences must read つきぎめ");
+assert.deepEqual(JSON.parse(JSON.stringify(finalReadingParagraph.furiganaOverrides)), [{ word: "月極", occurrence: 2, reading: "ゲッキョク" }], "the second final 月極 must retain the source-specific ゲッキョク reading");
+assert.equal(readingContext.window.JPY5_READING.furiganaContexts.monthlyParking["月極"], "つきぎめ", "the first final 月極駐車場 reading must remain つきぎめ");
+const teacherReadingContext = { window: {} };
+vm.runInNewContext(await readFile(join(root, "assets", "ch13-reading-teacher-notes.js"), "utf8"), teacherReadingContext);
+const finalTeacherParagraph = teacherReadingContext.window.JPY5_READING_TEACHER_NOTES.paragraphs.find(paragraph => paragraph.id === 7);
+const finalTeacherReadings = finalTeacherParagraph.annotations.filter(annotation => annotation.text === "月極").map(annotation => teacherReadingContext.window.JPY5_READING_TEACHER_NOTES.notes[annotation.note].reading);
+assert.deepEqual(JSON.parse(JSON.stringify(finalTeacherReadings)), ["つきぎめ", "ゲッキョク"], "final teacher-note 月極 readings must preserve the source-specific first/second distinction");
 assert.match(reading, /const override=furiganaOverrides\.find\(entry=>entry\.word===match\[0\]&&entry\.occurrence===occurrence\)/, "reading renderer must support occurrence-specific furigana overrides");
 assert.match(styles, /\.focus-detail-dialog:not\(\[open\]\)\{display:none\}/, "closed listening dialogs must not enter the page layout");
 assert.match(styles, /\.focus-detail-dialog\[open\]\{display:flex;position:fixed;top:50%;left:50%;flex-direction:column;margin:0;transform:translate\(-50%,-50%\)\}/, "open listening dialogs must be viewport-centred flex frames");

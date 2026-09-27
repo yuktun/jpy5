@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if(target.start<position)return;
       html+=ruby(paragraph.jp.slice(position,target.start),{furiganaContext:"monthlyParking"});
       const note=teacherData.notes[target.note];
-      const context=target.note==="earlyTsuki"?"misreadMonthlyParking":"monthlyParking";
+      const context=["earlyTsuki","finalTsukiSourceReading"].includes(target.note)?"misreadMonthlyParking":"monthlyParking";
       html+=`<button type="button" class="teacher-annotation teacher-annotation--${esc(note.type||"vocab")}" data-teacher-note="${esc(target.note)}" aria-haspopup="dialog" aria-label="開啟「${esc(note.term)}」老師筆記">${ruby(target.text,{furiganaContext:context})}</button>`;
       position=target.start+target.text.length;
     });
