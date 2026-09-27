@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   function teacher(){
     if(!teacherData)return shell("老師筆記","資料載入中……","");
-    const title=`<button type="button" class="teacher-annotation" data-teacher-note="company" aria-haspopup="dialog">${ruby(data.title)}</button>`;
+    const title=`${ruby("ゲッキョク")}<button type="button" class="teacher-annotation" data-teacher-note="company" aria-haspopup="dialog" aria-label="開啟「株式会社」老師筆記">${ruby("株式会社")}</button>`;
     return shell("老師筆記",teacherData.objective,`<section class="teacher-overview"><span class="reading-badge">老師閱讀重點</span><p>${esc(teacherData.objective)}</p><ol class="teacher-timeline">${teacherData.timeline.map((item,i)=>`<li>${esc(item)}${i<teacherData.timeline.length-1?'<span aria-hidden="true">→</span>':''}</li>`).join("")}</ol></section><article class="reading-paper teacher-paper" style="--reading-size:${[.98,1.1,1.24][state.font]}"><h3>${title}</h3>${teacherData.paragraphs.map(p=>`<section class="teacher-paragraph" data-teacher-paragraph="${p.id}"><div class="teacher-paragraph-meta"><span>段落 ${String(p.id).padStart(2,"0")}</span><button type="button" class="teacher-focus" data-paragraph-focus="${p.id}" aria-expanded="false">💡 段落重點</button></div><p>${teacherText(p)}</p><aside class="teacher-focus-note" id="paragraph-focus-${p.id}" hidden>${esc(p.focus)}</aside></section>`).join("")}</article>`);
   }
   function findAnswers(){
@@ -115,11 +115,12 @@ document.addEventListener("DOMContentLoaded", () => {
     closeTeacherPopup({restoreFocus:false}); activeNoteButton=button;
     const note=teacherData.notes[button.dataset.teacherNote]; if(!note)return;
     const popup=document.createElement("section"); popup.className="teacher-note-popup"; popup.setAttribute("role","dialog"); popup.setAttribute("aria-modal","false"); popup.setAttribute("aria-label",`${note.term} 老師筆記`); popup.tabIndex=-1;
-    popup.innerHTML=`<div class="teacher-note-head"><button type="button" class="teacher-speak" aria-label="朗讀 ${esc(note.term)}">🔊</button><div><strong>${esc(note.term)}</strong>${note.reading?`<small>（${esc(note.reading)}）</small>`:""}</div><button type="button" class="teacher-note-close" aria-label="關閉老師筆記">×</button></div><p class="teacher-note-meaning">${esc(note.meaning)}</p><div><b>老師筆記</b><p>${esc(note.teacherNote)}</p></div>${note.correction?`<div class="teacher-correction"><b>💡 校對補充</b><p>${esc(note.correction)}</p></div>`:""}`;
+    const canSpeak=typeof window.speechSynthesis!=="undefined"&&typeof window.SpeechSynthesisUtterance!=="undefined";
+    popup.innerHTML=`<div class="teacher-note-head">${canSpeak?`<button type="button" class="teacher-speak" aria-label="朗讀 ${esc(note.term)}">🔊</button>`:""}<div><strong>${esc(note.term)}</strong>${note.reading?`<small>（${esc(note.reading)}）</small>`:""}</div><button type="button" class="teacher-note-close" aria-label="關閉老師筆記">×</button></div><p class="teacher-note-meaning">${esc(note.meaning)}</p><div><b>老師筆記</b><p>${esc(note.teacherNote)}</p></div>${note.correction?`<div class="teacher-correction"><b>💡 校對補充</b><p>${esc(note.correction)}</p></div>`:""}`;
     document.body.append(popup); notePopup=popup;
     const rect=button.getBoundingClientRect(), compact=window.matchMedia("(max-width: 720px)").matches;
     if(!compact){const width=Math.min(350,window.innerWidth-24);let left=Math.min(Math.max(12,rect.left),window.innerWidth-width-12);let top=rect.bottom+10;popup.style.width=`${width}px`; popup.style.left=`${left}px`; popup.style.top=`${top}px`;const height=popup.getBoundingClientRect().height;if(top+height>window.innerHeight-12){top=Math.max(12,rect.top-height-10);popup.style.top=`${top}px`}}
-    popup.querySelector(".teacher-speak").onclick=()=>speakNote(note); popup.querySelector(".teacher-note-close").onclick=()=>closeTeacherPopup();
+    popup.querySelector(".teacher-speak")?.addEventListener("click",()=>speakNote(note)); popup.querySelector(".teacher-note-close").onclick=()=>closeTeacherPopup();
     popup.focus({preventScroll:true});
   }
   function setMode(mode){state.mode=mode;state.vocabFlipped=false;findIndex=0;examAnswers={};save();render()}
@@ -154,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#furigana-toggle").onclick=e=>{state.furigana=!state.furigana;e.currentTarget.textContent=`假名 ${state.furigana?'ON':'OFF'}`;save();render()};
   document.querySelector("#furigana-toggle").textContent=`假名 ${state.furigana?'ON':'OFF'}`;
   document.addEventListener("pointerdown",e=>{if(notePopup&&!notePopup.contains(e.target)&&!activeNoteButton?.contains(e.target))closeTeacherPopup({restoreFocus:false})});
-  document.addEventListener("scroll",()=>closeTeacherPopup({restoreFocus:false}),true);
+  document.addEventListener("scroll",e=>{if(!notePopup||!(e.target instanceof Element)||!e.target.closest(".teacher-note-popup"))closeTeacherPopup({restoreFocus:false})},true);
   document.addEventListener("keydown",e=>{if(e.key==="Escape"&&notePopup){e.preventDefault();closeTeacherPopup();return}if(e.target.matches("input,textarea,select"))return;if(state.mode==="vocab"&&e.code==="Space"){e.preventDefault();state.vocabFlipped=!state.vocabFlipped;save();render()}if(state.mode==="vocab"&&["ArrowLeft","ArrowRight"].includes(e.key)){state.vocabIndex=(state.vocabIndex+(e.key==="ArrowRight"?1:data.vocab.length-1))%data.vocab.length;state.vocabFlipped=false;save();render()}});
   render();
 });
