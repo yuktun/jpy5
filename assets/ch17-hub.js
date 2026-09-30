@@ -8,14 +8,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const vocabDone = Object.keys(vocab.results || {}).length;
   const grammarDone = Object.keys(flashcards.results || {}).length;
   const readingDone = Object.keys(reading.answered || {}).length;
-  const listeningDone = Object.keys(conversation.comprehensionAnswers || {}).length;
   set("vocabulary", `${vocabDone}/152 已評估`);
   set("grammar", `${grammarDone}/46 張已評估`);
-  set("reading", `${readingDone}/8 題已完成`);
-  set("listening", "Beta：答案待音訊核實，暫不評分");
+  set("reading", `${readingDone}/13 題已完成`);
+  const listeningNotes=Object.values(conversation.drafts||{}).filter(value=>String(value).trim()).length;
+  set("listening", `Beta：${listeningNotes}/9 個空欄有筆記；答案待核實，不評分`);
   set("quiz", `${quizHistory.length} 次測驗紀錄`);
   const finiteRatio=(done,total)=>Number.isFinite(done)&&total>0?Math.min(1,Math.max(0,done/total)):0;
-  const milestones = [finiteRatio(vocabDone,152), finiteRatio(grammarDone,46), finiteRatio(readingDone,8), Math.min(quizHistory.length,1)];
+  const milestones = [finiteRatio(vocabDone,152), finiteRatio(grammarDone,46), finiteRatio(readingDone,13), Math.min(quizHistory.length,1)];
   const overall = Math.round(milestones.reduce((sum,value)=>sum+value,0)/milestones.length*100);
   set("overall", `${overall}%`);
   const bar=document.querySelector("#hub-progress-bar"); if(bar)bar.style.width=`${overall}%`;

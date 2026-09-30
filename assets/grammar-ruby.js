@@ -1295,6 +1295,8 @@ window.JPY5GrammarRuby = (() => {
   const renderTitleInText = (value, title) => { const safeText=escape(value),safeTitle=escape(title); return safeTitle?safeText.replace(safeTitle,render(title)):safeText; };
   const renderPrompt = (value, title) => map.get(String(value ?? "")) || renderTitleInText(value, title);
   const rules = {
+    karanaru:[["からなっている","からなる"]], toshitewa:[["としては"]], niyori:[["ことによって","によって","により"]], kotokara:[["ことから","ところから"]], zaruwoenai:[["ざるを得ない","ざるをえない"]],
+    tehajimete:[["てはじめて","て初めて"]], ttara:[["ったら"]], nishitewa:[["にしては"]], karaniwa:[["からには"]], daroudesho:[["だろう","でしょ"]],
     tate:[["たて"]], tatoe:[["たとえ"]], tarishinai:[["たりしない"]], hodo:[["ほど"]], ndatte:[["んだって"]],
     nagara:[["でありながら","ながらも","ながら"]], tsumari:[["つまり"]], yone:[["よね"]], sai:[["際に","際は","の際"]],
     toitta:[["といった"]], niwatatte:[["にわたって","にわたり","にわたる"]], uchini:[["うちに"]],

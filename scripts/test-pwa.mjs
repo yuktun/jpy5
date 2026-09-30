@@ -114,6 +114,11 @@ assert.doesNotMatch(styles, /\.focus-detail-dialog\{display:flex;flex-direction:
 assert.match(styles, /\.focus-detail-body\{flex:1 1 auto;min-height:0;overflow-x:hidden;overflow-y:auto/, "only the listening dialog body may scroll");
 for (const module of conversationModules) {
   const source = await readFile(join(root, "assets", module), "utf8");
+  if (module === "ch17-conversation.js") {
+    assert.doesNotMatch(source, /showModal\(/, "Lesson 17 must not expose an answer-detail dialog while answers remain unverified");
+    assert.match(source, /const renderers=\{dialogue,blanks,prompts,expressions,guide\}/, "Lesson 17 must retain all unscored listening study modes");
+    continue;
+  }
   assert.match(source, /root\.style\.scrollBehavior="auto"/, `${module} must restore background scroll without smooth animation`);
   assert.match(source, /focus\(\{preventScroll:true\}\)/, `${module} must restore focus without moving the page`);
   assert.match(source, /detailDialog\.addEventListener\("cancel"/, `${module} must retain Escape-to-close behavior`);

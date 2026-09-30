@@ -1,7 +1,8 @@
 # Lesson 17 source audit
 
-Status: source material retrieved and inventoried; implementation data has not
-yet been marked source-verified.
+Status: source inventory confirmed and implementation audited against the
+inventory below. Source-derived material and app-authored teaching material are
+now labelled separately in the UI.
 
 ## Source inventory
 
@@ -55,3 +56,19 @@ yet been marked source-verified.
   and document any teaching-layer correction.
 - Source vocabulary item 78 `身近` is printed as 名詞; it is normally a
   な形容詞. Preserve and flag rather than silently overwriting the source.
+
+## Implementation disposition
+
+- Vocabulary keeps all 152 source records in source order with section counts
+  44 / 34 / 74. Items 23 and 78 retain the printed classifications and display
+  an explicitly labelled teaching note about ordinary dictionary usage.
+- Grammar keeps exactly 10 numbered patterns and 36 source examples. No `～上`
+  item was added. The 40 quiz questions and modal examples are labelled as app
+  practice / `延伸學習`, not textbook questions or examples.
+- Reading keeps the six implemented source paragraphs aligned across original
+  and translation views. The 13 multiple-choice questions, explanations and
+  five find-the-paragraph prompts are app-authored, source-grounded practice.
+- Listening retains all nine blanks, four content prompts and two expression
+  exercise groups as `audio_confirmation_required`. No answer key or sentence
+  timestamps have been inferred. Automatic scoring and mastery claims remain
+  disabled; only learner notes and playback counts are saved.
