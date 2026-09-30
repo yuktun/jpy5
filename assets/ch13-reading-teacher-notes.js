@@ -22,9 +22,14 @@ window.JPY5_READING_TEACHER_NOTES = (() => {
     patto:n("パッと","パッと","一下子、突然、一眼就","視覺上迅速映入眼簾。"), mimi:n("耳の奥","みみの おく","耳朵深處","舊讀音像記憶中的聲音。"), uchinaru:n("内なる声","うちなる こえ","內在聲音、inner voice","心裡自動響起的聲音。"), yomichigaeru:n("読み違えたりしない","よみちがえたり しない","不會讀錯、misread","句型：A を B と 読み違える；本篇例：月極を「ゲッキョク」と読み違える。"), hibi:n("日々","ひび","日日、每天、day by day","作者書名《日々の非常口》中的日々。")
   };
   const a=(text,note,occurrence=1)=>({text,note,occurrence});
+  const sourceParagraphs={
+    1:{sourceParagraph:1,part:"上"}, 2:{sourceParagraph:1,part:"下"},
+    3:{sourceParagraph:2,part:"上"}, 4:{sourceParagraph:2,part:"下"},
+    5:{sourceParagraph:3}, 6:{sourceParagraph:4}, 7:{sourceParagraph:5}
+  };
   return {
     objective:"時間の経過の中で変化する筆者の心情を読み取る。",
-    timeline:["來日初期","看板を読み始める","「月極」を会社名だと誤解","行動範囲が広がり誤解が強まる","在日6年目・青森","本当の意味を発見","現在"], notes,
+    timeline:["來日初期","看板を読み始める","「月極」を会社名だと誤解","行動範囲が広がり誤解が強まる","在日6年目・青森","本当の意味を発見","現在"], sourceParagraphs, notes,
     paragraphs:[
       {id:1,jp:"「日本語を勉強して、何が一番難しかった？」とときどき聞かれる。",focus:"開頭用提問令讀者好奇：答案到底是甚麼？"},
       {id:2,jp:"のみこむのに苦労した日本語は、佃煮にするほどあった。例えば、「以後」と「以降」と「以来」を一体どう使い分けたらよいのか。また、難しい四字熟語を一生懸命覚えても、「適度」に、いや「適当」に、いな「適切」に使えるようになるのに、さらに一進一退、試行錯誤の月日を要した。ただ、「一番難しかった」とくると、ぼくの頭にまっすぐ浮かぶのは「月極」だ。",focus:"作者列舉不少難題；一被問到唯一最難的，立刻想到「月極」。",annotations:[a("のみこむ","nomikomu"),a("佃煮にするほど","tsukudani"),a("以後","igo"),a("以降","ikou"),a("以来","irai"),a("一体どう","ittai"),a("四字熟語","yojijukugo"),a("適度","tekido"),a("いや","iya"),a("いな","ina"),a("適切","tekisetsu"),a("一進一退","isshin"),a("試行錯誤","shikou"),a("月日","tsukihi"),a("要した","yousu"),a("ただ","tada"),a("頭にまっすぐ浮かぶ","atamaU"),a("月極","earlyTsuki")]},

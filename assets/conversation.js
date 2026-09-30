@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   function record(id, correct) {
     state.attempts += 1;
-    if (correct) state.marks[id] = "correct";
+    if (correct) { state.marks[id] = "correct"; delete state.mistakes[id]; }
     else { state.marks[id] = "wrong"; state.mistakes[id] = (state.mistakes[id] || 0) + 1; }
     save();
   }
@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
     stage.querySelector(".next-practice").onclick = () => { current = (current + 1) % data.items.length; render(); };
   }
   function renderComprehension() {
-    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">教材問題</p><h2>內容與表現理解</h2></div><span>7 題</span></div><div class="reading-question-list">${data.comprehension.map((q,index) => {
+    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">理解練習</p><h2>內容與表現理解</h2></div><span>7 題</span></div><div class="reading-question-list">${data.comprehension.map((q,index) => {
       const selected=state.comprehensionAnswers[q.id], answered=selected!==undefined;
       return `<article class="reading-question" data-comprehension="${q.id}"><span>${q.kind} · ${String(index+1).padStart(2,"0")}</span><h3>${embeddedRuby(q.q)}</h3><div>${q.options.map((option,i)=>`<button data-comprehension-answer="${i}" ${answered?"disabled":""} class="${answered&&i===q.answer?"correct":answered&&i===selected&&i!==q.answer?"wrong":""}">${rubyIfJapanese(option)}</button>`).join("")}</div><p class="reading-feedback">${answered?`${selected===q.answer?"答對。":"未正確。"}${embeddedRuby(q.why)}`:""}</p></article>`;
     }).join("")}</div>`;
@@ -145,14 +145,16 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
   function renderCloze() {
+    let revealed=false;
     stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">會話填寫</p><h2>一口氣填回五句</h2></div><span>5 個底線位置</span></div><article class="practice-panel"><div class="cloze-intro"><button class="listen-button" id="play-full" type="button">▶ 由開頭播放全段</button><p>先聽完整會話，再在底線位置輸入句子。標點及空格不影響評分。</p></div><div class="dialogue-list cloze-list">${data.dialogue.map(row => {
       const [speaker,before,id,after] = row;
       const blank = id ? `<label class="cloze-blank"><span>底線 ${id}</span><input data-cloze="${id}" lang="ja" autocomplete="off" placeholder="輸入聽到的句子"></label>` : "";
       return `<article class="dialogue-row"><b>${ruby(speaker)}</b><p>${ruby(before)}${blank}${ruby(after || "")}</p></article>`;
     }).join("")}</div><div class="practice-actions"><button class="text-button" id="reveal-cloze">顯示答案</button><button class="primary-button" id="check-cloze">檢查五句</button></div><p class="answer-message"></p></article>`;
     stage.querySelector("#play-full").onclick = () => { audio.currentTime=0; audio.play().catch(()=>{}); };
-    stage.querySelector("#reveal-cloze").onclick = () => data.items.forEach(x => { const input=stage.querySelector(`[data-cloze="${x.id}"]`); input.value=x.jp; input.insertAdjacentHTML("afterend",`<output class="cloze-ruby-answer" lang="ja">${ruby(x.jp)}</output>`); });
+    stage.querySelector("#reveal-cloze").onclick = () => { revealed=true; data.items.forEach(x => { const input=stage.querySelector(`[data-cloze="${x.id}"]`); input.value=x.jp; input.insertAdjacentHTML("afterend",`<output class="cloze-ruby-answer" lang="ja">${ruby(x.jp)}</output>`); }); stage.querySelector("#check-cloze").disabled=true; stage.querySelector(".answer-message").textContent="顯示答案後，本輪只供參考，不計入掌握進度。"; };
     stage.querySelector("#check-cloze").onclick = () => {
+      if(revealed)return;
       let score=0;
       data.items.forEach(x => { const input=stage.querySelector(`[data-cloze="${x.id}"]`); const ok=clean(input.value)===clean(x.jp); input.classList.toggle("correct",ok); input.classList.toggle("wrong",!ok); record(x.id,ok); if(ok)score++; });
       stage.querySelector(".answer-message").textContent = score===5 ? "五句全部正確！" : `答對 ${score}/5。紅色位置可以去「重點句子」再聽。`;
