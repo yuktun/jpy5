@@ -5,7 +5,9 @@
     15,
     16,
     17,
-    18
+    18,
+    19,
+    20
   ],
   "routes": {
     "13": {
@@ -49,6 +51,20 @@
       "review": "chapter-18-review.html",
       "textbook": "chapter-18-textbook.html",
       "vocabulary": "chapter-18-vocabulary.html"
+    },
+    "19": {
+      "notes": "chapter-19-notes.html",
+      "reading": "chapter-19-reading.html",
+      "review": "chapter-19-review.html",
+      "textbook": "chapter-19-textbook.html",
+      "vocabulary": "chapter-19-vocabulary.html"
+    },
+    "20": {
+      "notes": "chapter-20-notes.html",
+      "reading": "chapter-20-reading.html",
+      "review": "chapter-20-review.html",
+      "textbook": "chapter-20-textbook.html",
+      "vocabulary": "chapter-20-vocabulary.html"
     }
   }
 }

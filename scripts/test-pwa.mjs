@@ -19,9 +19,9 @@ const home = await readFile(join(root, "index.html"), "utf8");
 const learningGuide = await readFile(join(root, "assets", "learning-guide.js"), "utf8");
 const notes = await readFile(join(root, "assets", "notes.js"), "utf8");
 const reading = await readFile(join(root, "assets", "reading.js"), "utf8");
-const grammarExtraFiles = [13, 14, 15, 16, 17, 18].map(lesson => `ch${lesson}-grammar-extra-data.js`);
-const conversationModules = ["conversation.js", ...[14, 15, 16, 17, 18].map(lesson => `ch${lesson}-conversation.js`)];
-const conversationDataFiles = ["conversation-data.js", ...[14, 15, 16, 17, 18].map(lesson => `ch${lesson}-conversation-data.js`)];
+const grammarExtraFiles = [13, 14, 15, 16, 17, 18, 19, 20].map(lesson => `ch${lesson}-grammar-extra-data.js`);
+const conversationModules = ["conversation.js", ...[14, 15, 16, 17, 18, 19, 20].map(lesson => `ch${lesson}-conversation.js`)];
+const conversationDataFiles = ["conversation-data.js", ...[14, 15, 16, 17, 18, 19, 20].map(lesson => `ch${lesson}-conversation-data.js`)];
 
 async function grammarExtras(file) {
   const context = { window: {} };
@@ -38,7 +38,7 @@ for (const page of pages) {
   assert.match(html, /<script src="assets\/analytics\.js" defer><\/script>/, `${page} does not load production analytics`);
   assert(assetMatches.includes(page), `${page} is missing from the offline inventory`);
 }
-assert.equal(pages.length, 55, "unexpected page count; review the offline inventory");
+assert.equal(pages.length, 73, "unexpected page count; review the offline inventory");
 assert.equal(manifest.scope, "/jpy5/");
 assert.equal(manifest.start_url, "/jpy5/");
 assert.match(serviceWorker, /importScripts\("assets\/offline-assets\.js"\)/);
@@ -61,7 +61,7 @@ assert.match(styles, /\.pwa-status\{display:inline-flex/);
 assert.match(styles, /\.pwa-status\{grid-column:1\/-1;grid-row:2/, "narrow headers need a second status row");
 assert.match(styles, /@media\(max-width:1200px\)\{\.vocab-complete-layout\{grid-template-columns:minmax\(0,1fr\)/, "iPad vocabulary panels must stack");
 assert.match(styles, /\.vocab-row em\{display:block;grid-column:2\/-1\}/, "mobile rows must retain the word type");
-assert.deepEqual(navigation.lessons, [13, 14, 15, 16, 17, 18], "lesson navigation must be generated from the available lesson pages");
+assert.deepEqual(navigation.lessons, [13, 14, 15, 16, 17, 18, 19, 20], "lesson navigation must be generated from the available lesson pages");
 for (const lesson of navigation.lessons) {
   for (const module of ["vocabulary", "notes", "reading", "textbook", "review"]) {
     assert.equal(navigation.routes[lesson][module], `chapter-${lesson}-${module}.html`, `lesson ${lesson} is missing ${module} navigation`);
@@ -72,7 +72,7 @@ for (const page of mainModulePages) {
   const html = await readFile(join(root, page), "utf8");
   assert.match(html, /assets\/lesson-quick-switcher\.js\?v=2/, `${page} must load the consolidated navigation`);
 }
-assert.equal(mainModulePages.length, 30, "all five modules must have one consolidated navigation entry per lesson");
+assert.equal(mainModulePages.length, 40, "all five modules must have one consolidated navigation entry per lesson");
 assert.match(quickSwitcher, /\["textbook", "聆聽"\]/, "Listening must remain in module navigation");
 assert.match(quickSwitcher, /\["review", "複習"\]/, "Review must remain in module navigation");
 assert.match(quickSwitcher, /document\.querySelectorAll\("\.module-lesson-switcher,.reading-controls \.lesson-pills"\)\.forEach\(nav => nav\.remove\(\)\)/, "legacy duplicate lesson navigation must be removed");
@@ -119,9 +119,9 @@ for (const module of conversationModules) {
     assert.match(source, /const renderers=\{dialogue,blanks,prompts,expressions,guide\}/, "Lesson 17 must retain all unscored listening study modes");
     continue;
   }
-  if (module === "ch18-conversation.js") {
-    assert.doesNotMatch(source, /showModal\(|data-answer|currentTime\s*=/, "Lesson 18 must not expose guessed answers or sentence replay");
-    assert.match(source, /const renderers=\{dialogue,blanks,prompts,expressions,activities,guide\}/, "Lesson 18 must retain unscored modes and source follow-ups");
+  if (["ch18-conversation.js", "ch19-conversation.js", "ch20-conversation.js"].includes(module)) {
+    assert.doesNotMatch(source, /showModal\(|data-answer|currentTime\s*=/, `${module} must not expose guessed answers or sentence replay`);
+    assert.match(source, /const renderers=\{dialogue,blanks,prompts,expressions,activities,guide\}/, `${module} must retain unscored modes and source follow-ups`);
     continue;
   }
   assert.match(source, /root\.style\.scrollBehavior="auto"/, `${module} must restore background scroll without smooth animation`);
