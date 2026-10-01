@@ -33,6 +33,20 @@ for (const lesson of [19,20]) {
   assert.equal(conversation.dialogue.length,e.dialogue); assert.equal(conversation.unverifiedBlanks.length,e.blanks);
   assert.equal(conversation.items.length,0); assert.equal(conversation.comprehension.length,0);
   if (lesson === 19) {
+    const separatedVerbForms=new Map([
+      [18,"深まる （理解が～） ／ 深まります（理解が～）"],[19,"身につける ／ 身に付けます"],[20,"取り戻す ／ 取り戻します"],
+      [38,"気が合う ／ 気が合います"],[41,"思い起こす ／ 思い起こします"],[51,"役立てる ／ 役立てます"],
+      [58,"受け継ぐ ／ 受け継ぎます"],[71,"生かす ／ 生かします"],[82,"揃う ／ 揃います"],
+      [83,"引き継ぐ ／ 引き継ぎます"],[84,"引き締める ／ 引き締めます"],[92,"手放す ／ 手放します"],
+      [99,"防ぐ ／ 防ぎます"],[111,"取り組む ／ 取り組みます"],[122,"結びつく ／ 結びつきます"],
+      [124,"努める ／ 努めます"],[133,"削る ／ 削ります"],[134,"欠ける ／ 欠けます"],
+      [139,"養う ／ 養います"],[141,"身につく ／ 身につきます"],[153,"巻く ／ 巻きます"],
+      [159,"仕上げる ／ 仕上げます"],[162,"入る （生命が～） ／ 入ります（生命が～）"],
+      [167,"組む （チームを～） ／ 組みます（チームを～）"],[176,"広まる （世界中に～） ／ 広まります（世界中に～）"]
+    ]);
+    assert.equal(separatedVerbForms.size,25);
+    for (const [id,written] of separatedVerbForms) assert.equal(vocab.find(item=>item.id===id).written,written);
+    for (const id of [89,108,112,158]) assert.equal(vocab.find(item=>item.id===id).written,"-");
     assert.equal(conversation.sourcePrompts.length,4);
     assert.deepEqual(JSON.parse(JSON.stringify(conversation.sourcePrompts.map(item=>item.jp))),[
       "今日は何の会が行われますか。",
@@ -91,6 +105,11 @@ const fatherRuby=lesson19Ruby.renderExample(lesson19Grammar.find(pattern=>patter
 const todayRuby=lesson19Ruby.renderExample(lesson19Grammar.find(pattern=>pattern.id==="wotooshite").examples[1][0],"wotooshite");
 assert(fatherRuby.includes("<ruby>父<rt>ちち</rt></ruby>")); assert(!fatherRuby.includes("<rt>とう</rt>"));
 assert(todayRuby.includes("<ruby>今日<rt>こんにち</rt></ruby>では")); assert(!todayRuby.includes("<ruby>今日<rt>きょう</rt></ruby>"));
+const lesson19VocabularyController=await readFile("assets/ch19-vocabulary.js","utf8");
+assert(lesson19VocabularyController.includes('清除全部 ${vocabulary.length} 詞的記憶卡進度、答題標記和收藏？'));
+assert(!/清除全部 \d+ 詞/.test(lesson19VocabularyController));
+assert(lesson19VocabularyController.includes("[item.kana,item.written,item.original,item.meaning,item.type,item.note,sectionLabel(item)]"));
+assert(lesson19VocabularyController.includes('state.direction === "normal" ? item.kana : (item.original || item.written)'));
 const navigation=JSON.parse(await readFile("assets/lesson-navigation.json","utf8"));
 assert.deepEqual(navigation.lessons,[13,14,15,16,17,18,19,20]);
 console.log("Lessons 19–20 checks passed: 325 vocabulary entries, 20 grammar patterns / 84 examples, reading, listening, navigation and local assets.");

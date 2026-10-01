@@ -103,7 +103,7 @@ $("#vocab-right").onclick = () => mark("right"); $("#vocab-wrong").onclick = () 
 $("#vocab-star").onclick = () => { const item=current(); if(!item)return; state.starred=state.starred.includes(item.id)?state.starred.filter(id=>id!==item.id):[...state.starred,item.id]; renderCard(); };
 $("#vocab-shuffle").onclick = () => { state.random=!state.random; resetPosition(); renderCard(); };
 $("#vocab-jump").onchange = event => { state.index=Math.max(0,Number(event.target.value)-1); flipped=false; renderCard(); };
-$("#reset-vocabulary").onclick = () => { if(confirm("清除全部 108 詞的記憶卡進度、答題標記和收藏？")){state=structuredClone(defaults);renderCard();} };
+$("#reset-vocabulary").onclick = () => { if(confirm(`清除全部 ${vocabulary.length} 詞的記憶卡進度、答題標記和收藏？`)){state=structuredClone(defaults);renderCard();} };
 document.querySelectorAll("[data-vocab-section]").forEach(button => button.onclick=()=>{state.section=button.dataset.vocabSection;state.filter="all";resetPosition();renderCard();});
 document.querySelectorAll("[data-vocab-direction]").forEach(button => button.onclick=()=>{state.direction=button.dataset.vocabDirection;flipped=false;renderCard();});
 document.querySelectorAll("[data-vocab-filter]").forEach(button => button.onclick=()=>{state.filter=button.dataset.vocabFilter;resetPosition();renderCard();});

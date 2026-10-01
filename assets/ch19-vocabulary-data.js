@@ -256,7 +256,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 18,
       "kana": "ふかまる（りかいが～） （辭書形）／ふかまります（りかいが～） （ます形）",
-      "written": "深まる （理解が～）深まります（理解が～）",
+      "written": "深まる （理解が～） ／ 深まります（理解が～）",
       "meaning": "加深（理解）",
       "type": "動詞・Ⅰ・自",
       "section": "grammar",
@@ -270,7 +270,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 19,
       "kana": "みにつける （辭書形）／みにつけます （ます形）",
-      "written": "身につける身に付けます",
+      "written": "身につける ／ 身に付けます",
       "meaning": "掌握、學會",
       "type": "動詞・Ⅱ・他",
       "section": "grammar",
@@ -284,7 +284,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 20,
       "kana": "とりもどす （辭書形）／とりもどします （ます形）",
-      "written": "取り戻す取り戻します",
+      "written": "取り戻す ／ 取り戻します",
       "meaning": "換回、恢復",
       "type": "動詞・Ⅰ・他",
       "section": "grammar",
@@ -536,7 +536,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 38,
       "kana": "きがあう （辭書形）／きがあいます （ます形）",
-      "written": "気が合う気が合います",
+      "written": "気が合う ／ 気が合います",
       "meaning": "氣味相投、投緣",
       "type": "動詞・Ⅰ・自",
       "section": "grammar",
@@ -578,7 +578,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 41,
       "kana": "おもいおこす （辭書形）／おもいおこします （ます形）",
-      "written": "思い起こす思い起こします",
+      "written": "思い起こす ／ 思い起こします",
       "meaning": "想起",
       "type": "動詞・Ⅰ・他",
       "section": "grammar",
@@ -718,7 +718,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 51,
       "kana": "やくだてる （辭書形）／やくだてます （ます形）",
-      "written": "役立てる役立てます",
+      "written": "役立てる ／ 役立てます",
       "meaning": "使…有用",
       "type": "動詞・Ⅱ・自",
       "section": "speaking",
@@ -816,7 +816,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 58,
       "kana": "うけつぐ （辭書形）／うけつぎます （ます形）",
-      "written": "受け継ぐ受け継ぎます",
+      "written": "受け継ぐ ／ 受け継ぎます",
       "meaning": "繼承、傳承",
       "type": "動詞・Ⅰ・他",
       "section": "speaking",
@@ -998,7 +998,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 71,
       "kana": "いかす （辭書形）／いかします （ます形）",
-      "written": "生かす生かします",
+      "written": "生かす ／ 生かします",
       "meaning": "活用、發揮",
       "type": "動詞・Ⅰ・他",
       "section": "speaking",
@@ -1152,7 +1152,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 82,
       "kana": "そろう （辭書形）／そろいます （ます形）",
-      "written": "揃う揃います",
+      "written": "揃う ／ 揃います",
       "meaning": "到齊、聚齊",
       "type": "動詞・Ⅰ・自",
       "section": "speaking",
@@ -1166,7 +1166,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 83,
       "kana": "ひきつぐ （辭書形）／ひきつぎます （ます形）",
-      "written": "引き継ぐ引き継ぎます",
+      "written": "引き継ぐ ／ 引き継ぎます",
       "meaning": "交接、繼承",
       "type": "動詞・Ⅰ・他",
       "section": "speaking",
@@ -1180,7 +1180,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 84,
       "kana": "ひきしめる （辭書形）／ひきしめます （ます形）",
-      "written": "引き締める引き締めます",
+      "written": "引き締める ／ 引き締めます",
       "meaning": "振作、緊張",
       "type": "動詞・Ⅱ・他",
       "section": "speaking",
@@ -1292,7 +1292,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 92,
       "kana": "てばなす （辭書形）／てばなします （ます形）",
-      "written": "手放す手放します",
+      "written": "手放す ／ 手放します",
       "meaning": "放手",
       "type": "動詞・Ⅰ・他",
       "section": "speaking",
@@ -1390,7 +1390,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 99,
       "kana": "ふせぐ （辭書形）／ふせぎます （ます形）",
-      "written": "防ぐ防ぎます",
+      "written": "防ぐ ／ 防ぎます",
       "meaning": "防止",
       "type": "動詞・Ⅰ・他",
       "section": "speaking",
@@ -1558,7 +1558,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 111,
       "kana": "とりくむ （辭書形）／とりくみます （ます形）",
-      "written": "取り組む取り組みます",
+      "written": "取り組む ／ 取り組みます",
       "meaning": "努力、埋頭、專心致志",
       "type": "動詞・Ⅰ・自",
       "section": "reading",
@@ -1712,7 +1712,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 122,
       "kana": "むすびつく （辭書形）／むすびつきます （ます形）",
-      "written": "結びつく結びつきます",
+      "written": "結びつく ／ 結びつきます",
       "meaning": "結合、有關係",
       "type": "動詞・Ⅰ・自",
       "section": "reading",
@@ -1740,7 +1740,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 124,
       "kana": "つとめる （辭書形）／つとめます （ます形）",
-      "written": "努める努めます",
+      "written": "努める ／ 努めます",
       "meaning": "盡力、效力",
       "type": "動詞・Ⅱ・他",
       "section": "reading",
@@ -1866,7 +1866,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 133,
       "kana": "けずる （辭書形）／けずります （ます形）",
-      "written": "削る削ります",
+      "written": "削る ／ 削ります",
       "meaning": "削去、刪去",
       "type": "動詞・Ⅰ・他",
       "section": "reading",
@@ -1880,7 +1880,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 134,
       "kana": "かける （辭書形）／かけます （ます形）",
-      "written": "欠ける欠けます",
+      "written": "欠ける ／ 欠けます",
       "meaning": "欠缺、缺乏、缺少",
       "type": "動詞・Ⅱ・自",
       "section": "reading",
@@ -1950,7 +1950,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 139,
       "kana": "やしなう （辭書形）／やしないます （ます形）",
-      "written": "養う養います",
+      "written": "養う ／ 養います",
       "meaning": "培養",
       "type": "動詞・Ⅰ・他",
       "section": "reading",
@@ -1978,7 +1978,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 141,
       "kana": "みにつく （辭書形）／みにつきます （ます形）",
-      "written": "身につく身につきます",
+      "written": "身につく ／ 身につきます",
       "meaning": "（知識、技術等）學到手、掌握",
       "type": "動詞・Ⅰ・自",
       "section": "reading",
@@ -2146,7 +2146,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 153,
       "kana": "まく （辭書形）／まきます （ます形）",
-      "written": "巻く巻きます",
+      "written": "巻く ／ 巻きます",
       "meaning": "卷、裹、纏",
       "type": "動詞・Ⅰ・他",
       "section": "reading",
@@ -2230,7 +2230,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 159,
       "kana": "しあげる （辭書形）／しあげます （ます形）",
-      "written": "仕上げる仕上げます",
+      "written": "仕上げる ／ 仕上げます",
       "meaning": "完成、潤飾",
       "type": "動詞・Ⅱ・他",
       "section": "reading",
@@ -2272,7 +2272,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 162,
       "kana": "はいる（せいめいが～） （辭書形）／はいります（せいめいが～） （ます形）",
-      "written": "入る （生命が～）入ります（生命が～）",
+      "written": "入る （生命が～） ／ 入ります（生命が～）",
       "meaning": "含有（生命）",
       "type": "動詞・Ⅰ・自",
       "section": "reading",
@@ -2342,7 +2342,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 167,
       "kana": "くむ （チームを～）（辭書形）／くみます（チームを～） （ます形）",
-      "written": "組む （チームを～）組みます（チームを～）",
+      "written": "組む （チームを～） ／ 組みます（チームを～）",
       "meaning": "組成（隊伍）",
       "type": "動詞・Ⅰ・他",
       "section": "reading",
@@ -2468,7 +2468,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 176,
       "kana": "ひろまる（せかいじゅうに～）（辭書形）／ひろまります（せかいじゅうに～） （ます形）",
-      "written": "広まる （世界中に～）広まります（世界中に～）",
+      "written": "広まる （世界中に～） ／ 広まります（世界中に～）",
       "meaning": "傳播、遍及、擴展",
       "type": "動詞・Ⅰ・自",
       "section": "reading",
