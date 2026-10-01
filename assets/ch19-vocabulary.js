@@ -32,8 +32,9 @@ function current() {
   return deck[state.index];
 }
 
-const frontText = item => state.direction === "normal" ? item.kana : (item.original || item.written);
-const backTitle = item => state.direction === "normal" ? (item.original || item.written) : item.kana;
+const visibleJapanese = item => item.original || (!/^[-－]$/.test(item.written) ? item.written : item.kana);
+const frontText = item => state.direction === "normal" ? item.kana : visibleJapanese(item);
+const backTitle = item => state.direction === "normal" ? visibleJapanese(item) : item.kana;
 const frontLabel = () => state.direction === "normal" ? "平假名／片假名" : "漢字／外語原寫";
 const sectionLabel = item => sections[item.section]?.label || "第 19 課";
 function scriptLabel(item) { if (item.original) return "英文／外語原寫"; return item.written !== item.kana ? "漢字表記" : "日文表記"; }
@@ -54,7 +55,7 @@ function renderList() {
     const inSection = selectedSection === "all" || item.section === selectedSection;
     return inSection && [item.kana,item.written,item.original,item.meaning,item.type,item.note,sectionLabel(item)].some(value => value.toLowerCase().includes(query));
   });
-  $("#vocab-list").innerHTML = matches.map(item => `<article class="vocab-row"><span>${item.id}</span><div><b lang="ja">${item.original || item.written}</b><small>${item.kana}${item.original && item.written && !/^[-－]$/.test(item.written) ? ` · ${item.written}` : ""}</small></div>${pronunciation.button(item, "vocab-row-speak", `data-vocab-speak="${item.id}"`)}<p>${item.meaning}${item.note ? `<small>${item.note}</small>` : ""}</p><em>${item.type}<small>${sectionLabel(item)}</small></em></article>`).join("");
+  $("#vocab-list").innerHTML = matches.map(item => `<article class="vocab-row"><span>${item.id}</span><div><b lang="ja">${visibleJapanese(item)}</b><small>${item.kana}${item.original && item.written && !/^[-－]$/.test(item.written) ? ` · ${item.written}` : ""}</small></div>${pronunciation.button(item, "vocab-row-speak", `data-vocab-speak="${item.id}"`)}<p>${item.meaning}${item.note ? `<small>${item.note}</small>` : ""}</p><em>${item.type}<small>${sectionLabel(item)}</small></em></article>`).join("");
   $("#vocab-count").textContent = `顯示 ${matches.length} / ${vocabulary.length}`;
 }
 

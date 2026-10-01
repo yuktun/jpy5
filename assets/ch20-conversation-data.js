@@ -1,4 +1,4 @@
-window.JPY5_CONVERSATION={title:"なぜ、日本で相撲を取ろうと思われたのですか",setting:"相撲部屋で",speakers:["イー・ジンジュ","臥牙丸"],audio:"https://ttrw.jp/static/sound/sound202406141718355191.mp3",sourceStatus:"printed_dialogue_transcribed; answers_require_audio_confirmation",source:{conversationPdfPages:[5,6,7],conversationPrintedPages:[103,104,105],audioTrack:"MP3 2-2"},items:[],dialogue:[
+window.JPY5_CONVERSATION={title:"なぜ、日本で相撲を取ろうと思われたのですか",setting:"相撲部屋で",speakers:["イー・ジンジュ","臥牙丸"],audio:"https://ttrw.jp/static/sound/sound202406141718355191.mp3",sourceStatus:"printed_dialogue_transcribed; answers_require_audio_confirmation",source:{conversationPdfPages:[5,6,7,8],conversationPrintedPages:[103,104,105,106],audioTrack:"MP3 2-2",activities:[1,2,3,4,5,6]},sourceNote:"話す・聞くの活動1〜6、会話本文、7個の番号付き空欄、5問の内容設問、4問の表現設問は『みんなの日本語 中級II』第20課PDF pp. 5–8（印刷pp. 103–106）から視覚的に転記した。空欄・聞き取り設問の解答鍵は印刷されていないため、解答・採点は収録していない。",items:[],dialogue:[
 ["イー・ジンジュ","本日は、①＿＿＿＿＿＿＿＿。AKC研究センターのイー・ジンジュと申します。当センターの機関誌「国際人」に臥牙丸関を②＿＿＿＿＿＿＿＿。","",""],
 ["臥牙丸","光栄です。よろしくお願いします。","",""],
 ["イー・ジンジュ","③＿＿＿＿＿＿＿＿、グルジアの方が、なぜ、日本で相撲を取ろうと思われたのですか。","",""],
@@ -17,4 +17,38 @@ window.JPY5_CONVERSATION={title:"なぜ、日本で相撲を取ろうと思わ�
 ["臥牙丸","はい。これからも毎日のけいこを一生懸命頑張って、常に今より高いところを目指したいです。応援よろしくお願いします。","",""],
 ["イー・ジンジュ","さらなる⑥＿＿＿＿＿＿＿＿。⑦＿＿＿＿＿＿＿＿。","",""],
 ["臥牙丸","こちらこそ、ありがとうございました。","",""]],
-unverifiedBlanks:Array.from({length:7},(_,i)=>({id:i+1,speaker:"",context:`印刷會話中的第${i+1}空欄`,source:"printed_blank",status:"audio_confirmation_required"})),sourcePrompts:[{id:"listen-1",jp:"臥牙丸関が日本で相撲を取るようになったきっかけは何ですか。",answerStatus:"audio_confirmation_required"}],expressionExercises:[],sourceFollowUps:[{id:"repeat",section:"3. もう一度聞こう",blankCount:7,answerStatus:"audio_confirmation_required"},{id:"say",section:"4. 言ってみよう",answerStatus:"not_scored"},{id:"practice",section:"5. 練習しよう",answerStatus:"open_ended_not_scored"}],comprehension:[],furigana:{},furiganaSegments:{},embeddedJapanese:[]};
+unverifiedBlanks:Array.from({length:7},(_,i)=>({id:i+1,speaker:"",context:`印刷會話中的第${i+1}空欄`,source:"printed_blank",status:"audio_confirmation_required"})),
+sourcePrompts:[
+  {id:"listen-1",section:"2. 聞いてみよう 1) 内容を聞き取りましょう",jp:"臥牙丸さんはなぜ日本で相撲を取ろうと思ったのですか。",answerStatus:"audio_confirmation_required"},
+  {id:"listen-2",section:"2. 聞いてみよう 1) 内容を聞き取りましょう",jp:"十両優勝したとき、お母さんに電話して、声を聞いたとたん涙が出たのはどうしてですか。",answerStatus:"audio_confirmation_required"},
+  {id:"listen-3",section:"2. 聞いてみよう 1) 内容を聞き取りましょう",jp:"相撲部屋の生活でどのようなことに戸惑いましたか。",answerStatus:"audio_confirmation_required"},
+  {id:"listen-4",section:"2. 聞いてみよう 1) 内容を聞き取りましょう",jp:"後輩へどのようなアドバイスをしていますか。",answerStatus:"audio_confirmation_required"},
+  {id:"listen-5",section:"2. 聞いてみよう 1) 内容を聞き取りましょう",jp:"これからの抱負をどのように語っていますか。",answerStatus:"audio_confirmation_required"}
+],
+expressionExercises:[
+  {id:"expression-1",section:"2. 聞いてみよう 2) 表現を聞き取りましょう",prompt:"インタビューする人は何と言いましたか。",items:["インタビューのはじめに、インタビューを受けてくれたお礼を言うとき","最初の質問をするとき","あいづちを打つとき","インタビューを終えるとき"],answerStatus:"audio_confirmation_required"}
+],
+sourceFollowUps:[
+  {id:"warmup",section:"1. やってみよう",content:["市主催の美術展で、カリナさんが日本画部門の最優秀賞を取りました。カリナさんにインタビューして、市の広報誌に記事を掲載します。カリナさんに会うのは初めてです。","1）初対面の挨拶をしてください。","2）受賞の感想を聞いてください。","3）インタビューを終えてください。"],answerStatus:"open_ended_not_scored"},
+  {id:"repeat",section:"3. もう一度聞こう",content:["＿＿＿の部分に言葉を書いてください。"],blankCount:7,answerStatus:"audio_confirmation_required"},
+  {id:"say",section:"4. 言ってみよう",content:["絵を見ながら発音やイントネーションに注意し、MP3のとおりに言ってみましょう。"],imagePrompts:4,imagePromptPrintedPage:105,answerStatus:"not_scored"},
+  {id:"practice",section:"5. 練習しよう",content:[
+    "インタビューの流れを考えて、実際に町の有名人にインタビューしてみます。インタビューは町の広報誌『みんなの広場』に紹介されます。",
+    "例：お弁当屋を始めたきっかけと成功した理由を聞く（●：弁当屋の経営者）。",
+    "始めたきっかけ：母親が作った弁当を友達に分けてあげたら、とても喜んで食べてくれた。成功した理由：テレビで紹介された。",
+    "○：お忙しいところ、お時間をいただきありがとうございます。○と申します。●さんのお話を広報誌『みんなの広場』に紹介させていただきたいと思います。",
+    "●：光栄です。よろしくお願いします。",
+    "○：まず伺いたいんですが、なぜお弁当屋を始めようと思われたのでしょうか。",
+    "●：中学校の遠足のとき、母が作ったお弁当を友達に分けてあげたら、おいしいおいしいと言って……、全部食べられちゃったんです。",
+    "○：そうだったんですか。それにしても、わずか3年で10店を超えるまでになった成功のわけとは何でしょうか。",
+    "●：手作りでおいしいと、テレビで紹介されたからではないでしょうか。",
+    "○：そうですか。では、これから会社を始めようとする若い人たちに何か一言お願いできますでしょうか。",
+    "●：そうですね。何事もやればできると信じて夢を持ち続けることが大切ですね。",
+    "○：いいお言葉ですね。今日はどうもありがとうございました。ますますのご活躍を期待しております。",
+    "（1）医者になったきっかけと現役を続ける理由を聞く（●：70歳の医師）。きっかけ：中学のとき、テレビのドキュメンタリーで島の診療所で働く医師の姿を見て感動した。理由：データに頼らず、患者の顔を見て、患者に寄り添うことの大切さを若い医者に伝えたい。",
+    "（2）趣味あるいは余暇の活動について、それを始めたきっかけと続けている理由、これからの抱負を聞く。相手と話す内容は自由に考える。"
+  ],answerStatus:"open_ended_not_scored"},
+  {id:"challenge",section:"6. チャレンジしよう",content:["興味を持っているテーマを1つ選んで、身近な人にインタビューしてください。","例：若者のファッションについて／日本のポップミュージックについて","インタビューの流れ：①質問を準備します。本やネットで調べれば分かることは質問せず、相手の経験や意見を引き出す質問を考えましょう。","②インタビューの相手とインタビューの日時・場所を決めます。テーマも伝えておきましょう。","③実際にインタビューをします。できれば、録音させてもらいましょう。","④内容をまとめましょう。","⑤インタビュー相手にお礼のメールを書きましょう。"],answerStatus:"open_ended_not_scored"}
+],comprehension:[],furigana:{
+  "本日":"ほんじつ","研究":"けんきゅう","申します":"もうします","当センター":"とうセンター","機関誌":"きかんし","国際人":"こくさいじん","臥牙丸関":"ががまるぜき","光栄":"こうえい","方":"かた","柔道":"じゅうどう","活躍":"かつやく","黒海関":"こっかいぜき","実家":"じっか","近く":"ちかく","興味":"きょうみ","世界選手権大会":"せかいせんしゅけんたいかい","入門":"にゅうもん","初土俵":"はつどひょう","関取":"せきとり","順風満帆":"じゅんぷうまんぱん","翌年":"よくねん","交通事故":"こうつうじこ","亡くなりました":"なくなりました","十両":"じゅうりょう","命日":"めいにち","昇進":"しょうしん","二場所目":"ふたばしょめ","優勝":"ゆうしょう","お母様":"おかあさま","故郷":"こきょう","離れて":"はなれて","特殊":"とくしゅ","相撲部屋":"すもうべや","環境":"かんきょう","全く":"まったく","先輩後輩":"せんぱいこうはい","関係":"かんけい","戸惑う":"とまどう","覚悟":"かくご","魚":"さかな","鍋":"なべ","苦手":"にがて","外国人":"がいこくじん","寿司":"すし","納豆":"なっとう","四股名":"しこな","力強い":"ちからづよい","響き":"ひびき","師匠":"ししょう","期待":"きたい","漢字":"かんじ","選んで":"えらんで","若者":"わかもの","力士":"りきし","発った":"たった","生まれ変わる":"うまれかわる","慣習":"かんしゅう","理解":"りかい","常に":"つねに","感謝":"かんしゃ","努力":"どりょく","報いられる":"むくいられる","言葉":"ことば","最後":"さいご","応援":"おうえん","家族":"かぞく","友達":"ともだち","皆さん":"みなさん","一言":"ひとこと","一生懸命":"いっしょうけんめい","頑張って":"がんばって","目指したい":"めざしたい"
+},furiganaSegments:{},embeddedJapanese:[]};

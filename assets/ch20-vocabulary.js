@@ -32,8 +32,9 @@ function current() {
   return deck[state.index];
 }
 
-const frontText = item => state.direction === "normal" ? item.kana : (item.original || item.written);
-const backTitle = item => state.direction === "normal" ? (item.original || item.written) : item.kana;
+const visibleJapanese = item => item.original || (!/^[-－]$/.test(item.written) ? item.written : item.kana);
+const frontText = item => state.direction === "normal" ? item.kana : visibleJapanese(item);
+const backTitle = item => state.direction === "normal" ? visibleJapanese(item) : item.kana;
 const frontLabel = () => state.direction === "normal" ? "平假名／片假名" : "漢字／外語原寫";
 const sectionLabel = item => sections[item.section]?.label || "第 20 課";
 function scriptLabel(item) { if (item.original) return "英文／外語原寫"; return item.written !== item.kana ? "漢字表記" : "日文表記"; }
@@ -54,7 +55,7 @@ function renderList() {
     const inSection = selectedSection === "all" || item.section === selectedSection;
     return inSection && [item.kana,item.written,item.original,item.meaning,item.type,item.note,sectionLabel(item)].some(value => value.toLowerCase().includes(query));
   });
-  $("#vocab-list").innerHTML = matches.map(item => `<article class="vocab-row"><span>${item.id}</span><div><b lang="ja">${item.original || item.written}</b><small>${item.kana}${item.original && item.written && !/^[-－]$/.test(item.written) ? ` · ${item.written}` : ""}</small></div>${pronunciation.button(item, "vocab-row-speak", `data-vocab-speak="${item.id}"`)}<p>${item.meaning}${item.note ? `<small>${item.note}</small>` : ""}</p><em>${item.type}<small>${sectionLabel(item)}</small></em></article>`).join("");
+  $("#vocab-list").innerHTML = matches.map(item => `<article class="vocab-row"><span>${item.id}</span><div><b lang="ja">${visibleJapanese(item)}</b><small>${item.kana}${item.original && item.written && !/^[-－]$/.test(item.written) ? ` · ${item.written}` : ""}</small></div>${pronunciation.button(item, "vocab-row-speak", `data-vocab-speak="${item.id}"`)}<p>${item.meaning}${item.note ? `<small>${item.note}</small>` : ""}</p><em>${item.type}<small>${sectionLabel(item)}</small></em></article>`).join("");
   $("#vocab-count").textContent = `顯示 ${matches.length} / ${vocabulary.length}`;
 }
 
@@ -103,7 +104,7 @@ $("#vocab-right").onclick = () => mark("right"); $("#vocab-wrong").onclick = () 
 $("#vocab-star").onclick = () => { const item=current(); if(!item)return; state.starred=state.starred.includes(item.id)?state.starred.filter(id=>id!==item.id):[...state.starred,item.id]; renderCard(); };
 $("#vocab-shuffle").onclick = () => { state.random=!state.random; resetPosition(); renderCard(); };
 $("#vocab-jump").onchange = event => { state.index=Math.max(0,Number(event.target.value)-1); flipped=false; renderCard(); };
-$("#reset-vocabulary").onclick = () => { if(confirm("清除全部 108 詞的記憶卡進度、答題標記和收藏？")){state=structuredClone(defaults);renderCard();} };
+$("#reset-vocabulary").onclick = () => { if(confirm(`清除全部 ${vocabulary.length} 詞的記憶卡進度、答題標記和收藏？`)){state=structuredClone(defaults);renderCard();} };
 document.querySelectorAll("[data-vocab-section]").forEach(button => button.onclick=()=>{state.section=button.dataset.vocabSection;state.filter="all";resetPosition();renderCard();});
 document.querySelectorAll("[data-vocab-direction]").forEach(button => button.onclick=()=>{state.direction=button.dataset.vocabDirection;flipped=false;renderCard();});
 document.querySelectorAll("[data-vocab-filter]").forEach(button => button.onclick=()=>{state.filter=button.dataset.vocabFilter;resetPosition();renderCard();});

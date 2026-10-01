@@ -69,6 +69,48 @@ for (const lesson of [19,20]) {
     assert(conversation.sourceFollowUps.every(item=>item.content.length&&!Object.hasOwn(item,"answer")));
     assert.deepEqual(JSON.parse(JSON.stringify(conversation.source.conversationPdfPages)),[5,6,7,8]);
     assert.deepEqual(JSON.parse(JSON.stringify(conversation.source.conversationPrintedPages)),[89,90,91,92]);
+    assert.deepEqual(JSON.parse(JSON.stringify(reading.sourceActivities.map(item=>item.section.split(".")[0]))),["3","4","5"]);
+    assert.equal((reading.sourceActivities[0].items.join("").match(/[①②③④⑤⑥]/g)||[]).length,6);
+    assert(reading.furigana&&Object.keys(reading.furigana).length>0);
+  } else {
+    const separatedVerbForms=new Map([
+      [6,"腹が立つ ／ 腹が立ちます"],[14,"悩む ／ 悩みます"],[16,"渡り歩く ／ 渡り歩きます"],
+      [29,"湧き起こる ／ 湧き起こります"],[32,"持ち出す ／ 持ち出します"],[43,"終える ／ 終えます"],
+      [57,"上がる （十両に～） ／ 上がります（十両に～）"],[62,"離れる（故郷を～） ／ 離れます（故郷を～）"],
+      [74,"生まれ変わる ／ 生まれ変わります"],[76,"報いる ／ 報います"],[85,"頼る ／ 頼ります"],
+      [86,"寄り添う ／ 寄り添います"],[88,"まとめる （内容を～） ／ まとめます（内容を～）"],
+      [93,"取る （相撲を～） ／ 取ります（相撲を～）"],[103,"授かる ／ 授かります"],
+      [119,"吹く ／ 吹きます"],[121,"出す （音を～） ／ 出します（音を～）"],
+      [127,"持つ （疑問を～） ／ 持ちます （疑問を～）"],[138,"接する ／ 接します"],
+      [145,"含める ／ 含めます"]
+    ]);
+    assert.equal(separatedVerbForms.size,20);
+    for (const [id,written] of separatedVerbForms) assert.equal(vocab.find(item=>item.id===id).written,written);
+    for (const id of [5,17,23,25,50,54,61,65,67,71,78,83,92,111,113,117,118,120,122,143,147,148]) assert.equal(vocab.find(item=>item.id===id).written,"-");
+    assert.deepEqual(JSON.parse(JSON.stringify(reading.sourceQuestions.map(item=>item.options.length))),[3,3,3]);
+    assert.deepEqual(JSON.parse(JSON.stringify(reading.sourceActivities.map(item=>item.section))),["3. 確かめよう 2)","3. 確かめよう 3)","4. 考えよう・話そう","5. チャレンジしよう"]);
+    assert.equal((reading.sourceActivities[0].items.join("").match(/[①②③④⑤]/g)||[]).length,5);
+    assert.equal((reading.sourceActivities[1].items.join("").match(/[①②③④⑤⑥⑦⑧]/g)||[]).length,8);
+    assert.equal(reading.sourceActivities[2].items.length,2);
+    assert(reading.furigana&&Object.keys(reading.furigana).length>0);
+    assert.equal(conversation.sourcePrompts.length,5);
+    assert.deepEqual(JSON.parse(JSON.stringify(conversation.sourcePrompts.map(item=>item.jp))),[
+      "臥牙丸さんはなぜ日本で相撲を取ろうと思ったのですか。",
+      "十両優勝したとき、お母さんに電話して、声を聞いたとたん涙が出たのはどうしてですか。",
+      "相撲部屋の生活でどのようなことに戸惑いましたか。",
+      "後輩へどのようなアドバイスをしていますか。",
+      "これからの抱負をどのように語っていますか。"
+    ]);
+    assert.equal(conversation.expressionExercises.length,1);
+    assert.equal(conversation.expressionExercises[0].items.length,4);
+    assert.deepEqual(JSON.parse(JSON.stringify(conversation.sourceFollowUps.map(item=>item.id))),["warmup","repeat","say","practice","challenge"]);
+    assert.deepEqual(JSON.parse(JSON.stringify(conversation.sourceFollowUps.map(item=>item.section.split(".")[0]))),["1","3","4","5","6"]);
+    assert(conversation.sourcePrompts.every(item=>item.answerStatus==="audio_confirmation_required"&&!Object.hasOwn(item,"answer")));
+    assert(conversation.expressionExercises.every(item=>item.answerStatus==="audio_confirmation_required"&&!Object.hasOwn(item,"answer")));
+    assert(conversation.sourceFollowUps.every(item=>item.content.length&&!Object.hasOwn(item,"answer")));
+    assert.deepEqual(JSON.parse(JSON.stringify(conversation.source.conversationPdfPages)),[5,6,7,8]);
+    assert.deepEqual(JSON.parse(JSON.stringify(conversation.source.conversationPrintedPages)),[103,104,105,106]);
+    assert(conversation.furigana&&Object.keys(conversation.furigana).length>0);
   }
   for (const module of ["vocabulary","notes","reading","textbook","review","flashcards","quiz","history"]) {
     const html=await readFile(`chapter-${lesson}-${module}.html`,"utf8");
@@ -83,9 +125,18 @@ const lesson19Files=[
   ...(await readdir("assets")).filter(name=>/^ch19-/.test(name)).map(name=>`assets/${name}`)
 ];
 for (const file of lesson19Files) assert(!/ワット|いずみ|第77頁/.test(await readFile(file,"utf8")),`${file} contains stale Lesson 18 content`);
+const lesson20Files=[
+  ...(await readdir(".")).filter(name=>/^chapter-20.*\.html$/.test(name)),
+  ...(await readdir("assets")).filter(name=>/^ch20-/.test(name)).map(name=>`assets/${name}`)
+];
+for (const file of lesson20Files) assert(!/ワット|いずみ|第77頁/.test(await readFile(file,"utf8")),`${file} contains stale lesson content`);
 const lesson19Controller=await readFile("assets/ch19-conversation.js","utf8"),lesson19Textbook=await readFile("chapter-19-textbook.html","utf8");
 assert(lesson19Controller.includes("data.sourcePrompts.length")); assert(lesson19Controller.includes("expressionPromptCount"));
 assert(!lesson19Textbook.includes("1個內容提示")); assert(lesson19Textbook.includes("印刷第 89–92 頁"));
+const lesson20Controller=await readFile("assets/ch20-conversation.js","utf8"),lesson20Textbook=await readFile("chapter-20-textbook.html","utf8");
+assert(lesson20Controller.includes("data.sourcePrompts.length")); assert(lesson20Controller.includes("expressionPromptCount"));
+assert(lesson20Controller.includes("${activity.blankCount}")); assert(!lesson20Controller.includes("ruby(activity.instruction)"));
+assert(!lesson20Textbook.includes("1個內容提示")); assert(lesson20Textbook.includes("印刷第 103–106 頁"));
 const lesson19RubySource=await readFile("assets/ch19-grammar-ruby.js","utf8"),rubyContext={window:{}};
 vm.createContext(rubyContext);
 for (const file of ["assets/grammar-ruby.js","assets/ch19-data.js","assets/ch19-grammar-ruby.js"]) vm.runInContext(await readFile(file,"utf8"),rubyContext,{filename:file});
@@ -105,11 +156,37 @@ const fatherRuby=lesson19Ruby.renderExample(lesson19Grammar.find(pattern=>patter
 const todayRuby=lesson19Ruby.renderExample(lesson19Grammar.find(pattern=>pattern.id==="wotooshite").examples[1][0],"wotooshite");
 assert(fatherRuby.includes("<ruby>父<rt>ちち</rt></ruby>")); assert(!fatherRuby.includes("<rt>とう</rt>"));
 assert(todayRuby.includes("<ruby>今日<rt>こんにち</rt></ruby>では")); assert(!todayRuby.includes("<ruby>今日<rt>きょう</rt></ruby>"));
+const lesson20RubySource=await readFile("assets/ch20-grammar-ruby.js","utf8"),lesson20RubyContext={window:{}};
+vm.createContext(lesson20RubyContext);
+for (const file of ["assets/grammar-ruby.js","assets/ch20-data.js","assets/ch20-grammar-ruby.js"]) vm.runInContext(await readFile(file,"utf8"),lesson20RubyContext,{filename:file});
+const lesson20Ruby=lesson20RubyContext.window.JPY5GrammarRuby,lesson20Grammar=lesson20RubyContext.window.JPY5_DATA.patterns;
+const lesson20GrammarIds=["nomotode","sou","zo","todoujini","shikanakatta","sue","teirai","kurai","wokomete","badake","tatotanni","karatoitte"];
+assert.deepEqual(JSON.parse(JSON.stringify(lesson20Grammar.map(pattern=>pattern.id))),lesson20GrammarIds);
+const lesson20TargetBlock=lesson20RubySource.match(/const targets=\{([\s\S]*?)\n  \};/); assert(lesson20TargetBlock);
+assert.deepEqual([...lesson20TargetBlock[1].matchAll(/([a-z0-9_]+):\[/g)].map(match=>match[1]),lesson20GrammarIds);
+for (const staleId of ["wotaishoni","bakaridenakumo","nihokanaranai","wotooshite","nikakete","hatomokaku","tameniwa","kesshitenai"]) assert(!lesson20RubySource.includes(staleId));
+for (const pattern of lesson20Grammar) for (const [japanese] of pattern.examples) {
+  const rendered=lesson20Ruby.renderExample(japanese,pattern.id);
+  assert(rendered.includes('<mark class="grammar-target">'),`${pattern.id} lacks target highlighting`);
+  assert.equal(visibleText(rendered),japanese,`${pattern.id} ruby changed the source sentence`);
+}
 const lesson19VocabularyController=await readFile("assets/ch19-vocabulary.js","utf8");
 assert(lesson19VocabularyController.includes('清除全部 ${vocabulary.length} 詞的記憶卡進度、答題標記和收藏？'));
 assert(!/清除全部 \d+ 詞/.test(lesson19VocabularyController));
 assert(lesson19VocabularyController.includes("[item.kana,item.written,item.original,item.meaning,item.type,item.note,sectionLabel(item)]"));
-assert(lesson19VocabularyController.includes('state.direction === "normal" ? item.kana : (item.original || item.written)'));
+assert(lesson19VocabularyController.includes('const visibleJapanese = item => item.original || (!/^[-－]$/.test(item.written) ? item.written : item.kana)'));
+assert(lesson19VocabularyController.includes('state.direction === "normal" ? item.kana : visibleJapanese(item)'));
+const lesson20VocabularyController=await readFile("assets/ch20-vocabulary.js","utf8");
+assert(lesson20VocabularyController.includes('清除全部 ${vocabulary.length} 詞的記憶卡進度、答題標記和收藏？'));
+assert(!/清除全部 \d+ 詞/.test(lesson20VocabularyController));
+assert(lesson20VocabularyController.includes('const visibleJapanese = item => item.original || (!/^[-－]$/.test(item.written) ? item.written : item.kana)'));
+assert(lesson20VocabularyController.includes('state.direction === "normal" ? item.kana : visibleJapanese(item)'));
+for (const lesson of [19,20]) {
+  const readingController=await readFile(`assets/ch${lesson}-reading.js`,"utf8");
+  assert(readingController.includes("data.title")); assert(readingController.includes("data.sourceQuestions.length"));
+  assert(readingController.includes("data.sourceActivities")); assert(readingController.includes("const ratio=score/data.questions.length"));
+  assert(!/鉛筆削り|六組|score>=11|score>=8/.test(readingController));
+}
 const navigation=JSON.parse(await readFile("assets/lesson-navigation.json","utf8"));
 assert.deepEqual(navigation.lessons,[13,14,15,16,17,18,19,20]);
 console.log("Lessons 19–20 checks passed: 325 vocabulary entries, 20 grammar patterns / 84 examples, reading, listening, navigation and local assets.");

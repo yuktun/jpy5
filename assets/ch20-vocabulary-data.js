@@ -88,7 +88,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 6,
       "kana": "はらがたつ （辭書形）／はらがたちます （ます形）",
-      "written": "腹が立つ腹が立ちます",
+      "written": "腹が立つ ／ 腹が立ちます",
       "meaning": "生氣",
       "type": "動詞・Ⅰ・自",
       "section": "grammar",
@@ -200,7 +200,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 14,
       "kana": "なやむ （辭書形）／なやみます （ます形）",
-      "written": "悩む悩みます",
+      "written": "悩む ／ 悩みます",
       "meaning": "煩惱、傷腦筋",
       "type": "動詞・Ⅰ・自",
       "section": "grammar",
@@ -228,7 +228,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 16,
       "kana": "わたりあるく （辭書形）／わたりあるきます （ます形）",
-      "written": "渡り歩く渡り歩きます",
+      "written": "渡り歩く ／ 渡り歩きます",
       "meaning": "走遍、跑遍",
       "type": "動詞・Ⅰ・自",
       "section": "grammar",
@@ -410,7 +410,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 29,
       "kana": "わきおこる （辭書形）／わきおこります （ます形）",
-      "written": "湧き起こる湧き起こります",
+      "written": "湧き起こる ／ 湧き起こります",
       "meaning": "湧起",
       "type": "動詞・Ⅰ・自",
       "section": "grammar",
@@ -452,7 +452,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 32,
       "kana": "もちだす （辭書形）／もちだします （ます形）",
-      "written": "持ち出す持ち出します",
+      "written": "持ち出す ／ 持ち出します",
       "meaning": "提出、談起",
       "type": "動詞・Ⅰ・他",
       "section": "grammar",
@@ -606,7 +606,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 43,
       "kana": "おえる （辭書形）／おえます （ます形）",
-      "written": "終える終えます",
+      "written": "終える ／ 終えます",
       "meaning": "完成、結束",
       "type": "動詞・Ⅱ・他",
       "section": "speaking",
@@ -802,7 +802,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 57,
       "kana": "あがる（じゅうりょうに～）（辭書形）／あがります（じゅうりょうに～） （ます形）",
-      "written": "上がる （十両に～）上がります（十両に～）",
+      "written": "上がる （十両に～） ／ 上がります（十両に～）",
       "meaning": "升、進（晉升成為十兩)",
       "type": "動詞・Ⅰ・自",
       "section": "speaking",
@@ -872,7 +872,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 62,
       "kana": "はなれる（こきょうを～） （辭書形）／はなれます（こきょうを～） （ます形）",
-      "written": "離れる（故郷を～）離れます（故郷を～）",
+      "written": "離れる（故郷を～） ／ 離れます（故郷を～）",
       "meaning": "離開（離開故鄉）",
       "type": "動詞・Ⅱ・自",
       "section": "speaking",
@@ -1040,7 +1040,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 74,
       "kana": "うまれかわる （辭書形）／うまれかわります （ます形）",
-      "written": "生まれ変わる生まれ変わります",
+      "written": "生まれ変わる ／ 生まれ変わります",
       "meaning": "脫胎換骨、重生",
       "type": "動詞・Ⅰ・自",
       "section": "speaking",
@@ -1068,7 +1068,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 76,
       "kana": "むくいる （辭書形）／むくいます （ます形）",
-      "written": "報いる報います",
+      "written": "報いる ／ 報います",
       "meaning": "報償、回報",
       "type": "動詞・Ⅱ・自",
       "section": "speaking",
@@ -1194,7 +1194,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 85,
       "kana": "たよる （辭書形）／たよります （ます形）",
-      "written": "頼る頼ります",
+      "written": "頼る ／ 頼ります",
       "meaning": "依賴、依靠",
       "type": "動詞・Ⅰ・自",
       "section": "speaking",
@@ -1208,7 +1208,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 86,
       "kana": "よりそう （辭書形）／よりそいます （ます形）",
-      "written": "寄り添う寄り添います",
+      "written": "寄り添う ／ 寄り添います",
       "meaning": "靠近、貼近",
       "type": "動詞・Ⅰ・自",
       "section": "speaking",
@@ -1236,7 +1236,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 88,
       "kana": "まとめる（ないようを～） （辭書形）／まとめます（ないようを～） （ます形）",
-      "written": "まとめる （内容を～）まとめます（内容を～）",
+      "written": "まとめる （内容を～） ／ まとめます（内容を～）",
       "meaning": "總結、歸納",
       "type": "動詞・Ⅱ・他",
       "section": "speaking",
@@ -1306,7 +1306,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 93,
       "kana": "とる （すもうを～）（辭書形）／とります（すもうを～） （ます形）",
-      "written": "取る （相撲を～）取ります（相撲を～）",
+      "written": "取る （相撲を～） ／ 取ります（相撲を～）",
       "meaning": "摔跤",
       "type": "動詞・Ⅰ・他",
       "section": "reading",
@@ -1446,7 +1446,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 103,
       "kana": "さずかる （辭書形）／さずかります （ます形）",
-      "written": "授かる授かります",
+      "written": "授かる ／ 授かります",
       "meaning": "被授予、獲得",
       "type": "動詞・Ⅰ・自",
       "section": "reading",
@@ -1670,7 +1670,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 119,
       "kana": "ふく （辭書形）／ふきます （ます形）",
-      "written": "吹く吹きます",
+      "written": "吹く ／ 吹きます",
       "meaning": "吹奏",
       "type": "動詞・Ⅰ・他",
       "section": "reading",
@@ -1698,7 +1698,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 121,
       "kana": "だす （おとを～） （辭書形）／だします（おとを～）（ます形）",
-      "written": "出す （音を～）出します（音を～）",
+      "written": "出す （音を～） ／ 出します（音を～）",
       "meaning": "發出（聲音）",
       "type": "動詞・Ⅰ・他",
       "section": "reading",
@@ -1782,7 +1782,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 127,
       "kana": "もつ （ぎもんを～）（辭書形）／もちます（ぎもんを～） （ます形）",
-      "written": "持つ （疑問を～）持ちます （疑問を～）",
+      "written": "持つ （疑問を～） ／ 持ちます （疑問を～）",
       "meaning": "帶著（疑問）",
       "type": "動詞・Ⅰ・他",
       "section": "reading",
@@ -1936,7 +1936,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 138,
       "kana": "せっする （辭書形）／せっします （ます形）",
-      "written": "接する接します",
+      "written": "接する ／ 接します",
       "meaning": "接觸",
       "type": "動詞・Ⅲ・自",
       "section": "reading",
@@ -2034,7 +2034,7 @@ window.JPY5_VOCABULARY = {
     {
       "id": 145,
       "kana": "ふくめる （辭書形）／ふくめます （ます形）",
-      "written": "含める含めます",
+      "written": "含める ／ 含めます",
       "meaning": "包含",
       "type": "動詞・Ⅱ・他",
       "section": "reading",
