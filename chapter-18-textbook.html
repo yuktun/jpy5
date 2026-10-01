@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#829D34">
-  <title>3. もう一度聞こう · 日本語 Year 5</title>
-  <link rel="stylesheet" href="assets/styles.css?v=22">
+  <title>第 18 課會話聆聽 · 日本語 Year 5</title>
+  <link rel="stylesheet" href="assets/styles.css?v=24">
   <link rel="icon" href="assets/app-icon.png">
   <link rel="apple-touch-icon" href="assets/app-icon.png">
-  <script src="assets/ch18-common.js?v=4" defer></script><script src="assets/lesson-quick-switcher.js?v=2" defer></script>
-  <script src="assets/ch18-conversation-data.js?v=6" defer></script>
-  <script src="assets/ch18-conversation.js?v=5" defer></script>
+  <script src="assets/ch18-common.js?v=10" defer></script><script src="assets/lesson-quick-switcher.js?v=2" defer></script>
+  <script src="assets/ch18-conversation-data.js?v=10" defer></script>
+  <script src="assets/ch18-conversation.js?v=10" defer></script>
     <link rel="manifest" href="manifest.webmanifest">
     <script src="assets/pwa.js" defer></script>
     <script src="assets/analytics.js" defer></script>
@@ -29,18 +29,18 @@
       <h1>話す・聞く（Beta）</h1>
       <p>ワット家の會話〈あなたこそ、あの本の山はいったい何なの！〉。聆聽填空共 13 題；答案仍待音訊核實，暫不提供自動評分。</p>
       <div class="listening-summary" aria-live="polite">
-        <div class="listening-status"><span><strong id="attempt-count">0</strong> 次練習</span><span>答案待核實</span></div>
-        <div class="study-toolbar-actions"><button type="button" id="furigana-toggle" class="text-button">假名 ON</button><button type="button" id="reset-conversation" class="text-button">重設進度</button></div>
+        <div class="listening-status"><span><strong id="saved-draft-count">0</strong> /13 已寫筆記</span><span><strong id="listen-count">0</strong> 次播放</span><span>答案待核實</span></div>
+        <div class="study-toolbar-actions"><button type="button" id="furigana-toggle" class="text-button">假名 ON</button><button type="button" id="reset-conversation" class="text-button">清除本課聆聽筆記</button></div>
       </div>
     </section>
-    <nav class="lesson-pills module-lesson-switcher" aria-label="課次"><a href="chapter-13-textbook.html">第13課</a><a href="chapter-14-textbook.html">第14課</a><a href="chapter-15-textbook.html">第15課</a><a class="active" aria-current="page" href="chapter-18-textbook.html">第18課</a></nav>
+    <nav class="lesson-pills module-lesson-switcher" aria-label="課次"><a href="chapter-13-textbook.html">第13課</a><a href="chapter-14-textbook.html">第14課</a><a href="chapter-15-textbook.html">第15課</a><a href="chapter-16-textbook.html">第16課</a><a href="chapter-17-textbook.html">第17課</a><a class="active" aria-current="page" href="chapter-18-textbook.html">第18課</a></nav>
     <section class="audio-workspace" aria-label="課文音訊">
       <div><p class="kicker">TRACK 1–18 · あなたこそ、あの本の山はいったい何なの！</p><h2>先聽一次，再開始練習</h2><p>可播放完整官方音檔；沒有經核實的句子時間碼或答案，因此不提供評分。</p></div>
       <audio id="lesson-audio" controls preload="metadata" src="https://ttrw.jp/static/sound/sound202406141718354246.mp3">你的瀏覽器不支援音訊播放。</audio>
-      <p id="audio-status" class="reading-feedback" aria-live="polite">如音訊無法播放，請稍後重試或使用下方教材連結；答案仍待音訊核實。</p>
+      <p id="audio-status" class="reading-feedback" aria-live="polite"><a href="https://ttrw.jp/static/sound/sound202406141718354246.mp3" target="_blank" rel="noopener">開啟完整官方音檔 ↗</a> · 答案仍待音訊核實；草稿是你的筆記，不計分或掌握。</p>
     </section>
     <nav class="mode-tabs" aria-label="會話練習模式">
-      <button data-mode="dialogue">完整會話</button>
+      <button data-mode="dialogue">完整會話</button><button data-mode="blanks">13個空欄</button><button data-mode="prompts">5個內容提示</button><button data-mode="expressions">表現練習</button><button data-mode="activities">教材後續活動</button><button data-mode="guide">聆聽指南</button>
     </nav>
     <section id="conversation-stage" class="conversation-stage" aria-live="polite"></section>
     <aside class="source-note">
@@ -48,17 +48,7 @@
       <a class="secondary-button" data-ch18-textbook href="#" target="_blank" rel="noopener">在 ttrw.jp 開啟原課本 ↗</a>
     </aside>
   </main>
-  <dialog class="focus-detail-dialog" id="focus-detail-dialog" aria-labelledby="focus-detail-title">
-    <div class="focus-detail-head"><span id="focus-detail-number">底線句</span><button type="button" data-dialog-close aria-label="關閉解釋">×</button></div>
-    <div class="focus-detail-body">
-      <h2 id="focus-detail-title" lang="ja"></h2>
-      <p class="focus-detail-kana" id="focus-detail-kana" lang="ja"></p>
-      <p class="focus-detail-meaning" id="focus-detail-meaning"></p>
-      <dl><div><dt>情境</dt><dd id="focus-detail-use"></dd></div><div><dt>重點</dt><dd id="focus-detail-point"></dd></div></dl>
-    </div>
-    <div class="focus-detail-footer"><button class="secondary-button" type="button" data-dialog-close>關閉</button><button class="listen-button" type="button" data-dialog-listen>▶ 播放這句</button></div>
-  </dialog>
-  <footer>第 18 課 <span>·</span> 話す・聞く <span>·</span> 裝置內儲存進度</footer>
+<footer>第 18 課 <span>·</span> 話す・聞く <span>·</span> 進度會自動保存；登入後可跨裝置同步。</footer>
 </body>
 </html>
 

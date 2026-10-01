@@ -1,0 +1,92 @@
+// Run with Playwright installed (NODE_PATH can point at the Codex bundled node_modules).
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+import {createServer} from 'node:http';
+import {readFile,mkdir} from 'node:fs/promises';
+import {resolve,extname,sep} from 'node:path';
+const {chromium}=createRequire(import.meta.url)('playwright');
+const root=process.cwd(),artifacts=resolve('tmp/lesson18-browser');await mkdir(artifacts,{recursive:true});
+const types={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.css':'text/css','.json':'application/json','.png':'image/png','.webmanifest':'application/manifest+json','.md':'text/plain'};
+const server=createServer(async(req,res)=>{try{const path=resolve(root,'.'+decodeURIComponent(new URL(req.url,'http://localhost').pathname));if(!path.startsWith(root+sep)){res.writeHead(403).end();return;}res.setHeader('Content-Type',types[extname(path)]||'application/octet-stream');res.end(await readFile(path));}catch{res.writeHead(404).end();}});
+await new Promise(r=>server.listen(0,'127.0.0.1',r));const base=`http://127.0.0.1:${server.address().port}`;
+const browser=await chromium.launch({headless:true,...(process.env.JPY5_BROWSER_CHANNEL?{channel:process.env.JPY5_BROWSER_CHANNEL}:{})});
+const context=await browser.newContext({viewport:{width:1280,height:900}}),page=await context.newPage(),errors=[];
+page.on('pageerror',e=>errors.push(e.message));
+const go=async file=>{await page.goto(`${base}/${file}`);await page.waitForLoadState('domcontentloaded');};
+const state=key=>page.evaluate(key=>JSON.parse(localStorage.getItem('jpy5.chapter18.'+key)),key);
+const setState=(key,value)=>page.evaluate(({key,value})=>localStorage.setItem('jpy5.chapter18.'+key,JSON.stringify(value)),{key,value});
+const mode=m=>page.locator(`[data-reading-mode="${m}"]`).click();
+try{
+  await go('chapter-18-reading.html');
+  await page.evaluate(()=>localStorage.setItem('jpy5.chapter17.reading',JSON.stringify({sentinel:'unchanged'})));
+  await mode('source');await page.locator('[data-source-note="source-1"]').fill('教材原題の下書き');
+  assert.equal(Object.keys((await state('reading')).answered).length,0);
+  await mode('exam');
+  const qs=await page.evaluate(()=>window.JPY5_READING.questions);
+  await page.locator(`input[name="${qs[0].id}"][value="${qs[0].answer}"]`).check();
+  await page.locator(`input[name="${qs[1].id}"][value="${qs[1].answer}"]`).check();
+  await mode('original');await mode('exam');assert(await page.locator(`input[name="${qs[0].id}"][value="${qs[0].answer}"]`).isChecked());
+  await page.locator('#furigana-toggle').click();await page.locator('#font-up').click();
+  await page.reload();assert(await page.locator(`input[name="${qs[1].id}"][value="${qs[1].answer}"]`).isChecked());
+  assert.equal((await state('reading')).sourceNotes['source-1'],'教材原題の下書き');
+  await page.locator('#submit-reading-exam').click();assert.equal((await state('reading')).attempts.length,0,'partial exam submitted');
+  for(const [i,q] of qs.entries())await page.locator(`input[name="${q.id}"][value="${i===0?(q.answer+1)%4:q.answer}"]`).check();
+  await page.locator('#submit-reading-exam').click();let progress=await state('reading');assert.equal(progress.attempts.at(-1).score,12);assert(progress.wrong.includes(qs[0].id));assert.equal(Object.keys(progress.examAnswers).length,0);
+  await mode('mistakes');await page.locator('.mistake-list details summary').click();assert.deepEqual((await state('reading')).answered,progress.answered,'answer reveal changed mastery');
+  await page.locator(`[data-review-question="${qs[0].id}"]`).click();await page.locator(`[data-q="${qs[0].id}"][data-option="${qs[0].answer}"]`).click();progress=await state('reading');assert(!progress.wrong.includes(qs[0].id));assert.equal(progress.answered[qs[0].id],qs[0].answer);
+  // A later exam mistake replaces earlier mastery; later correct exam clears it.
+  await mode('exam');for(const q of qs)await page.locator(`input[name="${q.id}"][value="${q.id===qs[0].id?(q.answer+1)%4:q.answer}"]`).check();await page.locator('#submit-reading-exam').click();progress=await state('reading');assert.equal(progress.answered[qs[0].id],(qs[0].answer+1)%4);assert(progress.wrong.includes(qs[0].id));
+  await mode('original');await mode('exam');for(const q of qs)await page.locator(`input[name="${q.id}"][value="${q.answer}"]`).check();await page.locator('#submit-reading-exam').click();assert(!(await state('reading')).wrong.includes(qs[0].id));
+  await mode('find');const finds=await page.evaluate(()=>window.JPY5_READING.find);for(const task of finds){await page.locator(`[data-find="${task.answer}"]`).click();assert.match(await page.locator('.find-feedback').innerText(),/搵啱/);await page.locator('.find-next').click();}
+  await mode('vocab');await page.locator('[data-vocab-star]').click();await page.reload();assert((await state('reading')).wrong.includes('v0'));
+  await go('chapter-18-textbook.html');assert.equal(await page.locator('.dialogue-row').count(),20);assert.equal(await page.locator('.unverified-blank').count(),13);
+  await page.locator('[data-mode="blanks"]').click();assert.equal(await page.locator('[data-blank-draft]').count(),13);await page.locator('[data-blank-draft="13"]').fill('私の未確認メモ');
+  await page.locator('[data-mode="prompts"]').click();assert.equal(await page.locator('[data-prompt-note]').count(),5);await page.locator('[data-prompt-note="listen-1"]').fill('聞いた証拠のメモ');
+  await page.locator('[data-mode="expressions"]').click();assert.equal(await page.locator('[data-expression-note]').count(),5);await page.locator('[data-expression-note="0-0"]').fill('語気のメモ');
+  await page.locator('[data-mode="activities"]').click();assert.equal(await page.locator('[data-activity-note]').count(),4);await page.locator('[data-activity-note="practice"]').fill('会話の練習メモ');await page.reload();
+  const listening=await state('conversation');assert.equal(listening.drafts['13'],'私の未確認メモ');assert.equal(listening.promptNotes['listen-1'],'聞いた証拠のメモ');assert.equal(listening.expressionNotes['0-0'],'語気のメモ');assert.equal(listening.activityNotes.practice,'会話の練習メモ');
+  assert.equal(await page.locator('[data-answer],.correct,.wrong,[data-mark]').count(),0);
+  page.once('dialog',d=>d.accept());await page.locator('#reset-conversation').click();assert.equal(await state('conversation'),null);assert.equal((await state('reading')).attempts.length,3);
+  assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('jpy5.chapter17.reading')).sentinel),'unchanged');
+  await go('chapter-18-quiz.html');const gqs=await page.evaluate(()=>window.JPY5_DATA.questions);
+  await setState('quiz.lastWrong',[gqs[0].id,gqs[4].id]);await setState('quiz.starred',['nichigainai-1']);await page.reload();
+  await page.locator('[data-pattern="all"]').click();await page.locator('[data-pattern="nichigainai"]').click();await page.locator('#start-quiz').click();assert.match(await page.locator('#quiz-star').innerText(),/已標記/);
+  await page.locator('#quiz-star').click();assert(!(await state('quiz.starred')).includes(gqs[0].id));
+  for(const [i,q] of gqs.slice(0,4).entries()){await page.locator(`[data-answer="${i===1?(q.answer+1)%4:q.answer}"]`).click();assert.match(await page.locator('#answer-explanation').innerText(),/答對|正確答案/);await page.locator('#next-question').click();}
+  const wrong=await state('quiz.lastWrong');assert(!wrong.includes(gqs[0].id));assert(wrong.includes(gqs[1].id));assert(wrong.includes(gqs[4].id),'unattempted wrong question erased');
+  await go('chapter-18-history.html');assert.equal(await page.locator('.history-card').count(),1);await page.locator('.history-card summary').click();assert.equal(await page.locator('.history-answer').count(),4);
+  // Existing 16-question histories still resolve the old options, without content rewrites.
+  await setState('quiz.history',[{id:'legacy',date:new Date().toISOString(),mode:'practice',score:1,total:1,results:[{questionId:'koso-1',selected:0,correct:true}]}]);await page.reload();await page.locator('.history-card summary').click();assert.match(await page.locator('.history-answer').innerText(),/こちらこそ/);
+  await setState('quiz.history',[]);await page.reload();assert.equal(await page.locator('.empty-state a').getAttribute('href'),'chapter-18-quiz.html');
+  await go('chapter-18-vocabulary.html');assert.match(await page.locator('#vocab-count').innerText(),/108/);await page.locator('#vocab-card').click();await page.locator('#vocab-right').click();assert.equal(Object.values((await state('vocabulary.cards.v2')).results).filter(v=>v==='right').length,1);
+  await go('chapter-18-flashcards.html');await page.locator('#flashcard').click();await page.locator('#mark-wrong').click();assert.equal(Object.values((await state('flashcards')).results).filter(v=>v==='wrong').length,1);
+  await go('chapter-18.html');assert.equal(await page.locator('[data-count="quiz"]').innerText(),'32');assert.equal(await page.locator('[data-count="reading"]').innerText(),'13');assert.match(await page.locator('[data-progress="reading"]').innerText(),/13\/13 App題答對/);
+  // Smoke every page at phone and iPad sizes, and inspect the densest modes.
+  for(const viewport of [{width:390,height:844},{width:810,height:1080}]){
+    await page.setViewportSize(viewport);
+    for(const module of ['','vocabulary','notes','reading','textbook','flashcards','quiz','review','history']){
+      await go(`chapter-18${module?'-'+module:''}.html`);
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true,`${module} overflows ${viewport.width}px`);
+      if(['','notes','vocabulary'].includes(module))await page.screenshot({path:`${artifacts}/${module||'hub'}-${viewport.width}.png`});
+      if(module==='notes'){assert.equal(await page.locator('.grammar-card').count(),8);await page.locator('[data-extra-id="monoda"]').click();assert(await page.locator('dialog[open]').isVisible());await page.locator('[data-extra-close]').first().click();}
+      if(module==='reading'){await mode('source');await page.screenshot({path:`${artifacts}/reading-source-${viewport.width}.png`,fullPage:true});await mode('practice');await page.screenshot({path:`${artifacts}/reading-practice-${viewport.width}.png`,fullPage:true});await mode('exam');}
+      if(module==='textbook'){await page.locator('[data-mode="blanks"]').click();await page.screenshot({path:`${artifacts}/listening-${viewport.width}.png`,fullPage:true});}
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true,`${module} mode overflows ${viewport.width}px`);
+    }
+  }
+  await page.evaluate(()=>navigator.serviceWorker.ready);
+  await page.reload();
+  assert(await page.evaluate(()=>Boolean(navigator.serviceWorker.controller)),'service worker did not take control');
+  await context.setOffline(true);
+  for(const module of ['','vocabulary','notes','reading','textbook','flashcards','quiz','review','history']){
+    await go(`chapter-18${module?'-'+module:''}.html`);
+    assert.match(await page.title(),/第\s*18\s*課/);
+    if(module==='reading'){await mode('practice');assert.equal(await page.locator('[data-question]').count(),13);}
+    if(module==='textbook'){await page.locator('[data-mode="blanks"]').click();assert.equal(await page.locator('[data-blank-draft]').count(),13);}
+  }
+  const audit=await page.evaluate(async()=>{const response=await fetch('LESSON18_SOURCE_AUDIT.md');return {ok:response.ok,text:await response.text()};});
+  assert(audit.ok&&audit.text.includes('Lesson 18 source audit'),'source audit is unavailable offline');
+  await context.setOffline(false);
+  assert.deepEqual(errors,[],'browser JS errors');
+  console.log('Lesson 18 browser checks passed: exam drafts, mastery transitions, unscored notes/reset, history compatibility, review preservation, nine pages at phone/iPad sizes and offline.');
+}finally{await browser.close();await new Promise(r=>server.close(r));}

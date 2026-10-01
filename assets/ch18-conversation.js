@@ -1,196 +1,70 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const data = window.JPY5_CONVERSATION;
-  const stage = document.querySelector("#conversation-stage");
-  const audio = document.querySelector("#lesson-audio");
-  const audioStatus = document.querySelector("#audio-status");
-  audio?.addEventListener("error", () => {
-    if (audioStatus) {
-      audioStatus.textContent = "官方 MP3 暫時無法播放；請稍後重試，或由下方教材連結開啟原始音檔。";
-    }
-  });
-  const fresh = () => ({mode:"dialogue", card:0, flipped:false, furigana:true, attempts:0, marks:{}, mistakes:{}, stars:{}, comprehensionAnswers:{}, comprehensionMistakes:{}});
-  let state = {...fresh(), ...JPY5.read("conversation", {})};
-  let current = 0;
-  let built = [];
-  let orderPool = [];
-  let detailScrollY = 0, detailReturnFocus = null;
-  const lockDetailBackground = () => { detailScrollY = window.scrollY; document.body.classList.add("grammar-extra-open"); document.body.style.top = "-" + detailScrollY + "px"; };
-  const unlockDetailBackground = () => { const root=document.documentElement, previous=root.style.scrollBehavior; root.style.scrollBehavior="auto"; document.body.classList.remove("grammar-extra-open"); document.body.style.top=""; window.scrollTo({left:0,top:detailScrollY,behavior:"auto"}); requestAnimationFrame(()=>{root.style.scrollBehavior=previous;}); };
-
-  const item = id => data.items.find(x => x.id === Number(id));
-  const esc = value => String(value).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+document.addEventListener("DOMContentLoaded",()=>{
+  const data=window.JPY5_CONVERSATION,stage=document.querySelector("#conversation-stage"),audio=document.querySelector("#lesson-audio");
+  const fresh=()=>({mode:"dialogue",furigana:true,drafts:{},promptNotes:{},expressionNotes:{},activityNotes:{},listenCount:0});
+  let state={...fresh(),...JPY5.read("conversation",{})};
+  state.drafts=state.drafts||{};state.promptNotes=state.promptNotes||{};state.expressionNotes=state.expressionNotes||{};state.activityNotes=state.activityNotes||{};
+  const esc=value=>String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
   const kanjiRun=/[\u3400-\u9fff々〆ヶ]/;
-  function ruby(text){if(!state.furigana)return esc(text);const map=new Map(Object.entries(data.furigana||{})),words=[...map.keys()].sort((a,b)=>b.length-a.length),pattern=new RegExp(words.map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|"),"g");let out="",last=0;for(const match of String(text).matchAll(pattern)){out+=esc(String(text).slice(last,match.index));const word=match[0],s=data.furiganaSegments?.[word];out+=s?s.map(([b,k])=>k===undefined?esc(b):`<ruby>${esc(b)}<rt>${esc(k)}</rt></ruby>`).join(""):`<ruby>${esc(word)}<rt>${esc(map.get(word))}</rt></ruby>`;last=match.index+word.length}return out+esc(String(text).slice(last))}
-  function embeddedRuby(text){let out=esc(text);for(const phrase of data.embeddedJapanese||[])out=out.split(esc(phrase)).join(ruby(phrase));return out}
-  const rubyIfJapanese=text=>/[ぁ-ゖァ-ヺ]/.test(String(text))?ruby(text):esc(text);
-  const clean = value => value.replace(/[\s、。！？?「」『』,.，．]/g, "").trim();
-  const save = () => { JPY5.write("conversation", state); updateSummary(); };
-  function updateSummary() {
-    document.querySelector("#attempt-count").textContent = state.attempts || 0;
+  function ruby(text){
+    if(!state.furigana)return esc(text);
+    const entries=Object.entries(data.furigana||{}).sort((a,b)=>b[0].length-a[0].length);
+    if(!entries.length)return esc(text);
+    const pattern=new RegExp(entries.map(([word])=>word.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|"),"g"),map=new Map(entries);
+    let output="",last=0;
+    for(const match of String(text).matchAll(pattern)){
+      output+=esc(String(text).slice(last,match.index));
+      const word=match[0],reading=map.get(word);
+      output+=kanjiRun.test(word)?`<ruby>${esc(word)}<rt>${esc(reading)}</rt></ruby>`:esc(word);
+      last=match.index+word.length;
+    }
+    return output+esc(String(text).slice(last));
   }
-  function record(id, correct) {
-    state.attempts += 1;
-    if (correct) state.marks[id] = "correct";
-    else { state.marks[id] = "wrong"; state.mistakes[id] = (state.mistakes[id] || 0) + 1; }
-    save();
+  const save=()=>{JPY5.write("conversation",state);updateSummary()};
+  function updateSummary(){
+    document.querySelector("#saved-draft-count").textContent=Object.values(state.drafts).filter(value=>String(value).trim()).length;
+    document.querySelector("#listen-count").textContent=state.listenCount||0;
   }
-  function play(id) {
-    const x = item(id); if (!x) return;
-    if (!Number.isFinite(x.start) || !Number.isFinite(x.end) || x.end <= x.start) return;
-    audio.currentTime = x.start;
-    audio.play().catch(() => {});
-    const stop = () => { if (audio.currentTime >= x.end) { audio.pause(); audio.removeEventListener("timeupdate", stop); } };
-    audio.addEventListener("timeupdate", stop);
+  function blankMarkup(text){
+    let last=0,output="";const pattern=/([①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬])＿+/g;
+    for(const match of String(text).matchAll(pattern)){
+      output+=ruby(String(text).slice(last,match.index));
+      output+=`<span class="unverified-blank" title="答案待音訊核實">${match[1]}　＿＿＿＿ <small>待核實</small></span>`;
+      last=match.index+match[0].length;
+    }
+    return output+ruby(String(text).slice(last));
   }
-  function setMode(mode) {
-    state.mode = mode; state.flipped = false; current = 0; built = []; orderPool = []; save();
-    document.querySelectorAll("[data-mode]").forEach(b => b.classList.toggle("active", b.dataset.mode === mode));
-    render();
+  function heading(kicker,title,status){return `<div class="stage-heading"><div><p class="kicker">${esc(kicker)}</p><h2>${ruby(title)}</h2></div><span>${esc(status)}</span></div>`}
+  function dialogue(){
+    return heading("完整會話",data.title,"20 句 · 13 個未核實空欄")+`<div class="unverified-notice"><strong>Beta · 不評分</strong><p>實線文字來自印刷會話；十三個編號位置需要官方音訊確認，現時保持空白。</p></div><div class="dialogue-list">${data.dialogue.map(([speaker,text])=>`<article class="dialogue-row"><b>${ruby(speaker)}</b><p>${blankMarkup(text)}</p></article>`).join("")}</div>`;
   }
-  const listenButton = (id, label="重聽原句") => {
-    const x=item(id);
-    return x && Number.isFinite(x.start) && Number.isFinite(x.end) && x.end>x.start
-      ? `<button class="listen-button" data-listen="${id}" type="button">▶ ${label}</button>`
-      : "";
-  };
-
-  function showFocusDetail(id) {
-    const x=item(id), dialog=document.querySelector("#focus-detail-dialog"); if(!x||!dialog)return;
-    dialog.querySelector("#focus-detail-number").textContent=`底線句 0${x.id}`;
-    dialog.querySelector("#focus-detail-title").innerHTML=ruby(x.jp);
-    dialog.querySelector("#focus-detail-kana").textContent=x.kana;
-    dialog.querySelector("#focus-detail-meaning").textContent=x.zh;
-    dialog.querySelector("#focus-detail-use").textContent=x.use;
-    dialog.querySelector("#focus-detail-point").textContent=x.point;
-    const replay=dialog.querySelector("[data-dialog-listen]");
-    replay.dataset.dialogListen=x.id;
-    replay.hidden=!(Number.isFinite(x.start)&&Number.isFinite(x.end)&&x.end>x.start);
-    detailReturnFocus=document.activeElement; lockDetailBackground();
-    dialog.showModal();
+  function blanks(){
+    return heading("聆聽工作紙","十三個保留空欄",`${Object.values(state.drafts).filter(value=>String(value).trim()).length}/13 已寫筆記`)+`<div class="unverified-notice"><strong>只保存你的聆聽筆記</strong><p>這裡不會顯示答案、判分或標示掌握。可反覆播放完整音檔，把自己聽到的內容記下，待權威答案核實後再校對。</p></div><div class="listening-draft-list">${data.unverifiedBlanks.map(blank=>`<article class="practice-panel"><span>空欄 ${blank.id} · ${ruby(blank.speaker)}</span><h3 lang="ja">${ruby(blank.context)}</h3><label>我的聆聽筆記<input type="text" lang="ja" autocomplete="off" data-blank-draft="${blank.id}" value="${esc(state.drafts[blank.id]||"")}" placeholder="答案未核實；只記錄你聽到的內容"></label><small>答案待音訊核實</small></article>`).join("")}</div>`;
   }
-
-  function renderDialogue() {
-    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">完整會話</p><h2>${ruby(data.title)}</h2></div><button class="chip" id="toggle-focus" type="button">隱藏底線句</button></div><div class="dialogue-list">${data.dialogue.map(row => {
-      const [speaker,before,id,after] = row;
-      const focus = id ? `<button class="focus-line" data-focus-line="${id}" data-answer-text="${esc(item(id).jp)}" type="button" aria-haspopup="dialog">${ruby(item(id).jp)}</button>` : "";
-      return `<article class="dialogue-row"><b>${ruby(speaker)}</b><p>${ruby(before)}${focus}${ruby(after || "")}</p>${id ? listenButton(id,"播放這句") : ""}</article>`;
-    }).join("")}</div>`;
-    let hidden = false;
-    stage.querySelector("#toggle-focus").onclick = e => {
-      hidden = !hidden;
-      stage.querySelectorAll(".focus-line").forEach(x => { x.innerHTML = hidden ? "＿＿＿＿＿＿＿＿" : ruby(x.dataset.answerText); x.disabled=hidden; });
-      e.currentTarget.textContent = hidden ? "顯示底線句" : "隱藏底線句";
-      e.currentTarget.classList.toggle("active", hidden);
-    };
+  function prompts(){
+    return heading("來源提示","内容を聞き取りましょう","5 題 · 不評分")+`<div class="unverified-notice"><strong>題目來自印刷教材，答案未核實</strong><p>先在音檔中找證據，再寫下自己的理解。筆記會保存，但不會當作正確答案或完成分數。</p></div><div class="reading-question-list">${data.sourcePrompts.map((prompt,index)=>`<article class="reading-question"><span>來源提示 ${index+1} · 答案待核實</span><h3 lang="ja">${ruby(prompt.jp)}</h3><label>我的理解<textarea rows="3" data-prompt-note="${esc(prompt.id)}" placeholder="寫下聽到的證據或暫定答案">${esc(state.promptNotes[prompt.id]||"")}</textarea></label></article>`).join("")}</div>`;
   }
-  function renderFocus() {
-    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">重點句子</p><h2>八個聆聽目標</h2></div><span>句段時間碼尚未核實，暫停單句重播</span></div><div class="focus-grid">${data.items.map(x => `<article class="focus-card"><div class="focus-number">0${x.id}</div><button class="star-button ${state.stars[x.id]?'active':''}" data-star="${x.id}" aria-label="收藏句子">${state.stars[x.id]?'★':'☆'}</button><h3>${esc(x.jp)}</h3><p class="focus-meaning">${esc(x.zh)}</p><p>${esc(x.use)}</p>${listenButton(x.id)}</article>`).join("")}</div>`;
+  function expressions(){
+    return heading("來源提示","表現を聞き取りましょう","1 組 · 不評分")+`<div class="unverified-notice"><strong>觀察說法與對象關係</strong><p>比較ワット與いずみ的諷刺、抱怨、辯解及道歉語氣。教材提示照錄，沒有把推測內容當成答案。</p></div>${data.expressionExercises.map((exercise,group)=>`<section class="practice-panel"><p class="kicker">${ruby(exercise.section)}</p><h3 lang="ja">${ruby(exercise.prompt)}</h3>${exercise.items.map((item,index)=>{const key=`${group}-${index}`;return `<label class="expression-note"><span>${index+1}. ${ruby(item)}</span><textarea rows="2" data-expression-note="${key}" placeholder="記錄你聽到的表現或語氣">${esc(state.expressionNotes[key]||"")}</textarea></label>`}).join("")}<small>答案待音訊核實</small></section>`).join("")}`;
   }
-  function renderCards() {
-    const x = data.items[state.card % data.items.length];
-    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">記憶卡</p><h2>底線句子卡</h2></div><span>${state.card + 1} / ${data.items.length}</span></div><button class="conversation-card ${state.flipped?'is-flipped':''}" id="conversation-card" type="button"><span class="card-face front"><small>中文意思／用途</small><strong>${esc(x.zh)}</strong><em>點擊或按 Space 翻面</em></span><span class="card-face back"><small>題目 · 中文意思／用途</small><strong class="card-retained-prompt">${esc(x.zh)}</strong><span class="card-answer-label">答案 · 日本語</span><strong>${esc(x.jp)}</strong><em>${esc(x.use)}</em></span></button><div class="card-actions"><button data-card-nav="prev">←</button><button class="danger" data-mark="wrong">×</button><button class="success" data-mark="correct">✓</button><button data-star="${x.id}" class="${state.stars[x.id]?'is-starred':''}">${state.stars[x.id]?'★':'☆'}</button><button data-card-nav="next">→</button></div><div class="card-listen">${listenButton(x.id)}</div>`;
-    stage.querySelector("#conversation-card").onclick = () => { state.flipped = !state.flipped; save(); render(); };
+  function guide(){
+    return heading("LISTENING GUIDE","不猜答案的練習方法","完整音檔可用")+`<div class="review-path listening-guide"><article><b>01</b><div><span>不看原文</span><h2>先聽人物與場景</h2><p>辨認ワット與いずみ，以及在家中廚房／飯廳的情境。</p></div></article><article><b>02</b><div><span>對照印刷會話</span><h2>第二次追蹤十三個空欄</h2><p>只記錄確實聽到的音，不用文法直覺補完整句子。</p></div></article><article><b>03</b><div><span>內容理解</span><h2>回到五個來源提示</h2><p>在筆記中寫下支持答案的會話片段，而不是只寫結論。</p></div></article><article><b>04</b><div><span>表現觀察</span><h2>比較人物立場與語氣</h2><p>留意兩人對保留物品的不同看法，以及抱怨、辯解、道歉時的句尾和語氣。</p></div></article></div><p class="source-status-line"><b>目前限制：</b>沒有經核實的空欄答案、理解題答案或單句時間碼，因此沒有自動評分、答案揭示、單句重播或「已掌握」統計。</p>`;
   }
-  function renderChoice() {
-    const x = data.items[current % data.items.length];
-    const options = JPY5.shuffle([x.jp, ...x.distractors]);
-    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">選擇題</p><h2>聽懂話語功能</h2></div><span>${current + 1} / ${data.items.length}</span></div><article class="practice-panel">${listenButton(x.id,"先聽原句")}<p class="question-label">「${esc(x.zh)}」日文點講？</p><div class="conversation-options">${options.map(o => `<button type="button" data-answer="${esc(o)}">${esc(o)}</button>`).join("")}</div><p class="answer-message" aria-live="polite"></p><button class="primary-button next-practice" type="button" hidden>下一題 →</button></article>`;
-    stage.querySelectorAll("[data-answer]").forEach(b => b.onclick = () => {
-      const ok = b.dataset.answer === x.jp; record(x.id, ok);
-      stage.querySelectorAll("[data-answer]").forEach(o => { o.disabled = true; if (o.dataset.answer === x.jp) o.classList.add("correct"); });
-      if (!ok) b.classList.add("wrong");
-      stage.querySelector(".answer-message").textContent = ok ? `答對了。${x.use}` : `正確答案：${x.jp}`;
-      stage.querySelector(".next-practice").hidden = false;
-    });
-    stage.querySelector(".next-practice").onclick = () => { current = (current + 1) % data.items.length; render(); };
+  function activities(){
+    return heading("教材後續活動","もう一度聞こう・言ってみよう・練習しよう・チャレンジしよう","不計分")+'<div class="listening-draft-list">'+data.sourceFollowUps.map(activity=>`<article class="practice-panel"><span>教材活動（指示摘要）· 不計分</span><h3 lang="ja">${ruby(activity.section)}</h3><p lang="ja">${ruby(activity.instruction)}</p>${activity.tasks?'<ul>'+activity.tasks.map(task=>'<li>'+ruby(task)+'</li>').join('')+'</ul>':''}${activity.imagePrompts?'<p>教材有4幅圖；請由下方原課本連結對照印刷第77頁，避免臆測圖像內容。</p>':''}${activity.blankCount?'<p>13個空欄可到「13個空欄」保存草稿；答案待核實。</p>':''}<label>我的練習筆記（不計分）<textarea rows="3" data-activity-note="${esc(activity.id)}">${esc(state.activityNotes[activity.id]||'')}</textarea></label><small>來源狀態：${activity.answerStatus.includes("not_scored")?"開放式活動，不計分":"答案待音訊核實"}；筆記不是教材答案。</small></article>`).join('')+'</div>';
   }
-  function renderComprehension() {
-    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">教材問題</p><h2>內容與表現理解</h2></div><span>${data.comprehension.length} 題</span></div><div class="reading-question-list">${data.comprehension.map((q,index) => {
-      const selected=state.comprehensionAnswers[q.id], answered=selected!==undefined;
-      return `<article class="reading-question" data-comprehension="${q.id}"><span>${q.kind} · ${String(index+1).padStart(2,"0")}</span><h3>${embeddedRuby(q.q)}</h3><div>${q.options.map((option,i)=>`<button data-comprehension-answer="${i}" ${answered?"disabled":""} class="${answered&&i===q.answer?"correct":answered&&i===selected&&i!==q.answer?"wrong":""}">${rubyIfJapanese(option)}</button>`).join("")}</div><p class="reading-feedback">${answered?`${selected===q.answer?"答對。":"未正確。"}${embeddedRuby(q.why)}`:""}</p></article>`;
-    }).join("")}</div>`;
-    stage.querySelectorAll("[data-comprehension-answer]").forEach(button => button.onclick = () => {
-      const card=button.closest("[data-comprehension]"), q=data.comprehension.find(entry=>entry.id===card.dataset.comprehension), selected=Number(button.dataset.comprehensionAnswer), ok=selected===q.answer;
-      state.comprehensionAnswers[q.id]=selected; state.attempts+=1;
-      if(ok) delete state.comprehensionMistakes[q.id]; else state.comprehensionMistakes[q.id]=(state.comprehensionMistakes[q.id]||0)+1;
-      save(); render();
-    });
+  const renderers={dialogue,blanks,prompts,expressions,activities,guide};
+  function bind(){
+    stage.querySelectorAll("[data-activity-note]").forEach(input=>input.oninput=()=>{state.activityNotes[input.dataset.activityNote]=input.value;save()});
+    stage.querySelectorAll("[data-blank-draft]").forEach(input=>input.addEventListener("input",()=>{state.drafts[input.dataset.blankDraft]=input.value;save()}));
+    stage.querySelectorAll("[data-prompt-note]").forEach(input=>input.addEventListener("input",()=>{state.promptNotes[input.dataset.promptNote]=input.value;save()}));
+    stage.querySelectorAll("[data-expression-note]").forEach(input=>input.addEventListener("input",()=>{state.expressionNotes[input.dataset.expressionNote]=input.value;save()}));
   }
-  function renderOrder() {
-    const x = data.items[current % data.items.length];
-    if (!orderPool.length && !built.length) orderPool = JPY5.shuffle(x.chunks);
-    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">句子重組</p><h2>砌出完整底線句</h2></div><span>${current + 1} / ${data.items.length}</span></div><article class="practice-panel">${listenButton(x.id,"聽一次提示")}<p class="focus-meaning">${esc(x.zh)}</p><div class="sentence-build">${built.length ? built.map((c,i) => `<button data-remove="${i}">${esc(c)}</button>`).join("") : '<span>點下面詞塊組成句子</span>'}</div><div class="word-bank">${orderPool.map((c,i) => `<button data-chunk="${i}">${esc(c)}</button>`).join("")}</div><div class="practice-actions"><button class="text-button" id="clear-build">重新開始</button><button class="primary-button" id="check-build">檢查答案</button></div><p class="answer-message"></p></article>`;
-    stage.querySelectorAll("[data-chunk]").forEach(b => b.onclick = () => { built.push(orderPool.splice(Number(b.dataset.chunk),1)[0]); render(); });
-    stage.querySelectorAll("[data-remove]").forEach(b => b.onclick = () => { orderPool.push(built.splice(Number(b.dataset.remove),1)[0]); render(); });
-    stage.querySelector("#clear-build").onclick = () => { built=[]; orderPool=JPY5.shuffle(x.chunks); render(); };
-    stage.querySelector("#check-build").onclick = () => {
-      const ok = built.join("") === x.chunks.join(""); record(x.id,ok);
-      stage.querySelector(".answer-message").textContent = ok ? "正確！已經排好完整句子。" : "次序未啱，再聽一次慢慢試。";
-      if (ok) setTimeout(() => { built=[]; orderPool=[]; current=(current+1)%data.items.length; render(); }, 900);
-    };
-  }
-  function renderCloze() {
-    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">會話填寫</p><h2>一口氣填回八個目標</h2></div><span>${data.items.length} 個編號位置</span></div><article class="practice-panel"><div class="cloze-intro"><button class="listen-button" id="play-full" type="button">▶ 由開頭播放全段</button><p>先聽完整會話，再在編號位置輸入答案。標點及空格不影響評分。</p></div><div class="dialogue-list cloze-list">${data.dialogue.map(row => {
-      const [speaker,before,id,after] = row;
-      const blank = id ? `<label class="cloze-blank"><span>底線 ${id}</span><input data-cloze="${id}" lang="ja" autocomplete="off" placeholder="輸入聽到的句子"></label>` : "";
-      return `<article class="dialogue-row"><b>${ruby(speaker)}</b><p>${ruby(before)}${blank}${ruby(after || "")}</p></article>`;
-    }).join("")}</div><div class="practice-actions"><button class="text-button" id="reveal-cloze">顯示答案</button><button class="primary-button" id="check-cloze">檢查八項</button></div><p class="answer-message"></p></article>`;
-    stage.querySelector("#play-full").onclick = () => { audio.currentTime=0; audio.play().catch(()=>{}); };
-    stage.querySelector("#reveal-cloze").onclick = () => data.items.forEach(x => { const input=stage.querySelector(`[data-cloze="${x.id}"]`);input.value=x.jp;let output=input.nextElementSibling;if(!output?.matches(".cloze-ruby-answer")){output=document.createElement("output");output.className="cloze-ruby-answer";input.after(output)}output.innerHTML=ruby(x.jp); });
-    stage.querySelector("#check-cloze").onclick = () => {
-      let score=0;
-      data.items.forEach(x => { const input=stage.querySelector(`[data-cloze="${x.id}"]`); const ok=clean(input.value)===clean(x.jp); input.classList.toggle("correct",ok); input.classList.toggle("wrong",!ok); record(x.id,ok); if(ok)score++; });
-      stage.querySelector(".answer-message").textContent = score===data.items.length ? "全部句子正確！" : `答對 ${score}/${data.items.length}。紅色位置可到「重點句子」重溫。`;
-    };
-  }
-  function renderDictation() {
-    const x = data.items[current % data.items.length];
-    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">精確默寫</p><h2>聽完寫出整句</h2></div><span>${current + 1} / ${data.items.length}</span></div><article class="practice-panel dictation-panel">${listenButton(x.id,"播放考題")}<p>${esc(x.zh)}</p><label>輸入日文句子<textarea id="dictation-answer" rows="4" lang="ja" autocomplete="off" placeholder="ここに入力してください"></textarea></label><div class="practice-actions"><button class="text-button" id="show-answer">顯示答案</button><button class="primary-button" id="check-dictation">檢查答案</button></div><p class="answer-message"></p></article>`;
-    stage.querySelector("#show-answer").onclick = () => stage.querySelector(".answer-message").innerHTML = ruby(x.jp);
-    stage.querySelector("#check-dictation").onclick = () => {
-      const ok = clean(stage.querySelector("#dictation-answer").value) === clean(x.jp); record(x.id,ok);
-      stage.querySelector(".answer-message").innerHTML = ok ? "完全正確！" : `未完全一致。正確句子：${ruby(x.jp)}`;
-      if (ok) setTimeout(() => { current=(current+1)%data.items.length; render(); }, 1000);
-    };
-  }
-  function renderMistakes() {
-    const wrong = data.items.filter(x => state.mistakes[x.id]);
-    const comprehensionWrong=data.comprehension.filter(q=>state.comprehensionMistakes[q.id]);
-    const total=wrong.length+comprehensionWrong.length;
-    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">錯題重溫</p><h2>針對容易錯的內容</h2></div><span>${total} 項待重溫</span></div>${total ? `<div class="mistake-list">${wrong.map(x => `<article><span>句子練習 · 錯過 ${state.mistakes[x.id]} 次</span><h3>${esc(x.jp)}</h3><p>${esc(x.zh)}</p>${listenButton(x.id)}<button class="chip" data-mastered="${x.id}">標記已掌握</button></article>`).join("")}${comprehensionWrong.map(q=>`<article><span>${q.kind} · 錯過 ${state.comprehensionMistakes[q.id]} 次</span><h3>${esc(q.q)}</h3><p>答案：${esc(q.options[q.answer])}</p><p>${esc(q.why)}</p><button class="chip" data-mastered-comprehension="${q.id}">標記已掌握</button></article>`).join("")}</div>` : `<div class="empty-state"><h2>暫時沒有錯題</h2><p>完成教材問題、選擇題、重組或默寫後，錯題會自動來到這裡。</p><button class="primary-button" data-go-choice>開始選擇題 →</button></div>`}`;
-    stage.querySelector("[data-go-choice]")?.addEventListener("click",()=>setMode("choice"));
-    stage.querySelectorAll("[data-mastered]").forEach(b => b.onclick = () => { delete state.mistakes[b.dataset.mastered]; state.marks[b.dataset.mastered]="correct"; save(); render(); });
-    stage.querySelectorAll("[data-mastered-comprehension]").forEach(b => b.onclick = () => { delete state.comprehensionMistakes[b.dataset.masteredComprehension]; save(); render(); });
-  }
-  function render() {
-    const renderers = {dialogue:renderDialogue,comprehension:renderComprehension,focus:renderFocus,cards:renderCards,choice:renderChoice,order:renderOrder,cloze:renderCloze,dictation:renderDictation,mistakes:renderMistakes};
-    (renderers[state.mode] || renderDialogue)();
-    stage.querySelectorAll('.focus-card h3,.conversation-options button,.sentence-build button,.word-bank button,.card-answer-label + strong,.mistake-list h3').forEach(node=>node.innerHTML=ruby(node.textContent));
-    stage.querySelectorAll("[data-focus-line]").forEach(b => b.onclick = () => showFocusDetail(b.dataset.focusLine));
-    stage.querySelectorAll("[data-listen]").forEach(b => b.onclick = () => play(b.dataset.listen));
-    stage.querySelectorAll("[data-star]").forEach(b => b.onclick = () => { const id=b.dataset.star; state.stars[id] = !state.stars[id]; save(); render(); });
-    stage.querySelectorAll("[data-card-nav]").forEach(b => b.onclick = () => { state.card=(state.card+(b.dataset.cardNav==="next"?1:data.items.length-1))%data.items.length; state.flipped=false; save(); render(); });
-    JPY5.bindSwipe(stage.querySelector("#conversation-card"),{next:()=>stage.querySelector('[data-card-nav="next"]')?.click(),previous:()=>stage.querySelector('[data-card-nav="prev"]')?.click()});
-    stage.querySelectorAll("[data-mark]").forEach(b => b.onclick = () => { record(data.items[state.card].id,b.dataset.mark==="correct"); state.card=(state.card+1)%data.items.length; state.flipped=false; save(); render(); });
-  }
-
-  document.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => setMode(b.dataset.mode));
-  document.querySelector("#furigana-toggle").onclick=e=>{state.furigana=!state.furigana;e.currentTarget.textContent=`假名 ${state.furigana?'ON':'OFF'}`;save();render();};
-  document.querySelector("#furigana-toggle").textContent=`假名 ${state.furigana?'ON':'OFF'}`;
-  const detailDialog=document.querySelector("#focus-detail-dialog");
-  const closeDetail = () => { if (detailDialog.open) detailDialog.close(); };
-  detailDialog.querySelectorAll("[data-dialog-close]").forEach(button => { button.onclick = closeDetail; });
-  detailDialog.addEventListener("close", () => { detailReturnFocus?.focus({preventScroll:true}); unlockDetailBackground(); detailReturnFocus=null; });
-  detailDialog.querySelector("[data-dialog-listen]").onclick=e=>play(e.currentTarget.dataset.dialogListen);
-  detailDialog.addEventListener("click",e=>{if(e.target===detailDialog)closeDetail();});
-  detailDialog.addEventListener("cancel",e=>{e.preventDefault();closeDetail();});
-  document.querySelector("#reset-conversation").onclick = () => { if (confirm("清除本頁所有會話練習進度？")) { state=fresh(); save(); setMode("dialogue"); } };
-  document.addEventListener("keydown", e => {
-    if (e.target.matches("input,textarea,select")) return;
-    if (state.mode === "cards" && e.code === "Space") { e.preventDefault(); state.flipped=!state.flipped; save(); render(); }
-    if (state.mode === "cards" && ["ArrowLeft","ArrowRight"].includes(e.key)) { state.card=(state.card+(e.key==="ArrowRight"?1:data.items.length-1))%data.items.length; state.flipped=false; save(); render(); }
-  });
-  document.querySelectorAll("[data-mode]").forEach(b => b.classList.toggle("active",b.dataset.mode===state.mode));
-  updateSummary(); render();
+  function render(){document.querySelectorAll("[data-mode]").forEach(button=>button.classList.toggle("active",button.dataset.mode===state.mode));stage.innerHTML=(renderers[state.mode]||dialogue)();bind()}
+  document.querySelectorAll("[data-mode]").forEach(button=>button.onclick=()=>{state.mode=button.dataset.mode;save();render()});
+  document.querySelector("#furigana-toggle").onclick=event=>{state.furigana=!state.furigana;event.currentTarget.textContent=`假名 ${state.furigana?"ON":"OFF"}`;save();render()};
+  document.querySelector("#furigana-toggle").textContent=`假名 ${state.furigana?"ON":"OFF"}`;
+  document.querySelector("#reset-conversation").onclick=()=>{if(confirm("只清除第 18 課聆聽筆記及本頁設定？")){state=fresh();JPY5.remove("conversation");document.querySelector("#furigana-toggle").textContent="假名 ON";render();updateSummary()}};
+  audio.addEventListener("error",()=>{document.querySelector("#audio-status").textContent="官方音檔暫時未能播放；可開啟下方完整MP3連結重試。答案仍未核實。"});
+  audio.addEventListener("play",()=>{state.listenCount=(state.listenCount||0)+1;save()});
+  updateSummary();render();
 });
-

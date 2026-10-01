@@ -119,6 +119,11 @@ for (const module of conversationModules) {
     assert.match(source, /const renderers=\{dialogue,blanks,prompts,expressions,guide\}/, "Lesson 17 must retain all unscored listening study modes");
     continue;
   }
+  if (module === "ch18-conversation.js") {
+    assert.doesNotMatch(source, /showModal\(|data-answer|currentTime\s*=/, "Lesson 18 must not expose guessed answers or sentence replay");
+    assert.match(source, /const renderers=\{dialogue,blanks,prompts,expressions,activities,guide\}/, "Lesson 18 must retain unscored modes and source follow-ups");
+    continue;
+  }
   assert.match(source, /root\.style\.scrollBehavior="auto"/, `${module} must restore background scroll without smooth animation`);
   assert.match(source, /focus\(\{preventScroll:true\}\)/, `${module} must restore focus without moving the page`);
   assert.match(source, /detailDialog\.addEventListener\("cancel"/, `${module} must retain Escape-to-close behavior`);

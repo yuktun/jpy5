@@ -54,7 +54,7 @@ function renderList() {
     const inSection = selectedSection === "all" || item.section === selectedSection;
     return inSection && [item.kana,item.written,item.original,item.meaning,item.type,item.note,sectionLabel(item)].some(value => value.toLowerCase().includes(query));
   });
-  $("#vocab-list").innerHTML = matches.map(item => `<article class="vocab-row"><span>${item.id}</span><div><b lang="ja">${item.original || item.written}</b><small>${item.kana}${item.original ? ` · ${item.written}` : ""}</small></div>${pronunciation.button(item, "vocab-row-speak", `data-vocab-speak="${item.id}"`)}<p>${item.meaning}${item.note ? `<small>${item.note}</small>` : ""}</p><em>${item.type}<small>${sectionLabel(item)}</small></em></article>`).join("");
+  $("#vocab-list").innerHTML = matches.map(item => `<article class="vocab-row"><span>${item.id}</span><div><b lang="ja">${item.original || item.written}</b><small>${item.kana}${item.original && item.written && !/^[-－]$/.test(item.written) ? ` · ${item.written}` : ""}</small></div>${pronunciation.button(item, "vocab-row-speak", `data-vocab-speak="${item.id}"`)}<p>${item.meaning}${item.note ? `<small>${item.note}</small>` : ""}</p><em>${item.type}<small>${sectionLabel(item)}</small></em></article>`).join("");
   $("#vocab-count").textContent = `顯示 ${matches.length} / ${vocabulary.length}`;
 }
 
@@ -77,7 +77,7 @@ function renderCard() {
   }
   $("#vocab-card-front").hidden = flipped; $("#vocab-card-back").hidden = !flipped;
   $("#vocab-card-front").innerHTML = `<p>${frontLabel()}</p><h2 lang="ja">${frontText(item)}</h2><span>點擊翻面查看答案</span>`;
-  $("#vocab-card-back").innerHTML = `<h2 class="card-retained-prompt" lang="ja">${frontText(item)}</h2><h2 class="card-revealed-answer" lang="ja">${backTitle(item)}</h2>${item.original ? `<span class="vocab-writing">日文表記 · ${item.written}</span>` : ""}<strong>${item.meaning}</strong><span>${item.type}${item.note ? ` · ${item.note}` : ""}</span>`;
+  $("#vocab-card-back").innerHTML = `<h2 class="card-retained-prompt" lang="ja">${frontText(item)}</h2><h2 class="card-revealed-answer" lang="ja">${backTitle(item)}</h2>${item.original && item.written && !/^[-－]$/.test(item.written) ? `<span class="vocab-writing">日文表記 · ${item.written}</span>` : ""}<strong>${item.meaning}</strong><span>${item.type}${item.note ? ` · ${item.note}` : ""}</span>`;
   $("#vocab-star").textContent = state.starred.includes(item.id) ? "★" : "☆"; save();
 }
 
