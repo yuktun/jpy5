@@ -72,6 +72,25 @@ for (const file of lesson19Files) assert(!/ワット|いずみ|第77頁/.test(aw
 const lesson19Controller=await readFile("assets/ch19-conversation.js","utf8"),lesson19Textbook=await readFile("chapter-19-textbook.html","utf8");
 assert(lesson19Controller.includes("data.sourcePrompts.length")); assert(lesson19Controller.includes("expressionPromptCount"));
 assert(!lesson19Textbook.includes("1個內容提示")); assert(lesson19Textbook.includes("印刷第 89–92 頁"));
+const lesson19RubySource=await readFile("assets/ch19-grammar-ruby.js","utf8"),rubyContext={window:{}};
+vm.createContext(rubyContext);
+for (const file of ["assets/grammar-ruby.js","assets/ch19-data.js","assets/ch19-grammar-ruby.js"]) vm.runInContext(await readFile(file,"utf8"),rubyContext,{filename:file});
+const lesson19Ruby=rubyContext.window.JPY5GrammarRuby,lesson19Grammar=rubyContext.window.JPY5_DATA.patterns;
+const lesson19GrammarIds=["wotaishoni","bakaridenakumo","nihokanaranai","wotooshite","nikakete","hatomokaku","tameniwa","kesshitenai"];
+assert.deepEqual(JSON.parse(JSON.stringify(lesson19Grammar.map(pattern=>pattern.id))),lesson19GrammarIds);
+const targetBlock=lesson19RubySource.match(/const targets=\{([\s\S]*?)\n  \};/); assert(targetBlock);
+assert.deepEqual([...targetBlock[1].matchAll(/^\s+([a-z0-9_]+):/gm)].map(match=>match[1]),lesson19GrammarIds);
+for (const staleId of ["nichigainai","nikurabete","monoda","ta_discovery","datte","tatokorode","ndatte","koso"]) assert(!lesson19RubySource.includes(staleId));
+const visibleText=html=>html.replace(/<rt>.*?<\/rt>/g,"").replace(/<[^>]+>/g,"");
+for (const pattern of lesson19Grammar) for (const [japanese] of pattern.examples) {
+  const rendered=lesson19Ruby.renderExample(japanese,pattern.id);
+  assert(rendered.includes('<mark class="grammar-target">'),`${pattern.id} lacks target highlighting`);
+  assert.equal(visibleText(rendered),japanese,`${pattern.id} ruby changed the source sentence`);
+}
+const fatherRuby=lesson19Ruby.renderExample(lesson19Grammar.find(pattern=>pattern.id==="nihokanaranai").examples[3][0],"nihokanaranai");
+const todayRuby=lesson19Ruby.renderExample(lesson19Grammar.find(pattern=>pattern.id==="wotooshite").examples[1][0],"wotooshite");
+assert(fatherRuby.includes("<ruby>父<rt>ちち</rt></ruby>")); assert(!fatherRuby.includes("<rt>とう</rt>"));
+assert(todayRuby.includes("<ruby>今日<rt>こんにち</rt></ruby>では")); assert(!todayRuby.includes("<ruby>今日<rt>きょう</rt></ruby>"));
 const navigation=JSON.parse(await readFile("assets/lesson-navigation.json","utf8"));
 assert.deepEqual(navigation.lessons,[13,14,15,16,17,18,19,20]);
 console.log("Lessons 19–20 checks passed: 325 vocabulary entries, 20 grammar patterns / 84 examples, reading, listening, navigation and local assets.");
