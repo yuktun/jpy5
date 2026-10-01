@@ -1,4 +1,4 @@
-window.JPY5_CONVERSATION={title:"ちょっと自慢話になりますが",setting:"大学演劇部 入部歓迎会",speakers:["山口","南","古田","マヨラン","松下","アンタ"],audio:"https://ttrw.jp/static/sound/sound202406141718354761.mp3",sourceStatus:"printed_dialogue_transcribed; answers_require_audio_confirmation",source:{conversationPdfPages:[5,6,7],conversationPrintedPages:[89,90,91],audioTrack:"MP3 1-21"},items:[],dialogue:[
+window.JPY5_CONVERSATION={title:"ちょっと自慢話になりますが",setting:"大学演劇部 入部歓迎会",speakers:["山口","南","古田","マヨラン","松下","アンタ"],audio:"https://ttrw.jp/static/sound/sound202406141718354761.mp3",sourceStatus:"printed_dialogue_transcribed; answers_require_audio_confirmation",source:{conversationPdfPages:[5,6,7,8],conversationPrintedPages:[89,90,91,92],audioTrack:"MP3 1-21",activities:[1,2,3,4,5,6]},sourceNote:"話す・聞くの活動1〜6、会話本文、8個の番号付き空欄、4問の内容設問、5問の表現設問は『みんなの日本語 中級II』第19課PDF pp. 5–8（印刷pp. 89–92）から視覚的に転記した。空欄・聞き取り設問の解答鍵は印刷されていないため、解答・採点は収録していない。",items:[],dialogue:[
 ["山口","司会の山口です。今日は皆さんのさくら大学演劇部への入部を歓迎してささやかな会を行いたいと思います。①＿＿＿＿＿＿＿＿。","",""],
 ["南","はい。部長の南です。皆さん、入学おめでとうございます。我が演劇部は代々全国大学演劇祭で優秀な成績を収めてきた歴史ある部です。その伝統と誇りをぜひ受け継いでもらいたいと思います。","",""],
 ["山口","では、次に、古田先輩、②＿＿＿＿＿＿＿＿。続いて、新入生にバトンを回しますので、心の準備をしておいてください。じゃ、古田さん。","",""],
@@ -8,4 +8,41 @@ window.JPY5_CONVERSATION={title:"ちょっと自慢話になりますが",settin
 ["松下","経済学部の松下です。僕は小学校から高校まで野球部にいました。でも万年補欠、一度もレギュラーになったことがありません。⑧＿＿＿＿＿＿＿＿。華やかな世界を支える下積みの人間の心の痛みを知っているつもりです。よろしくお願いします。","",""],
 ["アンタ","医学部のアンタです。私は高校で落語のサークルに入っていました。得意の小噺をひとつ聞いてください。「先生、私、手術初めてなんです。大丈夫でしょうか」「大丈夫ですよ。私も初めてですから」。できれば喜劇のほうをやりたいんですけど、大丈夫でしょうか。","",""],
 ["山口","ユニークなキャラクターが揃ったようで、我が演劇部の伝統も無事引き継がれていきそうです。では、あしたからの練習、気を引き締めてやっていきましょう。","",""]],
-unverifiedBlanks:Array.from({length:8},(_,i)=>({id:i+1,speaker:"",context:`印刷會話中的第${i+1}空欄`,source:"printed_blank",status:"audio_confirmation_required"})),sourcePrompts:[{id:"listen-1",jp:"それぞれの新入生は、どんな経験や特徴をアピールしましたか。",answerStatus:"audio_confirmation_required"}],expressionExercises:[],sourceFollowUps:[{id:"repeat",section:"3. もう一度聞こう",blankCount:8,answerStatus:"audio_confirmation_required"},{id:"say",section:"4. 言ってみよう",answerStatus:"not_scored"},{id:"practice",section:"5. 練習しよう",answerStatus:"open_ended_not_scored"}],comprehension:[],furigana:{},furiganaSegments:{},embeddedJapanese:[]};
+unverifiedBlanks:Array.from({length:8},(_,i)=>({id:i+1,speaker:"",context:`印刷會話中的第${i+1}空欄`,source:"printed_blank",status:"audio_confirmation_required"})),
+sourcePrompts:[
+  {id:"listen-1",section:"2. 聞いてみよう 1) 内容を聞き取りましょう",jp:"今日は何の会が行われますか。",answerStatus:"audio_confirmation_required"},
+  {id:"listen-2",section:"2. 聞いてみよう 1) 内容を聞き取りましょう",jp:"それは何の部ですか。",answerStatus:"audio_confirmation_required"},
+  {id:"listen-3",section:"2. 聞いてみよう 1) 内容を聞き取りましょう",jp:"先輩の古田さんは演劇と役者についてどんなことを言いましたか。",answerStatus:"audio_confirmation_required"},
+  {id:"listen-4",section:"2. 聞いてみよう 1) 内容を聞き取りましょう",jp:"新入部員は何人ですか。それぞれどんな経験を持っていますか。",answerStatus:"audio_confirmation_required"}
+],
+expressionExercises:[
+  {id:"expression-1",section:"2. 聞いてみよう 2) 表現を聞き取りましょう",prompt:"どう言いましたか。",items:[
+    "司会者が簡単なスピーチを古田さんに頼むとき",
+    "司会者が新入生にどのようなことを話してほしいか言うとき",
+    "マヨランさんが自分の経験を話し始めるとき",
+    "マヨランさんが今までやってきたことを今後の部活動に役立てたいと言うとき",
+    "松下さんが、野球部での自分の存在を一言で表現するとき"
+  ],answerStatus:"audio_confirmation_required"}
+],
+sourceFollowUps:[
+  {id:"warmup",section:"1. やってみよう",content:["料理教室に入会しました。自己紹介をするように言われました。自分をアピールするような話をしてください。"],answerStatus:"open_ended_not_scored"},
+  {id:"repeat",section:"3. もう一度聞こう",content:["＿＿＿の部分に言葉を書いてください。"],blankCount:8,answerStatus:"audio_confirmation_required"},
+  {id:"say",section:"4. 言ってみよう",content:["絵を見ながら発音やイントネーションに注意し、MP3のとおりに言ってみましょう。"],imagePrompts:4,imagePromptPrintedPage:91,answerStatus:"not_scored"},
+  {id:"practice",section:"5. 練習しよう",content:[
+    "1）人に自慢できる経験を披露し、自分をアピールします。",
+    "例：小学校のときから野球が得意。高校のとき、甲子園の高校野球大会に出場した。",
+    "○：川上です。私は小学校のときから、野球をやっていました。ちょっと自慢話になりますが、高校のときは甲子園へも行きました。優勝はできませんでしたが、準決勝まで進みました。練習の厳しさや、野球部の経験を営業の仕事に生かせたらいいなと思います。",
+    "（1）小学校のときから、そろばんが得意。中学で全国優勝した。電卓より速く正確である。",
+    "（2）子どものときからいろいろなボランティア活動に参加してきた。高校ではボランティア部を新しくつくった。",
+    "2）一般的にはマイナスと考えられる経験を述べて自分をアピールします。",
+    "例：中学時代は友達がいなかった。家にこもってたくさん本を読んだ。空想力と想像力に自信がある。",
+    "○：私は中学時代、友達をつくるのが下手で、家の中でいつも一人で過ごしていました。いわゆる引きこもりです。でもその間にたくさんの本を読んだり、アニメを見たりしました。ですから他の人より豊かな空想力、想像力を持っているつもりです。",
+    "（1）よく迷子になる。地図とコンパスが手放せない。方向音痴である。ナビゲーターの会社に就職できれば、かゆい所に手が届くようなナビが作れると思う。",
+    "（2）すぐ人を信じる。何回もだまされたことがある。お人よしである。ぜひ警察官になって詐欺などの被害を防ぎたい。"
+  ],answerStatus:"open_ended_not_scored"},
+  {id:"challenge",section:"6. チャレンジしよう",content:[
+    "自分をアピールする自己紹介をしてください。",
+    "グループをつくり、まず、何の集まりか決めてください。",
+    "全員、新しいメンバーとして、順番に1分間ずつ話してください。"
+  ],answerStatus:"open_ended_not_scored"}
+],comprehension:[],furigana:{},furiganaSegments:{},embeddedJapanese:[]};
