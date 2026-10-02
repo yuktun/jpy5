@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
   function renderFocus() {
-    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">重點句子</p><h2>八個聆聽目標</h2></div><span>句段時間碼尚未核實，暫停單句重播</span></div><div class="focus-grid">${data.items.map(x => `<article class="focus-card"><div class="focus-number">0${x.id}</div><button class="star-button ${state.stars[x.id]?'active':''}" data-star="${x.id}" aria-label="收藏句子">${state.stars[x.id]?'★':'☆'}</button><h3>${esc(x.jp)}</h3><p class="focus-meaning">${esc(x.zh)}</p><p>${esc(x.use)}</p>${listenButton(x.id)}</article>`).join("")}</div>`;
+    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">重點句子</p><h2>八個聆聽目標</h2></div><span>八句均已按官方音訊核對；請配合完整音訊練習</span></div><div class="focus-grid">${data.items.map(x => `<article class="focus-card"><div class="focus-number">0${x.id}</div><button class="star-button ${state.stars[x.id]?'active':''}" data-star="${x.id}" aria-label="收藏句子">${state.stars[x.id]?'★':'☆'}</button><h3>${esc(x.jp)}</h3><p class="focus-meaning">${esc(x.zh)}</p><p>${esc(x.use)}</p>${listenButton(x.id)}</article>`).join("")}</div>`;
   }
   function renderCards() {
     const x = data.items[state.card % data.items.length];
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
     stage.querySelector(".next-practice").onclick = () => { current = (current + 1) % data.items.length; render(); };
   }
   function renderComprehension() {
-    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">教材問題</p><h2>內容與表現理解</h2></div><span>${data.comprehension.length} 題</span></div><div class="reading-question-list">${data.comprehension.map((q,index) => {
+    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">理解練習</p><h2>內容與表現理解</h2></div><span>${data.comprehension.length} 題</span></div><div class="reading-question-list">${data.comprehension.map((q,index) => {
       const selected=state.comprehensionAnswers[q.id], answered=selected!==undefined;
       return `<article class="reading-question" data-comprehension="${q.id}"><span>${q.kind} · ${String(index+1).padStart(2,"0")}</span><h3>${embeddedRuby(q.q)}</h3><div>${q.options.map((option,i)=>`<button data-comprehension-answer="${i}" ${answered?"disabled":""} class="${answered&&i===q.answer?"correct":answered&&i===selected&&i!==q.answer?"wrong":""}">${rubyIfJapanese(option)}</button>`).join("")}</div><p class="reading-feedback">${answered?`${selected===q.answer?"答對。":"未正確。"}${embeddedRuby(q.why)}`:""}</p></article>`;
     }).join("")}</div>`;
@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const wrong = data.items.filter(x => state.mistakes[x.id]);
     const comprehensionWrong=data.comprehension.filter(q=>state.comprehensionMistakes[q.id]);
     const total=wrong.length+comprehensionWrong.length;
-    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">錯題重溫</p><h2>針對容易錯的內容</h2></div><span>${total} 項待重溫</span></div>${total ? `<div class="mistake-list">${wrong.map(x => `<article><span>句子練習 · 錯過 ${state.mistakes[x.id]} 次</span><h3>${esc(x.jp)}</h3><p>${esc(x.zh)}</p>${listenButton(x.id)}<button class="chip" data-mastered="${x.id}">標記已掌握</button></article>`).join("")}${comprehensionWrong.map(q=>`<article><span>${q.kind} · 錯過 ${state.comprehensionMistakes[q.id]} 次</span><h3>${esc(q.q)}</h3><p>答案：${esc(q.options[q.answer])}</p><p>${esc(q.why)}</p><button class="chip" data-mastered-comprehension="${q.id}">標記已掌握</button></article>`).join("")}</div>` : `<div class="empty-state"><h2>暫時沒有錯題</h2><p>完成教材問題、選擇題、重組或默寫後，錯題會自動來到這裡。</p><button class="primary-button" data-go-choice>開始選擇題 →</button></div>`}`;
+    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">錯題重溫</p><h2>針對容易錯的內容</h2></div><span>${total} 項待重溫</span></div>${total ? `<div class="mistake-list">${wrong.map(x => `<article><span>句子練習 · 錯過 ${state.mistakes[x.id]} 次</span><h3>${esc(x.jp)}</h3><p>${esc(x.zh)}</p>${listenButton(x.id)}<button class="chip" data-mastered="${x.id}">標記已掌握</button></article>`).join("")}${comprehensionWrong.map(q=>`<article><span>${q.kind} · 錯過 ${state.comprehensionMistakes[q.id]} 次</span><h3>${esc(q.q)}</h3><p>答案：${esc(q.options[q.answer])}</p><p>${esc(q.why)}</p><button class="chip" data-mastered-comprehension="${q.id}">標記已掌握</button></article>`).join("")}</div>` : `<div class="empty-state"><h2>暫時沒有錯題</h2><p>完成理解練習、選擇題、重組或默寫後，錯題會自動來到這裡。</p><button class="primary-button" data-go-choice>開始選擇題 →</button></div>`}`;
     stage.querySelector("[data-go-choice]")?.addEventListener("click",()=>setMode("choice"));
     stage.querySelectorAll("[data-mastered]").forEach(b => b.onclick = () => { delete state.mistakes[b.dataset.mastered]; state.marks[b.dataset.mastered]="correct"; save(); render(); });
     stage.querySelectorAll("[data-mastered-comprehension]").forEach(b => b.onclick = () => { delete state.comprehensionMistakes[b.dataset.masteredComprehension]; save(); render(); });
