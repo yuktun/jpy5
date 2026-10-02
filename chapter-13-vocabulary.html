@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#829D34">
   <title>第 13 課完整詞彙 · 日本語 Year 5</title>
-  <link rel="stylesheet" href="assets/styles.css?v=22">
+  <link rel="stylesheet" href="assets/styles.css?v=23">
   <link rel="icon" href="assets/app-icon.png">
   <link rel="apple-touch-icon" href="assets/app-icon.png">
   <script src="assets/common.js?v=4" defer></script>
   <script src="assets/vocabulary-data.js?v=2" defer></script>
   <script src="assets/pronunciation.js?v=1" defer></script>
   <script src="assets/vocabulary.js?v=10" defer></script>
+  <script src="assets/teacher-supplements.js?v=1" defer></script>
     <link rel="manifest" href="manifest.webmanifest">
     <script src="assets/pwa.js" defer></script>
     <script src="assets/analytics.js" defer></script>
@@ -53,6 +54,57 @@
         <div class="vocab-list-tools"><select id="list-section" aria-label="詞彙表分類"><option value="all">全部分類</option><option value="grammar">文法・練習</option><option value="speaking">話す・聞く</option><option value="reading">読む・書く</option></select><input class="search-input" id="vocab-search" type="search" placeholder="搜尋假名、漢字、外語原寫或中文意思"></div>
         <div class="vocab-list" id="vocab-list"></div>
       </div>
+    </section>
+
+    <section class="teacher-supplement" id="teacher-adverbs" aria-labelledby="teacher-adverbs-title">
+      <div class="teacher-supplement-header">
+        <div><span class="teacher-label">老師補充</span><h2 id="teacher-adverbs-title">時間関係の副詞</h2><p>老師講義中的四個時間副詞、例文與練習。本補充不計入 159 詞或詞彙進度。</p></div>
+      </div>
+
+      <div class="teacher-adverb-grid">
+        <article class="teacher-adverb-card">
+          <h3>もう</h3><span class="teacher-adverb-category">完了後</span>
+          <ul class="teacher-example-list"><li>リンさんはもう国へ帰った。</li><li>妹も弟も、もう高校を卒業した。</li></ul>
+        </article>
+        <article class="teacher-adverb-card">
+          <h3>すでに</h3><span class="teacher-adverb-category">完了後・長い時間</span>
+          <p class="teacher-explanation">「もう」とほとんど同じ（書き言葉）。しかし、「終わってから長時間が経っている状況」に使う場合が多い。</p>
+          <ul class="teacher-example-list"><li>問題点はすでに解決した。</li><li>会議で使う書類はすでに準備ができている。</li></ul>
+        </article>
+        <article class="teacher-adverb-card">
+          <h3>とっくに</h3><span class="teacher-adverb-category">完了後・すごく長い時間（主観）</span>
+          <p class="teacher-explanation">「話している時間よりずっと前に発生している」という場合。</p>
+          <ul class="teacher-example-list"><li>会場についたときには、会はとっくに始まっていた。</li><li>父：テレビを見ていないで、早く宿題をしなさい。<br>息子：宿題なんかとっくにやったよ。</li></ul>
+        </article>
+        <article class="teacher-adverb-card">
+          <h3>かつて</h3><span class="teacher-adverb-category">過去</span>
+          <p class="teacher-explanation">「昔の時間」を表している。</p>
+          <ul class="teacher-example-list"><li>この町はかつて小さい村だった。</li><li>わたしはかつてイギリスにいたころ、よく博物館に行った。</li></ul>
+        </article>
+      </div>
+
+      <article class="teacher-practice">
+        <h3>問題１．適当なものを選んでください。</h3>
+        <ol class="teacher-question-list">
+          <li><span class="teacher-dialogue">A：あれ、Bさん、（ もう ・ すでに ）昼ごはんを食べたの？<br>B：うん、さっき食べたよ。</span></li>
+          <li><span class="teacher-dialogue">部長：工場の計画は進んでいますか。<br>社員：はい、現場の調査も（ すでに ・ かつて ）終わっています。</span></li>
+          <li>わたしは（ とっくに ・ かつて ）東京に住んでいたことがある。</li>
+          <li><span class="teacher-dialogue">（大学で）<br>A：来週までの木村先生のレポート、早く出したほうがいいよ。<br>B：あ、それなら先週（ とっくに ・ かつて ）出したよ。</span></li>
+        </ol>
+        <button class="teacher-answer-toggle" type="button" data-answer-toggle aria-controls="adverb-answer-1" aria-expanded="false">顯示答案</button>
+        <div class="teacher-answer" id="adverb-answer-1" hidden><ol><li>もう</li><li>すでに</li><li>かつて</li><li>とっくに</li></ol></div>
+      </article>
+
+      <article class="teacher-practice">
+        <h3>問題２．副詞の使い方に注意して、文を完成させてください。</h3>
+        <ol class="teacher-question-list">
+          <li>昨日買ったワインを飲もうと、家に帰って冷蔵庫を開けたら、ワインは家族の誰かにすでに半分（　　　　　　　　　　　）。</li>
+          <li><span class="teacher-dialogue">A：ねえ、新しい彼氏って、どんな人？<br>B：え？とっくに（　　　　　　　　　　　）。</span></li>
+          <li>香港はかつて（　　　　　　　　　　　）。</li>
+        </ol>
+        <button class="teacher-answer-toggle" type="button" data-answer-toggle aria-controls="adverb-answer-2" aria-expanded="false">顯示建議答案</button>
+        <div class="teacher-answer" id="adverb-answer-2" hidden><span class="suggested-note">建議答案：其他自然、符合副詞用法的答案也可以。</span><ol><li>飲まれていた</li><li>別れたよ</li><li>イギリスの統治下にあった</li></ol></div>
+      </article>
     </section>
   </main>
   <footer>內容依據 Chapter 13 Vocabulary PDF 全 159 詞整理；進度會自動保存，登入後可跨裝置同步。</footer>
