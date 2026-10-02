@@ -56,6 +56,11 @@ now labelled separately in the UI.
   and document any teaching-layer correction.
 - Source vocabulary item 78 `身近` is printed as 名詞; it is normally a
   な形容詞. Preserve and flag rather than silently overwriting the source.
+- Under `により`, the source prints `給料をカットするとこによって、不況を乗り切ろうしている。`.
+  The learner-facing example conservatively corrects the obvious omissions to
+  `給料をカットすることによって、不況を乗り切ろうとしている。`; the source typo must not be reintroduced.
+- The source heading for `ったら` prints `Nってたら`. The app correctly teaches
+  `N＋ったら`; preserve that learner-facing form.
 
 ## Implementation disposition
 
@@ -64,7 +69,9 @@ now labelled separately in the UI.
   an explicitly labelled teaching note about ordinary dictionary usage.
 - Grammar keeps exactly 10 numbered patterns and 36 source examples. No `～上`
   item was added. The 40 quiz questions and modal examples are labelled as app
-  practice / `延伸學習`, not textbook questions or examples.
+  practice / `延伸學習`, not textbook questions or examples. Source-example
+  labels disclose that obvious printing errors have received conservative
+  corrections and direct learners to this audit.
 - Reading keeps the six implemented source paragraphs aligned across original
   and translation views. The 13 multiple-choice questions, explanations and
   five find-the-paragraph prompts are app-authored, source-grounded practice.

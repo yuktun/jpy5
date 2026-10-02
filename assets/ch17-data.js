@@ -38,6 +38,6 @@ const questionCorrections={
   "karaniwa-2":{prompt:"哪一句正確使用名詞＋「であるからには」？",options:["責任者なら、説明してください。","責任者であるからには、説明すべきだ。","責任者にとって、重要な問題だ。","責任者として、会議に出席する。"],answer:1,explanation:"第二句正確以名詞＋であるからには接義務表現；其他句子本身自然，但屬不同句型。"}
 };
 questions.forEach(question=>Object.assign(question,questionCorrections[question.id]||{}));
-patterns.forEach(pattern=>{pattern.exampleLabel="g_2_17.pdf 來源例句（原文保留）";});
+patterns.forEach(pattern=>{pattern.exampleLabel="g_2_17.pdf 來源例句（明顯排印錯誤已作保守修正；見來源審核）";});
 return {patterns,questions};
 })();
