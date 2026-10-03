@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   const data=window.JPY5_READING, stage=document.querySelector("#reading-stage");
-  const defaults=()=>({mode:"original",font:1,furigana:true,answered:{},wrong:[],vocabIndex:0,vocabFlipped:false,attempts:[]});
+  const defaults=()=>({mode:"original",font:1,furigana:true,answered:{},wrong:[],vocabIndex:0,vocabFlipped:false,attempts:[],textbookDrafts:{},textbookChecks:{}});
   let state={...defaults(),...JPY5.read("reading",{})}, findIndex=0, examAnswers={};
   const esc=v=>String(v).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
   const save=()=>JPY5.write("reading",state);
@@ -36,14 +36,30 @@ document.addEventListener("DOMContentLoaded", () => {
   function shell(title,subtitle,body){return `<div class="reading-stage-head"><div><p class="kicker">第 15 課</p><h2>${title}</h2>${subtitle?`<p>${subtitle}</p>`:""}</div></div>${body}`}
   const questionText=q=>esc(q.q);
   const optionText=(q,option)=>esc(option);
+  const lines=text=>ruby(text).replace(/\n/g,"<br>");
   function original(){
     return shell(ruby(data.title),"先掌握論述：螞蟻的 2：6：2 分工 → 組織觀察 → 商業／體育類比 → 配角的重要性。",`<article class="reading-paper" style="--reading-size:${[.98,1.1,1.24][state.font]}rem"><div class="reading-badge">第15課</div>${data.paragraphs.map(p=>`<p data-paragraph="${p.id}">${ruby(p.jp)}</p>`).join("")}<footer>（${ruby(data.author)}）</footer></article>`);
   }
   function translation(){
     return shell("繁體中文翻譯","段落編號與日文原文完全對應。",`<div class="translation-list">${data.paragraphs.map(p=>`<article><span>0${p.id}</span><p>${esc(p.zh)}</p></article>`).join("")}</div>`);
   }
+  function modelAnswer(item,label="參考回答例（非課本官方答案）"){
+    return `<button class="secondary-button" type="button" data-model-toggle="${item.id}" aria-expanded="false">參考回答例を見る</button><div class="ch14-model-answer" data-model-answer="${item.id}" hidden><b>${label}</b><p>${lines(item.model)}</p></div>`;
+  }
+  function openTask(item,extra="",rows=6,label,taskLabel="課題"){
+    return `<article class="ch14-textbook-task"><span>${taskLabel}</span><p>${ruby(item.prompt)}</p>${extra}<label for="draft-${item.id}">自己的答案（不會自動評分）</label><textarea id="draft-${item.id}" rows="${rows}" data-textbook-draft="${item.id}">${esc(state.textbookDrafts[item.id]||"")}</textarea>${modelAnswer(item,label)}</article>`;
+  }
+  function sectionHeader(section){return `<header><span>${esc(section.label)}</span><h2>${section.number}. ${ruby(section.title)}</h2></header>`}
   function questionCards(){
-    return shell("閱讀問題",`${data.questions.length} 題是應用程式依文章內容及教材確認重點編寫的理解練習；作答後即時顯示解釋。`,`<div class="reading-question-list">${data.questions.map((q,i)=>{const chosen=state.answered[q.id],answered=chosen!==undefined;return `<article class="reading-question" data-question="${q.id}"><span>問題 ${i+1}</span><h3>${questionText(q)}</h3><div>${q.options.map((o,n)=>`<button data-q="${q.id}" data-option="${n}" ${answered?'disabled':''} class="${answered&&n===q.answer?'correct':answered&&n===chosen&&chosen!==q.answer?'wrong':''}">${optionText(q,o)}</button>`).join("")}</div><p class="reading-feedback">${answered?(chosen===q.answer?'答對。':'未正確。')+esc(q.why):''}</p></article>`}).join("")}</div>`);
+    const sections=data.textbookActivities.sections,think=sections[0],confirm=sections[1],discuss=sections[2],challenge=sections[3];
+    const thinkBody=think.items.map((item,index)=>openTask(item,`<div class="ch15-followups">${item.followups.map(text=>`<p>${ruby(text)}</p>`).join("")}</div>`,6,undefined,`${index+1}）`)).join("");
+    const truth=`<section class="ch14-subsection"><h3>1. 本文の内容と合っていれば○、違っていれば×を書いてください。</h3><div class="ch14-truth-list">${confirm.truth.map((item,index)=>`<article data-truth-item="${item.id}"><span>${index+1}</span><p>${ruby(item.text)}</p><div><button type="button" data-truth="${item.id}" data-value="true" class="${state.textbookChecks[item.id]===true?'selected':''}" aria-label="${index+1} ○">○</button><button type="button" data-truth="${item.id}" data-value="false" class="${state.textbookChecks[item.id]===false?'selected':''}" aria-label="${index+1} ×">×</button></div></article>`).join("")}</div><button class="secondary-button" type="button" data-truth-reveal>答案を見る / 顯示答案</button><div class="ch14-official-answer" data-truth-official hidden><b>官方答案 / 課本解答</b><p>${confirm.truth.map((item,index)=>`${index+1} ${item.answer?'○':'×'}`).join("　")}</p></div></section>`;
+    const completion=`<section class="ch14-subsection"><h3>2. 文を完成させてください。</h3><ol class="ch15-completion-list">${confirm.completion.map((item,index)=>`<li>${item.parts.map((part,partIndex)=>`${ruby(part)}${partIndex<item.answers.length?`<input class="ch15-inline-input" data-textbook-draft="${item.id}-${partIndex}" value="${esc(state.textbookDrafts[`${item.id}-${partIndex}`]||"")}" aria-label="${index+1} の空欄 ${partIndex+1}">`:""}`).join("")}</li>`).join("")}</ol><p class="ch15-no-grade">自由作答欄不會自動評分。</p><button class="secondary-button" type="button" data-confirm-reveal>答案を見る / 顯示答案</button><div class="ch14-official-answer" data-confirm-answer hidden><b>官方答案 / 課本解答</b>${confirm.completion.map((item,index)=>`<p>${index+1} ${item.answers.map(answer=>ruby(answer)).join(" ／ ")}</p>`).join("")}</div></section>`;
+    const comparison=`<section class="ch14-subsection"><h3>3. 表を完成させてください。</h3><div class="ch15-table-wrap"><table class="ch15-story-table"><thead><tr><th>アリ</th><th>よく働くアリ</th><th>働いているふりをしているアリ</th></tr></thead><tbody>${confirm.table.rows.map(row=>`<tr><th>${ruby(row.work)}</th><td>${row.workers==="①"?`<input data-textbook-draft="${row.id}" value="${esc(state.textbookDrafts[row.id]||"")}" aria-label="①">`:ruby(row.workers)}</td><td>${row.support==="②"?`<input data-textbook-draft="${row.id}" value="${esc(state.textbookDrafts[row.id]||"")}" aria-label="②">`:ruby(row.support)}</td></tr>`).join("")}</tbody></table></div><button class="secondary-button" type="button" data-table-reveal>答案を見る / 顯示答案</button><div class="ch14-official-answer" data-table-answer hidden><b>官方答案 / 課本解答</b><p>① ${ruby(confirm.table.rows[0].answer)}</p><p>② ${ruby(confirm.table.rows[1].answer)}</p></div></section>`;
+    const discussBody=discuss.items.map((item,index)=>openTask(item,`<p class="ch15-open-note">${ruby(discuss.note)}</p>`,7,undefined,`${index+1}）`)).join("");
+    const writing=challenge.writing, research=challenge.research;
+    const challengeBody=`<article class="ch14-textbook-task"><span>5-1 作文</span><p>${ruby(writing.prompt)}</p><div class="ch14-writing-guide"><b>文章の流れ</b>${writing.guide.map(step=>`<span>${ruby(step)}</span>`).join("")}</div><label for="draft-${writing.id}">自己的文章（不會自動評分）</label><textarea id="draft-${writing.id}" rows="14" data-textbook-draft="${writing.id}" data-char-source="${writing.id}">${esc(state.textbookDrafts[writing.id]||"")}</textarea><small class="ch14-character-count">目前 <span data-char-count="${writing.id}">${[...(state.textbookDrafts[writing.id]||"")].length}</span> 字 · 目標 400字程度</small>${modelAnswer(writing)}</article>${openTask(research,`<div class="ch14-writing-guide"><b>參考資料建議欄位</b>${research.fields.map(field=>`<span>${ruby(field)}</span>`).join("")}</div>`,10,"參考資料例（非課本官方答案）","5-2 調査")}`;
+    return shell("課本「読む・書く」原題","依課本順序完成 1・3・4・5；自由作答不會自動評分，官方答案及參考回答例預設隱藏。",`<div class="ch14-textbook-sections"><section class="ch14-textbook-section">${sectionHeader(think)}<div class="ch14-section-body">${thinkBody}</div></section><section class="ch14-textbook-section">${sectionHeader(confirm)}<div class="ch14-section-body">${truth}${completion}${comparison}</div></section><section class="ch14-textbook-section">${sectionHeader(discuss)}<div class="ch14-section-body">${discussBody}</div></section><section class="ch14-textbook-section">${sectionHeader(challenge)}<div class="ch14-section-body">${challengeBody}</div></section></div>`);
   }
   function findAnswers(){
     const task=data.find[findIndex%data.find.length];
@@ -74,6 +90,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   function bind(){
     stage.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>scoreQuestion(b));
+    stage.querySelectorAll("[data-textbook-draft]").forEach(field=>field.addEventListener("input",()=>{state.textbookDrafts[field.dataset.textbookDraft]=field.value;const count=stage.querySelector(`[data-char-count="${field.dataset.charSource}"]`);if(count)count.textContent=[...field.value].length;save()}));
+    stage.querySelectorAll("[data-truth]").forEach(button=>button.onclick=()=>{const value=button.dataset.value==="true";state.textbookChecks[button.dataset.truth]=value;button.closest("article").querySelectorAll("[data-truth]").forEach(choice=>choice.classList.toggle("selected",choice===button));save()});
+    stage.querySelector("[data-truth-reveal]")?.addEventListener("click",event=>{const panel=stage.querySelector("[data-truth-official]");panel.hidden=!panel.hidden;event.currentTarget.textContent=panel.hidden?"答案を見る / 顯示答案":"答案を隠す / 隱藏答案"});
+    stage.querySelector("[data-confirm-reveal]")?.addEventListener("click",event=>{const panel=stage.querySelector("[data-confirm-answer]");panel.hidden=!panel.hidden;event.currentTarget.textContent=panel.hidden?"答案を見る / 顯示答案":"答案を隠す / 隱藏答案"});
+    stage.querySelector("[data-table-reveal]")?.addEventListener("click",event=>{const panel=stage.querySelector("[data-table-answer]");panel.hidden=!panel.hidden;event.currentTarget.textContent=panel.hidden?"答案を見る / 顯示答案":"答案を隠す / 隱藏答案"});
+    stage.querySelectorAll("[data-model-toggle]").forEach(button=>button.onclick=()=>{const panel=stage.querySelector(`[data-model-answer="${button.dataset.modelToggle}"]`);panel.hidden=!panel.hidden;button.setAttribute("aria-expanded",String(!panel.hidden));button.textContent=panel.hidden?"參考回答例を見る":"參考回答例を隠す"});
     stage.querySelectorAll("[data-find]").forEach(b=>b.onclick=()=>{const task=data.find[findIndex%data.find.length],ok=Number(b.dataset.find)===task.answer;stage.querySelectorAll("[data-find]").forEach(x=>x.disabled=true);b.classList.add(ok?"correct":"wrong");stage.querySelector(`[data-find="${task.answer}"]`).classList.add("correct");stage.querySelector(".find-feedback").textContent=ok?"搵啱了，呢段包含完整答案。":"答案在綠色段落；再對照問題讀一次。";stage.querySelector(".find-next").hidden=false;});
     stage.querySelector(".find-next")?.addEventListener("click",()=>{findIndex=(findIndex+1)%data.find.length;render()});
     stage.querySelector("#reading-vocab-card")?.addEventListener("click",()=>{state.vocabFlipped=!state.vocabFlipped;save();render()});
