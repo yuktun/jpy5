@@ -76,17 +76,32 @@ document.addEventListener("DOMContentLoaded", () => {
     const modelBlock=(activity,item,index)=>{
       const id=`textbook-model-${activity.id}-${item.id}`;
       let content="";
-      if(item.kind==="open"){
+      if(item.modelSections){
+        content=item.modelSections.map(section=>`<section class="textbook-model-example"><h4 lang="ja">${ruby(section.heading)}</h4><p lang="ja">${rubyLines(section.text)}</p></section>`).join("");
+      }else if(item.kind==="open"){
         content=`${item.modelAnswer.map(paragraph=>`<p lang="ja">${rubyLines(paragraph,{furiganaContext:"monthlyParking"})}</p>`).join("")}<aside class="textbook-learning-tip"><strong>學習提示</strong><p>${esc(item.tip)}</p></aside>`;
       }else if(item.kind==="research"){
         content=`${item.modelIntro.map(paragraph=>`<p lang="ja">${rubyLines(paragraph)}</p>`).join("")}<dl class="textbook-reading-examples">${item.readings.map(group=>`<div><dt>${esc(group.reading)}</dt><dd>${group.examples.map(example=>`<span lang="ja">${ruby(example)}</span>`).join("")}</dd></div>`).join("")}</dl><h4>発表例</h4><p lang="ja">${rubyLines(item.presentation)}</p><p class="textbook-reference-note" lang="ja">${rubyLines(item.note)}</p>`;
       }else{
         content=item.modelAnswers.map((answer,answerIndex)=>`<section class="textbook-model-example"><h4>參考回答例 ${answerIndex+1}</h4>${answer.map(paragraph=>`<p lang="ja">${rubyLines(paragraph,{furiganaContext:"monthlyParking"})}</p>`).join("")}</section>`).join("");
       }
-      return `<button type="button" class="textbook-model-toggle" data-textbook-model-toggle="${id}" aria-expanded="false" aria-controls="${id}">參考回答例を見る</button><div class="textbook-model-answer" id="${id}" hidden><span>參考回答例</span>${content}</div>`;
+      return `<button type="button" class="textbook-model-toggle" data-textbook-model-toggle="${id}" aria-expanded="false" aria-controls="${id}">參考回答例を見る</button><div class="textbook-model-answer" id="${id}" hidden><span>${esc(item.modelLabel||"參考回答例")}</span>${content}</div>`;
     };
-    const activityGroups=data.textbookActivities.map(activity=>`<section class="textbook-activity-group"><header class="textbook-activity-heading"><span>${activity.sourceLabel}</span><h2 lang="ja">${ruby(`${activity.number}. ${activity.title}`)}</h2><p>${activity.id==="think-speak"?"先整理自己的想法，再練習口頭發表。":"用自己的經驗介紹一個讀法出乎意料的漢字詞。"}</p></header><div class="textbook-activity-cards">${activity.items.map((item,index)=>`<article class="textbook-activity-card"><span>${activity.number}.${index+1} · 不計分</span><h3 lang="ja">${rubyLines(item.prompt)}</h3><label class="textbook-draft-label"><span>${item.kind==="research"?"我的查考與發表準備":"我的回答準備"}（不計分）</span><textarea rows="${item.kind==="research"?8:6}" data-textbook-draft="activity-${item.id}" aria-label="${esc(activity.title)} ${index+1} 我的回答"></textarea></label>${modelBlock(activity,item,index)}</article>`).join("")}</div></section>`).join("");
-    return shell("課本「読む・書く」原題",`<span class="textbook-source-label">課本原題</span> 依課本順序完成第 3～5 部分；所有開放題均不作自動評分。`,`<div class="textbook-activities">${checkGroup}${activityGroups}</div>`);
+    const activityCard=(activity,item,index)=>{
+      let response="";
+      if(item.kind==="open-followup"){
+        response=`<aside class="textbook-learning-tip"><strong>課本追問</strong>${item.followUps.map(prompt=>`<p lang="ja">${ruby(prompt)}</p>`).join("")}</aside><label class="textbook-draft-label"><span>我的回答準備（不計分）</span><textarea rows="6" data-textbook-draft="activity-${item.id}" aria-label="${esc(activity.title)} ${index+1} 我的回答"></textarea></label>`;
+      }else if(item.kind==="reading-inputs"){
+        response=`<div class="textbook-no-grade"><strong lang="ja">${ruby("動物園　入園料")}</strong><p lang="ja">${ruby("大人・・・500円　　小人・・・250円")}</p></div><div class="textbook-reading-examples">${item.questions.map((question,questionIndex)=>`<div><dt lang="ja">${ruby(questionIndex===0?"大人":"小人")}</dt><dd><label class="textbook-draft-label"><span lang="ja">${ruby(question)}</span><textarea rows="2" data-textbook-draft="activity-${item.id}-${questionIndex}" aria-label="${esc(question)}"></textarea></label></dd></div>`).join("")}</div>`;
+      }else{
+        response=`<label class="textbook-draft-label"><span>${item.kind==="research"?"我的查考與發表準備":"我的回答準備"}（不計分）</span><textarea rows="${item.kind==="research"?8:6}" data-textbook-draft="activity-${item.id}" aria-label="${esc(activity.title)} ${index+1} 我的回答"></textarea></label>`;
+      }
+      return `<article class="textbook-activity-card"><span>${activity.number}.${index+1} · 不計分</span><h3 lang="ja">${rubyLines(item.prompt)}</h3>${response}${modelBlock(activity,item,index)}</article>`;
+    };
+    const activityGroup=activity=>`<section class="textbook-activity-group"><header class="textbook-activity-heading"><span>${activity.sourceLabel}</span><h2 lang="ja">${ruby(`${activity.number}. ${activity.title}`)}</h2><p>${activity.id==="think"?"先想想自己平日查漢字讀音的方法。":activity.id==="think-speak"?"先整理自己的想法，再練習口頭發表。":"用自己的經驗介紹一個讀法出乎意料的漢字詞。"}</p></header><div class="textbook-activity-cards">${activity.items.map((item,index)=>activityCard(activity,item,index)).join("")}</div></section>`;
+    const beforeCheck=data.textbookActivities.filter(activity=>activity.number<3).map(activityGroup).join("");
+    const afterCheck=data.textbookActivities.filter(activity=>activity.number>3).map(activityGroup).join("");
+    return shell("課本「読む・書く」原題",`<span class="textbook-source-label">課本原題</span> 依課本順序完成 1・3・4・5；所有開放題均不作自動評分。`,`<div class="textbook-activities">${beforeCheck}${checkGroup}${afterCheck}</div>`);
   }
   function teacherText(paragraph){
     const targets=(paragraph.annotations||[]).map((item,index)=>({...item,index,start:-1}));

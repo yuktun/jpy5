@@ -39,6 +39,7 @@ try{
     if(index>0)await page.locator('[data-reading-mode="questions"]').click();else await page.locator('[data-reading-mode="questions"]').click();
     assert.equal(await page.locator(".ch14-textbook-section").count(),4);
     assert.deepEqual(await page.locator(".ch14-textbook-section>header h2").allTextContents(),["1. 考えてみよう","3. 確かめよう","4. 考えよう・話そう","5. チャレンジしよう"]);
+    assert.equal(await page.locator(".ch14-textbook-section>header h2",{hasText:"1. 考えてみよう"}).count(),1,"Lesson 14 duplicated section 1");
     assert.equal(await page.locator("[data-q]").count(),0,"legacy MCQs leaked into textbook mode");
     assert.equal(await page.locator(".ch14-model-answer:not([hidden])").count(),0);
     assert.equal(await page.locator(".ch14-official-answer:not([hidden])").count(),0);
