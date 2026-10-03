@@ -22,6 +22,8 @@ assert.deepEqual(Array.from(data.textbook.listenQuestions.slice(0, 3), q => q.an
   "人に親切にしたら、あとでいいことが自分に返ってくる。親切は人のためだけじゃない。",
   "「辛党」は「甘党」の反対だと思っていた。"
 ]);
+assert.equal(data.textbook.listenQuestions[4].answer, "ことわざで思い出したけど、この前、太郎…");
+assert.equal(data.textbook.listenQuestions[4].sourceNote, "※ 解答冊表記。會話本文／3. もう一度聞こうでは『ことわざで思い出したんだけど』。");
 
 const types = { ".html":"text/html", ".js":"text/javascript", ".css":"text/css", ".json":"application/json", ".png":"image/png", ".webmanifest":"application/manifest+json" };
 const server = createServer(async (request, response) => {
@@ -59,6 +61,8 @@ try {
     assert.equal(await page.locator(".reference-answer:not([hidden])").count(), 0, "official answers should start hidden");
     await page.locator('[data-reveal="tb-l1"]').click();
     assert.equal(await page.locator('[data-answer-panel="tb-l1"]').isVisible(), true);
+    await page.locator('[data-reveal="tb-e2"]').click();
+    assert.match(await page.locator('[data-answer-panel="tb-e2"]').innerText(), /解答冊表記。會話本文／3\. もう一度聞こう/);
     await page.locator('[data-draft="tb-l1"]').fill(`四つだと思います ${viewport.width}`);
     await page.locator('[data-mode="dialogue"]').click();
     await page.locator('[data-mode="comprehension"]').click();
