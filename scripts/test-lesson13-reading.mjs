@@ -1,0 +1,90 @@
+#!/usr/bin/env node
+import assert from "node:assert/strict";
+import { createRequire } from "node:module";
+import { createServer } from "node:http";
+import { mkdir, readFile } from "node:fs/promises";
+import { extname, resolve, sep } from "node:path";
+import vm from "node:vm";
+
+const { chromium } = createRequire(import.meta.url)("playwright");
+const root = process.cwd();
+const artifacts = resolve("tmp/lesson13-reading-browser");
+await mkdir(artifacts, { recursive: true });
+
+const dataContext = { window: {} };
+vm.runInNewContext(await readFile(resolve(root, "assets/reading-data.js"), "utf8"), dataContext);
+const data = dataContext.window.JPY5_READING;
+assert.equal(data.questions.length, 13, "the mock exam must retain all 13 questions");
+assert.deepEqual(Array.from(data.questions, question => question.id), Array.from({ length: 13 }, (_, index) => `q${index + 1}`), "mock-exam question IDs changed");
+assert.equal(data.textbookExercises.sections.length, 4);
+assert.deepEqual(Array.from(data.textbookExercises.sections[0].items, item => item.answer), ["4", "3", "1", "2", "5"]);
+assert.deepEqual(Array.from(data.textbookExercises.sections[1].items, item => Array.from(item.answers)), [
+  ["時間がかかる"],
+  ["辞書", "駐車場（パーキング）"],
+  ["見つからなかった（出ていなかった）"],
+  ["月決め", "目に入った"],
+  ["ゲッキョクとは読まない"]
+]);
+
+const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".png": "image/png", ".webmanifest": "application/manifest+json" };
+const server = createServer(async (request, response) => {
+  try {
+    const path = resolve(root, `.${decodeURIComponent(new URL(request.url, "http://localhost").pathname)}`);
+    if (!path.startsWith(`${root}${sep}`)) return response.writeHead(403).end();
+    response.setHeader("Content-Type", types[extname(path)] || "application/octet-stream");
+    response.end(await readFile(path));
+  } catch {
+    response.writeHead(404).end();
+  }
+});
+await new Promise(done => server.listen(0, "127.0.0.1", done));
+const base = `http://127.0.0.1:${server.address().port}`;
+const browser = await chromium.launch({ headless: true, ...(process.env.JPY5_BROWSER_CHANNEL ? { channel: process.env.JPY5_BROWSER_CHANNEL } : {}) });
+const context = await browser.newContext({ serviceWorkers: "block" });
+const page = await context.newPage();
+const errors = [];
+page.on("pageerror", error => errors.push(error.message));
+
+try {
+  for (const viewport of [{ width: 1280, height: 900 }, { width: 810, height: 1080 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport);
+    await page.goto(`${base}/chapter-13-reading.html`);
+    await page.locator('[data-reading-mode="questions"]').click();
+    assert.equal(await page.locator(".reading-stage-head h2").innerText(), "3. 確かめよう");
+    assert.equal(await page.locator(".textbook-exercise").count(), 4);
+    assert.equal(await page.locator(".textbook-answer:not([hidden])").count(), 0, "answers must start hidden");
+    assert.equal(await page.locator("[data-q]").count(), 0, "legacy scored questions leaked into textbook mode");
+    assert.equal(await page.locator(".textbook-completion-list input").count(), 7);
+    assert.equal(await page.locator(".textbook-free-response-list textarea").count(), 3);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true, `reading exercises overflow at ${viewport.width}px`);
+
+    const toggles = page.locator("[data-textbook-answer-toggle]");
+    for (let index = 0; index < await toggles.count(); index += 1) {
+      const toggle = toggles.nth(index);
+      const answer = page.locator(`#${await toggle.getAttribute("aria-controls")}`);
+      await toggle.click();
+      assert.equal(await answer.isVisible(), true);
+      assert.equal(await toggle.getAttribute("aria-expanded"), "true");
+      await toggle.click();
+      assert.equal(await answer.isHidden(), true);
+    }
+
+    const rubyCount = await page.locator(".textbook-exercise ruby").count();
+    assert(rubyCount > 0, "furigana should be available in textbook exercises");
+    await page.locator("#furigana-toggle").click();
+    assert.equal(await page.locator(".textbook-exercise ruby").count(), 0, "furigana OFF did not update textbook exercises");
+    await page.locator("#furigana-toggle").click();
+
+    await page.screenshot({ path: `${artifacts}/questions-${viewport.width}.png`, fullPage: true });
+  }
+
+  await page.goto(`${base}/chapter-13-reading.html`);
+  await page.locator('[data-reading-mode="exam"]').click();
+  assert.equal(await page.locator(".exam-list article").count(), 13, "mock exam question count changed");
+  assert.deepEqual(await page.locator(".exam-list input").evaluateAll(inputs => [...new Set(inputs.map(input => input.name))]), Array.from({ length: 13 }, (_, index) => `q${index + 1}`), "mock exam question IDs changed");
+  assert.equal(errors.length, 0, errors.join("\n"));
+  console.log("Lesson 13 textbook reading checks passed for desktop, iPad, and mobile layouts.");
+} finally {
+  await browser.close();
+  await new Promise(done => server.close(done));
+}
