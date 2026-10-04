@@ -115,8 +115,8 @@ assert.match(styles, /\.focus-detail-body\{flex:1 1 auto;min-height:0;overflow-x
 for (const module of conversationModules) {
   const source = await readFile(join(root, "assets", module), "utf8");
   if (module === "ch17-conversation.js") {
-    assert.doesNotMatch(source, /showModal\(/, "Lesson 17 must not expose an answer-detail dialog while answers remain unverified");
-    assert.match(source, /const renderers=\{dialogue,blanks,prompts,expressions,guide\}/, "Lesson 17 must retain all unscored listening study modes");
+    assert.doesNotMatch(source, /showModal\(/, "Lesson 17 must keep its inline answer-and-replay interface");
+    assert.match(source, /const renderers=\{dialogue,comprehension,activities,focus,blanks,guide\}/, "Lesson 17 must retain all completed listening study modes");
     continue;
   }
   if (["ch18-conversation.js", "ch19-conversation.js", "ch20-conversation.js"].includes(module)) {
@@ -131,6 +131,10 @@ for (const module of conversationModules) {
 for (const file of conversationDataFiles) {
   const context = { window: {} };
   vm.runInNewContext(await readFile(join(root, "assets", file), "utf8"), context);
+  if (file === "ch17-conversation-data.js") {
+    assert(context.window.JPY5_CONVERSATION.listeningTargets.every(item => item.answer && item.context && Number.isFinite(item.start) && Number.isFinite(item.end)), `${file} must retain every verified answer, context, and replay interval`);
+    continue;
+  }
   assert(context.window.JPY5_CONVERSATION.items.every(item => item.zh && item.use && item.point), `${file} must retain the listening popup explanation, 情境, and 重點 data`);
 }
 assert.match(notes, /const hasRowLabel = comparison\.rows\.every\(row => row\.length === comparison\.headings\.length \+ 1\)/, "comparison tables must detect the optional row-label column from the data shape");

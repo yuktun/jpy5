@@ -42,20 +42,20 @@ assert(reading.find.every(task=>reading.paragraphs.some(paragraph=>paragraph.id=
 
 const conversation=(await runFiles(["assets/ch17-conversation-data.js"])).JPY5_CONVERSATION;
 assert.equal(conversation.dialogue.length,29);
-assert.equal(conversation.unverifiedBlanks.length,9);
+assert.equal(conversation.listeningTargets.length,9);
 assert.equal(conversation.sourcePrompts.length,4);
 assert.equal(conversation.expressionExercises.length,2);
-assert.equal(conversation.items.length,0);
-assert.equal(conversation.comprehension.length,0);
-assert(conversation.unverifiedBlanks.every(blank=>blank.status==="audio_confirmation_required"));
-assert(conversation.sourcePrompts.every(prompt=>prompt.answerStatus==="audio_confirmation_required"));
-assert(conversation.expressionExercises.every(exercise=>exercise.answerStatus==="audio_confirmation_required"));
+assert(conversation.listeningTargets.every(target=>target.answer&&Number.isFinite(target.start)&&Number.isFinite(target.end)&&target.end>target.start));
+assert(conversation.sourcePrompts.every(prompt=>prompt.answer));
+assert(conversation.expressionExercises.every(exercise=>exercise.items.every(item=>item.answer)));
 const conversationSource=await source("assets/ch17-conversation-data.js");
-assert.equal((conversationSource.match(/[①②③④⑤⑥⑦⑧⑨]/g)||[]).length,9);
-assert.doesNotMatch(conversationSource,/\banswer\s*:/,"unverified listening answer added");
+for(const marker of ["①","②","③","④","⑤","⑥","⑦","⑧","⑨"]){
+  assert.equal(conversation.dialogue.filter(row=>row[1].includes(marker)).length,1,`${marker} must occur in exactly one dialogue row`);
+}
+assert.doesNotMatch(conversationSource,/audio_confirmation_required|verification_pending/,"stale unverified listening state remains");
 
 const hub=await source("assets/ch17-hub.js");
-assert.match(hub,/finiteRatio\(vocabDone,152\)/);assert.match(hub,/finiteRatio\(readingDone,13\)/);assert.doesNotMatch(hub,/listeningDone\/0/);assert.match(hub,/不評分/);
+assert.match(hub,/finiteRatio\(vocabDone,152\)/);assert.match(hub,/finiteRatio\(readingDone,13\)/);assert.match(hub,/finiteRatio\(listeningNotes,9\)/);assert.doesNotMatch(hub,/Beta|待核實|不評分/);
 const readingJs=await source("assets/ch17-reading.js");
 assert.match(readingJs,/examAnswers:\{\}/);assert.match(readingJs,/state\.examAnswers\[input\.name\]/);assert.match(readingJs,/state\.examAnswers=\{\}/);
 const quizJs=await source("assets/ch17-quiz.js");
@@ -70,4 +70,4 @@ for(const file of lesson17Files){
 for(const file of ["chapter-17-notes.html","chapter-17-vocabulary.html","chapter-17-reading.html","chapter-17-textbook.html","chapter-17-review.html"])assert.match(await source(file),/chapter-16-/,`${file}: Lesson 16 missing from fallback navigation`);
 
 for(const common of ["assets/common.js","assets/ch14-common.js","assets/ch15-common.js","assets/ch16-common.js","assets/ch17-common.js"]){const text=await source(common);assert.match(text,/hour>=18\|\|hour<6/);assert.match(text,/\[13,14,15,16,17,18\]/);}
-console.log("Lesson 17 counts, source labels, question integrity, persistence, navigation, and unverified-listening safeguards passed.");
+console.log("Lesson 17 counts, source labels, question integrity, persistence, navigation, and verified-listening safeguards passed.");
