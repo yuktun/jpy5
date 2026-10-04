@@ -10,8 +10,8 @@ const load = async (lesson, files) => {
   return context.window;
 };
 const expected = {
-  19: { vocab:176, sections:[43,56,77], grammar:["…を対象に…","ばかりでなく…も","にほかならない","を通して","にかけて","はともかく","ためには","決して…ない"], examples:36, reading:"ロボットコンテスト―ものづくりは人づくり―", dialogue:9, blanks:8 },
-  20: { vocab:149, sections:[36,52,61], grammar:["のもとで","そう","ぞ","と同時に","しかなかった","末","て以来","くらい","をこめて","ば…だけ","たとたんに","からといって"], examples:48, reading:"尺八で日本文化を理解", dialogue:18, blanks:7 }
+  19: { vocab:176, sections:[43,56,77], grammar:["…を対象に…","ばかりでなく…も","にほかならない","を通して","にかけて","はともかく","ためには","決して…ない"], examples:36, reading:"ロボットコンテスト―ものづくりは人づくり―", dialogue:9, blanks:8, blankAnswers:["まず、部長の挨拶から。どうぞ","一言お願いします","ありきたりの自己紹介ではなく","こちらから時計回りに","ちょっと自慢話になりますが","経験を","生かせたらいいなと思います","いわゆるボール拾いです"] },
+  20: { vocab:149, sections:[36,52,61], grammar:["のもとで","そう","ぞ","と同時に","しかなかった","末","て以来","くらい","をこめて","ば…だけ","たとたんに","からといって"], examples:48, reading:"尺八で日本文化を理解", dialogue:18, blanks:7, blankAnswers:["お忙しいところ、お時間をいただき、ありがとうございます","ご紹介させていただきたいと思って参りました","まず、伺いたいんですが","ああ、そうだったんですか","どんなに大変だったことかと思います","ご活躍を期待しています","今日は貴重なお時間と楽しいお話をありがとうございました"] }
 };
 
 for (const lesson of [19,20]) {
@@ -31,6 +31,8 @@ for (const lesson of [19,20]) {
   assert.equal(data.JPY5_DATA.questions.length,patterns.length*2); assert(data.JPY5_DATA.questions.every(q=>q.answer>=0&&q.answer<q.options.length));
   assert.equal(reading.title,e.reading); assert.equal(reading.paragraphs.length,5); assert(reading.paragraphs.every(p=>p.jp&&p.zh));
   assert.equal(conversation.dialogue.length,e.dialogue); assert.equal(conversation.unverifiedBlanks.length,e.blanks);
+  assert.deepEqual(JSON.parse(JSON.stringify(conversation.unverifiedBlanks.map(item=>item.answer))),e.blankAnswers);
+  assert(conversation.unverifiedBlanks.every((item,index)=>item.id===index+1&&item.status==="answerbook_verified_audio_timing_pending"&&item.answerStatus==="answerbook_verified"&&item.timingStatus==="audio_timing_pending"&&!Object.hasOwn(item,"start")&&!Object.hasOwn(item,"end")));
   assert.equal(conversation.items.length,0); assert.equal(conversation.comprehension.length,0);
   if (lesson === 19) {
     const separatedVerbForms=new Map([
@@ -67,6 +69,8 @@ for (const lesson of [19,20]) {
     assert.deepEqual(JSON.parse(JSON.stringify(conversation.sourceFollowUps.map(item=>item.id))),["warmup","repeat","say","practice","challenge"]);
     assert.deepEqual(JSON.parse(JSON.stringify(conversation.sourceFollowUps.map(item=>item.section.split(".")[0]))),["1","3","4","5","6"]);
     assert(conversation.sourceFollowUps.every(item=>item.content.length&&!Object.hasOwn(item,"answer")));
+    assert.equal(conversation.sourceFollowUps.find(item=>item.id==="repeat").answerStatus,"answerbook_verified");
+    assert.equal(conversation.sourceFollowUps.find(item=>item.id==="repeat").timingStatus,"audio_timing_pending");
     assert.deepEqual(JSON.parse(JSON.stringify(conversation.source.conversationPdfPages)),[5,6,7,8]);
     assert.deepEqual(JSON.parse(JSON.stringify(conversation.source.conversationPrintedPages)),[89,90,91,92]);
     assert.deepEqual(JSON.parse(JSON.stringify(reading.sourceActivities.map(item=>item.section.split(".")[0]))),["3","4","5"]);
@@ -108,6 +112,8 @@ for (const lesson of [19,20]) {
     assert(conversation.sourcePrompts.every(item=>item.answerStatus==="audio_confirmation_required"&&!Object.hasOwn(item,"answer")));
     assert(conversation.expressionExercises.every(item=>item.answerStatus==="audio_confirmation_required"&&!Object.hasOwn(item,"answer")));
     assert(conversation.sourceFollowUps.every(item=>item.content.length&&!Object.hasOwn(item,"answer")));
+    assert.equal(conversation.sourceFollowUps.find(item=>item.id==="repeat").answerStatus,"answerbook_verified");
+    assert.equal(conversation.sourceFollowUps.find(item=>item.id==="repeat").timingStatus,"audio_timing_pending");
     assert.deepEqual(JSON.parse(JSON.stringify(conversation.source.conversationPdfPages)),[5,6,7,8]);
     assert.deepEqual(JSON.parse(JSON.stringify(conversation.source.conversationPrintedPages)),[103,104,105,106]);
     assert(conversation.furigana&&Object.keys(conversation.furigana).length>0);
@@ -131,9 +137,11 @@ const lesson20Files=[
 ];
 for (const file of lesson20Files) assert(!/ワット|いずみ|第77頁/.test(await readFile(file,"utf8")),`${file} contains stale lesson content`);
 const lesson19Controller=await readFile("assets/ch19-conversation.js","utf8"),lesson19Textbook=await readFile("chapter-19-textbook.html","utf8");
+assert.doesNotMatch(lesson19Controller,/data-listen-target|currentTime\s*=/); assert.doesNotMatch(await readFile("assets/ch19-conversation-data.js","utf8"),/\b(?:start|end)\s*:/);
 assert(lesson19Controller.includes("data.sourcePrompts.length")); assert(lesson19Controller.includes("expressionPromptCount"));
 assert(!lesson19Textbook.includes("1個內容提示")); assert(lesson19Textbook.includes("印刷第 89–92 頁"));
 const lesson20Controller=await readFile("assets/ch20-conversation.js","utf8"),lesson20Textbook=await readFile("chapter-20-textbook.html","utf8");
+assert.doesNotMatch(lesson20Controller,/data-listen-target|currentTime\s*=/); assert.doesNotMatch(await readFile("assets/ch20-conversation-data.js","utf8"),/\b(?:start|end)\s*:/);
 assert(lesson20Controller.includes("data.sourcePrompts.length")); assert(lesson20Controller.includes("expressionPromptCount"));
 assert(lesson20Controller.includes("${activity.blankCount}")); assert(!lesson20Controller.includes("ruby(activity.instruction)"));
 assert(!lesson20Textbook.includes("1個內容提示")); assert(lesson20Textbook.includes("印刷第 103–106 頁"));

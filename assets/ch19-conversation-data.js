@@ -1,4 +1,4 @@
-window.JPY5_CONVERSATION={title:"ちょっと自慢話になりますが",setting:"大学演劇部 入部歓迎会",speakers:["山口","南","古田","マヨラン","松下","アンタ"],audio:"https://ttrw.jp/static/sound/sound202406141718354761.mp3",sourceStatus:"printed_dialogue_transcribed; answers_require_audio_confirmation",source:{conversationPdfPages:[5,6,7,8],conversationPrintedPages:[89,90,91,92],audioTrack:"MP3 1-21",activities:[1,2,3,4,5,6]},sourceNote:"話す・聞くの活動1〜6、会話本文、8個の番号付き空欄、4問の内容設問、5問の表現設問は『みんなの日本語 中級II』第19課PDF pp. 5–8（印刷pp. 89–92）から視覚的に転記した。空欄・聞き取り設問の解答鍵は印刷されていないため、解答・採点は収録していない。",items:[],dialogue:[
+window.JPY5_CONVERSATION={title:"ちょっと自慢話になりますが",setting:"大学演劇部 入部歓迎会",speakers:["山口","南","古田","マヨラン","松下","アンタ"],audio:"https://ttrw.jp/static/sound/sound202406141718354761.mp3",sourceStatus:"printed_dialogue_transcribed; blank_answers_answerbook_verified; audio_timing_pending",source:{conversationPdfPages:[5,6,7,8],conversationPrintedPages:[89,90,91,92],answerBookPdfPages:[9,10],audioTrack:"MP3 1-21",activities:[1,2,3,4,5,6]},sourceNote:"話す・聞くの活動1〜6、会話本文、8個の番号付き空欄、4問の内容設問、5問の表現設問は『みんなの日本語 中級II』第19課PDF pp. 5–8（印刷pp. 89–92）から視覚的に転記した。『3. もう一度聞こう』の8解答は公式解答冊 PDF 第9–10頁から入力済み。公式MP3との照合、採点、文単位タイムスタンプ、個別再生は未実装。",items:[],dialogue:[
 ["山口","司会の山口です。今日は皆さんのさくら大学演劇部への入部を歓迎してささやかな会を行いたいと思います。①＿＿＿＿＿＿＿＿。","",""],
 ["南","はい。部長の南です。皆さん、入学おめでとうございます。我が演劇部は代々全国大学演劇祭で優秀な成績を収めてきた歴史ある部です。その伝統と誇りをぜひ受け継いでもらいたいと思います。","",""],
 ["山口","では、次に、古田先輩、②＿＿＿＿＿＿＿＿。続いて、新入生にバトンを回しますので、心の準備をしておいてください。じゃ、古田さん。","",""],
@@ -8,7 +8,16 @@ window.JPY5_CONVERSATION={title:"ちょっと自慢話になりますが",settin
 ["松下","経済学部の松下です。僕は小学校から高校まで野球部にいました。でも万年補欠、一度もレギュラーになったことがありません。⑧＿＿＿＿＿＿＿＿。華やかな世界を支える下積みの人間の心の痛みを知っているつもりです。よろしくお願いします。","",""],
 ["アンタ","医学部のアンタです。私は高校で落語のサークルに入っていました。得意の小噺をひとつ聞いてください。「先生、私、手術初めてなんです。大丈夫でしょうか」「大丈夫ですよ。私も初めてですから」。できれば喜劇のほうをやりたいんですけど、大丈夫でしょうか。","",""],
 ["山口","ユニークなキャラクターが揃ったようで、我が演劇部の伝統も無事引き継がれていきそうです。では、あしたからの練習、気を引き締めてやっていきましょう。","",""]],
-unverifiedBlanks:Array.from({length:8},(_,i)=>({id:i+1,speaker:"",context:`印刷會話中的第${i+1}空欄`,source:"printed_blank",status:"audio_confirmation_required"})),
+unverifiedBlanks:[
+  {id:1,speaker:"山口",context:"会を行いたいと思います。＿＿。",answer:"まず、部長の挨拶から。どうぞ",source:"printed_blank_and_official_answer_book",status:"answerbook_verified_audio_timing_pending",answerStatus:"answerbook_verified",timingStatus:"audio_timing_pending"},
+  {id:2,speaker:"山口",context:"では、次に、古田先輩、＿＿。",answer:"一言お願いします",source:"printed_blank_and_official_answer_book",status:"answerbook_verified_audio_timing_pending",answerStatus:"answerbook_verified",timingStatus:"audio_timing_pending"},
+  {id:3,speaker:"山口",context:"新入生に登場願いますが、＿＿、何か自分をアピールするようなことを話してください。",answer:"ありきたりの自己紹介ではなく",source:"printed_blank_and_official_answer_book",status:"answerbook_verified_audio_timing_pending",answerStatus:"answerbook_verified",timingStatus:"audio_timing_pending"},
+  {id:4,speaker:"山口",context:"イメージできるようにお願いします。＿＿。マヨラン君。",answer:"こちらから時計回りに",source:"printed_blank_and_official_answer_book",status:"answerbook_verified_audio_timing_pending",answerStatus:"answerbook_verified",timingStatus:"audio_timing_pending"},
+  {id:5,speaker:"マヨラン",context:"工学部のマヨランです。＿＿、僕は高専時代に……",answer:"ちょっと自慢話になりますが",source:"printed_blank_and_official_answer_book",status:"answerbook_verified_audio_timing_pending",answerStatus:"answerbook_verified",timingStatus:"audio_timing_pending"},
+  {id:6,speaker:"マヨラン",context:"ロボット作りの＿＿舞台装置作りに……",answer:"経験を",source:"printed_blank_and_official_answer_book",status:"answerbook_verified_audio_timing_pending",answerStatus:"answerbook_verified",timingStatus:"audio_timing_pending"},
+  {id:7,speaker:"マヨラン",context:"舞台装置作りに＿＿。",answer:"生かせたらいいなと思います",source:"printed_blank_and_official_answer_book",status:"answerbook_verified_audio_timing_pending",answerStatus:"answerbook_verified",timingStatus:"audio_timing_pending"},
+  {id:8,speaker:"松下",context:"一度もレギュラーになったことがありません。＿＿。",answer:"いわゆるボール拾いです",source:"printed_blank_and_official_answer_book",status:"answerbook_verified_audio_timing_pending",answerStatus:"answerbook_verified",timingStatus:"audio_timing_pending"}
+],
 sourcePrompts:[
   {id:"listen-1",section:"2. 聞いてみよう 1) 内容を聞き取りましょう",jp:"今日は何の会が行われますか。",answerStatus:"audio_confirmation_required"},
   {id:"listen-2",section:"2. 聞いてみよう 1) 内容を聞き取りましょう",jp:"それは何の部ですか。",answerStatus:"audio_confirmation_required"},
@@ -26,7 +35,7 @@ expressionExercises:[
 ],
 sourceFollowUps:[
   {id:"warmup",section:"1. やってみよう",content:["料理教室に入会しました。自己紹介をするように言われました。自分をアピールするような話をしてください。"],answerStatus:"open_ended_not_scored"},
-  {id:"repeat",section:"3. もう一度聞こう",content:["＿＿＿の部分に言葉を書いてください。"],blankCount:8,answerStatus:"audio_confirmation_required"},
+  {id:"repeat",section:"3. もう一度聞こう",content:["＿＿＿の部分に言葉を書いてください。"],blankCount:8,answerStatus:"answerbook_verified",timingStatus:"audio_timing_pending"},
   {id:"say",section:"4. 言ってみよう",content:["絵を見ながら発音やイントネーションに注意し、MP3のとおりに言ってみましょう。"],imagePrompts:4,imagePromptPrintedPage:91,answerStatus:"not_scored"},
   {id:"practice",section:"5. 練習しよう",content:[
     "1）人に自慢できる経験を披露し、自分をアピールします。",

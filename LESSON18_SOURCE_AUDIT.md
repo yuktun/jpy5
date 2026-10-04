@@ -63,9 +63,10 @@ not turn that observation into an absolute restriction.
 - Conversation: `あなたこそ、あの本の山はいったい何なの！`.
   The existing visually transcribed dataset contains 20 dialogue lines,
   13 printed numbered blanks, five content prompts, one expression group, and
-  follow-up activities 3–6. All blank answers and audio-dependent prompt answers
-  remain unverified (`audio_confirmation_required`). No answers, automatic
-  scoring, mastery, or sentence timestamps are authorized by this evidence.
+  follow-up activities 3–6. The 13 blank answers are now transcribed from the
+  official answer book PDF pp. 5–6 and marked `answerbook_verified`; content and
+  expression answers remain `audio_confirmation_required`. No automatic scoring,
+  mastery, sentence timestamps, or individual replay is authorized yet.
 - The inspected textbook has no machine-readable evidence of sentence timestamps.
 
 ## Verified audio references
@@ -176,10 +177,11 @@ flashcards, quizzes and history without modifying shared grammar code.
 ### Listening and source speaking activities
 
 - All 20 existing dialogue lines are unchanged; regression checks protect them
-  against the same reference commit. All 13 blanks remain
-  `audio_confirmation_required`. **No blank answers were invented**, including in
-  hidden JS, answer buttons or accessibility content. `items` and `comprehension`
-  remain empty. No automatic scoring, mastery or sentence timestamps exist.
+  against the same reference commit. All 13 blanks retain their textbook number,
+  speaker and context. Their official answer-book text is stored with
+  `answerbook_verified` and `audio_timing_pending`; it is not displayed or scored.
+  `items` and `comprehension` remain empty. No sentence timestamps or replay
+  controls were introduced.
 - Five source content prompts and one expression group (five situations) remain
   unverified and unscored. The full official Track 1–18 is available, but an
   accessible/decodable audio file is not answer verification.

@@ -23,11 +23,11 @@ document.addEventListener("DOMContentLoaded",()=>{
     let last=0,output="";const pattern=/([①②③④⑤⑥⑦⑧⑨])＿+/g;
     for(const match of String(text).matchAll(pattern)){
       output+=ruby(String(text).slice(last,match.index));const id="①②③④⑤⑥⑦⑧⑨".indexOf(match[1])+1,target=data.listeningTargets.find(item=>item.id===id);
-      output+=`${match[1]}<mark class="verified-answer" data-answer-span="${id}">${ruby(target.answer)}</mark><button class="listen-button compact-listen" type="button" data-listen-target="${id}">▶ 播放這句</button>`;last=match.index+match[0].length;
+      output+=`${match[1]}<mark class="verified-answer" data-answer-span="${id}">${ruby(target.answer)}</mark>`;last=match.index+match[0].length;
     }
     return output+ruby(String(text).slice(last));
   }
-  function dialogue(){return heading("完整會話",data.title,"29 句 · 9 個已核實表現")+`<div class="verified-notice"><strong>課本解答＋官方音訊核實</strong><p>綠色標記只涵蓋原空欄的答案表現；每段可獨立重播。</p></div><div class="dialogue-list">${data.dialogue.map(([speaker,text])=>`<article class="dialogue-row"><b>${ruby(speaker)}</b><p>${targetMarkup(text)}</p></article>`).join("")}</div>`}
+  function dialogue(){return heading("完整會話",data.title,"29 句 · 9 個已核實表現")+`<div class="verified-notice"><strong>課本解答＋官方音訊核實</strong><p>綠色標記只涵蓋原空欄的答案表現；每段可獨立重播。</p></div><div class="dialogue-list">${data.dialogue.map(([speaker,text])=>{const match=text.match(/([①②③④⑤⑥⑦⑧⑨])＿+/),id=match?"①②③④⑤⑥⑦⑧⑨".indexOf(match[1])+1:null;return `<article class="dialogue-row"><b>${ruby(speaker)}</b><p>${targetMarkup(text)}</p>${id?`<button class="listen-button" type="button" data-listen-target="${id}">▶ 播放這句</button>`:""}</article>`}).join("")}</div>`}
   function answerToggle(id,label="課本官方答案 / 課本解答"){return `<button class="secondary-button" type="button" data-answer-toggle="${id}" aria-expanded="false">答案を見る / 顯示答案</button><div class="reference-answer" data-answer-panel="${id}" hidden><b>${esc(label)}</b>`}
   function comprehensionCard(item,noteType,noteKey){const attr=noteType==="prompt"?"data-prompt-note":"data-expression-note",notes=noteType==="prompt"?state.promptNotes:state.expressionNotes;return `<article class="textbook-answer-card"><span>${esc(item.number)}</span><h3>${ruby(item.jp||item.q)}</h3><label>自己的聆聽筆記<textarea rows="3" ${attr}="${esc(noteKey)}">${esc(notes[noteKey]||"")}</textarea></label>${answerToggle(item.id)}<p>${ruby(item.answer)}</p></div></article>`}
   function comprehension(){

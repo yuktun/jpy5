@@ -75,7 +75,9 @@ now labelled separately in the UI.
 - Reading keeps the six implemented source paragraphs aligned across original
   and translation views. The 13 multiple-choice questions, explanations and
   five find-the-paragraph prompts are app-authored, source-grounded practice.
-- Listening retains all nine blanks, four content prompts and two expression
-  exercise groups as `audio_confirmation_required`. No answer key or sentence
-  timestamps have been inferred. Automatic scoring and mastery claims remain
-  disabled; only learner notes and playback counts are saved.
+- Listening retains all nine printed blanks, four content prompts and two
+  expression groups. The nine fixed answers were checked against the official
+  answer book and MP3; the complete conversation exposes exact answer spans and
+  independently audited replay intervals. Learner notes, drafts, replay progress,
+  furigana preference and playback count remain persisted. Open speaking tasks
+  are unscored, and app-authored model answers are labelled separately.

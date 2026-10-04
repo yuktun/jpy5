@@ -35,15 +35,15 @@ window.JPY5_CONVERSATION={
     ["優太","うん！"]
   ],
   listeningTargets:[
-    {id:1,speaker:"サントス",answer:"ご無沙汰しています",context:"こんにちは。＿＿。",start:12.56,end:13.58,variants:["ごぶさたしています"]},
-    {id:2,speaker:"サントス",answer:"お口に合うかどうか分かりませんが",context:"あの、これ、＿＿、皆さんでどうぞ。",start:20.10,end:22.78,variants:["お口に合うかどうかわかりませんが"]},
-    {id:3,speaker:"サントス",answer:"お休みのところ",context:"今日は＿＿、お邪魔してすみません。",start:34.30,end:36.20},
-    {id:4,speaker:"ミランダ",answer:"何のおかまいもできません",context:"いいえ。＿＿が、どうぞごゆっくりなさってください。",start:39.80,end:40.84,variants:["何のお構いもできません"]},
-    {id:5,speaker:"池田",answer:"お父さんのお友達",context:"＿＿のサントスさんだよ。",start:45.50,end:46.08},
-    {id:6,speaker:"サントス",answer:"お兄ちゃん",context:"もう＿＿だね。",start:55.58,end:56.33},
-    {id:7,speaker:"優太",answer:"あのね",context:"＿＿、あした豆まきするんだ。",start:108.55,end:109.28},
-    {id:8,speaker:"サントス",answer:"お父さんが鬼なの",context:"へえ、＿＿。",start:113.58,end:114.43},
-    {id:9,speaker:"サントス",answer:"おじさん",context:"＿＿も子どものとき、ユースに入ってたんだよ。",start:128.72,end:129.50}
+    {id:1,speaker:"サントス",answer:"ご無沙汰しています",context:"こんにちは。＿＿。",start:12.30,end:13.42,variants:["ごぶさたしています"]},
+    {id:2,speaker:"サントス",answer:"お口に合うかどうか分かりませんが",context:"あの、これ、＿＿、皆さんでどうぞ。",start:17.40,end:19.60,variants:["お口に合うかどうかわかりませんが"]},
+    {id:3,speaker:"サントス",answer:"お休みのところ",context:"今日は＿＿、お邪魔してすみません。",start:31.02,end:31.90},
+    {id:4,speaker:"ミランダ",answer:"何のおかまいもできません",context:"いいえ。＿＿が、どうぞごゆっくりなさってください。",start:34.18,end:35.78,variants:["何のお構いもできません"]},
+    {id:5,speaker:"池田",answer:"お父さんのお友達",context:"＿＿のサントスさんだよ。",start:43.68,end:45.05},
+    {id:6,speaker:"サントス",answer:"お兄ちゃん",context:"もう＿＿だね。",start:55.46,end:56.02},
+    {id:7,speaker:"優太",answer:"あのね",context:"＿＿、あした豆まきするんだ。",start:108.38,end:109.08},
+    {id:8,speaker:"サントス",answer:"お父さんが鬼なの",context:"へえ、＿＿。",start:114.18,end:116.17},
+    {id:9,speaker:"サントス",answer:"おじさん",context:"＿＿も子どものとき、ユースに入ってたんだよ。",start:131.54,end:132.16}
   ],
   sourcePrompts:[
     {id:"listen-1",number:"①",section:"内容を聞き取りましょう",jp:"優太君はサントスさんに何を見せましたか。",answer:"節分の鬼のお面"},
