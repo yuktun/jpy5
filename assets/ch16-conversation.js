@@ -2,21 +2,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const data = window.JPY5_CONVERSATION;
   const stage = document.querySelector("#conversation-stage");
   const audio = document.querySelector("#lesson-audio");
-  const fresh = () => ({mode:"dialogue", card:0, flipped:false, furigana:true, attempts:0, marks:{}, mistakes:{}, stars:{}, comprehensionAnswers:{}, comprehensionMistakes:{}});
-  let state = {...fresh(), ...JPY5.read("conversation", {})};
+  const fresh = () => ({itemSetVersion:2, mode:"dialogue", card:0, flipped:false, furigana:true, attempts:0, marks:{}, mistakes:{}, stars:{}, comprehensionAnswers:{}, comprehensionMistakes:{}, drafts:{}});
+  const rawState=JPY5.read("conversation", {});
+  const remapLegacyRecord=record=>Object.fromEntries(Object.entries(record||{}).filter(([key])=>Number(key)>=1&&Number(key)<=8).map(([key,value])=>[String(Number(key)+2),value]));
+  const migratedState=rawState.itemSetVersion===2?rawState:{...rawState,itemSetVersion:2,card:Number.isFinite(rawState.card)?(rawState.card+2)%10:0,marks:remapLegacyRecord(rawState.marks),mistakes:remapLegacyRecord(rawState.mistakes),stars:remapLegacyRecord(rawState.stars)};
+  let state = {...fresh(), ...migratedState};
+  if(rawState.itemSetVersion!==2)JPY5.write("conversation",state);
   let current = 0;
   let built = [];
   let orderPool = [];
-  let detailScrollY = 0, detailReturnFocus = null;
+  let detailScrollY = 0, detailReturnFocus = null, activeAudioStop = null, audioPlayToken = 0;
   const lockDetailBackground = () => { detailScrollY = window.scrollY; document.body.classList.add("grammar-extra-open"); document.body.style.top = "-" + detailScrollY + "px"; };
   const unlockDetailBackground = () => { const root=document.documentElement, previous=root.style.scrollBehavior; root.style.scrollBehavior="auto"; document.body.classList.remove("grammar-extra-open"); document.body.style.top=""; window.scrollTo({left:0,top:detailScrollY,behavior:"auto"}); requestAnimationFrame(()=>{root.style.scrollBehavior=previous;}); };
 
   const item = id => data.items.find(x => x.id === Number(id));
   const esc = value => String(value).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
   const kanjiRun=/[\u3400-\u9fff々〆ヶ]/;
-  function ruby(text){if(!state.furigana)return esc(text);const map=new Map(Object.entries(data.furigana||{})),words=[...map.keys()].sort((a,b)=>b.length-a.length),pattern=new RegExp(words.map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|"),"g");let out="",last=0;for(const match of String(text).matchAll(pattern)){out+=esc(String(text).slice(last,match.index));const word=match[0],s=data.furiganaSegments?.[word];out+=s?s.map(([b,k])=>k===undefined?esc(b):`<ruby>${esc(b)}<rt>${esc(k)}</rt></ruby>`).join(""):`<ruby>${esc(word)}<rt>${esc(map.get(word))}</rt></ruby>`;last=match.index+word.length}return out+esc(String(text).slice(last))}
+  function segmentedRuby(word,reading){const explicit=data.furiganaSegments?.[word];if(explicit)return explicit.map(([base,kana])=>kana===undefined?esc(base):`<ruby>${esc(base)}<rt>${esc(kana)}</rt></ruby>`).join("");if(!kanjiRun.test(word))return esc(word);const parts=word.match(/[\u3400-\u9fff々〆ヶ]+|[^\u3400-\u9fff々〆ヶ]+/g)||[word];if(parts.length===1)return `<ruby>${esc(word)}<rt>${esc(reading)}</rt></ruby>`;let r=reading;return parts.map((p,i)=>{if(!kanjiRun.test(p)){if(r.startsWith(p))r=r.slice(p.length);return esc(p)}const n=parts.slice(i+1).find(x=>!kanjiRun.test(x)),l=n?Math.max(0,r.indexOf(n)):r.length,k=r.slice(0,l);r=r.slice(l);return `<ruby>${esc(p)}<rt>${esc(k)}</rt></ruby>`}).join("")}
+  function ruby(text){if(!state.furigana)return esc(text);const map=new Map(Object.entries(data.furigana||{})),words=[...map.keys()].sort((a,b)=>b.length-a.length),pattern=new RegExp(words.map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|"),"g");let out="",last=0;for(const match of String(text).matchAll(pattern)){out+=esc(String(text).slice(last,match.index));out+=segmentedRuby(match[0],map.get(match[0]));last=match.index+match[0].length}return out+esc(String(text).slice(last))}
   function embeddedRuby(text){let out=esc(text);for(const phrase of data.embeddedJapanese||[])out=out.split(esc(phrase)).join(ruby(phrase));return out}
   const rubyIfJapanese=text=>/[ぁ-ゖァ-ヺ]/.test(String(text))?ruby(text):esc(text);
+  const multiline=text=>ruby(text).replace(/\n/g,"<br>");
   const clean = value => value.replace(/[\s、。！？?「」『』,.，．]/g, "").trim();
   const save = () => { JPY5.write("conversation", state); updateSummary(); };
   function updateSummary() {
@@ -32,10 +38,12 @@ document.addEventListener("DOMContentLoaded", () => {
   function play(id) {
     const x = item(id); if (!x) return;
     if (!Number.isFinite(x.start) || !Number.isFinite(x.end) || x.end <= x.start) return;
+    if(activeAudioStop)audio.removeEventListener("timeupdate",activeAudioStop);
+    const token=++audioPlayToken;
     audio.currentTime = x.start;
     audio.play().catch(() => {});
-    const stop = () => { if (audio.currentTime >= x.end) { audio.pause(); audio.removeEventListener("timeupdate", stop); } };
-    audio.addEventListener("timeupdate", stop);
+    const stop = () => { if(token!==audioPlayToken)return;if(audio.currentTime>=x.end){audio.pause();audio.removeEventListener("timeupdate",stop);if(activeAudioStop===stop)activeAudioStop=null;} };
+    activeAudioStop=stop; audio.addEventListener("timeupdate",stop);
   }
   function setMode(mode) {
     state.mode = mode; state.flipped = false; current = 0; built = []; orderPool = []; save();
@@ -51,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function showFocusDetail(id) {
     const x=item(id), dialog=document.querySelector("#focus-detail-dialog"); if(!x||!dialog)return;
-    dialog.querySelector("#focus-detail-number").textContent=`底線句 0${x.id}`;
+    dialog.querySelector("#focus-detail-number").textContent=`底線句 ${String(x.id).padStart(2,"0")}`;
     dialog.querySelector("#focus-detail-title").innerHTML=ruby(x.jp);
     dialog.querySelector("#focus-detail-kana").textContent=x.kana;
     dialog.querySelector("#focus-detail-meaning").textContent=x.zh;
@@ -79,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
   function renderFocus() {
-    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">重點句子</p><h2>八個聆聽目標</h2></div><span>八句均已按官方音訊核對；請配合完整音訊練習</span></div><div class="focus-grid">${data.items.map(x => `<article class="focus-card"><div class="focus-number">0${x.id}</div><button class="star-button ${state.stars[x.id]?'active':''}" data-star="${x.id}" aria-label="收藏句子">${state.stars[x.id]?'★':'☆'}</button><h3>${esc(x.jp)}</h3><p class="focus-meaning">${esc(x.zh)}</p><p>${esc(x.use)}</p>${listenButton(x.id)}</article>`).join("")}</div>`;
+    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">重點句子</p><h2>十個聆聽目標</h2></div><span>已按官方 MP3 核實句段</span></div><div class="focus-grid">${data.items.map(x => `<article class="focus-card"><div class="focus-number">${String(x.id).padStart(2,"0")}</div><button class="star-button ${state.stars[x.id]?'active':''}" data-star="${x.id}" aria-label="收藏句子">${state.stars[x.id]?'★':'☆'}</button><h3>${ruby(x.jp)}</h3><p class="focus-meaning">${esc(x.zh)}</p><p>${esc(x.use)}</p>${listenButton(x.id)}</article>`).join("")}</div>`;
   }
   function renderCards() {
     const x = data.items[state.card % data.items.length];
@@ -100,16 +108,32 @@ document.addEventListener("DOMContentLoaded", () => {
     stage.querySelector(".next-practice").onclick = () => { current = (current + 1) % data.items.length; render(); };
   }
   function renderComprehension() {
-    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">理解練習</p><h2>內容與表現理解</h2></div><span>${data.comprehension.length} 題</span></div><div class="reading-question-list">${data.comprehension.map((q,index) => {
+    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">理解練習</p><h2>內容與表現理解</h2></div><span>${data.comprehension.length} 題自訂練習 ＋ ${data.textbookQuestions.length} 題課本原題</span></div><div class="reading-question-list">${data.comprehension.map((q,index) => {
       const selected=state.comprehensionAnswers[q.id], answered=selected!==undefined;
       return `<article class="reading-question" data-comprehension="${q.id}"><span>${q.kind} · ${String(index+1).padStart(2,"0")}</span><h3>${embeddedRuby(q.q)}</h3><div>${q.options.map((option,i)=>`<button data-comprehension-answer="${i}" ${answered?"disabled":""} class="${answered&&i===q.answer?"correct":answered&&i===selected&&i!==q.answer?"wrong":""}">${rubyIfJapanese(option)}</button>`).join("")}</div><p class="reading-feedback">${answered?`${selected===q.answer?"答對。":"未正確。"}${embeddedRuby(q.why)}`:""}</p></article>`;
-    }).join("")}</div>`;
+    }).join("")}</div><section class="textbook-listen-section"><div class="section-divider"><p class="kicker">課本原題 · 2. 聞いてみよう</p><h2>課本內容・表現問題</h2><p>自由作答，不自動評分；需要時再查看官方答案。</p></div><div class="textbook-answer-grid">${data.textbookQuestions.map(q=>`<article class="textbook-answer-card"><span>${ruby(q.group)} · ${q.number}</span><h3>${ruby(q.q)}</h3><label>你的答案<textarea rows="4" data-draft="${q.id}" lang="ja" placeholder="ここに入力してください">${esc(state.drafts?.[q.id]||"")}</textarea></label><button class="secondary-button" type="button" data-reference-toggle="${q.id}" data-closed-label="答案を見る / 顯示答案">答案を見る / 顯示答案</button><div class="reference-answer" data-reference="${q.id}" hidden><b>官方答案 / 課本解答</b><p>${ruby(q.answer)}</p><small>${esc(q.explain)}</small></div></article>`).join("")}</div></section>`;
     stage.querySelectorAll("[data-comprehension-answer]").forEach(button => button.onclick = () => {
       const card=button.closest("[data-comprehension]"), q=data.comprehension.find(entry=>entry.id===card.dataset.comprehension), selected=Number(button.dataset.comprehensionAnswer), ok=selected===q.answer;
       state.comprehensionAnswers[q.id]=selected; state.attempts+=1;
       if(ok) delete state.comprehensionMistakes[q.id]; else state.comprehensionMistakes[q.id]=(state.comprehensionMistakes[q.id]||0)+1;
       save(); render();
     });
+    bindDraftsAndReferences();
+  }
+
+  function bindDraftsAndReferences(){
+    stage.querySelectorAll("[data-draft]").forEach(field=>field.addEventListener("input",()=>{state.drafts||={};state.drafts[field.dataset.draft]=field.value;save();}));
+    stage.querySelectorAll("[data-reference-toggle]").forEach(button=>button.onclick=()=>{const answer=stage.querySelector(`[data-reference="${button.dataset.referenceToggle}"]`),opening=answer.hidden;answer.hidden=!opening;button.textContent=opening?(button.dataset.closedLabel.startsWith("答案")?"答案を隠す / 隱藏答案":"參考回答例を隠す"):button.dataset.closedLabel;});
+  }
+
+  function renderActivityTask(task){return `<article class="textbook-task-card"><p class="textbook-prompt">${multiline(task.prompt)}</p><label>你的準備稿<textarea rows="6" data-draft="${task.id}" lang="ja" placeholder="ここに入力してください">${esc(state.drafts?.[task.id]||"")}</textarea></label><button class="secondary-button" type="button" data-reference-toggle="${task.id}" data-closed-label="參考回答例を見る">參考回答例を見る</button><div class="reference-answer" data-reference="${task.id}" hidden><b>${esc(task.modelLabel)}</b><p>${multiline(task.model)}</p></div></article>`;}
+
+  function renderActivities(){
+    const groups=["1. やってみよう","4. 言ってみよう","5. 練習しよう","6. チャレンジしよう"];
+    stage.innerHTML=`<div class="stage-heading"><div><p class="kicker">課本活動</p><h2>話して、聞いて、練習しよう</h2></div><span>自由作答 · 不自動評分</span></div><div class="textbook-activity-list">${groups.map(section=>{const entries=data.textbookActivities.filter(entry=>entry.section===section);return `<section class="textbook-activity-card"><header><span>課本原題</span><h2>${ruby(section)}</h2></header>${entries.map(entry=>{if(entry.kind==="pronunciation")return `<div class="activity-group pronunciation-activity"><p class="textbook-prompt">${ruby(entry.prompt)}</p><div class="pronunciation-number-grid">${["①","②","③","④"].map(number=>`<article><strong>${number}</strong><span>課本の絵を見ながら、MP3のとおりに言ってみましょう。</span></article>`).join("")}</div><div class="practice-actions"><button class="listen-button" type="button" data-play-main>▶ 主音訊を再生</button><a class="secondary-button" data-ch16-textbook href="#" target="_blank" rel="noopener">原課本を見る ↗</a></div><small>發音及語調練習不會自動評分。</small></div>`;if(entry.tasks)return `<div class="activity-group"><h3>${ruby(entry.exercise)}</h3><p>${ruby(entry.instruction)}</p>${entry.tasks.map(renderActivityTask).join("")}</div>`;return renderActivityTask(entry);}).join("")}</section>`;}).join("")}</div>`;
+    bindDraftsAndReferences();
+    stage.querySelector("[data-play-main]")?.addEventListener("click",()=>{audioPlayToken++;if(activeAudioStop)audio.removeEventListener("timeupdate",activeAudioStop);activeAudioStop=null;audio.currentTime=0;audio.play().catch(()=>{});});
+    if(window.JPY5?.sources?.textbook)stage.querySelectorAll("[data-ch16-textbook]").forEach(link=>link.href=window.JPY5.sources.textbook);
   }
   function renderOrder() {
     const x = data.items[current % data.items.length];
@@ -125,13 +149,13 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
   function renderCloze() {
-    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">會話填寫</p><h2>一口氣填回八個目標</h2></div><span>${data.items.length} 個編號位置</span></div><article class="practice-panel"><div class="cloze-intro"><button class="listen-button" id="play-full" type="button">▶ 由開頭播放全段</button><p>先聽完整會話，再在編號位置輸入答案。標點及空格不影響評分。</p></div><div class="dialogue-list cloze-list">${data.dialogue.map(row => {
+    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">課本 3. もう一度聞こう</p><h2>一口氣填回十個目標</h2></div><span>${data.items.length} 個編號位置</span></div><article class="practice-panel"><div class="cloze-intro"><button class="listen-button" id="play-full" type="button">▶ 由開頭播放全段</button><p>先聽完整會話，再在編號位置輸入答案。標點及空格不影響評分。</p></div><div class="dialogue-list cloze-list">${data.dialogue.map(row => {
       const [speaker,before,id,after] = row;
       const blank = id ? `<label class="cloze-blank"><span>底線 ${id}</span><input data-cloze="${id}" lang="ja" autocomplete="off" placeholder="輸入聽到的句子"></label>` : "";
       return `<article class="dialogue-row"><b>${ruby(speaker)}</b><p>${ruby(before)}${blank}${ruby(after || "")}</p></article>`;
-    }).join("")}</div><div class="practice-actions"><button class="text-button" id="reveal-cloze">顯示答案</button><button class="primary-button" id="check-cloze">檢查八項</button></div><p class="answer-message"></p></article>`;
-    stage.querySelector("#play-full").onclick = () => { audio.currentTime=0; audio.play().catch(()=>{}); };
-    stage.querySelector("#reveal-cloze").onclick = () => data.items.forEach(x => { const input=stage.querySelector(`[data-cloze="${x.id}"]`);input.value=x.jp;let output=input.nextElementSibling;if(!output?.matches(".cloze-ruby-answer")){output=document.createElement("output");output.className="cloze-ruby-answer";input.after(output)}output.innerHTML=ruby(x.jp); });
+    }).join("")}</div><div class="practice-actions"><button class="text-button" id="reveal-cloze">官方答案を見る</button><button class="primary-button" id="check-cloze">檢查十項</button></div><div class="reference-answer cloze-official-answers" id="cloze-official-answers" hidden><b>官方答案 / 課本解答</b><ol>${data.items.map(x=>`<li>${ruby(x.jp)}</li>`).join("")}</ol></div><p class="answer-message"></p></article>`;
+    stage.querySelector("#play-full").onclick = () => { audioPlayToken++;if(activeAudioStop)audio.removeEventListener("timeupdate",activeAudioStop);activeAudioStop=null;audio.currentTime=0;audio.play().catch(()=>{}); };
+    stage.querySelector("#reveal-cloze").onclick = event => {const answers=stage.querySelector("#cloze-official-answers"),opening=answers.hidden;answers.hidden=!opening;event.currentTarget.textContent=opening?"官方答案を隠す":"官方答案を見る";};
     stage.querySelector("#check-cloze").onclick = () => {
       let score=0;
       data.items.forEach(x => { const input=stage.querySelector(`[data-cloze="${x.id}"]`); const ok=clean(input.value)===clean(x.jp); input.classList.toggle("correct",ok); input.classList.toggle("wrong",!ok); record(x.id,ok); if(ok)score++; });
@@ -158,7 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
     stage.querySelectorAll("[data-mastered-comprehension]").forEach(b => b.onclick = () => { delete state.comprehensionMistakes[b.dataset.masteredComprehension]; save(); render(); });
   }
   function render() {
-    const renderers = {dialogue:renderDialogue,comprehension:renderComprehension,focus:renderFocus,cards:renderCards,choice:renderChoice,order:renderOrder,cloze:renderCloze,dictation:renderDictation,mistakes:renderMistakes};
+    const renderers = {dialogue:renderDialogue,comprehension:renderComprehension,activities:renderActivities,focus:renderFocus,cards:renderCards,choice:renderChoice,order:renderOrder,cloze:renderCloze,dictation:renderDictation,mistakes:renderMistakes};
     (renderers[state.mode] || renderDialogue)();
     stage.querySelectorAll('.focus-card h3,.conversation-options button,.sentence-build button,.word-bank button,.card-answer-label + strong,.mistake-list h3').forEach(node=>node.innerHTML=ruby(node.textContent));
     stage.querySelectorAll("[data-focus-line]").forEach(b => b.onclick = () => showFocusDetail(b.dataset.focusLine));
