@@ -16,10 +16,26 @@ const go=async file=>{await page.goto(`${base}/${file}`);await page.waitForLoadS
 const state=key=>page.evaluate(key=>JSON.parse(localStorage.getItem('jpy5.chapter18.'+key)),key);
 const setState=(key,value)=>page.evaluate(({key,value})=>localStorage.setItem('jpy5.chapter18.'+key,JSON.stringify(value)),{key,value});
 const mode=m=>page.locator(`[data-reading-mode="${m}"]`).click();
+const visibleText=locator=>locator.evaluate(node=>{const copy=node.cloneNode(true);copy.querySelectorAll('rt').forEach(rt=>rt.remove());return copy.textContent});
 try{
   await go('chapter-18-reading.html');
   await page.evaluate(()=>localStorage.setItem('jpy5.chapter17.reading',JSON.stringify({sentinel:'unchanged'})));
-  await mode('source');await page.locator('[data-source-note="source-1"]').fill('教材原題の下書き');
+  await setState('reading',{mode:'source',sourceNotes:{'source-1':'舊教材草稿'},sourceResponses:{},textbookDrafts:{},answered:{},wrong:[],examAnswers:{},attempts:[],questionResults:{},vocabIndex:0,vocabFlipped:false,font:1,furigana:true});await page.reload();
+  assert.equal(await page.locator('[data-reading-mode="questions"]').evaluate(button=>button.classList.contains('active')),true,'old source mode did not migrate to Reading questions');
+  assert.deepEqual(await page.locator('.ch14-textbook-section>header h2').evaluateAll(nodes=>nodes.map(node=>{const copy=node.cloneNode(true);copy.querySelectorAll('rt').forEach(rt=>rt.remove());return copy.textContent.trim()})),['1. 考えてみよう','3. 確かめよう','4. 考えよう・話そう','5. チャレンジしよう']);
+  assert.equal(await page.locator('.ch14-official-answer:not([hidden])').count(),0);assert.equal(await page.locator('.ch14-model-answer:not([hidden])').count(),0);
+  assert.equal(await page.locator('[data-official-toggle]').first().innerText(),'課本官方答案 / 課本解答');
+  assert.equal(await page.locator('[data-source-note="source-1"]').inputValue(),'舊教材草稿');await page.locator('[data-source-note="source-1"]').fill('教材原題の下書き');
+  await page.locator('[data-source-class="source-4"][data-source-index="0"][data-source-value="A"]').click();
+  await page.locator('[data-source-choice="source-5"][value="0"]').check();
+  await page.locator('[data-textbook-draft="think-collecting"]').fill('切手を集めています。');await page.locator('[data-textbook-draft="challenge-scenario"]').fill('僕：これ？');
+  await page.locator('[data-official-toggle="source-1"]').click();assert.match(await visibleText(page.locator('[data-official-answer="source-1"]')),/古い鉛筆削りと新しい鉛筆削り/);assert.equal(await page.locator('[data-source-note="source-1"]').inputValue(),'教材原題の下書き');
+  await page.locator('[data-official-toggle="source-4"]').click();assert.match(await visibleText(page.locator('[data-official-answer="source-4"]')),/① A.*② A.*③ B.*④ B.*⑤ B.*⑥ A.*⑦ B.*⑧ B/s);
+  await page.locator('[data-official-toggle="source-5"]').click();assert.match(await visibleText(page.locator('[data-official-answer="source-5"]')),/b\. 彼にとっては価値を感じるものだったから/);assert(await page.locator('[data-source-choice="source-5"][value="0"]').isChecked(),'reveal overwrote learner selection');
+  await page.locator('[data-model-toggle="think-collecting"]').click();assert.match(await page.locator('[data-model-answer="think-collecting"]').innerText(),/參考回答例（非課本官方答案）/);
+  await page.locator('#furigana-toggle').click();assert.equal(await page.locator('[data-textbook-draft="think-collecting"]').inputValue(),'切手を集めています。');assert(await page.locator('[data-source-class="source-4"][data-source-index="0"][data-source-value="A"]').evaluate(button=>button.classList.contains('selected')));assert(await page.locator('[data-source-choice="source-5"][value="0"]').isChecked());
+  await mode('practice');await mode('questions');assert.equal(await page.locator('[data-textbook-draft="challenge-scenario"]').inputValue(),'僕：これ？');await page.reload();assert.equal(await page.locator('[data-source-note="source-1"]').inputValue(),'教材原題の下書き');assert.equal(await page.locator('[data-textbook-draft="think-collecting"]').inputValue(),'切手を集めています。');
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true,'Reading questions overflow 1280px');
   assert.equal(Object.keys((await state('reading')).answered).length,0);
   await mode('exam');
   const qs=await page.evaluate(()=>window.JPY5_READING.questions);
@@ -69,7 +85,7 @@ try{
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true,`${module} overflows ${viewport.width}px`);
       if(['','notes','vocabulary'].includes(module))await page.screenshot({path:`${artifacts}/${module||'hub'}-${viewport.width}.png`});
       if(module==='notes'){assert.equal(await page.locator('.grammar-card').count(),8);await page.locator('[data-extra-id="monoda"]').click();assert(await page.locator('dialog[open]').isVisible());await page.locator('[data-extra-close]').first().click();}
-      if(module==='reading'){await mode('source');await page.screenshot({path:`${artifacts}/reading-source-${viewport.width}.png`,fullPage:true});await mode('practice');await page.screenshot({path:`${artifacts}/reading-practice-${viewport.width}.png`,fullPage:true});await mode('exam');}
+      if(module==='reading'){await mode('questions');await page.screenshot({path:`${artifacts}/reading-textbook-${viewport.width}.png`,fullPage:true});await mode('practice');await page.screenshot({path:`${artifacts}/reading-practice-${viewport.width}.png`,fullPage:true});await mode('exam');}
       if(module==='textbook'){await page.locator('[data-mode="blanks"]').click();await page.screenshot({path:`${artifacts}/listening-${viewport.width}.png`,fullPage:true});}
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true,`${module} mode overflows ${viewport.width}px`);
     }
@@ -88,5 +104,5 @@ try{
   assert(audit.ok&&audit.text.includes('Lesson 18 source audit'),'source audit is unavailable offline');
   await context.setOffline(false);
   assert.deepEqual(errors,[],'browser JS errors');
-  console.log('Lesson 18 browser checks passed: exam drafts, mastery transitions, unscored notes/reset, history compatibility, review preservation, nine pages at phone/iPad sizes and offline.');
+  console.log('Lesson 18 browser checks passed: textbook 1/3/4/5, hidden official answers, safe reveals, source migration, saved drafts/selections, App exam/mastery preservation, responsive layouts and offline.');
 }finally{await browser.close();await new Promise(r=>server.close(r));}

@@ -14,6 +14,9 @@ unverified audio-dependent answers are distinct evidence levels.
 - School grammar PDF: Google Drive file ID `1gQdp-sbNHMYeVd6x-WMmXh1i-dr2hpRI`
   (`g_2_18.pdf`), four pages; directly inspected at the supplied local path.
 - Textbook: [大家的日語 中級II 第18課](https://ttrw.jp/static/textbook//1032/%E5%A4%A7%E5%AE%B6%E7%9A%84%E6%97%A5%E8%AF%AD%E4%B8%AD%E7%BA%A72%E7%AC%AC18%E8%AF%BE.pdf), HTTP 200, 24 PDF pages.
+- Official answer book: `L17 to L20 ans.pdf`; Lesson 18 reading answers were
+  visually verified on PDF page 5. Listening answers are on page 6 and remain
+  governed by the separate Listening audit status.
 
 ## Verified vocabulary inventory
 
@@ -58,8 +61,9 @@ not turn that observation into an absolute restriction.
   `村上春樹『村上朝日堂超短編小説 夜のくもざる』新潮社より`.
   The existing dataset contains eight visually verified Japanese paragraphs,
   an app-authored Traditional Chinese translation, and visually transcribed
-  textbook questions. The printed answer key has not been verified; those
-  questions remain unscored and are not an official answer key.
+  textbook activities 1 / 3 / 4 / 5. The six `3. 確かめよう` records retain
+  IDs `source-1` through `source-6`; their official answers were visually
+  transcribed from answer-book PDF page 5 and remain unscored.
 - Conversation: `あなたこそ、あの本の山はいったい何なの！`.
   The existing visually transcribed dataset contains 20 dialogue lines,
   13 printed numbered blanks, five content prompts, one expression group, and
@@ -89,7 +93,7 @@ blanks are unscored. Progress uses the existing `jpy5.chapter18.*` namespace and
 shared Firebase sync. This upgrade reuses that architecture and preserves source
 records and existing user progress.
 
-## Quality upgrade disposition — 2026-10-01
+## Quality upgrade disposition — 2026-10-05
 
 Local source copies under `work/lesson18-source/` were re-inspected: all six
 school vocabulary pages, all four school grammar pages, textbook PDF pages 2–3
@@ -156,9 +160,17 @@ flashcards, quizzes and history without modifying shared grammar code.
 - All eight existing verified Japanese paragraphs, their IDs and the source
   credit are unchanged. A regression check compares them with commit
   `e25641e91446486a6e7cadaea60a970aaad0c2f0`.
-- The six source question groups are **教材原題 · 不計分**, always
-  `scored:false` / `answer:null`. The official answer key remains unverified.
-  Their learner drafts are saved separately and never contribute to mastery.
+- The textbook activity surface follows the printed order **1. 考えてみよう →
+  3. 確かめよう → 4. 考えよう・話そう → 5. チャレンジしよう**. Activity
+  wording was visually transcribed from textbook PDF pages 1, 3 and 4. The
+  page-4 categories are exactly `① 物`, `② 人`, `③ 行為、行動`; the scenario
+  instruction prints `動き`, not `動作`.
+- The six `3. 確かめよう` records preserve IDs `source-1` through `source-6`,
+  stay `scored:false`, and now carry official answers transcribed from the
+  answer book PDF page 5. The classification is `A, A, B, B, B, A, B, B` and
+  the two printed choices are `① b` and `② c`. Answers are hidden by default;
+  reveal does not replace learner notes or selections and never contributes to
+  App mastery or wrong-answer scoring.
 - Re-reading printed p.73 corrected earlier question transcription errors:
   `何と何を`, `どんな関係`, `こんな幸運は`, classification `コレクター`, the
   quote `その鉛筆削りいいですねえ`, the full “20年以上…古いもの” option, and
@@ -166,9 +178,11 @@ flashcards, quizzes and history without modifying shared grammar code.
 - **13 應用程式閱讀練習**, **5 原文找答案** tasks and **24** contextual vocabulary
   cards are a separate app-authored layer. Scored questions cite a valid paragraph
   and have a text-supported answer and explanation. They are not a textbook key.
-- Original, translation, source questions, App practice, find-answer, vocabulary,
-  exam and wrong-answer review are separate modes. Chinese translation is editorial
-  teaching material, not a printed textbook translation.
+- Original, translation, textbook Reading questions, App practice, find-answer,
+  vocabulary, exam and wrong-answer review are separate modes. Chinese translation
+  is editorial teaching material, not a printed textbook translation. Suggested
+  answers for open activities 1 / 4 / 5 are app-authored and labelled
+  `參考回答例（非課本官方答案）`.
 - Exam selections save immediately and survive mode, font, furigana and page
   navigation. Exam submission updates the same current-answer/mastery record as
   practice. Wrong answers stay reviewable until a correct retry; viewing an answer

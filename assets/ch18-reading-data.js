@@ -2,15 +2,18 @@ window.JPY5_READING = {
   title: "鉛筆削り（あるいは幸運としての渡辺昇①）",
   author: "村上春樹『村上朝日堂超短編小説 夜のくもざる』新潮社より",
   authorReading: "わたなべ のぼる",
-  sourceStatus: "textbook_pages_2_to_4_visually_verified; editorial_zh_reviewed; printed_answers_not_provided",
+  sourceStatus: "textbook_pages_1_to_4_visually_verified; reading_answers_answerbook_verified; editorial_zh_reviewed",
   source: {
     textbookPdf: "work/lesson18-source/textbook.pdf",
+    preReadingPdfPage: 1,
+    preReadingPrintedPage: 71,
     readingPdfPage: 2,
     readingPrintedPage: 72,
     questionsPdfPage: 3,
     questionsPrintedPage: 73,
     followUpPdfPage: 4,
     followUpPrintedPage: 74,
+    answerBookPdfPage: 5,
     sourceCredit: "村上春樹『村上朝日堂超短編小説 夜のくもざる』新潮社より"
   },
   paragraphs: [
@@ -30,12 +33,12 @@ window.JPY5_READING = {
     ["鉛筆削り", "削鉛筆機"], ["薄汚い", "有點髒、邋邋遢遢"], ["目をとめる", "注意到"], ["流し台", "洗碗槽"], ["排水パイプ", "排水管"], ["知る由もない", "無從得知"], ["手動式", "手動式"], ["錆びつく", "生鏽、鏽住"], ["削りかす", "鉛筆屑"], ["持ち歩く", "隨身攜帶"]
   ],
   sourceQuestions: [
-    { id: "source-1", section: "3. 確かめよう 1)", type: "short-answer", q: "「僕」と渡辺昇は、何と何を交換しましたか。", paragraph: [1, 8], sourceQuestion: true, scored: false, answer: null, why: "教材第73頁只印出題目，未提供答案或答案鍵。" },
-    { id: "source-2", section: "3. 確かめよう 1)", type: "short-answer", q: "「僕」と渡辺昇はどんな関係ですか。", paragraph: [1, 3, 5, 8], sourceQuestion: true, scored: false, answer: null, why: "教材第73頁只印出題目，未提供答案或答案鍵。" },
-    { id: "source-3", section: "3. 確かめよう 1)", type: "short-answer", q: "「こんな幸運はそうざらにあることではない」とありますが、それは具体的にどんな幸運のことですか。", paragraph: [1, 8], sourceQuestion: true, scored: false, answer: null, why: "教材第73頁只印出題目，未提供答案或答案鍵。" },
-    { id: "source-4", section: "3. 確かめよう 2)", type: "classification", q: "「僕」について書かれているものにはAを、渡辺昇について書かれているものにはBを書いてください。", items: ["薄汚い鉛筆削りを使っている。", "ぴかぴかの最新式の鉛筆削りを手に入れた。", "テーブルの上にある古い鉛筆削りに目をとめた。", "鉛筆削りのコレクターである。", "「その鉛筆削りいいですねえ」と言った。", "テーブルの上の鉛筆削りを手に取った。", "バッグの中にいつも交換用の鉛筆削りを入れて持ち歩いている。", "1963年型マックスPSDを手に入れた。"], paragraph: [1, 2, 3, 4, 5, 8], sourceQuestion: true, scored: false, answer: null, why: "教材第73頁未印出分類答案，故保留為不計分原題。" },
-    { id: "source-5", section: "3. 確かめよう 3)", type: "multiple-choice", q: "「目をとめた」（4行目）のは、どうしてですか。", options: ["意外な場所に置いてあったから", "彼にとっては価値を感じるものだったから", "20年以上使われている古いものだったから"], paragraph: [2, 3, 6], sourceQuestion: true, scored: false, answer: null, why: "選項為教材原文；教材第73頁未印出答案鍵，故不計分。" },
-    { id: "source-6", section: "3. 確かめよう 3)", type: "multiple-choice", q: "「ちらちらと横目で見ていた」（8行目）", options: ["なんとなく見ていた", "じっと見ていた", "遠慮しながらときどき見ていた"], paragraph: 3, sourceQuestion: true, scored: false, answer: null, why: "選項為教材原文；教材第73頁未印出答案鍵，故不計分。" }
+    { id: "source-1", section: "3. 確かめよう 1)", type: "short-answer", q: "「僕」と渡辺昇は、何と何を交換しましたか。", paragraph: [1, 8], sourceQuestion: true, scored: false, answer: "古い鉛筆削りと新しい鉛筆削り", answerStatus: "answerbook_verified", why: "課本解答冊 PDF 第5頁。" },
+    { id: "source-2", section: "3. 確かめよう 1)", type: "short-answer", q: "「僕」と渡辺昇はどんな関係ですか。", paragraph: [1, 3, 5, 8], sourceQuestion: true, scored: false, answer: "排水パイプの修理を頼んだ人と修理屋", answerStatus: "answerbook_verified", why: "課本解答冊 PDF 第5頁。" },
+    { id: "source-3", section: "3. 確かめよう 1)", type: "short-answer", q: "「こんな幸運はそうざらにあることではない」とありますが、それは具体的にどんな幸運のことですか。", paragraph: [1, 8], sourceQuestion: true, scored: false, answer: "渡辺昇のおかげでぴかぴかの新品の鉛筆削りを手に入れることができたこと", answerStatus: "answerbook_verified", why: "課本解答冊 PDF 第5頁。" },
+    { id: "source-4", section: "3. 確かめよう 2)", type: "classification", q: "「僕」について書かれているものにはAを、渡辺昇について書かれているものにはBを書いてください。", items: ["薄汚い鉛筆削りを使っている。", "ぴかぴかの最新式の鉛筆削りを手に入れた。", "テーブルの上にある古い鉛筆削りに目をとめた。", "鉛筆削りのコレクターである。", "「その鉛筆削りいいですねえ」と言った。", "テーブルの上の鉛筆削りを手に取った。", "バッグの中にいつも交換用の鉛筆削りを入れて持ち歩いている。", "1963年型マックスPSDを手に入れた。"], paragraph: [1, 2, 3, 4, 5, 8], sourceQuestion: true, scored: false, answer: ["A", "A", "B", "B", "B", "A", "B", "B"], answerStatus: "answerbook_verified", why: "課本解答冊 PDF 第5頁。" },
+    { id: "source-5", section: "3. 確かめよう 3)", type: "multiple-choice", q: "「目をとめた」（4行目）のは、どうしてですか。", options: ["意外な場所に置いてあったから", "彼にとっては価値を感じるものだったから", "20年以上使われている古いものだったから"], paragraph: [2, 3, 6], sourceQuestion: true, scored: false, answer: 1, answerStatus: "answerbook_verified", why: "課本解答冊 PDF 第5頁：① b。" },
+    { id: "source-6", section: "3. 確かめよう 3)", type: "multiple-choice", q: "「ちらちらと横目で見ていた」（8行目）", options: ["なんとなく見ていた", "じっと見ていた", "遠慮しながらときどき見ていた"], paragraph: 3, sourceQuestion: true, scored: false, answer: 2, answerStatus: "answerbook_verified", why: "課本解答冊 PDF 第5頁：② c。" }
   ],
   questions: [],
   supplementaryQuestions: [],

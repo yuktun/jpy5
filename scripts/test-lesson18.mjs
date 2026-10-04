@@ -33,13 +33,17 @@ assert(grammar.questions.every(q=>q.source==='app_practice'&&q.label&&q.options.
 assert.equal(grammar.legacyQuestions.length,16);
 const extras=(await load(['assets/ch18-grammar-extra-data.js'])).JPY5_GRAMMAR_EXTRA;
 assert.equal(extras.length,8);assert(extras.every(x=>!x.exercises));
-const reading=(await load(['assets/ch18-reading-data.js','assets/ch18-reading-practice.js'])).JPY5_READING;
+const reading=(await load(['assets/ch18-reading-data.js','assets/ch18-reading-practice.js','assets/ch18-reading-textbook-data.js'])).JPY5_READING;
 assert.equal(reading.paragraphs.length,8);
 const baseline={window:{}};vm.createContext(baseline);vm.runInContext(execFileSync('git',['show','e25641e91446486a6e7cadaea60a970aaad0c2f0:assets/ch18-reading-data.js'],{encoding:'utf8'}),baseline);
 assert.equal(hash(reading.paragraphs.map(p=>[p.id,p.jp])),hash(baseline.window.JPY5_READING.paragraphs.map(p=>[p.id,p.jp])),'verified Japanese paragraphs changed');
-assert.equal(reading.sourceQuestions.length,6);assert(reading.sourceQuestions.every(q=>q.sourceQuestion===true&&q.scored===false&&q.answer===null));
+assert.equal(reading.sourceQuestions.length,6);assert.deepEqual(Array.from(reading.sourceQuestions,q=>q.id),['source-1','source-2','source-3','source-4','source-5','source-6']);assert(reading.sourceQuestions.every(q=>q.sourceQuestion===true&&q.scored===false&&q.answerStatus==='answerbook_verified'));
+assert.deepEqual(Array.from(reading.sourceQuestions.slice(0,3),q=>q.answer),['古い鉛筆削りと新しい鉛筆削り','排水パイプの修理を頼んだ人と修理屋','渡辺昇のおかげでぴかぴかの新品の鉛筆削りを手に入れることができたこと']);
+assert.deepEqual(Array.from(reading.sourceQuestions[3].answer),['A','A','B','B','B','A','B','B']);assert.equal(reading.sourceQuestions[4].answer,1);assert.equal(reading.sourceQuestions[5].answer,2);
 assert.match(reading.sourceQuestions[1].q,/どんな関係/);assert.equal(reading.sourceQuestions[5].options[2],'遠慮しながらときどき見ていた');
+assert.deepEqual(Array.from(reading.textbookActivities.sections,section=>section.number),[1,3,4,5]);assert.equal(reading.textbookActivities.sections[2].items[1].questions.join('|'),'① 物|② 人|③ 行為、行動');assert.match(reading.textbookActivities.sections[3].prompt,/動き（例：鉛筆削りを手に取って、いろいろな角度から見る）/);
 assert.equal(reading.questions.length,13);assert.equal(new Set(reading.questions.map(q=>q.id)).size,13);
+assert.deepEqual(Array.from(reading.questions,q=>q.id),Array.from({length:13},(_,i)=>`app-reading-${i+1}`));assert.equal(hash(reading.questions.map(q=>[q.id,q.answer,q.options])),'f2e19f9298c9c0da24c4d78dddd1f26722dbd0363f90fe57d57b5d1011a09242','the existing App reading bank changed');
 assert(reading.questions.every(q=>q.source==='app_practice'&&q.label==='應用程式閱讀練習'&&reading.paragraphs.some(p=>p.id===q.paragraph)&&Number.isInteger(q.answer)&&q.answer>=0&&q.answer<q.options.length&&q.why));
 assert.equal(reading.find.length,5);assert.equal(new Set(reading.find.map(t=>t.id)).size,5);assert(reading.find.every(t=>reading.paragraphs.some(p=>p.id===t.answer)));
 assert.equal(reading.vocab.length,24);
@@ -62,12 +66,12 @@ vm.runInContext(execFileSync('git',['show','e25641e91446486a6e7cadaea60a970aaad0
 assert.equal(hash(listening.dialogue),hash(baseline.window.JPY5_CONVERSATION.dialogue),'visually transcribed dialogue changed');
 const ruby=(await load(['assets/grammar-ruby.js','assets/ch18-grammar-ruby.js'])).JPY5GrammarRuby;
 for(const p of grammar.patterns)for(const [jp] of p.examples){const rendered=ruby.renderExample(jp,p.id);assert.equal(rendered.replace(/<rt>.*?<\/rt>/g,'').replaceAll('<br>','\n').replace(/<[^>]+>/g,''),jp);assert.match(rendered,/grammar-target/);}
-const readingController=await source('assets/ch18-reading.js');assert.match(readingController,/state\.examAnswers\[input\.name\]/);assert.match(readingController,/setAnswer\(q,state\.examAnswers\[q\.id\]\)/);assert.doesNotMatch(readingController,/標記已掌握|data-clear-wrong/);
+const readingController=await source('assets/ch18-reading.js');assert.match(readingController,/state\.examAnswers\[input\.name\]/);assert.match(readingController,/setAnswer\(q,state\.examAnswers\[q\.id\]\)/);assert.match(readingController,/if\(state\.mode==="source"\)state\.mode="questions"/);assert.match(readingController,/state\.textbookDrafts/);assert.match(readingController,/課本官方答案 \/ 課本解答/);assert.doesNotMatch(readingController,/標記已掌握|data-clear-wrong/);
 const quiz=await source('assets/ch18-quiz.js');assert.match(quiz,/previous\.filter\(id=>!attempted\.has\(id\)\)/);assert.match(quiz,/question:\{\.\.\.q\}/);
 assert.match(await source('assets/ch18-common.js'),/jpy5\.chapter18\./);
 const progressKeys=['vocabulary.cards.v2','flashcards','quiz.settings','quiz.history','quiz.lastWrong','quiz.starred','reading','conversation'];
 const records=new Map(progressKeys.map(key=>['jpy5.chapter18.'+key,JSON.stringify({saved:true})]));
-records.set('jpy5.chapter18.reading',JSON.stringify({examAnswers:{'app-reading-1':0},sourceNotes:{'source-1':'draft'},answered:{'app-reading-2':1},wrong:['app-reading-3']}));
+records.set('jpy5.chapter18.reading',JSON.stringify({mode:'source',examAnswers:{'app-reading-1':0},sourceNotes:{'source-1':'draft'},sourceResponses:{'source-5':1},textbookDrafts:{'think-collecting':'postcards'},answered:{'app-reading-2':1},wrong:['app-reading-3']}));
 records.set('jpy5.chapter18.conversation',JSON.stringify({drafts:{13:'my note'},promptNotes:{'listen-1':'evidence'},activityNotes:{challenge:'practice'}}));
 records.set('jpy5.chapter18.theme','"dark"');records.set('unrelated.user.preference','"preserve"');
 const syncSnapshot=snapshotFromStorage({get length(){return records.size;},key:i=>[...records.keys()][i],getItem:key=>records.get(key)});
@@ -77,8 +81,9 @@ const merged=mergeSnapshots(syncSnapshot,{'jpy5.chapter18.conversation':JSON.str
 assert.equal(JSON.parse(merged['jpy5.chapter18.conversation']).promptNotes['listen-2'],'cloud note');
 assert.equal(JSON.parse(merged['jpy5.chapter18.conversation']).drafts[13],'my note');
 assert.equal(JSON.parse(merged['jpy5.chapter18.reading']).examAnswers['app-reading-1'],0);
+assert.equal(JSON.parse(merged['jpy5.chapter18.reading']).sourceNotes['source-1'],'draft');assert.equal(JSON.parse(merged['jpy5.chapter18.reading']).textbookDrafts['think-collecting'],'postcards');
 const files=(await readdir('.')).filter(f=>/^chapter-18(?:-[a-z]+)?\.html$/.test(f));assert.equal(files.length,9);
 for(const f of files){const html=await source(f);assert.doesNotMatch(html,/只儲存在|裝置內自動保存|裝置內儲存|均儲存在本機|16-QUESTION|chapter-(?:19|20)-/);const module=f.match(/chapter-18-([a-z]+)\.html/)?.[1];if(module)for(const n of [13,14,15,16,17,18])assert(html.includes(`chapter-${n}-${module}.html`));for(const m of html.matchAll(/(?:src|href)="([^"#?]+)(?:[?#][^"]*)?"/g)){if(!/^(https?:|data:)/.test(m[1]))assert((await stat(m[1])).isFile(),`${f}: missing ${m[1]}`);}}
 const offline=await source('assets/offline-assets.js');for(const f of (await readdir('assets')).filter(f=>f.startsWith('ch18-')))assert(offline.includes(`assets/${f}`));assert(offline.includes('LESSON18_SOURCE_AUDIT.md'));
 for(const f of (await readdir('assets')).filter(f=>/^ch18-.*\.js$/.test(f)))new vm.Script(await source('assets/'+f),{filename:f});
-console.log('Lesson 18: 108 vocabulary, 8/39 grammar, 32 quiz, 8/13/5 reading, 20/13/5 listening, source-fidelity, links and offline checks passed.');
+console.log('Lesson 18: 108 vocabulary, 8/39 grammar, 32 quiz, 8 source paragraphs, 1/3/4/5 textbook reading, preserved 13/5 App reading, 20/13/5 listening, links and offline checks passed.');
