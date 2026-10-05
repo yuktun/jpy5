@@ -59,7 +59,7 @@ assert.deepEqual(Array.from(listening.textbookActivities,s=>s.section),['1. や�
 assert.equal(listening.textbookActivities[1].items.filter(item=>item.pictureRequired).length,4);assert.equal(listening.textbookActivities[2].items.filter(item=>item.modelLabel==='課本解答例').length,2);assert(listening.textbookActivities[3].items.every(item=>item.noModel));
 const listeningController=await source('assets/ch18-conversation.js');assert.doesNotMatch(listeningController,/function record|score\+\+|state\.marks|showModal/);
 assert.match(listeningController,/const renderers=\{dialogue,comprehension,activities,focus,blanks,guide\}/);assert.match(listeningController,/audio\.currentTime=target\.start/);assert.match(listeningController,/serial!==replaySerial/);assert.match(listeningController,/removeEventListener\("timeupdate",activeStop\)/);
-assert.match(listeningController,/dialogue-row-actions/);assert.match(listeningController,/JPY5.write\("conversation",state\)/);assert.match(listeningController,/state\.activityNotes/);
+assert.match(listeningController,/dialogue-row-actions/);assert.match(listeningController,/JPY5.write\("conversation",state\)/);assert.match(listeningController,/state\.activityNotes/);assert.match(listeningController,/activityNotes\.challenge/);assert.match(listeningController,/data-legacy-activity-note/);
 vm.runInContext(execFileSync('git',['show','e25641e91446486a6e7cadaea60a970aaad0c2f0:assets/ch18-conversation-data.js'],{encoding:'utf8'}),baseline);
 assert.equal(hash(listening.dialogue),hash(baseline.window.JPY5_CONVERSATION.dialogue),'visually transcribed dialogue changed');
 const ruby=(await load(['assets/grammar-ruby.js','assets/ch18-grammar-ruby.js'])).JPY5GrammarRuby;

@@ -1,11 +1,12 @@
 document.addEventListener("DOMContentLoaded",()=>{
   const data=window.JPY5_CONVERSATION,stage=document.querySelector("#conversation-stage"),audio=document.querySelector("#lesson-audio");
-  const fresh=()=>({stateVersion:2,mode:"dialogue",furigana:true,drafts:{},promptNotes:{},expressionNotes:{},activityNotes:{},replayProgress:{},listenCount:0});
+  const fresh=()=>({stateVersion:3,mode:"dialogue",furigana:true,drafts:{},promptNotes:{},expressionNotes:{},activityNotes:{},replayProgress:{},listenCount:0});
   const stored=JPY5.read("conversation",{}),legacyModes={prompts:"comprehension",expressions:"comprehension"};
   let state={...fresh(),...stored};
-  state.mode=legacyModes[state.mode]||state.mode;state.stateVersion=2;
+  state.mode=legacyModes[state.mode]||state.mode;state.stateVersion=3;
   for(const key of ["drafts","promptNotes","expressionNotes","activityNotes","replayProgress"])state[key]=state[key]||{};
   if(stored.activityDrafts)state.activityNotes={...stored.activityDrafts,...state.activityNotes};
+  if(String(state.activityNotes.challenge||"").trim()&&!String(state.activityNotes["activity-6"]||"").trim())state.activityNotes["activity-6"]=state.activityNotes.challenge;
   const esc=value=>String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
   const kanjiRun=/[\u3400-\u9fff々〆ヶ]/;
   function ruby(text){
@@ -39,13 +40,17 @@ document.addEventListener("DOMContentLoaded",()=>{
     const model=item.noModel?"":`${answerToggle(item.id,item.modelLabel)}<p>${lines(item.model)}</p></div>`;
     return `<article class="textbook-task-card"><span>${esc(item.number||"")}</span><p class="textbook-prompt">${lines(item.prompt)}</p>${picture}<label>準備筆記／自己的說法<textarea rows="6" data-activity-note="${item.id}">${esc(state.activityNotes[item.id]||"")}</textarea></label>${model}</article>`;
   }
+  function legacySectionNote(key){
+    if(!key||!Object.prototype.hasOwnProperty.call(state.activityNotes,key))return "";
+    return `<article class="practice-panel"><span>舊版保存的本節備註</span><p>這是升級前保存在整個本節的筆記，未自動分配到任何單一題目。</p><label>本節備註<textarea rows="4" data-activity-note="${esc(key)}" data-legacy-activity-note="${esc(key)}">${esc(state.activityNotes[key]||"")}</textarea></label></article>`;
+  }
   function activities(){
-    const sections=data.textbookActivities.map(section=>`<section class="textbook-activity-card"><header><span>${esc(section.label)}</span><h2>${ruby(section.section)}</h2></header>${section.intro?`<p class="textbook-activity-intro">${lines(section.intro)}</p>`:""}${section.items.map(activityTask).join("")}</section>`).join("");
+    const sections=data.textbookActivities.map(section=>`<section class="textbook-activity-card"><header><span>${esc(section.label)}</span><h2>${ruby(section.section)}</h2></header>${section.intro?`<p class="textbook-activity-intro">${lines(section.intro)}</p>`:""}${legacySectionNote(section.legacyNoteKey)}${section.items.map(activityTask).join("")}</section>`).join("");
     return heading("課本活動","1・4・5・6","自由口說 · 不作嚴格評分")+`<div class="textbook-activity-list">${sections}</div>`;
   }
   function focus(){return heading("重點句子","十三個已核實表現","官方音訊單句重播")+`<div class="focus-grid">${data.listeningTargets.map(target=>`<article class="focus-card"><span>${target.id} · ${ruby(target.speaker)}</span><h3>${ruby(target.answer)}</h3><p>${ruby(target.context)}</p><button class="listen-button" type="button" data-listen-target="${target.id}">▶ 播放這句</button><small>${target.start.toFixed(2)}–${target.end.toFixed(2)} 秒</small></article>`).join("")}</div>`}
   const normalize=value=>String(value||"").normalize("NFKC").toLowerCase().replace(/[\s、。！？!?・,.]/g,"");
-  function blanks(){return heading("會話填寫","3. もう一度聞こう",`${Object.values(state.drafts).filter(value=>String(value).trim()).length}/13 已寫答案`)+`<div class="textbook-no-grade"><strong>十三個空欄均已核實</strong><p>可寬鬆核對或揭示課本答案；揭示不會覆寫輸入。</p></div><div class="listening-draft-list">${data.listeningTargets.map(target=>`<article class="practice-panel"><span>空欄 ${target.id} · ${ruby(target.speaker)}</span><h3>${ruby(target.context)}</h3><label>我的答案<input type="text" lang="ja" autocomplete="off" data-blank-draft="${target.id}" value="${esc(state.drafts[target.id]||"")}"></label><div class="ch17-blank-actions"><button class="secondary-button" type="button" data-check-blank="${target.id}">核對</button><button class="secondary-button" type="button" data-answer-toggle="blank-${target.id}" aria-expanded="false">答案を見る / 顯示答案</button><button class="listen-button" type="button" data-listen-target="${target.id}">▶ 播放這句</button></div><p class="blank-feedback" data-blank-feedback="${target.id}"></p><div class="reference-answer" data-answer-panel="blank-${target.id}" hidden><b>課本官方答案 / 課本解答</b><p>${ruby(target.answer)}</p></div></article>`).join("")}</div>`}
+  function blanks(){return heading("會話填寫","3. もう一度聞こう",`${Object.values(state.drafts).filter(value=>String(value).trim()).length}/13 已寫答案`)+`<div class="textbook-no-grade"><strong>十三個空欄均已核實</strong><p>可寬鬆核對或揭示課本答案；揭示不會覆寫輸入。</p></div>${legacySectionNote("repeat")}<div class="listening-draft-list">${data.listeningTargets.map(target=>`<article class="practice-panel"><span>空欄 ${target.id} · ${ruby(target.speaker)}</span><h3>${ruby(target.context)}</h3><label>我的答案<input type="text" lang="ja" autocomplete="off" data-blank-draft="${target.id}" value="${esc(state.drafts[target.id]||"")}"></label><div class="ch17-blank-actions"><button class="secondary-button" type="button" data-check-blank="${target.id}">核對</button><button class="secondary-button" type="button" data-answer-toggle="blank-${target.id}" aria-expanded="false">答案を見る / 顯示答案</button><button class="listen-button" type="button" data-listen-target="${target.id}">▶ 播放這句</button></div><p class="blank-feedback" data-blank-feedback="${target.id}"></p><div class="reference-answer" data-answer-panel="blank-${target.id}" hidden><b>課本官方答案 / 課本解答</b><p>${ruby(target.answer)}</p></div></article>`).join("")}</div>`}
   function guide(){return heading("LISTENING GUIDE","完成版練習方法","課本・解答冊・官方音訊已核實")+`<div class="review-path listening-guide"><article><b>01</b><div><span>完整會話</span><h2>先聽人物與場景</h2><p>保留20句完整會話作為第一個、預設模式。</p></div></article><article><b>02</b><div><span>精聽十三句</span><h2>逐段重播答案表現</h2><p>每次只播放綠色標記的原空欄範圍。</p></div></article><article><b>03</b><div><span>課本問題</span><h2>先寫自己的理解</h2><p>揭示官方答案不會覆寫筆記。</p></div></article><article><b>04</b><div><span>口說延伸</span><h2>練習抱怨、道歉與和好</h2><p>完成課本1・4・5・6活動，開放題不作嚴格評分。</p></div></article></div><p class="source-status-line verified-source-line"><b>核實狀態：</b>十三個答案及其官方音訊重播區間均已逐項整理；非官方教學內容另有明確標示。</p>`}
   const renderers={dialogue,comprehension,activities,focus,blanks,guide};
   let replaySerial=0,activeStop=null;

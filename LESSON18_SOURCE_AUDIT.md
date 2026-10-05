@@ -209,7 +209,10 @@ flashcards, quizzes and history without modifying shared grammar code.
 - Existing `drafts`, `promptNotes`, `expressionNotes`, `activityNotes`,
   `listenCount`, furigana and mode state are preserved. Legacy prompt/expression
   modes migrate to the grouped comprehension mode; `activityDrafts` also migrates
-  into the current activity-note map.
+  into the current activity-note map. The pre-completion activity keys `repeat`,
+  `say`, and `practice` remain editable as clearly labelled section notes;
+  `challenge` is copied to `activity-6` only when that newer field has no value.
+  Original keys remain intact, newer notes win, and repeated loads are idempotent.
 - Reset clears only `jpy5.chapter18.conversation`; it does not reset another lesson
   or Reading/Vocabulary. Playback count and saved-note count are not completion.
 
