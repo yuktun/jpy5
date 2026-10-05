@@ -3,7 +3,7 @@ window.JPY5_CONVERSATION = {
   setting: "ワット家のダイニングキッチン",
   speakers: ["ワット", "いずみ"],
   audio: "https://ttrw.jp/static/sound/sound202406141718354246.mp3",
-  sourceStatus: "printed_dialogue_transcribed; blank_answers_answerbook_verified; audio_timing_pending",
+  sourceStatus: "verified_textbook_answerbook_audio",
   source: {
     textbookPdf: "work/lesson18-source/textbook.pdf",
     conversationPdfPages: [5, 6],
@@ -16,10 +16,7 @@ window.JPY5_CONVERSATION = {
       { track: "MP3 1-19", url: "https://ttrw.jp/static/sound/sound202406141718354323.mp3", textbookPdfPage: 13, printedPage: 83, activity: "問題 I" }
     ]
   },
-  sourceNote: "会話本文、13個の番号付き空欄、聞き取り設問、表現設問および後続活動は『みんなの日本語 中級II』第18課PDF pp. 5–8（印刷pp. 75–78）から視覚的に転記した。『3. もう一度聞こう』の13解答は公式解答冊 PDF 第5–6頁から入力済み。公式MP3との照合、採点、文単位タイムスタンプ、個別再生は未実装。",
-  // Blank answers below are answer-book verified, but remain hidden and unscored until
-  // the official audio is independently checked. Focused replay stays disabled.
-  items: [],
+  sourceNote: "会話本文と活動は『みんなの日本語 中級II』第18課「話す・聞く」pp.75–78、固定解答・解答例は公式解答冊、13個の表現と再生区間は公式MP3 1–18で照合した。アプリ作成の説明・回答例は別表示とする。",
   dialogue: [
     ["いずみ", "あれっ、この前メキシコで買ってきたワイングラス、どこにしまったかな。確かこの辺に入れたはずだけど。", "", ""],
     ["ワット", "また捜し物？①＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿。", "", ""],
@@ -42,40 +39,59 @@ window.JPY5_CONVERSATION = {
     ["ワット", "そうだね。……今度の日曜に、いっしょに整理してみよう。", "", ""],
     ["いずみ", "うん、そうね。さあ、食事にしましょう。ワインの栓、抜いてくれる？", "", ""]
   ],
-  unverifiedBlanks: [
-    { id: 1, speaker: "ワット", context: "また捜し物？＿＿。", answer: "しょっちゅう何か捜してるね", source: "printed_blank_and_official_answer_book", status: "answerbook_verified_audio_timing_pending", answerStatus: "answerbook_verified", timingStatus: "audio_timing_pending" },
-    { id: 2, speaker: "ワット", context: "ねえ、いずみ。＿＿？ こんなにたくさん要らないだろう。", answer: "ちょっと食器、多すぎるんじゃないの", source: "printed_blank_and_official_answer_book", status: "answerbook_verified_audio_timing_pending", answerStatus: "answerbook_verified", timingStatus: "audio_timing_pending" },
-    { id: 3, speaker: "いずみ", context: "＿＿、このお皿もお茶碗も……", answer: "だって", source: "printed_blank_and_official_answer_book", status: "answerbook_verified_audio_timing_pending", answerStatus: "answerbook_verified", timingStatus: "audio_timing_pending" },
-    { id: 4, speaker: "いずみ", context: "新婚時代の思い出がいっぱいなんだ＿＿。", answer: "もの", source: "printed_blank_and_official_answer_book", status: "answerbook_verified_audio_timing_pending", answerStatus: "answerbook_verified", timingStatus: "audio_timing_pending" },
-    { id: 5, speaker: "ワット", context: "＿＿、ここにあるスーパーの袋の山……", answer: "だいたい食器だけじゃなくて", source: "printed_blank_and_official_answer_book", status: "answerbook_verified_audio_timing_pending", answerStatus: "answerbook_verified", timingStatus: "audio_timing_pending" },
-    { id: 6, speaker: "ワット", context: "ここにあるスーパーの袋の山、＿＿。", answer: "何だよ", source: "printed_blank_and_official_answer_book", status: "answerbook_verified_audio_timing_pending", answerStatus: "answerbook_verified", timingStatus: "audio_timing_pending" },
-    { id: 7, speaker: "いずみ", context: "＿＿、あの本の山は……", answer: "あなたこそ", source: "printed_blank_and_official_answer_book", status: "answerbook_verified_audio_timing_pending", answerStatus: "answerbook_verified", timingStatus: "audio_timing_pending" },
-    { id: 8, speaker: "いずみ", context: "あの本の山は＿＿！", answer: "いったい何なの", source: "printed_blank_and_official_answer_book", status: "answerbook_verified_audio_timing_pending", answerStatus: "answerbook_verified", timingStatus: "audio_timing_pending" },
-    { id: 9, speaker: "いずみ", context: "＿＿？", answer: "お互いさまなんじゃない", source: "printed_blank_and_official_answer_book", status: "answerbook_verified_audio_timing_pending", answerStatus: "answerbook_verified", timingStatus: "audio_timing_pending" },
-    { id: 10, speaker: "ワット", context: "場所をとるだけだよ。＿＿よ。", answer: "だいたい君は整理が下手なんだ", source: "printed_blank_and_official_answer_book", status: "answerbook_verified_audio_timing_pending", answerStatus: "answerbook_verified", timingStatus: "audio_timing_pending" },
-    { id: 11, speaker: "いずみ", context: "＿＿！！", answer: "そんなに言わなくたっていいじゃない", source: "printed_blank_and_official_answer_book", status: "answerbook_verified_audio_timing_pending", answerStatus: "answerbook_verified", timingStatus: "audio_timing_pending" },
-    { id: 12, speaker: "ワット", context: "＿＿。いずみが物を大事にするってことは……", answer: "ごめん、ちょっと言い過ぎたみたい", source: "printed_blank_and_official_answer_book", status: "answerbook_verified_audio_timing_pending", answerStatus: "answerbook_verified", timingStatus: "audio_timing_pending" },
-    { id: 13, speaker: "いずみ", context: "ううん、＿＿。", answer: "私こそ、ごめん", source: "printed_blank_and_official_answer_book", status: "answerbook_verified_audio_timing_pending", answerStatus: "answerbook_verified", timingStatus: "audio_timing_pending" }
+  listeningTargets: [
+    {id:1,speaker:"ワット",answer:"しょっちゅう何か捜してるね",context:"また捜し物？＿＿。",start:23.04,end:25.72},
+    {id:2,speaker:"ワット",answer:"ちょっと食器、多すぎるんじゃないの",context:"ねえ、いずみ。＿＿？ こんなにたくさん要らないだろう。",start:29.94,end:32.16},
+    {id:3,speaker:"いずみ",answer:"だって",context:"＿＿、このお皿もお茶碗も……",start:53.18,end:53.90},
+    {id:4,speaker:"いずみ",answer:"もの",context:"新婚時代の思い出がいっぱいなんだ＿＿。",start:57.48,end:57.94},
+    {id:5,speaker:"ワット",answer:"だいたい食器だけじゃなくて",context:"＿＿、ここにあるスーパーの袋の山……",start:63.60,end:65.38},
+    {id:6,speaker:"ワット",answer:"何だよ",context:"ここにあるスーパーの袋の山、＿＿。",start:67.66,end:68.70},
+    {id:7,speaker:"いずみ",answer:"あなたこそ",context:"＿＿、あの本の山は……",start:87.60,end:88.36},
+    {id:8,speaker:"いずみ",answer:"いったい何なの",context:"あの本の山は＿＿！",start:89.52,end:90.68},
+    {id:9,speaker:"いずみ",answer:"お互いさまなんじゃない",context:"＿＿？",start:91.14,end:92.68,variants:["お互い様なんじゃない"]},
+    {id:10,speaker:"ワット",answer:"だいたい君は整理が下手なんだ",context:"場所をとるだけだよ。＿＿よ。",start:100.56,end:103.34},
+    {id:11,speaker:"いずみ",answer:"そんなに言わなくたっていいじゃない",context:"＿＿！！",start:103.78,end:105.88},
+    {id:12,speaker:"ワット",answer:"ごめん、ちょっと言い過ぎたみたい",context:"＿＿。いずみが物を大事にするってことは……",start:108.30,end:110.34},
+    {id:13,speaker:"いずみ",answer:"私こそ、ごめん",context:"ううん、＿＿。",start:116.50,end:118.36}
   ],
   sourcePrompts: [
-    { id: "listen-1", section: "2. 聞いてみよう 1) 内容を聞き取りましょう", jp: "最初に不満を言ったのはどちらですか。どんなことを言いましたか。", answerStatus: "audio_confirmation_required" },
-    { id: "listen-2", section: "2. 聞いてみよう 1) 内容を聞き取りましょう", jp: "相手はそれに関してどんな言い訳をしましたか。", answerStatus: "audio_confirmation_required" },
-    { id: "listen-3", section: "2. 聞いてみよう 1) 内容を聞き取りましょう", jp: "物をとっておくことについて２人はどう考えていますか。", answerStatus: "audio_confirmation_required" },
-    { id: "listen-4", section: "2. 聞いてみよう 1) 内容を聞き取りましょう", jp: "いずみさんは何についてワットさんを非難しましたか。", answerStatus: "audio_confirmation_required" },
-    { id: "listen-5", section: "2. 聞いてみよう 1) 内容を聞き取りましょう", jp: "最後に２人は仲直りしましたか。", answerStatus: "audio_confirmation_required" }
+    {id:"listen-1",number:"①",section:"内容を聞き取りましょう",jp:"最初に不満を言ったのはどちらですか。どんなことを言いましたか。",answer:"ワットさん　食器が多すぎること"},
+    {id:"listen-2",number:"②",section:"内容を聞き取りましょう",jp:"相手はそれに関してどんな言い訳をしましたか。",answer:"思い出の品物だから"},
+    {id:"listen-3",number:"③",section:"内容を聞き取りましょう",jp:"物をとっておくことについて２人はどう考えていますか。",answer:"ワットさんは、使わないものは捨てたほうがいいと考えている。いずみさんは、思い出のあるものは大事だし、置いておけば役に立つかもしれないと考えている。"},
+    {id:"listen-4",number:"④",section:"内容を聞き取りましょう",jp:"いずみさんは何についてワットさんを非難しましたか。",answer:"ワットさんが本をたくさん積んでいること"},
+    {id:"listen-5",number:"⑤",section:"内容を聞き取りましょう",jp:"最後に２人は仲直りしましたか。",answer:"仲直りした"}
   ],
   expressionExercises: [
-    { id: "expression-1", section: "2. 聞いてみよう 2) 表現を聞き取りましょう", prompt: "どう言いましたか。", items: ["ワットさんがはじめにいずみさんに皮肉を言うとき", "ワットさんがいずみさんに文句を言うとき", "いずみさんがワットさんに言い返すとき", "ワットさんが謝るとき", "いずみさんが謝るとき"], answerStatus: "audio_confirmation_required" }
+    {id:"expression-1",section:"表現を聞き取りましょう",prompt:"どう言いましたか。",items:[
+      {id:"expression-1-1",number:"①",q:"ワットさんがはじめにいずみさんに皮肉を言うとき",answer:"また捜し物？　しょっちゅう何か捜してるね。"},
+      {id:"expression-1-2",number:"②",q:"ワットさんがいずみさんに文句を言うとき",answer:"ちょっと食器、多すぎるんじゃないの？ こんなにたくさん要らないだろう。"},
+      {id:"expression-1-3",number:"③",q:"いずみさんがワットさんに言い返すとき",answer:"あなたこそあの本の山はいったい何なの！ お互いさまなんじゃない？"},
+      {id:"expression-1-4",number:"④",q:"ワットさんが謝るとき",answer:"ごめん、ちょっと言い過ぎたみたい。いずみが物を大事にするってことはよくわかってるよ。"},
+      {id:"expression-1-5",number:"⑤",q:"いずみさんが謝るとき",answer:"私こそ、ごめん。あなたの言うとおり、上手に捨てるってことも確かに必要かもね。"}
+    ]}
   ],
-  sourceFollowUps: [
-    { id: "repeat", section: "3. もう一度聞こう", instruction: "＿＿の部分に言葉を書いてください。", blankCount: 13, answerStatus: "answerbook_verified", timingStatus: "audio_timing_pending" },
-    { id: "say", section: "4. 言ってみよう", instruction: "絵を見ながら発音やイントネーションに注意し、MP3のとおりに言ってみましょう。", imagePrompts: 4, answerStatus: "not_scored" },
-    { id: "practice", section: "5. 練習しよう", instruction: "●と○はお互いに相手のすることが気に入らないので、不満や文句を言ってけんかしますが、最後には謝って、仲直りします。", tasks: ["場面1：恋人同士。遅刻と、急な仕事による約束のキャンセルについて、不満・文句を言ってから仲直りする。", "場面2：恋人同士。言い過ぎたことや遅刻を謝り、お互いに仲直りしてから食事の話をする。", "（1）恋人同士。片方が携帯電話を見てばかりいることと、電話を受けて話を中断することについて会話する。", "（2）友人同士。共有住宅の居間に持ち物・本・雑誌を散らかし、廊下に並べていることについて会話する。"], answerStatus: "open_ended_not_scored" },
-    { id: "challenge", section: "6. チャレンジしよう", instruction: "夫婦げんかをします。最後に仲直りしてください。", tasks: ["夫がテレビや電気をつけっぱなしにすること、水を出しっぱなしにすること、服を脱ぎっぱなしにすることについて文句を言う。", "妻が必要でない物も安いからと買い、買ってきたまま使っていない物が多いことについて文句を言う。"], answerStatus: "open_ended_not_scored" }
+  textbookActivities: [
+    {section:"1. やってみよう",label:"課本原題",items:[
+      {id:"activity-1-1",number:"1）",prompt:"あなたの友人はいつも忘れ物をして、あなたにいろいろな物を借ります。\n今日もそんな友人にあなたはいらいらして、文句を言います。気に入らない点をたくさん言ってください。",noModel:true},
+      {id:"activity-1-2",number:"2）",prompt:"友人が泣きそうな顔をしています。言い過ぎたことに気がつきました。相手と仲直りしてください。",noModel:true}
+    ]},
+    {section:"4. 言ってみよう",label:"課本原題",intro:"絵を見ながら発音やイントネーションに注意し、MP3のとおりに言ってみましょう。",items:[
+      {id:"activity-4-1",number:"1）",prompt:"課本圖示 1",pictureRequired:true,noModel:true},
+      {id:"activity-4-2",number:"2）",prompt:"課本圖示 2",pictureRequired:true,noModel:true},
+      {id:"activity-4-3",number:"3）",prompt:"課本圖示 3",pictureRequired:true,noModel:true},
+      {id:"activity-4-4",number:"4）",prompt:"課本圖示 4",pictureRequired:true,noModel:true}
+    ]},
+    {section:"5. 練習しよう",label:"課本原題",intro:"●と○はお互いに相手のすることが気に入らないので、不満や文句を言ってけんかしますが、最後には謝って、仲直りします。",items:[
+      {id:"practice-example",number:"例",prompt:"●はよく約束の時間に遅れて来る。今日も30分遅刻した。\nしかし、○もよく急な仕事で約束をキャンセルする（●○：恋人同士）\n\n〈場面1〉\n●：ごめんね。遅れちゃって。\n○：しょっちゅう遅れるね。ケータイで連絡ぐらいできるんじゃない？\n●：連絡しようと思ったんだけど、ケータイ、忘れちゃって……。\n○：え、また？　この前は電池が切れてたって言ったよね。だいたい君はいつも遅刻して平気なんだ。おまけに連絡する気もないんだ。\n●：そんなに言わなくたっていいじゃない。私だって、急いで仕事を片づけて飛んできたのに。あなたこそ、急用ができたからって、何回約束をキャンセルしたか分からない。お互いさまなんじゃない？\n\n〈場面2〉\n○：ごめん。……ちょっと言い過ぎたみたいだね。君と会えるのをすごく楽しみにしていたんだ。この前は僕の都合で会えなかったんだし……。\n●：うん、私こそ、遅れて、ごめん。ケータイを忘れちゃうなんて、バカだよね。\n○：ところで、今日は何、食べようか。\n●：そうね。何がいいかな。",noModel:true},
+      {id:"practice-1",number:"（1）",prompt:"デート中だが、●はケータイを見てばかりいる。○も電話を受けて話を中断することが多い（●○：恋人同士）\n○：いつまでケータイ触ってるつもり？　しょっちゅうケータイのぞいてるって失礼だよ。",modelLabel:"課本解答例",model:"〈場面1〉\n○：いつまでケータイ触ってるつもり？　しょっちゅうケータイ、のぞいてるって失礼だよ。\n●：いや、メールが来るかもしれないし。\n○：そんな緊急のメールなんて来るの？　だいたい、私よりメールのほうが大事なんだ。\n●：そんなに言わなくたっていいじゃないか。君こそ、友達からって言って、話の途中でも長電話することがよくあるじゃないか。お互い様なんじゃない？\n\n〈場面2〉\n○：ごめん。…ちょっと言い過ぎたみたいだね。一緒の時間にもっと話したいなって思って。\n●：うん、僕こそごめん。メールなんてあとでも見られるよね。\n○：ところで、今日は何、食べようか。\n●：そうだね。何がいいかな。"},
+      {id:"practice-2",number:"（2）",prompt:"シェアハウスに住んでいるが、●はいつも自分の持ち物を居間に散らかしっぱなしにして片づけないので、居間が乱雑だ。○は本や雑誌をたくさん持っていて、廊下にも並べている。通るのに邪魔だ（●○：友人同士）\n○：ちょっと、このかばん、いつも置きっぱなしだけど、片づけてくれない。",modelLabel:"課本解答例",model:"場面1\n○：ちょっと、このかばん、いつも置きっぱなしだけど、片づけてくれない。\n●：だって、ここで使うものだから。\n○：これも、それにあれも今使ってないじゃない。だいたい居間はみんなで使う場所だって君は分かってないんだ。\n●：そんなに言わなくたっていいじゃない。○だって、廊下の本や雑誌は何なの？　通るのにいつも邪魔だよ。お互い様なんじゃない？\n\n場面2\n○：ごめん。…ちょっと言い過ぎたみたいだね。●の物を居間で使わせてもらってみんな便利なのもわかってるよ。\n●：うん、こっちこそごめん。やっぱり、もう少し整理したほうがいいよね。\n○：あ、そろそろ７時だ。ドラマが始まるよ。\n●：ほんとだ。一緒に見よう。"}
+    ]},
+    {section:"6. チャレンジしよう",label:"課本原題",intro:"夫婦げんかをします。最後に仲直りしてください。",items:[
+      {id:"activity-6",number:"",prompt:"妻：夫は今までいた部屋を出るとき、いつもテレビや電気をつけっぱなしにしておきます。今日も夫は居間のテレビをつけっぱなしで他の部屋へ行こうとしました。文句を言ってください。文句を言いながら、夫が歯を磨くときは水を出しっぱなし、着替えるときは服を脱ぎっぱなしにすることも思い出してください。\n\n夫：妻が買い物好きで必要ないものまで安いからといって買ってくるのが気に入りません。文句を言ってください。辺りを見ると、買ってきたまま、全然使っていないものがたくさんあります。",noModel:true}
+    ]}
   ],
-  comprehension: [],
   furigana: {
-    "捜し物": "さがしもの", "確か": "たしか", "結婚": "けっこん", "思い出": "おもいで", "一度": "いちど", "新婚時代": "しんこんじだい", "整理": "せいり", "袋": "ふくろ", "大切": "たいせつ", "思い切って": "おもいきって", "置いとけば": "おいとけば", "役に立つ": "やくにたつ", "そもそも": "そもそも", "場所": "ばしょ", "日曜": "にちよう", "栓": "せん", "抜いて": "ぬいて", "不満": "ふまん", "文句": "もんく", "皮肉": "ひにく", "非難": "ひなん", "仲直り": "なかなおり"
+    "捜し物":"さがしもの","確か":"たしか","結婚":"けっこん","思い出":"おもいで","一度":"いちど","新婚時代":"しんこんじだい","整理":"せいり","袋":"ふくろ","大切":"たいせつ","思い切って":"おもいきって","置いとけば":"おいとけば","役に立つ":"やくにたつ","場所":"ばしょ","日曜":"にちよう","栓":"せん","抜いて":"ぬいて","不満":"ふまん","文句":"もんく","皮肉":"ひにく","非難":"ひなん","仲直り":"なかなおり","食器":"しょっき","品物":"しなもの","積んで":"つんで","謝る":"あやまる","忘れ物":"わすれもの","気に入らない":"きにいらない","気がつきました":"きがつきました","発音":"はつおん","注意":"ちゅうい","相手":"あいて","約束":"やくそく","遅刻":"ちこく","急な仕事":"きゅうなしごと","恋人同士":"こいびとどうし","緊急":"きんきゅう","途中":"とちゅう","長電話":"ながでんわ","都合":"つごう","持ち物":"もちもの","居間":"いま","散らかしっぱなし":"ちらかしっぱなし","片づけない":"かたづけない","乱雑":"らんざつ","廊下":"ろうか","邪魔":"じゃま","夫婦":"ふうふ","電気":"でんき","歯を磨く":"はをみがく","着替える":"きがえる","辺り":"あたり","全然":"ぜんぜん"
   },
   furiganaSegments: {},
   embeddedJapanese: []
