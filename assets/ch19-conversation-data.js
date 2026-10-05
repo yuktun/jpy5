@@ -1,59 +1,31 @@
-window.JPY5_CONVERSATION={title:"ちょっと自慢話になりますが",setting:"大学演劇部 入部歓迎会",speakers:["山口","南","古田","マヨラン","松下","アンタ"],audio:"https://ttrw.jp/static/sound/sound202406141718354761.mp3",sourceStatus:"printed_dialogue_transcribed; blank_answers_answerbook_verified; audio_timing_pending",source:{conversationPdfPages:[5,6,7,8],conversationPrintedPages:[89,90,91,92],answerBookPdfPages:[9,10],audioTrack:"MP3 1-21",activities:[1,2,3,4,5,6]},sourceNote:"話す・聞くの活動1〜6、会話本文、8個の番号付き空欄、4問の内容設問、5問の表現設問は『みんなの日本語 中級II』第19課PDF pp. 5–8（印刷pp. 89–92）から視覚的に転記した。『3. もう一度聞こう』の8解答は公式解答冊 PDF 第9–10頁から入力済み。公式MP3との照合、採点、文単位タイムスタンプ、個別再生は未実装。",items:[],dialogue:[
-["山口","司会の山口です。今日は皆さんのさくら大学演劇部への入部を歓迎してささやかな会を行いたいと思います。①＿＿＿＿＿＿＿＿。","",""],
-["南","はい。部長の南です。皆さん、入学おめでとうございます。我が演劇部は代々全国大学演劇祭で優秀な成績を収めてきた歴史ある部です。その伝統と誇りをぜひ受け継いでもらいたいと思います。","",""],
-["山口","では、次に、古田先輩、②＿＿＿＿＿＿＿＿。続いて、新入生にバトンを回しますので、心の準備をしておいてください。じゃ、古田さん。","",""],
-["古田","古田です。僕は現在4年生ですが、実は大学7年目です。演劇というと、みんな役者を思い浮かべるでしょう。しかし、演劇が出来上がるには、まず、脚本、舞台装置、衣装作り、それから役者が登場するのです。決して華やかなだけの世界ではないということを覚えておいてほしいです。練習は厳しいですから覚悟してください。","",""],
-["山口","では、これから、新入生に登場願いますが、③＿＿＿＿＿＿＿＿、何か自分をアピールするようなことを話してください。先輩が聞いて、このキャラクターはこの役割にいいんじゃないかとイメージできるようにお願いします。④＿＿＿＿＿＿＿＿。マヨラン君。","",""],
-["マヨラン","はい。工学部のマヨランです。⑤＿＿＿＿＿＿＿＿、僕は高専時代にロボットコンテストで優勝しました。学校の行事だったので、はじめは嫌だなあと思っていました。でも作っていくうちに、僕の足がタイヤに、腕がストッパーに、筋肉がモーターに、そして心がロボットの中に入っていったような気がしました。僕が、僕を作っている、その僕が僕を動かしている、そう思うと何だか楽しくなりました。ロボット作りの⑥＿＿＿＿舞台装置作りに⑦＿＿＿＿＿＿＿＿。","",""],
-["松下","経済学部の松下です。僕は小学校から高校まで野球部にいました。でも万年補欠、一度もレギュラーになったことがありません。⑧＿＿＿＿＿＿＿＿。華やかな世界を支える下積みの人間の心の痛みを知っているつもりです。よろしくお願いします。","",""],
-["アンタ","医学部のアンタです。私は高校で落語のサークルに入っていました。得意の小噺をひとつ聞いてください。「先生、私、手術初めてなんです。大丈夫でしょうか」「大丈夫ですよ。私も初めてですから」。できれば喜劇のほうをやりたいんですけど、大丈夫でしょうか。","",""],
-["山口","ユニークなキャラクターが揃ったようで、我が演劇部の伝統も無事引き継がれていきそうです。では、あしたからの練習、気を引き締めてやっていきましょう。","",""]],
-unverifiedBlanks:[
-  {id:1,speaker:"山口",context:"会を行いたいと思います。＿＿。",answer:"まず、部長の挨拶から。どうぞ",source:"printed_blank_and_official_answer_book",status:"answerbook_verified_audio_timing_pending",answerStatus:"answerbook_verified",timingStatus:"audio_timing_pending"},
-  {id:2,speaker:"山口",context:"では、次に、古田先輩、＿＿。",answer:"一言お願いします",source:"printed_blank_and_official_answer_book",status:"answerbook_verified_audio_timing_pending",answerStatus:"answerbook_verified",timingStatus:"audio_timing_pending"},
-  {id:3,speaker:"山口",context:"新入生に登場願いますが、＿＿、何か自分をアピールするようなことを話してください。",answer:"ありきたりの自己紹介ではなく",source:"printed_blank_and_official_answer_book",status:"answerbook_verified_audio_timing_pending",answerStatus:"answerbook_verified",timingStatus:"audio_timing_pending"},
-  {id:4,speaker:"山口",context:"イメージできるようにお願いします。＿＿。マヨラン君。",answer:"こちらから時計回りに",source:"printed_blank_and_official_answer_book",status:"answerbook_verified_audio_timing_pending",answerStatus:"answerbook_verified",timingStatus:"audio_timing_pending"},
-  {id:5,speaker:"マヨラン",context:"工学部のマヨランです。＿＿、僕は高専時代に……",answer:"ちょっと自慢話になりますが",source:"printed_blank_and_official_answer_book",status:"answerbook_verified_audio_timing_pending",answerStatus:"answerbook_verified",timingStatus:"audio_timing_pending"},
-  {id:6,speaker:"マヨラン",context:"ロボット作りの＿＿舞台装置作りに……",answer:"経験を",source:"printed_blank_and_official_answer_book",status:"answerbook_verified_audio_timing_pending",answerStatus:"answerbook_verified",timingStatus:"audio_timing_pending"},
-  {id:7,speaker:"マヨラン",context:"舞台装置作りに＿＿。",answer:"生かせたらいいなと思います",source:"printed_blank_and_official_answer_book",status:"answerbook_verified_audio_timing_pending",answerStatus:"answerbook_verified",timingStatus:"audio_timing_pending"},
-  {id:8,speaker:"松下",context:"一度もレギュラーになったことがありません。＿＿。",answer:"いわゆるボール拾いです",source:"printed_blank_and_official_answer_book",status:"answerbook_verified_audio_timing_pending",answerStatus:"answerbook_verified",timingStatus:"audio_timing_pending"}
-],
+window.JPY5_CONVERSATION={
+title:"ちょっと自慢話になりますが",setting:"大学演劇部 入部歓迎会",speakers:["山口","南","古田","マヨラン","松下","アンタ"],audio:"https://ttrw.jp/static/sound/sound202406141718354761.mp3",sourceStatus:"textbook_answerbook_audio_verified",source:{conversationPdfPages:[5,6,7,8],conversationPrintedPages:[89,90,91,92],answerBookPdfPages:[9,10],audioTrack:"MP3 1-21",activities:[1,2,3,4,5,6]},sourceNote:"話す・聞くの活動1〜6、会話本文、8個の番号付き空欄、4問の内容設問、5問の表現設問は『みんなの日本語 中級II』第19課PDF pp. 5–8（印刷pp. 89–92）から視覚的に転記した。公式解答は解答冊PDF pp. 9–10（聴解解答は第9頁から第10頁に続く）で確認し、8個の空欄と再生区間は公式MP3 1-21で照合した。",items:[],dialogue:[
+["山口","司会の山口です。今日は皆さんのさくら大学演劇部への入部を歓迎してささやかな会を行いたいと思います。①＿＿＿＿＿＿＿＿。"],
+["南","はい。部長の南です。皆さん、入学おめでとうございます。我が演劇部は代々全国大学演劇祭で優秀な成績を収めてきた歴史ある部です。その伝統と誇りをぜひ受け継いでもらいたいと思います。"],
+["山口","では、次に、古田先輩、②＿＿＿＿＿＿＿＿。続いて、新入生にバトンを回しますので、心の準備をしておいてください。じゃ、古田さん。"],
+["古田","古田です。僕は現在4年生ですが、実は大学7年目です。演劇というと、みんな役者を思い浮かべるでしょう。しかし、演劇が出来上がるには、まず、脚本、舞台装置、衣装作り、それから役者が登場するのです。決して華やかなだけの世界ではないということを覚えておいてほしいです。練習は厳しいですから覚悟してください。"],
+["山口","では、これから、新入生に登場願いますが、③＿＿＿＿＿＿＿＿、何か自分をアピールするようなことを話してください。先輩が聞いて、このキャラクターはこの役割にいいんじゃないかとイメージできるようにお願いします。④＿＿＿＿＿＿＿＿。マヨラン君。"],
+["マヨラン","はい。工学部のマヨランです。⑤＿＿＿＿＿＿＿＿、僕は高専時代にロボットコンテストで優勝しました。学校の行事だったので、はじめは嫌だなあと思っていました。でも作っていくうちに、僕の足がタイヤに、腕がストッパーに、筋肉がモーターに、そして心がロボットの中に入っていったような気がしました。僕が、僕を作っている、その僕が僕を動かしている、そう思うと何だか楽しくなりました。ロボット作りの⑥＿＿＿＿舞台装置作りに⑦＿＿＿＿＿＿＿＿。"],
+["松下","経済学部の松下です。僕は小学校から高校まで野球部にいました。でも万年補欠、一度もレギュラーになったことがありません。⑧＿＿＿＿＿＿＿＿。華やかな世界を支える下積みの人間の心の痛みを知っているつもりです。よろしくお願いします。"],
+["アンタ","医学部のアンタです。私は高校で落語のサークルに入っていました。得意の小噺をひとつ聞いてください。「先生、私、手術初めてなんです。大丈夫でしょうか」「大丈夫ですよ。私も初めてですから」。できれば喜劇のほうをやりたいんですけど、大丈夫でしょうか。"],
+["山口","ユニークなキャラクターが揃ったようで、我が演劇部の伝統も無事引き継がれていきそうです。では、あしたからの練習、気を引き締めてやっていきましょう。"]],
+listeningTargets:[
+{id:1,speaker:"山口",context:"会を行いたいと思います。＿＿。",answer:"まず、部長の挨拶から。どうぞ",start:21.60,end:24.78,status:"verified_textbook_answerbook_audio",source:"official_answer_book_and_mp3"},
+{id:2,speaker:"山口",context:"では、次に、古田先輩、＿＿。",answer:"一言お願いします",start:50.26,end:51.34,status:"verified_textbook_answerbook_audio",source:"official_answer_book_and_mp3"},
+{id:3,speaker:"山口",context:"新入生に登場願いますが、＿＿、何か自分をアピールするようなことを話してください。",answer:"ありきたりの自己紹介ではなく",start:94.22,end:96.28,status:"verified_textbook_answerbook_audio",source:"official_answer_book_and_mp3"},
+{id:4,speaker:"山口",context:"イメージできるようにお願いします。＿＿。マヨラン君。",answer:"こちらから時計回りに",start:106.78,end:108.88,status:"verified_textbook_answerbook_audio",source:"official_answer_book_and_mp3"},
+{id:5,speaker:"マヨラン",context:"工学部のマヨランです。＿＿、僕は高専時代に……",answer:"ちょっと自慢話になりますが",start:114.14,end:116.20,status:"verified_textbook_answerbook_audio",source:"official_answer_book_and_mp3"},
+{id:6,speaker:"マヨラン",context:"ロボット作りの＿＿舞台装置作りに……",answer:"経験を",start:148.56,end:149.12,status:"verified_textbook_answerbook_audio",source:"official_answer_book_and_mp3"},
+{id:7,speaker:"マヨラン",context:"舞台装置作りに＿＿。",answer:"生かせたらいいなと思います",start:150.44,end:151.66,status:"verified_textbook_answerbook_audio",source:"official_answer_book_and_mp3"},
+{id:8,speaker:"松下",context:"一度もレギュラーになったことがありません。＿＿。",answer:"いわゆるボール拾いです",start:167.56,end:169.24,status:"verified_textbook_answerbook_audio",source:"official_answer_book_and_mp3"}],
 sourcePrompts:[
-  {id:"listen-1",section:"2. 聞いてみよう 1) 内容を聞き取りましょう",jp:"今日は何の会が行われますか。",answerStatus:"audio_confirmation_required"},
-  {id:"listen-2",section:"2. 聞いてみよう 1) 内容を聞き取りましょう",jp:"それは何の部ですか。",answerStatus:"audio_confirmation_required"},
-  {id:"listen-3",section:"2. 聞いてみよう 1) 内容を聞き取りましょう",jp:"先輩の古田さんは演劇と役者についてどんなことを言いましたか。",answerStatus:"audio_confirmation_required"},
-  {id:"listen-4",section:"2. 聞いてみよう 1) 内容を聞き取りましょう",jp:"新入部員は何人ですか。それぞれどんな経験を持っていますか。",answerStatus:"audio_confirmation_required"}
-],
-expressionExercises:[
-  {id:"expression-1",section:"2. 聞いてみよう 2) 表現を聞き取りましょう",prompt:"どう言いましたか。",items:[
-    "司会者が簡単なスピーチを古田さんに頼むとき",
-    "司会者が新入生にどのようなことを話してほしいか言うとき",
-    "マヨランさんが自分の経験を話し始めるとき",
-    "マヨランさんが今までやってきたことを今後の部活動に役立てたいと言うとき",
-    "松下さんが、野球部での自分の存在を一言で表現するとき"
-  ],answerStatus:"audio_confirmation_required"}
-],
-sourceFollowUps:[
-  {id:"warmup",section:"1. やってみよう",content:["料理教室に入会しました。自己紹介をするように言われました。自分をアピールするような話をしてください。"],answerStatus:"open_ended_not_scored"},
-  {id:"repeat",section:"3. もう一度聞こう",content:["＿＿＿の部分に言葉を書いてください。"],blankCount:8,answerStatus:"answerbook_verified",timingStatus:"audio_timing_pending"},
-  {id:"say",section:"4. 言ってみよう",content:["絵を見ながら発音やイントネーションに注意し、MP3のとおりに言ってみましょう。"],imagePrompts:4,imagePromptPrintedPage:91,answerStatus:"not_scored"},
-  {id:"practice",section:"5. 練習しよう",content:[
-    "1）人に自慢できる経験を披露し、自分をアピールします。",
-    "例：小学校のときから野球が得意。高校のとき、甲子園の高校野球大会に出場した。",
-    "○：川上です。私は小学校のときから、野球をやっていました。ちょっと自慢話になりますが、高校のときは甲子園へも行きました。優勝はできませんでしたが、準決勝まで進みました。練習の厳しさや、野球部の経験を営業の仕事に生かせたらいいなと思います。",
-    "（1）小学校のときから、そろばんが得意。中学で全国優勝した。電卓より速く正確である。",
-    "（2）子どものときからいろいろなボランティア活動に参加してきた。高校ではボランティア部を新しくつくった。",
-    "2）一般的にはマイナスと考えられる経験を述べて自分をアピールします。",
-    "例：中学時代は友達がいなかった。家にこもってたくさん本を読んだ。空想力と想像力に自信がある。",
-    "○：私は中学時代、友達をつくるのが下手で、家の中でいつも一人で過ごしていました。いわゆる引きこもりです。でもその間にたくさんの本を読んだり、アニメを見たりしました。ですから他の人より豊かな空想力、想像力を持っているつもりです。",
-    "（1）よく迷子になる。地図とコンパスが手放せない。方向音痴である。ナビゲーターの会社に就職できれば、かゆい所に手が届くようなナビが作れると思う。",
-    "（2）すぐ人を信じる。何回もだまされたことがある。お人よしである。ぜひ警察官になって詐欺などの被害を防ぎたい。"
-  ],answerStatus:"open_ended_not_scored"},
-  {id:"challenge",section:"6. チャレンジしよう",content:[
-    "自分をアピールする自己紹介をしてください。",
-    "グループをつくり、まず、何の集まりか決めてください。",
-    "全員、新しいメンバーとして、順番に1分間ずつ話してください。"
-  ],answerStatus:"open_ended_not_scored"}
-],comprehension:[],furigana:{
-  "司会":"しかい","皆さん":"みなさん","大学演劇部":"だいがくえんげきぶ","入部":"にゅうぶ","歓迎":"かんげい","部長":"ぶちょう","入学":"にゅうがく","演劇祭":"えんげきさい","優秀":"ゆうしゅう","成績":"せいせき","収めて":"おさめて","伝統":"でんとう","誇り":"ほこり","受け継いで":"うけついで","先輩":"せんぱい","新入生":"しんにゅうせい","心":"こころ","準備":"じゅんび","現在":"げんざい","役者":"やくしゃ","脚本":"きゃくほん","舞台装置":"ぶたいそうち","衣装":"いしょう","登場":"とうじょう","決して":"けっして","華やか":"はなやか","厳しい":"きびしい","覚悟":"かくご","工学部":"こうがくぶ","高専時代":"こうせんじだい","優勝":"ゆうしょう","行事":"ぎょうじ","足":"あし","腕":"うで","筋肉":"きんにく","経済学部":"けいざいがくぶ","小学校":"しょうがっこう","高校":"こうこう","野球部":"やきゅうぶ","万年補欠":"まんねんほけつ","医学部":"いがくぶ","落語":"らくご","得意":"とくい","小噺":"こばなし","手術":"しゅじゅつ","喜劇":"きげき","無事":"ぶじ","気":"き"
-},furiganaSegments:{},embeddedJapanese:[]};
+{id:"listen-1",number:"①",jp:"今日は何の会が行われますか。",answer:"入部歓迎会"},{id:"listen-2",number:"②",jp:"それは何の部ですか。",answer:"演劇部"},{id:"listen-3",number:"③",jp:"先輩の古田さんは演劇と役者についてどんなことを言いましたか。",answer:"演劇が出来上がるには、役者だけでなく、まず、脚本、舞台装置、衣装作りなどがあり、華やかなだけの世界ではない"},{id:"listen-4",number:"④",jp:"新入部員は何人ですか。それぞれどんな経験を持っていますか。",answer:"3人。マヨランは高専時代にロボットコンテストで優勝した。松下は小学校から高校まで野球部で補欠だった。アンタは高校で落語のサークルに入っていた。"}],
+expressionExercises:[{id:"expression-1",prompt:"どう言いましたか。",items:[
+{id:"expression-1-1",number:"①",q:"司会者が簡単なスピーチを古田さんに頼むとき",answer:"一言お願いします。"},{id:"expression-1-2",number:"②",q:"司会者が新入生にどのようなことを話してほしいか言うとき",answer:"ありきたりの自己紹介ではなく、何か自分をアピールするようなことを話してください。"},{id:"expression-1-3",number:"③",q:"マヨランさんが自分の経験を話し始めるとき",answer:"ちょっと自慢話になりますが"},{id:"expression-1-4",number:"④",q:"マヨランさんが今までやってきたことを今後の部活動に役立てたいと言うとき",answer:"ロボット作りの経験を舞台装置作りに生かせたらいいなと思います。"},{id:"expression-1-5",number:"⑤",q:"松下さんが、野球部での自分の存在を一言で表現するとき",answer:"いわゆるボール拾いです。"}]}],
+textbookActivities:[
+{label:"1",section:"1. やってみよう",legacyNoteKey:"warmup",items:[{id:"activity-1",number:"1",prompt:"料理教室に入会しました。自己紹介をするように言われました。自分をアピールするような話をしてください。",noModel:true}]},
+{label:"4",section:"4. 言ってみよう",legacyNoteKey:"say",intro:"絵を見ながら発音やイントネーションに注意し、MP3のとおりに言ってみましょう。",items:[1,2,3,4].map(n=>({id:`activity-4-${n}`,number:`${n}`,prompt:`課本第91頁の絵 ${n}`,pictureRequired:true,noModel:true}))},
+{label:"5",section:"5. 練習しよう",legacyNoteKey:"practice",intro:"自分の経験を使って、自分をアピールする話を作りましょう。",examples:[{title:"1）課本例：人に自慢できる経験",prompt:"小学校のときから野球が得意。高校のとき、甲子園の高校野球大会に出場した。",text:"川上です。私は小学校のときから、野球をやっていました。ちょっと自慢話になりますが、高校のときは甲子園へも行きました。優勝はできませんでしたが、準決勝まで進みました。練習の厳しさや、野球部の経験を営業の仕事に生かせたらいいなと思います。"},{title:"2）課本例：マイナスの経験を言い換える",prompt:"中学時代は友達がいなかった。家にこもってたくさん本を読んだ。空想力と想像力に自信がある。",text:"私は中学時代、友達をつくるのが下手で、家の中でいつも一人で過ごしていました。いわゆる引きこもりです。でもその間にたくさんの本を読んだり、アニメを見たりしました。ですから他の人より豊かな空想力、想像力を持っているつもりです。"}],items:[
+{id:"practice-positive-1",number:"1-(1)",prompt:"小学校のときから、そろばんが得意。中学で全国優勝した。電卓より速く正確である。",modelLabel:"課本解答例",model:"○です。私は小学校のときから、そろばんが得意でした。ちょっと自慢になりますが、中学のときは全国優勝しました。電卓より速く正確な計算が経理部の仕事で生かせたらいいなと思います。"},{id:"practice-positive-2",number:"1-(2)",prompt:"子どものときからいろいろなボランティア活動に参加してきた。高校ではボランティア部を新しくつくった。",modelLabel:"課本解答例",model:"○です。私は子どものときからいろいろなボランティア活動に参加してきました。ちょっと自慢になりますが、高校ではボランティア部を新しくつくりました。この経験が学園祭の実行委員会でも生かせたらいいなと思います。"},{id:"practice-negative-1",number:"2-(1)",prompt:"よく迷子になる。地図とコンパスが手放せない。方向音痴である。ナビゲーターの会社に就職できれば、かゆい所に手が届くようなナビが作れると思う。",modelLabel:"課本解答例",model:"私はよく迷子になるので、地図とコンパスが手放せません。いわゆる方向音痴です。だからこそ、ナビゲーターの会社に就職できればかゆい所に手が届くようなナビが作れると思います。"},{id:"practice-negative-2",number:"2-(2)",prompt:"すぐ人を信じる。何回もだまされたことがある。お人よしである。ぜひ警察官になって詐欺などの被害を防ぎたい。",modelLabel:"課本解答例",model:"私はすぐ人を信じて、何回もだまされたことがあります。いわゆるお人よしです。ですから、被害者の心理がよく理解できます。ぜひ警察官になって詐欺などの被害を防ぎたいと思います。"}]},
+{label:"6",section:"6. チャレンジしよう",legacyNoteKey:"challenge",intro:"自分をアピールする自己紹介をしてください。",items:[{id:"activity-6",number:"6",prompt:"グループをつくり、まず、何の集まりか決めてください。\n全員、新しいメンバーとして、順番に1分間ずつ話してください。",noModel:true}]}],sourceFollowUps:[],comprehension:[],
+furigana:{"司会":"しかい","皆さん":"みなさん","大学演劇部":"だいがくえんげきぶ","入部":"にゅうぶ","歓迎":"かんげい","部長":"ぶちょう","挨拶":"あいさつ","入学":"にゅうがく","演劇祭":"えんげきさい","優秀":"ゆうしゅう","成績":"せいせき","収めて":"おさめて","伝統":"でんとう","誇り":"ほこり","受け継いで":"うけついで","先輩":"せんぱい","新入生":"しんにゅうせい","時計回り":"とけいまわり","心":"こころ","準備":"じゅんび","現在":"げんざい","役者":"やくしゃ","脚本":"きゃくほん","舞台装置":"ぶたいそうち","衣装":"いしょう","登場":"とうじょう","決して":"けっして","華やか":"はなやか","厳しい":"きびしい","覚悟":"かくご","工学部":"こうがくぶ","高専時代":"こうせんじだい","優勝":"ゆうしょう","行事":"ぎょうじ","足":"あし","腕":"うで","筋肉":"きんにく","経済学部":"けいざいがくぶ","小学校":"しょうがっこう","高校":"こうこう","野球部":"やきゅうぶ","万年補欠":"まんねんほけつ","医学部":"いがくぶ","落語":"らくご","得意":"とくい","小噺":"こばなし","手術":"しゅじゅつ","喜劇":"きげき","無事":"ぶじ","一言":"ひとこと","自己紹介":"じこしょうかい","経験":"けいけん","生かせたら":"いかせたら","料理教室":"りょうりきょうしつ","発音":"はつおん","全国優勝":"ぜんこくゆうしょう","電卓":"でんたく","正確":"せいかく","経理部":"けいりぶ","方向音痴":"ほうこうおんち","被害者":"ひがいしゃ","心理":"しんり","警察官":"けいさつかん","詐欺":"さぎ"},furiganaSegments:{},embeddedJapanese:[]};

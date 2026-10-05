@@ -30,9 +30,11 @@ for (const lesson of [19,20]) {
   }
   assert.equal(data.JPY5_DATA.questions.length,patterns.length*2); assert(data.JPY5_DATA.questions.every(q=>q.answer>=0&&q.answer<q.options.length));
   assert.equal(reading.title,e.reading); assert.equal(reading.paragraphs.length,5); assert(reading.paragraphs.every(p=>p.jp&&p.zh));
-  assert.equal(conversation.dialogue.length,e.dialogue); assert.equal(conversation.unverifiedBlanks.length,e.blanks);
-  assert.deepEqual(JSON.parse(JSON.stringify(conversation.unverifiedBlanks.map(item=>item.answer))),e.blankAnswers);
-  assert(conversation.unverifiedBlanks.every((item,index)=>item.id===index+1&&item.status==="answerbook_verified_audio_timing_pending"&&item.answerStatus==="answerbook_verified"&&item.timingStatus==="audio_timing_pending"&&!Object.hasOwn(item,"start")&&!Object.hasOwn(item,"end")));
+  const blanks=lesson===19?conversation.listeningTargets:conversation.unverifiedBlanks;
+  assert.equal(conversation.dialogue.length,e.dialogue); assert.equal(blanks.length,e.blanks);
+  assert.deepEqual(JSON.parse(JSON.stringify(blanks.map(item=>item.answer))),e.blankAnswers);
+  if(lesson===19)assert(blanks.every((item,index)=>item.id===index+1&&item.status==="verified_textbook_answerbook_audio"&&Number.isFinite(item.start)&&Number.isFinite(item.end)&&item.start<item.end));
+  else assert(blanks.every((item,index)=>item.id===index+1&&item.status==="answerbook_verified_audio_timing_pending"&&item.answerStatus==="answerbook_verified"&&item.timingStatus==="audio_timing_pending"&&!Object.hasOwn(item,"start")&&!Object.hasOwn(item,"end")));
   assert.equal(conversation.items.length,0); assert.equal(conversation.comprehension.length,0);
   if (lesson === 19) {
     const separatedVerbForms=new Map([
@@ -57,20 +59,16 @@ for (const lesson of [19,20]) {
       "新入部員は何人ですか。それぞれどんな経験を持っていますか。"
     ]);
     assert.equal(conversation.expressionExercises.length,1);
-    assert.deepEqual(JSON.parse(JSON.stringify(conversation.expressionExercises[0].items)),[
+    assert.deepEqual(JSON.parse(JSON.stringify(conversation.expressionExercises[0].items.map(item=>item.q))),[
       "司会者が簡単なスピーチを古田さんに頼むとき",
       "司会者が新入生にどのようなことを話してほしいか言うとき",
       "マヨランさんが自分の経験を話し始めるとき",
       "マヨランさんが今までやってきたことを今後の部活動に役立てたいと言うとき",
       "松下さんが、野球部での自分の存在を一言で表現するとき"
     ]);
-    assert(conversation.sourcePrompts.every(item=>item.answerStatus==="audio_confirmation_required"&&!Object.hasOwn(item,"answer")));
-    assert(conversation.expressionExercises.every(item=>item.answerStatus==="audio_confirmation_required"&&!Object.hasOwn(item,"answer")));
-    assert.deepEqual(JSON.parse(JSON.stringify(conversation.sourceFollowUps.map(item=>item.id))),["warmup","repeat","say","practice","challenge"]);
-    assert.deepEqual(JSON.parse(JSON.stringify(conversation.sourceFollowUps.map(item=>item.section.split(".")[0]))),["1","3","4","5","6"]);
-    assert(conversation.sourceFollowUps.every(item=>item.content.length&&!Object.hasOwn(item,"answer")));
-    assert.equal(conversation.sourceFollowUps.find(item=>item.id==="repeat").answerStatus,"answerbook_verified");
-    assert.equal(conversation.sourceFollowUps.find(item=>item.id==="repeat").timingStatus,"audio_timing_pending");
+    assert(conversation.sourcePrompts.every(item=>item.answer));
+    assert(conversation.expressionExercises[0].items.every(item=>item.answer));
+    assert.deepEqual(JSON.parse(JSON.stringify(conversation.textbookActivities.map(item=>item.label))),["1","4","5","6"]);
     assert.deepEqual(JSON.parse(JSON.stringify(conversation.source.conversationPdfPages)),[5,6,7,8]);
     assert.deepEqual(JSON.parse(JSON.stringify(conversation.source.conversationPrintedPages)),[89,90,91,92]);
     assert.deepEqual(JSON.parse(JSON.stringify(reading.sourceActivities.map(item=>item.section.split(".")[0]))),["3","4","5"]);
@@ -141,9 +139,8 @@ const lesson20Files=[
 ];
 for (const file of lesson20Files) assert(!/ワット|いずみ|第77頁/.test(await readFile(file,"utf8")),`${file} contains stale lesson content`);
 const lesson19Controller=await readFile("assets/ch19-conversation.js","utf8"),lesson19Textbook=await readFile("chapter-19-textbook.html","utf8");
-assert.doesNotMatch(lesson19Controller,/data-listen-target|currentTime\s*=/); assert.doesNotMatch(await readFile("assets/ch19-conversation-data.js","utf8"),/\b(?:start|end)\s*:/);
-assert(lesson19Controller.includes("data.sourcePrompts.length")); assert(lesson19Controller.includes("expressionPromptCount"));
-assert(!lesson19Textbook.includes("1個內容提示")); assert(lesson19Textbook.includes("印刷第 89–92 頁"));
+assert.match(lesson19Controller,/data-listen-target/); assert.match(lesson19Controller,/currentTime\s*=/);
+assert(!lesson19Textbook.includes("Beta")); assert(lesson19Textbook.includes("印刷第89–92頁"));
 const lesson20Controller=await readFile("assets/ch20-conversation.js","utf8"),lesson20Textbook=await readFile("chapter-20-textbook.html","utf8");
 assert.doesNotMatch(lesson20Controller,/data-listen-target|currentTime\s*=/); assert.doesNotMatch(await readFile("assets/ch20-conversation-data.js","utf8"),/\b(?:start|end)\s*:/);
 assert(lesson20Controller.includes("data.sourcePrompts.length")); assert(lesson20Controller.includes("expressionPromptCount"));
