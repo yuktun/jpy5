@@ -119,15 +119,10 @@ for (const module of conversationModules) {
     assert.match(source, /const renderers=\{dialogue,comprehension,activities,focus,blanks,guide\}/, "Lesson 17 must retain all completed listening study modes");
     continue;
   }
-  if (["ch18-conversation.js", "ch19-conversation.js"].includes(module)) {
+  if (["ch18-conversation.js", "ch19-conversation.js", "ch20-conversation.js"].includes(module)) {
     assert.doesNotMatch(source, /showModal\(/, "Lesson 18 must keep its inline answer-and-replay interface");
     assert.match(source, /const renderers=\{dialogue,comprehension,activities,focus,blanks,guide\}/, "Lesson 18 must retain all completed listening study modes");
     assert.match(source, /audio\.currentTime=target\.start/, `${module} must retain verified sentence replay`);
-    continue;
-  }
-  if (module === "ch20-conversation.js") {
-    assert.doesNotMatch(source, /showModal\(|data-answer|currentTime\s*=/, `${module} must not expose guessed answers or sentence replay`);
-    assert.match(source, /const renderers=\{dialogue,blanks,prompts,expressions,activities,guide\}/, `${module} must retain unscored modes and source follow-ups`);
     continue;
   }
   assert.match(source, /root\.style\.scrollBehavior="auto"/, `${module} must restore background scroll without smooth animation`);
@@ -137,7 +132,7 @@ for (const module of conversationModules) {
 for (const file of conversationDataFiles) {
   const context = { window: {} };
   vm.runInNewContext(await readFile(join(root, "assets", file), "utf8"), context);
-  if (["ch17-conversation-data.js", "ch18-conversation-data.js", "ch19-conversation-data.js"].includes(file)) {
+  if (["ch17-conversation-data.js", "ch18-conversation-data.js", "ch19-conversation-data.js", "ch20-conversation-data.js"].includes(file)) {
     assert(context.window.JPY5_CONVERSATION.listeningTargets.every(item => item.answer && item.context && Number.isFinite(item.start) && Number.isFinite(item.end)), `${file} must retain every verified answer, context, and replay interval`);
     continue;
   }

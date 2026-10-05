@@ -30,11 +30,10 @@ for (const lesson of [19,20]) {
   }
   assert.equal(data.JPY5_DATA.questions.length,patterns.length*2); assert(data.JPY5_DATA.questions.every(q=>q.answer>=0&&q.answer<q.options.length));
   assert.equal(reading.title,e.reading); assert.equal(reading.paragraphs.length,5); assert(reading.paragraphs.every(p=>p.jp&&p.zh));
-  const blanks=lesson===19?conversation.listeningTargets:conversation.unverifiedBlanks;
+  const blanks=conversation.listeningTargets;
   assert.equal(conversation.dialogue.length,e.dialogue); assert.equal(blanks.length,e.blanks);
   assert.deepEqual(JSON.parse(JSON.stringify(blanks.map(item=>item.answer))),e.blankAnswers);
-  if(lesson===19)assert(blanks.every((item,index)=>item.id===index+1&&item.status==="verified_textbook_answerbook_audio"&&Number.isFinite(item.start)&&Number.isFinite(item.end)&&item.start<item.end));
-  else assert(blanks.every((item,index)=>item.id===index+1&&item.status==="answerbook_verified_audio_timing_pending"&&item.answerStatus==="answerbook_verified"&&item.timingStatus==="audio_timing_pending"&&!Object.hasOwn(item,"start")&&!Object.hasOwn(item,"end")));
+  assert(blanks.every((item,index)=>item.id===index+1&&item.status==="verified_textbook_answerbook_audio"&&Number.isFinite(item.start)&&Number.isFinite(item.end)&&item.start<item.end));
   assert.equal(conversation.items.length,0); assert.equal(conversation.comprehension.length,0);
   if (lesson === 19) {
     const separatedVerbForms=new Map([
@@ -114,13 +113,9 @@ for (const lesson of [19,20]) {
     ]);
     assert.equal(conversation.expressionExercises.length,1);
     assert.equal(conversation.expressionExercises[0].items.length,4);
-    assert.deepEqual(JSON.parse(JSON.stringify(conversation.sourceFollowUps.map(item=>item.id))),["warmup","repeat","say","practice","challenge"]);
-    assert.deepEqual(JSON.parse(JSON.stringify(conversation.sourceFollowUps.map(item=>item.section.split(".")[0]))),["1","3","4","5","6"]);
-    assert(conversation.sourcePrompts.every(item=>item.answerStatus==="audio_confirmation_required"&&!Object.hasOwn(item,"answer")));
-    assert(conversation.expressionExercises.every(item=>item.answerStatus==="audio_confirmation_required"&&!Object.hasOwn(item,"answer")));
-    assert(conversation.sourceFollowUps.every(item=>item.content.length&&!Object.hasOwn(item,"answer")));
-    assert.equal(conversation.sourceFollowUps.find(item=>item.id==="repeat").answerStatus,"answerbook_verified");
-    assert.equal(conversation.sourceFollowUps.find(item=>item.id==="repeat").timingStatus,"audio_timing_pending");
+    assert(conversation.sourcePrompts.every(item=>item.answer));
+    assert(conversation.expressionExercises[0].items.every(item=>item.answer));
+    assert.deepEqual(JSON.parse(JSON.stringify(conversation.textbookActivities.map(item=>item.label))),["1","4","5","6"]);
     assert.deepEqual(JSON.parse(JSON.stringify(conversation.source.conversationPdfPages)),[5,6,7,8]);
     assert.deepEqual(JSON.parse(JSON.stringify(conversation.source.conversationPrintedPages)),[103,104,105,106]);
     assert(conversation.furigana&&Object.keys(conversation.furigana).length>0);
@@ -147,10 +142,8 @@ const lesson19Controller=await readFile("assets/ch19-conversation.js","utf8"),le
 assert.match(lesson19Controller,/data-listen-target/); assert.match(lesson19Controller,/currentTime\s*=/);
 assert(!lesson19Textbook.includes("Beta")); assert(lesson19Textbook.includes("印刷第89–92頁"));
 const lesson20Controller=await readFile("assets/ch20-conversation.js","utf8"),lesson20Textbook=await readFile("chapter-20-textbook.html","utf8");
-assert.doesNotMatch(lesson20Controller,/data-listen-target|currentTime\s*=/); assert.doesNotMatch(await readFile("assets/ch20-conversation-data.js","utf8"),/\b(?:start|end)\s*:/);
-assert(lesson20Controller.includes("data.sourcePrompts.length")); assert(lesson20Controller.includes("expressionPromptCount"));
-assert(lesson20Controller.includes("${activity.blankCount}")); assert(!lesson20Controller.includes("ruby(activity.instruction)"));
-assert(!lesson20Textbook.includes("1個內容提示")); assert(lesson20Textbook.includes("印刷第 103–106 頁"));
+assert.match(lesson20Controller,/data-listen-target/); assert.match(lesson20Controller,/currentTime\s*=/);
+assert(!lesson20Textbook.includes("Beta")); assert(lesson20Textbook.includes("印刷第 103–106 頁"));
 const lesson19RubySource=await readFile("assets/ch19-grammar-ruby.js","utf8"),rubyContext={window:{}};
 vm.createContext(rubyContext);
 for (const file of ["assets/grammar-ruby.js","assets/ch19-data.js","assets/ch19-grammar-ruby.js"]) vm.runInContext(await readFile(file,"utf8"),rubyContext,{filename:file});
