@@ -75,6 +75,10 @@ for (const lesson of [19,20]) {
     assert.deepEqual(JSON.parse(JSON.stringify(conversation.source.conversationPrintedPages)),[89,90,91,92]);
     assert.deepEqual(JSON.parse(JSON.stringify(reading.sourceActivities.map(item=>item.section.split(".")[0]))),["3","4","5"]);
     assert.equal((reading.sourceActivities[0].items.join("").match(/[①②③④⑤⑥]/g)||[]).length,6);
+    assert.deepEqual(JSON.parse(JSON.stringify(reading.textbookActivities.sections.map(item=>item.number))),["1","3","4","5"]);
+    assert.equal(reading.sourceQuestions.length,4); assert(reading.sourceQuestions.every(item=>item.answerStatus==="answerbook_verified"&&item.answer));
+    assert.deepEqual(JSON.parse(JSON.stringify(reading.sourceActivities[0].answer)),["独創力","達成感","満足感","資源活用","経費節約","精神的に成長"]);
+    assert.equal(reading.sourceActivities[1].answerStatus,"answerbook_omitted"); assert.equal(reading.sourceActivities[2].answerStatus,"answerbook_omitted");
     assert(reading.furigana&&Object.keys(reading.furigana).length>0);
   } else {
     const separatedVerbForms=new Map([
@@ -191,7 +195,7 @@ assert(lesson20VocabularyController.includes('const visibleJapanese = item => it
 assert(lesson20VocabularyController.includes('state.direction === "normal" ? item.kana : visibleJapanese(item)'));
 for (const lesson of [19,20]) {
   const readingController=await readFile(`assets/ch${lesson}-reading.js`,"utf8");
-  assert(readingController.includes("data.title")); assert(readingController.includes("data.sourceQuestions.length"));
+  assert(readingController.includes("data.title")); assert(readingController.includes(lesson===19?"data.textbookActivities.sections":"data.sourceQuestions.length"));
   assert(readingController.includes("data.sourceActivities")); assert(readingController.includes("const ratio=score/data.questions.length"));
   assert(!/鉛筆削り|六組|score>=11|score>=8/.test(readingController));
 }
