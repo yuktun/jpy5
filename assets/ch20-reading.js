@@ -1,10 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
   const data=window.JPY5_READING, stage=document.querySelector("#reading-stage");
-  const defaults=()=>({mode:"original",font:1,furigana:true,answered:{},wrong:[],vocabIndex:0,vocabFlipped:false,attempts:[],examAnswers:{},sourceNotes:{},questionResults:{}});
+  const defaults=()=>({mode:"original",font:1,furigana:true,answered:{},wrong:[],vocabIndex:0,vocabFlipped:false,attempts:[],examAnswers:{},sourceNotes:{},textbookDrafts:{},questionResults:{}});
   let state={...defaults(),...JPY5.read("reading",{})}, findIndex=0;
   state.examAnswers=state.examAnswers||{};
   state.vocabIndex=((state.vocabIndex%data.vocab.length)+data.vocab.length)%data.vocab.length;
   state.sourceNotes=state.sourceNotes||{};
+  state.textbookDrafts=state.textbookDrafts||{};
   state.questionResults=state.questionResults||{};
   // Old questions mode showed the textbook: retain that destination for saved users.
   if(state.mode==="questions")state.mode="source";
@@ -36,6 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     return out+esc(String(text).slice(last));
   }
+  const lines=text=>ruby(text).replace(/\n/g,"<br>");
   function shell(title,subtitle,body){return `<div class="reading-stage-head"><div><p class="kicker">第 20 課</p><h2>${title}</h2>${subtitle?`<p>${subtitle}</p>`:""}</div></div>${body}`}
   const questionText=q=>esc(q.q);
   const optionText=(q,option)=>esc(option);
@@ -59,11 +61,19 @@ document.addEventListener("DOMContentLoaded", () => {
   function exam(){
     return shell("模擬考試",`${data.questions.length} 題一次完成，未提交答案會自動保存；提交後才顯示分數。`,`<div class="exam-list">${data.questions.map((q,i)=>`<article><span>${String(i+1).padStart(2,"0")}</span><h3>${questionText(q)}</h3><div>${q.options.map((o,n)=>`<label><input type="radio" name="${q.id}" value="${n}" ${state.examAnswers[q.id]===n?'checked':''}> ${optionText(q,o)}</label>`).join("")}</div></article>`).join("")}</div><div class="exam-submit"><p id="exam-status">已答 ${Object.keys(state.examAnswers).length} / ${data.questions.length}</p><button class="primary-button" id="submit-reading-exam">提交試卷 →</button></div><section class="reading-result" hidden></section>`);
   }
+  const draftValue=id=>esc(state.textbookDrafts[id]||"");
+  const officialToggle=id=>`<button class="secondary-button" type="button" data-official-toggle="${id}" aria-expanded="false">答案を見る / 顯示答案</button>`;
+  function officialAnswer(item){const answer=Array.isArray(item.answer)?item.answer.map((value,index)=>`${"①②③④⑤⑥⑦⑧"[index]} ${value}`).join("　"):item.answer;return `${officialToggle(item.id)}<div class="ch14-official-answer" data-official-answer="${item.id}" hidden><b>課本官方答案 / 課本解答</b><p>${ruby(answer)}</p></div>`}
+  function sectionHeader(section){return `<header><span>${esc(section.label)}</span><h2>${section.number}. ${ruby(section.title)}</h2></header>`}
+  function openTask(item){return `<article class="ch14-textbook-task"><span>${esc(item.number)}）</span><p>${lines(item.prompt)}</p>${item.examples?.length?`<ul class="ch19-robot-examples">${item.examples.map(example=>`<li>${ruby(example)}</li>`).join("")}</ul>`:""}${item.pictureDependent?'<p class="ch15-no-grade">課本以插圖呈現六種邦樂器；請使用頁底的「開啟原課本」對照圖片。</p>':""}<label>自己的答案／準備筆記（不會自動評分）<textarea rows="6" data-textbook-draft="${item.id}" lang="ja">${draftValue(item.id)}</textarea></label></article>`}
   function sourceQuestions(){
-    const activities=data.sourceActivities||[];
-    const questions=data.sourceQuestions.map((q,i)=>`<article class="reading-question"><span>教材原題 · 不計分 · ${i+1}</span><h3 lang="ja">${ruby(q.q)}</h3>${q.items?'<ol>'+q.items.map(t=>'<li lang="ja">'+ruby(t)+'</li>').join('')+'</ol>':''}${q.options?'<ol type="a">'+q.options.map(t=>'<li lang="ja">'+ruby(t)+'</li>').join('')+'</ol>':''}<label>我的草稿（不計分）<textarea rows="3" data-source-note="${esc(q.id)}">${esc(state.sourceNotes[q.id]||'')}</textarea></label>${q.why?`<p>${esc(q.why)}</p>`:''}</article>`).join('');
-    const printed=activities.map(activity=>`<article class="reading-question"><span>${ruby(activity.section)} · 不計分</span><h3 lang="ja">${ruby(activity.instruction)}</h3>${activity.items?.length?'<ul>'+activity.items.map(item=>'<li lang="ja">'+ruby(item)+'</li>').join('')+'</ul>':''}<label>我的草稿（不計分）<textarea rows="3" data-source-note="${esc(activity.id)}">${esc(state.sourceNotes[activity.id]||'')}</textarea></label><p>教材未附答案鍵；本活動不計分。</p></article>`).join('');
-    return shell("教材原題 · 不計分",`${data.sourceQuestions.length} 題閱讀問題＋${activities.length} 項印刷活動；未核實答案鍵。草稿只代表你的筆記，不納入分數或掌握。`,'<div class="reading-question-list">'+questions+printed+'</div>');
+    const [think,confirm,discuss,challenge]=data.textbookActivities.sections,timeline=data.sourceActivities.find(item=>item.id==="source-timeline"),fill=data.sourceActivities.find(item=>item.id==="source-fill"),discussion=data.sourceActivities.find(item=>item.id==="source-discussion"),challengeData=data.sourceActivities.find(item=>item.id==="source-challenge");
+    const questions=data.sourceQuestions.map((q,index)=>`<article class="textbook-answer-card"><span>${"①②③"[index]}</span><h3 lang="ja">${ruby(q.q)}</h3><ol type="a">${q.options.map(option=>`<li lang="ja">${ruby(option)}</li>`).join("")}</ol><label>自己的草稿（不會自動評分）<textarea rows="4" data-source-note="${q.id}" lang="ja">${esc(state.sourceNotes[q.id]||"")}</textarea></label>${officialAnswer(q)}</article>`).join("");
+    const timelineCard=`<article class="ch14-subsection"><h3>2）${ruby(timeline.instruction)}</h3><ul>${timeline.items.map(item=>`<li lang="ja">${ruby(item)}</li>`).join("")}</ul><label class="textbook-draft-label"><span>①～⑤の答え（不會自動評分）</span><textarea rows="5" data-source-note="source-timeline" lang="ja">${esc(state.sourceNotes["source-timeline"]||"")}</textarea></label>${officialAnswer(timeline)}</article>`;
+    const fillCard=`<article class="ch14-subsection"><h3>3）${ruby(fill.instruction)}</h3>${fill.items.map(item=>`<p lang="ja">${ruby(item)}</p>`).join("")}<label class="textbook-draft-label"><span>①～⑧の答え（自由文字，不會自動評分）</span><textarea rows="6" data-source-note="source-fill" lang="ja">${esc(state.sourceNotes["source-fill"]||"")}</textarea></label><p class="ch15-no-grade">課本明示：答案不必與本文完全相同；本題不作嚴格自動評分。</p>${officialAnswer(fill)}</article>`;
+    const discussionCard=`<article class="ch14-textbook-task"><span>課本開放活動</span><p>${ruby(discussion.instruction)}</p><ol>${discussion.items.map(item=>`<li>${ruby(item)}</li>`).join("")}</ol><label>自己的答案／討論筆記（不會自動評分）<textarea rows="9" data-source-note="source-discussion" lang="ja">${esc(state.sourceNotes["source-discussion"]||"")}</textarea></label><p class="ch15-no-grade">課本解答冊：省略。本活動沒有固定答案。</p></article>`;
+    const challengeCard=`<article class="ch14-textbook-task"><span>課本寫作活動</span><p>${ruby(challengeData.instruction)}</p><div class="ch14-writing-guide"><b>${ruby("文章の流れ：")}</b><span>${ruby("①どのようなものか・歴史")}</span><span>${ruby("②魅力・人")}</span></div><label>自己的文章（不會自動評分）<textarea rows="16" data-source-note="source-challenge" data-character-count="source-challenge" lang="ja">${esc(state.sourceNotes["source-challenge"]||"")}</textarea></label><small class="ch14-character-count"><span data-character-output="source-challenge">${[...(state.sourceNotes["source-challenge"]||"")].length}</span> 字</small><p class="ch15-no-grade">課本解答冊：省略。本活動沒有固定答案。</p></article>`;
+    return shell("課本『読む・書く』原題","依課本順序完成 1・3・4・5；Section 3 的課本官方答案預設隱藏，所有開放活動均不計分。",`<div class="ch14-textbook-sections"><section class="ch14-textbook-section">${sectionHeader(think)}<div class="ch14-section-body"><p class="ch15-no-grade">課本解答冊：省略。請寫下自己的經驗與觀察。</p>${think.items.map(openTask).join("")}</div></section><section class="ch14-textbook-section">${sectionHeader(confirm)}<div class="ch14-section-body"><p class="ch15-no-grade">課本解答只供核對，不會覆寫自己的輸入，亦不納入 App 分數或掌握。</p><section class="ch14-subsection"><h3>1）${ruby("正しい答えを選んでください。")}</h3><div class="textbook-answer-grid">${questions}</div></section>${timelineCard}${fillCard}</div></section><section class="ch14-textbook-section">${sectionHeader(discuss)}<div class="ch14-section-body">${discussionCard}</div></section><section class="ch14-textbook-section">${sectionHeader(challenge)}<div class="ch14-section-body">${challengeCard}</div></section></div>`);
   }
   function mistakes(){
     const qs=data.questions.filter(q=>state.wrong.includes(q.id)),words=data.vocab.filter((_,i)=>state.wrong.includes('v'+i));
@@ -77,6 +87,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   function bind(){
     stage.querySelectorAll("[data-source-note]").forEach(input=>input.oninput=()=>{state.sourceNotes[input.dataset.sourceNote]=input.value;save()});
+    stage.querySelectorAll("[data-textbook-draft]").forEach(input=>input.oninput=()=>{state.textbookDrafts[input.dataset.textbookDraft]=input.value;save()});
+    stage.querySelectorAll("[data-official-toggle]").forEach(button=>button.onclick=()=>{const panel=stage.querySelector(`[data-official-answer="${button.dataset.officialToggle}"]`);panel.hidden=!panel.hidden;button.setAttribute("aria-expanded",String(!panel.hidden));button.textContent=panel.hidden?"答案を見る / 顯示答案":"答案を隠す / 隱藏答案"});
+    stage.querySelectorAll("[data-character-count]").forEach(input=>input.addEventListener("input",()=>{const output=stage.querySelector(`[data-character-output="${input.dataset.characterCount}"]`);if(output)output.textContent=[...input.value].length}));
     stage.querySelectorAll("[data-retry-question],[data-review-question]").forEach(b=>b.onclick=()=>{const id=b.dataset.retryQuestion||b.dataset.reviewQuestion;delete state.answered[id];delete state.questionResults[id];state.mode="practice";save();render();stage.querySelector(`[data-question="${id}"]`)?.scrollIntoView({block:"center"});});
     stage.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>scoreQuestion(b));
     stage.querySelectorAll("[data-find]").forEach(b=>b.onclick=()=>{const task=data.find[findIndex%data.find.length],ok=Number(b.dataset.find)===task.answer;stage.querySelectorAll("[data-find]").forEach(x=>x.disabled=true);b.classList.add(ok?"correct":"wrong");stage.querySelector(`[data-find="${task.answer}"]`).classList.add("correct");stage.querySelector(".find-feedback").textContent=ok?"搵啱了，呢段包含完整答案。":"答案在綠色段落；再對照問題讀一次。";stage.querySelector(".find-next").hidden=false;});

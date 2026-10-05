@@ -94,10 +94,15 @@ for (const lesson of [19,20]) {
     for (const [id,written] of separatedVerbForms) assert.equal(vocab.find(item=>item.id===id).written,written);
     for (const id of [5,17,23,25,50,54,61,65,67,71,78,83,92,111,113,117,118,120,122,143,147,148]) assert.equal(vocab.find(item=>item.id===id).written,"-");
     assert.deepEqual(JSON.parse(JSON.stringify(reading.sourceQuestions.map(item=>item.options.length))),[3,3,3]);
+    assert.deepEqual(JSON.parse(JSON.stringify(reading.textbookActivities.sections.map(item=>`${item.number}. ${item.title}`))),["1. 考えてみよう","3. 確かめよう","4. 考えよう・話そう","5. チャレンジしよう"]);
     assert.deepEqual(JSON.parse(JSON.stringify(reading.sourceActivities.map(item=>item.section))),["3. 確かめよう 2)","3. 確かめよう 3)","4. 考えよう・話そう","5. チャレンジしよう"]);
     assert.equal((reading.sourceActivities[0].items.join("").match(/[①②③④⑤]/g)||[]).length,5);
     assert.equal((reading.sourceActivities[1].items.join("").match(/[①②③④⑤⑥⑦⑧]/g)||[]).length,8);
     assert.equal(reading.sourceActivities[2].items.length,2);
+    assert(reading.sourceQuestions.every(item=>item.answerStatus==="answerbook_verified"&&item.answer));
+    assert.deepEqual(JSON.parse(JSON.stringify(reading.sourceActivities[0].answer)),["初演","尺八修業を始める","授かる","急速に増加する","受賞"]);
+    assert.deepEqual(JSON.parse(JSON.stringify(reading.sourceActivities[1].answer)),["修業","戸惑わせられ","「内容」","「形」","従う","疑問","日本文化","理解"]);
+    assert.equal(reading.sourceActivities[2].answerStatus,"answerbook_omitted");assert.equal(reading.sourceActivities[3].answerStatus,"answerbook_omitted");
     assert(reading.furigana&&Object.keys(reading.furigana).length>0);
     assert.equal(conversation.sourcePrompts.length,5);
     assert.deepEqual(JSON.parse(JSON.stringify(conversation.sourcePrompts.map(item=>item.jp))),[
@@ -192,7 +197,7 @@ assert(lesson20VocabularyController.includes('const visibleJapanese = item => it
 assert(lesson20VocabularyController.includes('state.direction === "normal" ? item.kana : visibleJapanese(item)'));
 for (const lesson of [19,20]) {
   const readingController=await readFile(`assets/ch${lesson}-reading.js`,"utf8");
-  assert(readingController.includes("data.title")); assert(readingController.includes(lesson===19?"data.textbookActivities.sections":"data.sourceQuestions.length"));
+  assert(readingController.includes("data.title")); assert(readingController.includes("data.textbookActivities.sections"));
   assert(readingController.includes("data.sourceActivities")); assert(readingController.includes("const ratio=score/data.questions.length"));
   assert(!/鉛筆削り|六組|score>=11|score>=8/.test(readingController));
 }
