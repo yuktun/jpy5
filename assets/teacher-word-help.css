@@ -1,0 +1,9 @@
+.teacher-word-bank button{min-height:44px;padding:7px 12px;color:var(--ink);background:var(--white);border:1px solid var(--line);border-radius:99px;font:inherit;font-size:.88rem;cursor:pointer}
+.teacher-word-bank button:hover{border-color:var(--primary);background:var(--primary-light)}
+.teacher-word-bank button:focus-visible{outline:3px solid var(--primary);outline-offset:3px}
+.teacher-word-help-hint{margin:10px 0 0;color:var(--muted);font-size:.8rem}
+.teacher-word-help-popover[hidden]{display:none}
+.teacher-word-help-popover{position:fixed;z-index:1000;width:min(360px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow:auto;padding:16px 18px;color:var(--ink);background:var(--white);border:1px solid var(--primary);border-radius:12px;box-shadow:var(--shadow);overflow-wrap:anywhere}
+.teacher-word-help-popover h2{margin:5px 0 9px;font-size:1.15rem}
+.teacher-word-help-popover p{margin:8px 0 0;font-size:.88rem;line-height:1.65}
+.teacher-word-help-popover .teacher-word-meaning{font-size:1rem;font-weight:700;color:var(--primary-dark)}
