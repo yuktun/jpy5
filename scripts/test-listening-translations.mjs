@@ -44,6 +44,9 @@ try {
     await page.locator('[data-mode="translation"]').click();
     assert.equal(await page.locator('[data-mode="translation"]').evaluate(node => node.classList.contains("active")), true, `Lesson ${lesson.number} tab active`);
     assert.equal(await page.locator(".translation-list .dialogue-row").count(), lesson.count, `Lesson ${lesson.number} rendered translation count`);
+    assert.equal(await page.locator(".translation-list .translation-original").count(), lesson.count, `Lesson ${lesson.number} rendered original count`);
+    const originals = await page.locator(".translation-list .translation-original").evaluateAll(nodes => nodes.map(node => node.textContent.trim()));
+    assert(originals.every(text => text && !/[＿①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬]/.test(text)), `Lesson ${lesson.number} originals must be complete`);
     assert.match(await page.locator("#conversation-stage, #lesson-stage").first().innerText().catch(() => page.locator(".conversation-stage").innerText()), /全文中文翻譯/);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true, `Lesson ${lesson.number} mobile overflow`);
     if (lesson.number === 20) await page.screenshot({ path: resolve("tmp/listening-translation-20-mobile.png"), fullPage: true });

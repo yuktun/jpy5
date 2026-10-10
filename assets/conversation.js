@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
     stage.querySelector("[data-shadow-full]")?.addEventListener("click",()=>{audio.currentTime=0;audio.play().catch(()=>{});});
   }
   function renderTranslation() {
-    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">全文中文翻譯</p><h2>${esc(data.title)}</h2></div><span>${data.translation.length} 句完整譯文</span></div><div class="dialogue-list translation-list">${data.translation.map(([speaker,text]) => `<article class="dialogue-row"><b>${esc(speaker)}</b><p lang="zh-Hant">${esc(text)}</p></article>`).join("")}</div>`;
+    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">全文中文翻譯</p><h2>${esc(data.title)}</h2></div><span>${data.translation.length} 句雙語對照</span></div><div class="dialogue-list translation-list">${data.translation.map(([speaker,text],index) => `<article class="dialogue-row"><b>${esc(speaker)}</b><p lang="zh-Hant">${esc(text)}<span class="translation-original" lang="ja">${ruby(dialogueText(data.dialogue[index]))}</span></p></article>`).join("")}</div>`;
   }
   function renderFocus() {
     stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">重點句子</p><h2>五句底線表現</h2></div><span>星號會加入重溫</span></div><div class="focus-grid">${data.items.map(x => `<article class="focus-card"><div class="focus-number">0${x.id}</div><button class="star-button ${state.stars[x.id]?'active':''}" data-star="${x.id}" aria-label="收藏句子">${state.stars[x.id]?'★':'☆'}</button><h3>${ruby(x.jp)}</h3><p class="focus-meaning">${esc(x.zh)}</p><p>${esc(x.use)}</p>${listenButton(x.id)}</article>`).join("")}</div>`;
