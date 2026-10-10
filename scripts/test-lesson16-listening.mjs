@@ -36,7 +36,7 @@ try{
   await page.setViewportSize(viewport);await page.goto(`${base}/chapter-16-textbook.html`);
   if(index===0){
    assert.equal(await page.locator('[data-mode="dialogue"]').evaluate(button=>button.classList.contains("active")),true);
-   assert.deepEqual(await page.locator(".mode-tabs [data-mode]").evaluateAll(nodes=>nodes.map(node=>node.dataset.mode)),["dialogue","comprehension","activities","focus","cards","choice","order","cloze","dictation","mistakes"]);
+   assert.deepEqual(await page.locator(".mode-tabs [data-mode]").evaluateAll(nodes=>nodes.map(node=>node.dataset.mode)),["dialogue","translation","comprehension","activities","focus","cards","choice","order","cloze","dictation","mistakes"]);
    const migrated=await page.evaluate(()=>JSON.parse(localStorage.getItem("jpy5.chapter16.conversation")));
    assert.equal(migrated.itemSetVersion,2);assert.deepEqual(migrated.marks,{3:"correct",10:"wrong"});assert.deepEqual(migrated.mistakes,{3:2,10:3});assert.deepEqual(migrated.stars,{3:true,10:true});assert.equal(migrated.card,2);
   }else await page.locator('[data-mode="dialogue"]').click();

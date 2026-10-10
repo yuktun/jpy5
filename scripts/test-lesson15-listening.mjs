@@ -51,7 +51,7 @@ try{
     await page.goto(`${base}/chapter-15-textbook.html`);
     if(index===0){
       assert.equal(await page.locator('[data-mode="dialogue"]').evaluate(button=>button.classList.contains("active")),true,"complete dialogue is not the default");
-      assert.deepEqual(await page.locator(".mode-tabs [data-mode]").evaluateAll(nodes=>nodes.map(node=>node.dataset.mode)),["dialogue","comprehension","activities","focus","cards","choice","order","cloze","dictation","mistakes"]);
+      assert.deepEqual(await page.locator(".mode-tabs [data-mode]").evaluateAll(nodes=>nodes.map(node=>node.dataset.mode)),["dialogue","translation","comprehension","activities","focus","cards","choice","order","cloze","dictation","mistakes"]);
     }else await page.locator('[data-mode="dialogue"]').click();
     assert.equal(await page.locator(".focus-line").count(),8);
     assert.equal(await page.locator('.dialogue-row [data-listen]').count(),8);

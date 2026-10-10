@@ -86,6 +86,9 @@ document.addEventListener("DOMContentLoaded", () => {
       e.currentTarget.classList.toggle("active", hidden);
     };
   }
+  function renderTranslation() {
+    stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">全文中文翻譯</p><h2>${esc(data.title)}</h2></div><span>${data.translation.length} 句完整譯文</span></div><div class="dialogue-list translation-list">${data.translation.map(([speaker,text]) => `<article class="dialogue-row"><b>${esc(speaker)}</b><p lang="zh-Hant">${esc(text)}</p></article>`).join("")}</div>`;
+  }
   function renderFocus() {
     stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">重點句子</p><h2>八個聆聽目標</h2></div><span>已按官方 MP3 核實句段</span></div><div class="focus-grid">${data.items.map(x => `<article class="focus-card"><div class="focus-number">0${x.id}</div><button class="star-button ${state.stars[x.id]?'active':''}" data-star="${x.id}" aria-label="收藏句子">${state.stars[x.id]?'★':'☆'}</button><h3>${ruby(x.jp)}</h3><p class="focus-meaning">${esc(x.zh)}</p><p>${esc(x.use)}</p>${listenButton(x.id)}</article>`).join("")}</div>`;
   }
@@ -196,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
     stage.querySelectorAll("[data-mastered-comprehension]").forEach(b => b.onclick = () => { delete state.comprehensionMistakes[b.dataset.masteredComprehension]; save(); render(); });
   }
   function render() {
-    const renderers = {dialogue:renderDialogue,comprehension:renderComprehension,activities:renderActivities,focus:renderFocus,cards:renderCards,choice:renderChoice,order:renderOrder,cloze:renderCloze,dictation:renderDictation,mistakes:renderMistakes};
+    const renderers = {dialogue:renderDialogue,translation:renderTranslation,comprehension:renderComprehension,activities:renderActivities,focus:renderFocus,cards:renderCards,choice:renderChoice,order:renderOrder,cloze:renderCloze,dictation:renderDictation,mistakes:renderMistakes};
     (renderers[state.mode] || renderDialogue)();
     stage.querySelectorAll("[data-focus-line]").forEach(b => b.onclick = () => showFocusDetail(b.dataset.focusLine));
     stage.querySelectorAll("[data-listen]").forEach(b => b.onclick = () => play(b.dataset.listen));
