@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return shell(ruby(data.title),"按時間線掌握：資料外洩 → 會員投訴 → 公司調查與對策 → 受害者個案。",`<article class="reading-paper" style="--reading-size:${[.98,1.1,1.24][state.font]}rem"><div class="reading-badge">第16課</div>${data.paragraphs.map(p=>`<p data-paragraph="${p.id}">${ruby(p.jp)}</p>`).join("")}<footer>（${ruby(data.author)}）</footer></article>`);
   }
   function translation(){
-    return shell("繁體中文翻譯","段落編號與日文原文完全對應。",`<div class="translation-list">${data.paragraphs.map(p=>`<article><span>0${p.id}</span><p>${esc(p.zh)}</p></article>`).join("")}</div>`);
+    return shell("繁體中文翻譯","每段中文下方附有完整日文原文。",`<div class="translation-list">${data.paragraphs.map(p=>`<article><span>0${p.id}</span><p>${esc(p.zh)}<span class="translation-original" lang="ja">${esc(p.jp)}</span></p></article>`).join("")}</div>`);
   }
   function modelAnswer(item,label="參考回答例（非課本官方答案）"){
     return `<button class="secondary-button" type="button" data-model-toggle="${item.id}" aria-expanded="false">參考回答例を見る</button><div class="ch14-model-answer" data-model-answer="${item.id}" hidden><b>${label}</b><p>${lines(item.model)}</p>${item.modelNote?`<small>${esc(item.modelNote)}</small>`:""}</div>`;

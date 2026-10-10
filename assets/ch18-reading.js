@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return shell(ruby(data.title),"閱讀〈鉛筆削り〉：八段視覺核對原文，對照兩人眼中的物品價值。",`<article class="reading-paper" style="--reading-size:${[.98,1.1,1.24][state.font]}rem"><div class="reading-badge">第18課</div>${data.paragraphs.map(p=>`<p data-paragraph="${p.id}">${ruby(p.jp)}</p>`).join("")}<footer>（${ruby(data.author)}）</footer></article>`);
   }
   function translation(){
-    return shell("繁體中文翻譯","段落編號與日文原文完全對應；翻譯為編輯補充，非教材印刷中譯。",`<div class="translation-list">${data.paragraphs.map(p=>`<article><span>0${p.id}</span><p>${esc(p.zh)}</p></article>`).join("")}</div>`);
+    return shell("繁體中文翻譯","每段中文下方附有完整日文原文；翻譯為編輯補充，非教材印刷中譯。",`<div class="translation-list">${data.paragraphs.map(p=>`<article><span>0${p.id}</span><p>${esc(p.zh)}<span class="translation-original" lang="ja">${esc(p.jp)}</span></p></article>`).join("")}</div>`);
   }
   function questionCards(){
     return shell("應用程式閱讀練習",`${data.questions.length} 題應用程式練習均依據已轉錄原文編寫；作答後即時顯示解釋及原文段落。`,`<div class="reading-question-list">${data.questions.map((q,i)=>{const chosen=state.answered[q.id],answered=chosen!==undefined;return `<article class="reading-question" data-question="${q.id}"><span>應用程式閱讀練習 · 問題 ${i+1} · 原文第 ${q.paragraph} 段</span><h3>${questionText(q)}</h3><div>${q.options.map((o,n)=>`<button data-q="${q.id}" data-option="${n}" ${answered?'disabled':''} class="${answered&&n===q.answer?'correct':answered&&n===chosen&&chosen!==q.answer?'wrong':''}">${optionText(q,o)}</button>`).join("")}</div><p class="reading-feedback">${answered?(chosen===q.answer?'答對。':'未正確。')+esc(q.why):''}</p>${answered?`<button class="chip" data-retry-question="${q.id}">重新作答</button>`:""}</article>`}).join("")}</div>`);

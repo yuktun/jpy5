@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function shell(title,subtitle,body){return `<div class="reading-stage-head"><div><p class="kicker">第 17 課</p><h2>${title}</h2>${subtitle?`<p>${subtitle}</p>`:""}</div></div>${body}`}
   const questionText=q=>esc(q.q), optionText=(q,option)=>esc(option), draftValue=id=>esc(state.textbookDrafts[id]||"");
   function original(){return shell(ruby(data.title),"閱讀〈暦〉：從月份名稱、舊曆到明治改曆。",`<article class="reading-paper" style="--reading-size:${[.98,1.1,1.24][state.font]}rem"><div class="reading-badge">第17課</div>${data.paragraphs.map(p=>`<p data-paragraph="${p.id}">${ruby(p.jp)}</p>`).join("")}<footer>（${ruby(data.author)}）</footer></article>`)}
-  function translation(){return shell("繁體中文翻譯","段落編號與日文原文完全對應。",`<div class="translation-list">${data.paragraphs.map(p=>`<article><span>0${p.id}</span><p>${esc(p.zh)}</p></article>`).join("")}</div>`)}
+  function translation(){return shell("繁體中文翻譯","每段中文下方附有完整日文原文。",`<div class="translation-list">${data.paragraphs.map(p=>`<article><span>0${p.id}</span><p>${esc(p.zh)}<span class="translation-original" lang="ja">${esc(p.jp)}</span></p></article>`).join("")}</div>`)}
   function modelAnswer(item){return `<button class="secondary-button" type="button" data-model-toggle="${item.id}" aria-expanded="false">參考回答例を見る</button><div class="ch14-model-answer" data-model-answer="${item.id}" hidden><b>參考回答例（非課本官方答案）</b><p>${lines(item.model)}</p>${item.modelNote?`<small>${esc(item.modelNote)}</small>`:""}</div>`}
   function promptList(item){return item.questions?.length?`<div class="ch17-prompt-list">${item.questions.map(q=>`<p>${ruby(q)}</p>`).join("")}</div>`:""}
   function openTask(item,rows=7){
