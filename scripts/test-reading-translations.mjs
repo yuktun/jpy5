@@ -37,10 +37,26 @@ const browser = await chromium.launch({ headless: true, ...(process.env.JPY5_BRO
 const page = await browser.newPage({ viewport: { width: 390, height: 844 }, serviceWorkers: "block" });
 const errors = [];
 page.on("pageerror", error => errors.push(error.message));
+await page.addInitScript(() => {
+  window.paragraphSpeech = { texts: [], cancels: 0, current: null };
+  window.SpeechSynthesisUtterance = class {
+    constructor(text) { this.text = text; }
+  };
+  Object.defineProperty(window, "speechSynthesis", { value: {
+    getVoices: () => [{ lang: "ja-JP", name: "Japanese test voice" }],
+    cancel: () => { window.paragraphSpeech.cancels++; },
+    speak: utterance => {
+      window.paragraphSpeech.current = utterance;
+      window.paragraphSpeech.texts.push({ text: utterance.text, lang: utterance.lang });
+    },
+  } });
+});
 
 try {
   for (const lesson of lessons) {
     await page.goto(`${base}/chapter-${lesson.number}-reading.html`);
+    await page.locator('[data-reading-mode="original"]').click();
+    assert.equal(await page.locator(".reading-paper [data-reading-play]").count(), lesson.paragraphs.length);
     await page.locator('[data-reading-mode="translation"]').click();
     assert.equal(await page.locator('[data-reading-mode="translation"]').evaluate(node => node.classList.contains("active")), true, `Lesson ${lesson.number} tab active`);
     assert.equal(await page.locator(".translation-list article").count(), lesson.paragraphs.length, `Lesson ${lesson.number} translation count`);
@@ -51,6 +67,33 @@ try {
       return copy.textContent.trim();
     }));
     assert.deepEqual(originals, lesson.paragraphs.map(paragraph => paragraph.jp), `Lesson ${lesson.number} original text`);
+    assert(await page.locator(".translation-original rt").count() > 0, `Lesson ${lesson.number} furigana shown`);
+    await page.locator("#furigana-toggle").click();
+    assert.equal(await page.locator(".translation-original rt").count(), 0);
+    await page.locator("#furigana-toggle").click();
+    const play = page.locator(".translation-list [data-reading-play]");
+    assert.equal(await play.count(), lesson.paragraphs.length);
+    await play.nth(0).click();
+    assert.equal(await play.nth(0).getAttribute("aria-pressed"), "true", JSON.stringify({ lesson: lesson.number, errors, speech: await page.evaluate(() => ({ texts: window.paragraphSpeech.texts, ids: window.JPY5_READING.paragraphs.map(p => p.id) })) }));
+    await page.evaluate(() => { window.previousParagraphSpeech = window.paragraphSpeech.current; });
+    await play.nth(1).click();
+    await page.evaluate(() => window.previousParagraphSpeech.onend());
+    assert.equal(await play.nth(0).getAttribute("aria-pressed"), "false");
+    assert.equal(await play.nth(1).getAttribute("aria-pressed"), "true");
+    assert.deepEqual(await page.evaluate(() => window.paragraphSpeech.texts), lesson.paragraphs.slice(0, 2).map(p => ({ text: p.jp, lang: "ja-JP" })), `Lesson ${lesson.number} only selected paragraph spoken`);
+    await play.nth(1).click();
+    assert.equal(await play.nth(1).getAttribute("aria-pressed"), "false");
+    await play.nth(0).click();
+    await page.evaluate(() => window.paragraphSpeech.current.onend());
+    assert.equal(await play.nth(0).getAttribute("aria-pressed"), "false");
+    await play.nth(0).click();
+    await page.locator("#furigana-toggle").click();
+    await play.nth(0).click();
+    await page.evaluate(() => document.querySelector("audio").dispatchEvent(new Event("play")));
+    assert.equal(await play.nth(0).getAttribute("aria-pressed"), "false", "Full audio stops paragraph speech");
+    assert.equal(await page.locator('[data-reading-play][aria-pressed="true"]').count(), 0);
+    assert(await page.evaluate(() => window.paragraphSpeech.cancels) >= 3, "Switching, stopping and rendering cancel playback");
+    await page.locator("#furigana-toggle").click();
     assert.match(await page.locator("#reading-stage").innerText(), /完整日文原文/);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1 ? [] : Array.from(document.querySelectorAll("body *")).filter(node => {
       if (node.closest(".mode-tabs, .lesson-pills")) return false;
@@ -60,6 +103,11 @@ try {
     assert.deepEqual(overflow, [], `Lesson ${lesson.number} mobile overflow: ${overflow.join(", ")}`);
     if (lesson.number === 20) await page.screenshot({ path: resolve("tmp/reading-translation-20-mobile.png"), fullPage: true });
   }
+  const unsupported = await browser.newPage({ serviceWorkers: "block" });
+  await unsupported.addInitScript(() => { delete window.SpeechSynthesisUtterance; });
+  await unsupported.goto(`${base}/chapter-13-reading.html`);
+  assert.equal(await unsupported.locator("[data-reading-play]:disabled").count(), lessons[0].paragraphs.length);
+  await unsupported.close();
   assert.deepEqual(errors, [], errors.join("\n"));
   console.log("Reading translation originals passed for Lessons 13–20.");
 } finally {
