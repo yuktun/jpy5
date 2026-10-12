@@ -59,7 +59,7 @@ assert.match(hub,/finiteRatio\(vocabDone,152\)/);assert.match(hub,/finiteRatio\(
 const readingJs=await source("assets/ch17-reading.js");
 assert.match(readingJs,/examAnswers:\{\}/);assert.match(readingJs,/state\.examAnswers\[input\.name\]/);assert.match(readingJs,/state\.examAnswers=\{\}/);
 const quizJs=await source("assets/ch17-quiz.js");
-assert.match(quizJs,/previous\.filter\(id=>!attempted\.has\(id\)\)/,"unattempted wrong-review state not preserved");
+assert.match(quizJs,/quizProgress\.wrong\(/,"wrong-review merge helper must be used");
 
 const lesson17Files=rootFiles.filter(file=>/^chapter-17(?:-[a-z]+)?\.html$/.test(file));
 for(const file of lesson17Files){

@@ -43,7 +43,7 @@ for(const lesson of [18,19,20]){
   const html=await readFile(resolve(root,`chapter-${lesson}-quiz.html`),"utf8");
   assert.match(html,/data-mode="challenge"/);
   assert.match(html,/App 延伸練習/);
-  assert.match(html,/assets\/grammar-quiz\.js\?v=1/);
+  assert.match(html,/assets\/grammar-quiz\.js\?v=2/);
 }
 
 const shared=await readFile(resolve(root,"assets/grammar-quiz.js"),"utf8");
@@ -114,12 +114,14 @@ try{
       await page.locator(`[data-answer="${bank[index].answer}"]`).click();
     }
     await page.locator("#next-question").evaluate(button=>button.click());
+    await page.locator("#quiz-result").waitFor({state:"visible"});
     assert.equal(await page.locator("#quiz-result").isVisible(),true);
     assert.equal(await page.locator("#retry-wrong").isVisible(),true);
     await page.locator("#retry-wrong").click();
     assert.match(await page.locator("#quiz-progress-text").innerText(),/1 \/ 1 · 無提示情境辨析/);
     await page.locator(`[data-answer="${first.answer}"]`).click();
     await page.locator("#next-question").evaluate(button=>button.click());
+    await page.locator("#quiz-result").waitFor({state:"visible"});
     assert.equal(await page.locator("#quiz-result").isVisible(),true,`Lesson ${lesson} retry did not finish`);
     await page.locator("#new-quiz").evaluate(button=>button.click());
     assert.equal(await page.locator("#quiz-setup").isVisible(),true);

@@ -1,14 +1,16 @@
 const {patterns,questions,noHintQuestions=[]}=window.JPY5_DATA;
 const grammarRuby=window.JPY5GrammarRuby;
 const allQuestions=[...questions,...noHintQuestions];
-const savedSettings=JPY5.read("quiz.settings",{});
+const quizProgress=window.JPY5QuizProgress;
+const storedSettings=JPY5.read("quiz.settings",{});
+const savedSettings=storedSettings&&typeof storedSettings==="object"?storedSettings:{};
 const validModes=new Set(["practice","exam","challenge"]);
-let settings={mode:validModes.has(savedSettings.mode)?savedSettings.mode:"practice",selected:new Set(savedSettings.selected?.filter(id=>patterns.some(pattern=>pattern.id===id))||patterns.map(pattern=>pattern.id))};
+let settings={mode:validModes.has(savedSettings.mode)?savedSettings.mode:"practice",selected:new Set((Array.isArray(savedSettings.selected)?savedSettings.selected:undefined)?.filter(id=>patterns.some(pattern=>pattern.id===id))||patterns.map(pattern=>pattern.id))};
 let run=null;
 
 const saveSettings=()=>JPY5.write("quiz.settings",{mode:settings.mode,selected:[...settings.selected],random:document.querySelector("#random-order")?.checked||false,wrongOnly:document.querySelector("#wrong-only")?.checked||false,starredOnly:document.querySelector("#starred-only")?.checked||false});
 const reviewId=id=>allQuestions.some(question=>question.id===id)?id:id.replace(/-(1|2)$/,"-app-$1");
-const starred=()=>[...new Set(JPY5.read("quiz.starred",[]).map(reviewId))];
+const starred=()=>[...new Set(quizProgress.list("quiz.starred").map(reviewId))];
 const setStarred=value=>JPY5.write("quiz.starred",value);
 const questionKindLabels={"意思":"意思","接續":"接續",meaning:"意思",formation:"接續",context:"情境",contrast:"辨析"};
 const isChallenge=()=>settings.mode==="challenge";
@@ -17,7 +19,7 @@ function updateModeControls(){
   document.querySelectorAll("[data-mode]").forEach(button=>button.classList.toggle("active",button.dataset.mode===settings.mode));
   document.querySelector("#guided-question-setup").hidden=isChallenge();
   document.querySelector("#challenge-mode-note").hidden=!isChallenge();
-  document.querySelector("#start-quiz").textContent=isChallenge()?`開始 ${noHintQuestions.length} 題無提示辨析 →`:"開始測驗 →";
+  document.querySelector("#start-quiz").textContent=isChallenge()?`開始新挑戰（${noHintQuestions.length} 題） →`:"開始新測驗 →";
 }
 
 function setup(){
@@ -47,7 +49,7 @@ function togglePattern(button){
 function buildQuestions(){
   let pool=isChallenge()?noHintQuestions:questions.filter(question=>settings.selected.has(question.pattern));
   if(document.querySelector("#wrong-only").checked){
-    const wrong=JPY5.read("quiz.lastWrong",[]).map(reviewId);
+    const wrong=quizProgress.list("quiz.lastWrong").map(reviewId);
     pool=pool.filter(question=>wrong.includes(question.id));
   }
   if(document.querySelector("#starred-only").checked)pool=pool.filter(question=>starred().includes(question.id));
@@ -61,7 +63,8 @@ function start(customPool){
     document.querySelector("#setup-message").textContent=isChallenge()?"這個篩選沒有無提示題目；可取消錯題／標記篩選後再試。":"這個篩選沒有題目，請選擇其他句型或重溫分類。";
     return;
   }
-  run={questions:pool,index:0,answers:{},answered:false,startedAt:new Date().toISOString()};
+  run=quizProgress.create(pool,settings.mode);
+  if(!quizProgress.save(run,{replace:true}))return;
   document.querySelector("#quiz-setup").hidden=true;
   document.querySelector("#quiz-result").hidden=true;
   document.querySelector("#quiz-runner").hidden=false;
@@ -91,8 +94,7 @@ function choose(answer){
   const question=run.questions[run.index];
   if(settings.mode!=="exam"&&run.answered)return;
   run.answers[question.id]=answer;
-  run.answered=true;
-  if(settings.mode!=="exam")showAnswer();
+  run.answered=true;if(!saveProgress())return;if(settings.mode!=="exam")showAnswer();
   else{
     document.querySelectorAll("[data-answer]").forEach((button,index)=>button.classList.toggle("selected",index===answer));
     document.querySelector("#next-question").disabled=false;
@@ -115,17 +117,18 @@ function showAnswer(){
 
 function next(){
   if(run.answers[run.questions[run.index].id]===undefined)return;
-  if(run.index<run.questions.length-1){run.index++;renderQuestion();}
+  if(run.index<run.questions.length-1){run.index++;if(!saveProgress())return;renderQuestion();}
   else finish();
 }
 
-function finish(){
-  const results=run.questions.map(question=>({questionId:question.id,question:{...question},selected:run.answers[question.id],correct:run.answers[question.id]===question.answer}));
-  const score=results.filter(result=>result.correct).length,wrong=results.filter(result=>!result.correct).map(result=>result.questionId),attempted=new Set(results.map(result=>result.questionId)),previous=JPY5.read("quiz.lastWrong",[]).map(reviewId),activeWrong=[...previous.filter(id=>!attempted.has(id)),...wrong];
-  JPY5.write("quiz.lastWrong",[...new Set(activeWrong)]);
-  const history=JPY5.read("quiz.history",[]);
-  const attempt={id:`${Date.now()}-${Math.random().toString(16).slice(2)}`,date:new Date().toISOString(),mode:settings.mode,score,total:results.length,results};
+async function finish(){const completedRun=run;const saved=await quizProgress.complete(completedRun,()=>{
+  const results=completedRun.questions.map(question=>({questionId:question.id,question:{...question},selected:completedRun.answers[question.id],correct:completedRun.answers[question.id]===question.answer}));
+  const score=results.filter(result=>result.correct).length,wrong=results.filter(result=>!result.correct).map(result=>result.questionId);
+  JPY5.write("quiz.lastWrong",quizProgress.wrong(quizProgress.list("quiz.lastWrong").map(reviewId),results));
+  const history=quizProgress.list("quiz.history");
+  const attempt={id:completedRun.id,date:new Date().toISOString(),mode:completedRun.mode,score,total:results.length,results};
   JPY5.write("quiz.history",[attempt,...history].slice(0,100));
+  if(!quizProgress.list("quiz.history").some(item=>item?.id===completedRun.id)||run!==completedRun)return;
   document.querySelector("#quiz-runner").hidden=true;
   document.querySelector("#quiz-result").hidden=false;
   document.querySelector("#result-score").textContent=`${score} / ${results.length}`;
@@ -136,7 +139,7 @@ function finish(){
     const question=allQuestions.find(item=>item.id===result.questionId)||result.question,pattern=patterns.find(item=>item.id===question.pattern);
     return `<details class="result-item"><summary>${result.correct?"✓":"✕"} ${grammarRuby.renderPrompt(question.prompt,pattern?.title||"")}</summary><p>你的答案：<span lang="ja">${result.selected===undefined?"未作答":grammarRuby.render(question.options[result.selected])}</span></p><p>正確答案：<span lang="ja">${grammarRuby.render(question.options[question.answer])}</span></p><p>${grammarRuby.escape(question.explanation)}</p></details>`;
   }).join("");
-}
+});if(saved)refreshResume();return saved;}
 
 function updateStar(){
   const question=run.questions[run.index],list=starred();
@@ -145,7 +148,10 @@ function updateStar(){
 
 document.querySelector("#start-quiz").onclick=()=>start();
 document.querySelector("#next-question").onclick=next;
-document.querySelector("#quit-quiz").onclick=()=>{document.querySelector("#quiz-runner").hidden=true;document.querySelector("#quiz-setup").hidden=false;};
-document.querySelector("#new-quiz").onclick=()=>{document.querySelector("#quiz-result").hidden=true;document.querySelector("#quiz-setup").hidden=false;};
+document.querySelector("#quit-quiz").onclick=()=>{document.querySelector("#quiz-runner").hidden=true;document.querySelector("#quiz-setup").hidden=false;refreshResume();};
+document.querySelector("#new-quiz").onclick=()=>{document.querySelector("#quiz-result").hidden=true;document.querySelector("#quiz-setup").hidden=false;refreshResume();};
 document.querySelector("#quiz-star").onclick=()=>{const id=run.questions[run.index].id,list=starred();setStarred(list.includes(id)?list.filter(item=>item!==id):[...list,id]);updateStar();};
 setup();
+
+function saveProgress(){if(quizProgress.save(run))return true;document.querySelector("#quiz-runner").hidden=true;document.querySelector("#quiz-setup").hidden=false;refreshResume();return false;}
+const refreshResume=quizProgress.offer(allQuestions,["practice","exam","challenge"],saved=>{run=saved;settings.mode=run.mode;updateModeControls();document.querySelector("#quiz-setup").hidden=true;document.querySelector("#quiz-result").hidden=true;document.querySelector("#quiz-runner").hidden=false;renderQuestion();});

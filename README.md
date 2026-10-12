@@ -61,4 +61,20 @@ Most lesson material and audio are adapted for study use from [ttrw.jp](https://
 
 JPY5 works without an account and retains progress in browser localStorage. Google login is optional; after first login the app merges the existing local records with the account's cloud records, keeps a local guest snapshot for sign-out, and writes future changes locally first before batching them to Firestore. Cloud state is one owner-only document at `jpy5Users/{uid}` with `schemaVersion`, `progress` (the existing localStorage payloads keyed by their original localStorage keys), and a server `updatedAt` timestamp.
 
+Sync includes Lessons 13–20. Returning logins merge offline records, writes use a Firestore transaction, and an account listener receives other-device progress. Histories merge by attempt ID, bookmarks retain the existing conservative union behavior, and dated quiz results resolve stale wrong-answer flags without removing unattempted mistakes. Theme preferences and unfinished quiz drafts remain device-local. The existing schema version, account path and owner-only rules are unchanged.
+
+Quiz pages for Lessons 13–20 offer **繼續未完成測驗** and **開始新測驗**. A device keeps one unfinished run per lesson, including its mode, ordered question IDs, question signatures, answers and current position. Answers and navigation save immediately. Starting a new quiz replaces only that lesson's draft; finishing writes one history record with the run ID and clears its draft. Practice/exam and Lessons 18–20 no-hint mode share this lifecycle. An incompatible question-bank change or malformed draft shows a recovery message, while completed records remain intact. Revision checks reject stale-tab writes, and supported browsers serialize completion with Web Locks.
+
+Local regression commands (browser suites require Playwright and an installed Edge, or `JPY5_BROWSER_CHANNEL`):
+
+```bash
+node scripts/test-quiz-reliability.mjs
+node scripts/test-progress-sync-reliability.mjs
+node scripts/test-firebase-sync.mjs
+node scripts/test-grammar-no-hint.mjs
+node scripts/test-pwa.mjs
+```
+
+The sync regression uses two isolated storage fixtures and a mocked Firestore service; it never logs in or writes real account progress. A live two-device Google account check is still a separate release verification.
+
 Before releasing, enable Google in Firebase Authentication, add `yuktun.github.io` as an authorized domain, and deploy `firestore.rules` from this repository. The web configuration is public by design; Firebase Authentication and the owner-only Firestore rules enforce access control.

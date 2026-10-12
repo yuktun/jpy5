@@ -4,7 +4,7 @@ const SDK='https://www.gstatic.com/firebasejs/10.14.1';
 export const CLOUD_SCHEMA_VERSION=1;
 export const GUEST_SNAPSHOT_KEY='jpy5-sync-guest-progress';
 const migrationKey=uid=>`jpy5-sync-migration-${uid}`;
-const syncableKey=key=>/^jpy5\.chapter(?:13|14|15|16|17|18)\.(?!theme$)/.test(key)||key==='jpy5-learning-guide-checklist-v1';
+export const syncableKey=key=>/^jpy5\.chapter(?:13|14|15|16|17|18|19|20)\.(?!theme$|quiz\.activeRun$)/.test(key)||key==='jpy5-learning-guide-checklist-v1';
 const clone=value=>JSON.parse(JSON.stringify(value));
 
 export function snapshotFromStorage(storage=localStorage){
@@ -33,8 +33,39 @@ function mergeValue(local,cloud){
 // current device wins an irreconcilable scalar conflict, matching Japanese Study's
 // conservative local-default conflict handling.
 export function mergeSnapshots(local={},cloud={}){
-  const progress={...cloud};
-  for(const [key,value] of Object.entries(local))progress[key]=key in cloud?encode(mergeValue(decode(value),decode(cloud[key]))):value;
+  const progress=Object.fromEntries(Object.entries(cloud).filter(([key])=>syncableKey(key)));
+  for(const [key,value] of Object.entries(local))if(syncableKey(key))progress[key]=key in progress?encode(mergeValue(decode(value),decode(progress[key]))):value;
+  for(let lesson=13;lesson<=20;lesson++){
+    const prefix=`jpy5.chapter${lesson}.quiz.`,historyKey=prefix+'history',wrongKey=prefix+'lastWrong';
+    const left=decode(local[historyKey]),right=decode(cloud[historyKey]);
+    if(Array.isArray(left)&&Array.isArray(right)){
+      // A run ID identifies one complete attempt; never combine its answer arrays.
+      const attempts=new Map();
+      for(const attempt of [...right,...left]){
+        const key=attempt?.id||JSON.stringify(attempt),previous=attempts.get(key);
+        if(!previous||String(attempt?.date||'')>=String(previous?.date||''))attempts.set(key,attempt);
+      }
+      progress[historyKey]=encode([...attempts.values()]);
+    }
+    const history=decode(progress[historyKey]);
+    if(!Array.isArray(history))continue;
+    history.sort((a,b)=>String(b?.date||'').localeCompare(String(a?.date||''))||String(b?.id||'').localeCompare(String(a?.id||'')));
+    progress[historyKey]=encode(history);
+    const wrong=decode(progress[wrongKey]);
+    if(!Array.isArray(wrong))continue;
+    const reviewId=id=>lesson>=18&&!/-app-(1|2)$/.test(id)?id.replace(/-(1|2)$/,'-app-$1'):id;
+    // Completed attempts are immutable, dated evidence. A newer correct retry
+    // removes a stale device's wrong flag; questions never retried remain wrong.
+    const latest=new Map();
+    for(const attempt of history)if(Array.isArray(attempt?.results))for(const result of attempt.results){
+      if(typeof result?.questionId==='string'&&Number.isInteger(result.selected)&&typeof result.correct==='boolean'){
+        const id=reviewId(result.questionId);if(!latest.has(id))latest.set(id,result.correct);
+      }
+    }
+    const active=new Set(wrong.filter(id=>typeof id==='string').map(reviewId).filter(id=>latest.get(id)!==true));
+    for(const [id,correct] of latest)if(!correct)active.add(id);
+    progress[wrongKey]=encode([...active]);
+  }
   return progress;
 }
 export function cloudState(progress,updatedAt){return {schemaVersion:CLOUD_SCHEMA_VERSION,progress,updatedAt};}
@@ -63,9 +94,9 @@ function homeUi(sync){
   document.querySelector('[data-sync-logout]')?.addEventListener('click',async()=>{try{await sync.logout();}catch(error){sync.status('error',error.message||'尚有未同步進度，請連線後重試。');}});
 }
 
-export function initialiseFirebaseSync(){
+export function initialiseFirebaseSync(serviceFactory=createService){
   if(window.JPY5Sync)return window.JPY5Sync;
-  let service,user=null,active=false,timer=null,pending=false,guestSession=false;
+  let service,user=null,active=false,timer=null,pending=false,guestSession=false,unsubscribe=null,generation=0;
   const sync={
     user:null,ready:false,render:null,setLoginReady:()=>{},
     status(state,message){sync.render?.({user,state,message});},
@@ -73,9 +104,21 @@ export function initialiseFirebaseSync(){
     async flush(){
       if(!active||!user||!pending)return true;
       if(!navigator.onLine){sync.status('offline','等待網絡連線');return false;}
+      const epoch=generation,uid=user.uid;
       pending=false;sync.status('syncing','同步中…');
-      try{await service.firestoreSdk.setDoc(service.firestoreSdk.doc(service.db,'jpy5Users',user.uid),cloudState(snapshotFromStorage(),service.firestoreSdk.serverTimestamp()));sync.status('synced',`已同步 · ${new Intl.DateTimeFormat('zh-HK',{dateStyle:'short',timeStyle:'short'}).format(new Date())}`);return true;}
-      catch(error){pending=true;sync.status(navigator.onLine?'error':'offline',navigator.onLine?'同步失敗，請重試':'等待網絡連線');console.warn('JPY5 progress sync:',error);return false;}
+      try{
+        const ref=service.firestoreSdk.doc(service.db,'jpy5Users',uid);
+        const written=await service.firestoreSdk.runTransaction(service.db,async transaction=>{
+          const doc=await transaction.get(ref),data=doc.exists()?doc.data():null;
+          if(epoch!==generation||user?.uid!==uid)throw new Error('Account changed during progress sync');
+          if(data&&data.schemaVersion!==CLOUD_SCHEMA_VERSION)throw new Error('Unsupported progress schema');
+          const progress=mergeSnapshots(snapshotFromStorage(),data?.progress||{});
+          transaction.set(ref,cloudState(progress,service.firestoreSdk.serverTimestamp()));return progress;
+        });
+        if(epoch===generation&&user?.uid===uid){applySnapshot(mergeSnapshots(snapshotFromStorage(),written));sync.status('synced',`已同步 · ${new Intl.DateTimeFormat('zh-HK',{dateStyle:'short',timeStyle:'short'}).format(new Date())}`);}
+        return true;
+      }
+      catch(error){if(epoch!==generation)return false;pending=true;sync.status(navigator.onLine?'error':'offline',navigator.onLine?'同步失敗，請重試':'等待網絡連線');console.warn('JPY5 progress sync:',error);return false;}
     },
     async login(){
       if(!service)throw new Error('正在準備 Google 登入…');
@@ -88,6 +131,7 @@ export function initialiseFirebaseSync(){
   window.JPY5Sync=sync;homeUi(sync);sync.status('pending','正在準備 Google 登入…');
   window.addEventListener('online',()=>sync.flush());
   const handleUser=async nextUser=>{
+    const epoch=++generation;unsubscribe?.();unsubscribe=null;
     active=false;pending=false;user=nextUser;sync.user=user;
     try{
       if(!user){
@@ -98,13 +142,21 @@ export function initialiseFirebaseSync(){
       if(!guestSession&&!localStorage.getItem(GUEST_SNAPSHOT_KEY))localStorage.setItem(GUEST_SNAPSHOT_KEY,JSON.stringify(clone(local)));
       guestSession=true;sync.status('syncing','正在讀取雲端進度…');
       const ref=service.firestoreSdk.doc(service.db,'jpy5Users',user.uid),doc=await service.firestoreSdk.getDoc(ref);
-      const cloud=doc.exists()&&doc.data().schemaVersion===CLOUD_SCHEMA_VERSION&&doc.data().progress&&typeof doc.data().progress==='object'?doc.data().progress:{};
+      if(epoch!==generation)return;
+      if(doc.exists()&&doc.data().schemaVersion!==CLOUD_SCHEMA_VERSION)throw new Error('Unsupported progress schema');
+      const cloud=doc.exists()&&doc.data().progress&&typeof doc.data().progress==='object'?doc.data().progress:{};
       const marker=localStorage.getItem(migrationKey(user.uid));
-      if(!marker){const merged=mergeSnapshots(local,cloud);applySnapshot(merged);localStorage.setItem(`jpy5-sync-backup-${user.uid}`,JSON.stringify({createdAt:new Date().toISOString(),local,cloud}));localStorage.setItem(migrationKey(user.uid),'merged');active=true;pending=true;await sync.flush();}
-      else {if(hasProgress(cloud))applySnapshot(cloud);active=true;sync.status('synced','已同步');}
+      if(!marker){localStorage.setItem(`jpy5-sync-backup-${user.uid}`,JSON.stringify({createdAt:new Date().toISOString(),local,cloud}));localStorage.setItem(migrationKey(user.uid),'merged');}
+      applySnapshot(mergeSnapshots(snapshotFromStorage(),cloud));active=true;pending=true;await sync.flush();
+      if(epoch!==generation)return;
+      unsubscribe=service.firestoreSdk.onSnapshot(ref,snapshot=>{
+        if(epoch!==generation||!snapshot.exists())return;
+        const data=snapshot.data();if(data.schemaVersion!==CLOUD_SCHEMA_VERSION)return;
+        applySnapshot(mergeSnapshots(snapshotFromStorage(),data.progress||{}));
+      },error=>{sync.status(navigator.onLine?'error':'offline',navigator.onLine?'同步失敗，請重試':'離線時仍可學習');console.warn('JPY5 progress sync:',error);});
     }catch(error){sync.status('error','同步失敗，請重試');console.warn('JPY5 progress sync:',error);}
   };
-  createService().then(result=>{
+  serviceFactory().then(result=>{
     service=result;
     // Subscribe only after `service` is assigned: Firebase can invoke this
     // callback immediately for a persisted signed-in account.
@@ -114,7 +166,7 @@ export function initialiseFirebaseSync(){
   return sync;
 }
 
-function applySnapshot(progress){
-  for(let index=localStorage.length-1;index>=0;index--){const key=localStorage.key(index);if(key&&syncableKey(key))localStorage.removeItem(key);}
-  for(const [key,value] of Object.entries(progress||{}))if(syncableKey(key))localStorage.setItem(key,value);
+export function applySnapshot(progress,storage=localStorage){
+  // Apply only supplied progress. Never clear unrelated/older learner records.
+  for(const [key,value] of Object.entries(progress||{}))if(syncableKey(key))storage.setItem(key,value);
 }
