@@ -21,11 +21,11 @@ translation:[
 ["山口","看來我們聚集了一群各具特色的人，我們戲劇部的傳統也可以順利傳承下去了。那麼，從明天開始的訓練，大家一起振作精神努力吧。"]],
 listeningTargets:[
 {id:1,speaker:"山口",context:"会を行いたいと思います。＿＿。",answer:"まず、部長の挨拶から。どうぞ",start:21.60,end:24.78,status:"verified_textbook_answerbook_audio",source:"official_answer_book_and_mp3"},
-{id:2,speaker:"山口",context:"では、次に、古田先輩、＿＿。",answer:"一言お願いします",start:50.26,end:51.34,status:"verified_textbook_answerbook_audio",source:"official_answer_book_and_mp3"},
-{id:3,speaker:"山口",context:"新入生に登場願いますが、＿＿、何か自分をアピールするようなことを話してください。",answer:"ありきたりの自己紹介ではなく",start:94.22,end:96.28,status:"verified_textbook_answerbook_audio",source:"official_answer_book_and_mp3"},
-{id:4,speaker:"山口",context:"イメージできるようにお願いします。＿＿。マヨラン君。",answer:"こちらから時計回りに",start:106.78,end:108.88,status:"verified_textbook_answerbook_audio",source:"official_answer_book_and_mp3"},
+{id:2,speaker:"山口",context:"では、次に、古田先輩、＿＿。",answer:"一言お願いします",start:50.26,end:51.42,status:"verified_textbook_answerbook_audio",source:"official_answer_book_and_mp3"},
+{id:3,speaker:"山口",context:"新入生に登場願いますが、＿＿、何か自分をアピールするようなことを話してください。",answer:"ありきたりの自己紹介ではなく",start:94.22,end:96.34,status:"verified_textbook_answerbook_audio",source:"official_answer_book_and_mp3"},
+{id:4,speaker:"山口",context:"イメージできるようにお願いします。＿＿。マヨラン君。",answer:"こちらから時計回りに",start:106.78,end:108.70,status:"verified_textbook_answerbook_audio",source:"official_answer_book_and_mp3"},
 {id:5,speaker:"マヨラン",context:"工学部のマヨランです。＿＿、僕は高専時代に……",answer:"ちょっと自慢話になりますが",start:114.14,end:116.20,status:"verified_textbook_answerbook_audio",source:"official_answer_book_and_mp3"},
-{id:6,speaker:"マヨラン",context:"ロボット作りの＿＿舞台装置作りに……",answer:"経験を",start:148.56,end:149.12,status:"verified_textbook_answerbook_audio",source:"official_answer_book_and_mp3"},
+{id:6,speaker:"マヨラン",context:"ロボット作りの＿＿舞台装置作りに……",answer:"経験を",start:148.56,end:149.16,status:"verified_textbook_answerbook_audio",source:"official_answer_book_and_mp3"},
 {id:7,speaker:"マヨラン",context:"舞台装置作りに＿＿。",answer:"生かせたらいいなと思います",start:150.44,end:151.66,status:"verified_textbook_answerbook_audio",source:"official_answer_book_and_mp3"},
 {id:8,speaker:"松下",context:"一度もレギュラーになったことがありません。＿＿。",answer:"いわゆるボール拾いです",start:167.56,end:169.24,status:"verified_textbook_answerbook_audio",source:"official_answer_book_and_mp3"}],
 sourcePrompts:[

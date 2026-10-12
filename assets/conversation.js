@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const data = window.JPY5_CONVERSATION;
   const stage = document.querySelector("#conversation-stage");
   const audio = document.querySelector("#lesson-audio");
+  const segmentPlayer = JPY5SegmentPlayer.attach(audio);
   const fresh = () => ({mode:"dialogue", card:0, flipped:false, furigana:true, attempts:0, marks:{}, mistakes:{}, stars:{}, comprehensionAnswers:{}, comprehensionMistakes:{}, textbookDrafts:{}, shadowIndex:0, shadowing:false, shadowHide:false});
   let state = {...fresh(), ...JPY5.read("conversation", {})};
   let current = 0;
@@ -58,11 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
     save();
   }
   function play(id) {
-    const x = item(id); if (!x) return;
-    audio.currentTime = x.start;
-    audio.play().catch(() => {});
-    const stop = () => { if (audio.currentTime >= x.end) { audio.pause(); audio.removeEventListener("timeupdate", stop); } };
-    audio.addEventListener("timeupdate", stop);
+    segmentPlayer.play(item(id));
   }
   function setMode(mode) {
     state.mode = mode; state.flipped = false; current = 0; built = []; orderPool = []; save();
@@ -108,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
     stage.querySelector("[data-shadow-close]")?.addEventListener("click",()=>{state.shadowing=false;save();render();});
     stage.querySelectorAll("[data-shadow-nav]").forEach(button=>button.onclick=()=>{state.shadowIndex=(state.shadowIndex+(button.dataset.shadowNav==="next"?1:data.dialogue.length-1))%data.dialogue.length;save();render();});
     stage.querySelector("[data-shadow-hide]")?.addEventListener("click",()=>{state.shadowHide=!state.shadowHide;save();render();});
-    stage.querySelector("[data-shadow-full]")?.addEventListener("click",()=>{audio.currentTime=0;audio.play().catch(()=>{});});
+    stage.querySelector("[data-shadow-full]")?.addEventListener("click",()=>{segmentPlayer.full();});
   }
   function renderTranslation() {
     stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">全文中文翻譯</p><h2>${esc(data.title)}</h2></div><span>${data.translation.length} 句雙語對照</span></div><div class="dialogue-list translation-list">${data.translation.map(([speaker,text],index) => `<article class="dialogue-row"><b>${esc(speaker)}</b><p lang="zh-Hant">${esc(text)}<span class="translation-original" lang="ja">${ruby(dialogueText(data.dialogue[index]))}</span></p></article>`).join("")}</div>`;
@@ -173,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const blank = id ? `<label class="cloze-blank"><span>底線 ${id}</span><input data-cloze="${id}" lang="ja" autocomplete="off" placeholder="輸入聽到的句子"></label>` : "";
       return `<article class="dialogue-row"><b>${ruby(speaker)}</b><p>${ruby(before)}${blank}${ruby(after || "")}</p></article>`;
     }).join("")}</div><div class="practice-actions"><button class="text-button" id="reveal-cloze">顯示答案</button><button class="primary-button" id="check-cloze">檢查五句</button></div><p class="answer-message"></p></article>`;
-    stage.querySelector("#play-full").onclick = () => { audio.currentTime=0; audio.play().catch(()=>{}); };
+    stage.querySelector("#play-full").onclick = () => { segmentPlayer.full(); };
     stage.querySelector("#reveal-cloze").onclick = () => { revealed=true; data.items.forEach(x => { const input=stage.querySelector(`[data-cloze="${x.id}"]`); input.value=x.jp; input.insertAdjacentHTML("afterend",`<output class="cloze-ruby-answer" lang="ja">${ruby(x.jp)}</output>`); }); stage.querySelector("#check-cloze").disabled=true; stage.querySelector(".answer-message").textContent="顯示答案後，本輪只供參考，不計入掌握進度。"; };
     stage.querySelector("#check-cloze").onclick = () => {
       if(revealed)return;

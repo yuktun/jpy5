@@ -11,7 +11,7 @@ vm.runInNewContext(await readFile(resolve(root,"assets/ch16-conversation-data.js
 const data=contextData.window.JPY5_CONVERSATION;
 assert.equal(data.items.length,10);
 assert.deepEqual(Array.from(data.items,item=>item.jp),["人身事故","危うく","大したことない","泣きたい気分","不幸中の幸い","頭痛い","済めば、安い","ものは考えよう","行っとけばよかった","くよくよしないで"]);
-assert.deepEqual(Array.from(data.items,item=>[item.start,item.end]),[[32.68,33.32],[34.76,35.68],[52.02,52.69],[59.86,60.69],[64.33,65.43],[84.02,84.86],[87.98,88.75],[90.40,91.67],[96.92,97.57],[98.10,99.68]]);
+assert.deepEqual(Array.from(data.items,item=>[item.start,item.end]),[[32.5,33.4],[34.76,35.68],[51.86,52.7],[59.86,60.69],[64.33,65.43],[84.02,84.86],[87.98,88.75],[90.4,91.67],[96.92,97.57],[98.1,99.68]]);
 assert(data.items.every(item=>Number.isFinite(item.start)&&Number.isFinite(item.end)&&item.end>item.start));
 assert.equal(data.comprehension.length,7,"the seven app comprehension questions changed");
 assert.deepEqual(Array.from(data.comprehension,item=>item.id),["c1","c2","c3","c4","c5","c6","c7"]);
@@ -41,10 +41,10 @@ try{
    assert.equal(migrated.itemSetVersion,2);assert.deepEqual(migrated.marks,{3:"correct",10:"wrong"});assert.deepEqual(migrated.mistakes,{3:2,10:3});assert.deepEqual(migrated.stars,{3:true,10:true});assert.equal(migrated.card,2);
   }else await page.locator('[data-mode="dialogue"]').click();
   assert.equal(await page.locator(".focus-line").count(),10);assert.equal(await page.locator('.dialogue-row [data-listen]').count(),10);
-  await page.locator('[data-listen="1"]').click();assert(Math.abs(await page.locator("#lesson-audio").evaluate(audio=>audio.currentTime)-32.68)<.05);
-  await page.locator('[data-listen="2"]').click();await page.locator("#lesson-audio").evaluate(audio=>{audio.currentTime=33.5;audio.dispatchEvent(new Event("timeupdate"));});
-  assert.equal(await page.locator("#lesson-audio").getAttribute("data-pause-count"),null,"stale replay listener paused a newer clip");
-  await page.locator("#lesson-audio").evaluate(audio=>{audio.currentTime=35.8;audio.dispatchEvent(new Event("timeupdate"));});assert.equal(await page.locator("#lesson-audio").getAttribute("data-pause-count"),"1");
+  await page.locator('[data-listen="1"]').click();assert(Math.abs(await page.locator("#lesson-audio").evaluate(audio=>audio.currentTime)-data.items[0].start)<.05);
+  await page.locator('[data-listen="2"]').click();const pauseBaseline=await page.locator("#lesson-audio").getAttribute("data-pause-count");await page.locator("#lesson-audio").evaluate(audio=>{audio.currentTime=33.5;audio.dispatchEvent(new Event("timeupdate"));});
+  assert.equal(await page.locator("#lesson-audio").getAttribute("data-pause-count"),pauseBaseline,"stale replay listener paused a newer clip");
+  await page.locator("#lesson-audio").evaluate(audio=>{audio.currentTime=35.8;audio.dispatchEvent(new Event("timeupdate"));});assert.equal(await page.locator("#lesson-audio").getAttribute("data-pause-count"),String(Number(pauseBaseline)+1));
   await page.locator(".focus-line").first().click();assert.equal(await page.locator("[data-dialog-listen]").isVisible(),true);await page.locator("[data-dialog-close]").first().click();
 
   await page.locator('[data-mode="comprehension"]').click();assert.equal(await page.locator("[data-comprehension]").count(),7);assert.equal(await page.locator(".textbook-answer-card").count(),8);assert.equal(await page.locator(".reference-answer:not([hidden])").count(),0);

@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded",()=>{
   const data=window.JPY5_CONVERSATION,stage=document.querySelector("#conversation-stage"),audio=document.querySelector("#lesson-audio");
+  const segmentPlayer = JPY5SegmentPlayer.attach(audio);
   const fresh=()=>({stateVersion:2,mode:"dialogue",furigana:true,drafts:{},promptNotes:{},expressionNotes:{},activityDrafts:{},replayProgress:{},listenCount:0});
   const stored=JPY5.read("conversation",{}),legacyModes={prompts:"comprehension",expressions:"comprehension"};
   let state={...fresh(),...stored};
@@ -57,13 +58,11 @@ document.addEventListener("DOMContentLoaded",()=>{
   function blanks(){return heading("會話填寫","3. もう一度聞こう",`${Object.values(state.drafts).filter(value=>String(value).trim()).length}/9 已寫答案`)+`<div class="textbook-no-grade"><strong>九個空欄均已核實</strong><p>可寬鬆核對或揭示課本答案；揭示不會覆寫輸入。</p></div><div class="listening-draft-list">${data.listeningTargets.map(target=>`<article class="practice-panel"><span>空欄 ${target.id} · ${ruby(target.speaker)}</span><h3>${ruby(target.context)}</h3><label>我的答案<input type="text" lang="ja" autocomplete="off" data-blank-draft="${target.id}" value="${esc(state.drafts[target.id]||"")}"></label><div class="ch17-blank-actions"><button class="secondary-button" type="button" data-check-blank="${target.id}">核對</button><button class="secondary-button" type="button" data-answer-toggle="blank-${target.id}" aria-expanded="false">答案を見る / 顯示答案</button><button class="listen-button" type="button" data-listen-target="${target.id}">▶ 播放這句</button></div><p class="blank-feedback" data-blank-feedback="${target.id}"></p><div class="reference-answer" data-answer-panel="blank-${target.id}" hidden><b>課本官方答案 / 課本解答</b><p>${ruby(target.answer)}</p></div></article>`).join("")}</div>`}
   function guide(){return heading("LISTENING GUIDE","完成版練習方法","課本・解答冊・官方音訊已核實")+`<div class="review-path listening-guide"><article><b>01</b><div><span>完整會話</span><h2>先聽人物與場景</h2><p>保留29句完整會話作為第一個、預設模式。</p></div></article><article><b>02</b><div><span>精聽九句</span><h2>逐段重播答案表現</h2><p>每次只播放綠色標記的原空欄範圍。</p></div></article><article><b>03</b><div><span>課本問題</span><h2>先寫自己的理解</h2><p>揭示官方答案不會覆寫筆記。</p></div></article><article><b>04</b><div><span>口說延伸</span><h2>依對象改變說話方式</h2><p>完成課本1・4・5・6活動，開放題不作嚴格評分。</p></div></article></div><p class="source-status-line verified-source-line"><b>核實狀態：</b>九個答案及其官方音訊重播區間均已逐項整理；非官方教學例另有明確標示。</p>`}
   const renderers={dialogue,translation,comprehension,activities,focus,blanks,guide};
-  let replaySerial=0,activeStop=null;
-  function cancelReplay(){replaySerial++;if(activeStop){audio.removeEventListener("timeupdate",activeStop);activeStop=null}}
+
+  function cancelReplay(){segmentPlayer.cancel(true)}
   function playTarget(id){
     const target=data.listeningTargets.find(item=>item.id===Number(id));if(!target)return;
-    cancelReplay();const serial=replaySerial;audio.currentTime=target.start;
-    activeStop=()=>{if(serial!==replaySerial)return;if(audio.currentTime>=target.end){audio.pause();audio.currentTime=target.end;audio.removeEventListener("timeupdate",activeStop);activeStop=null}};
-    audio.addEventListener("timeupdate",activeStop);state.replayProgress[target.id]=(state.replayProgress[target.id]||0)+1;save();audio.play().catch(()=>{});
+    state.replayProgress[target.id]=(state.replayProgress[target.id]||0)+1;save();segmentPlayer.play(target);
   }
   function bind(){
     stage.querySelectorAll("[data-listen-target]").forEach(button=>button.onclick=()=>playTarget(button.dataset.listenTarget));
@@ -80,6 +79,6 @@ document.addEventListener("DOMContentLoaded",()=>{
   document.querySelector("#furigana-toggle").textContent=`假名 ${state.furigana?"ON":"OFF"}`;
   document.querySelector("#reset-conversation").onclick=()=>{if(confirm("只清除第 17 課聆聽筆記及本頁設定？")){cancelReplay();state=fresh();JPY5.remove("conversation");document.querySelector("#furigana-toggle").textContent="假名 ON";render();updateSummary()}};
   audio.addEventListener("play",()=>{state.listenCount=(state.listenCount||0)+1;save()});
-  audio.addEventListener("pause",()=>{if(activeStop)cancelReplay()});
+
   save();render();
 });

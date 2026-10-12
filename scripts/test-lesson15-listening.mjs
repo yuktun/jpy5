@@ -16,7 +16,7 @@ assert.deepEqual(Array.from(data.items,item=>item.jp),[
   "お名前は中村から伺っております","老舗といえるほどのものじゃありません","右に出る人はいない","そんな大したものではありません",
   "いえ、それほどでも","自分で言うのもなんですが","お言葉に甘えて","話の途中ですが、ちょっと失礼いたします"
 ]);
-assert.deepEqual(Array.from(data.items,item=>[item.start,item.end]),[[31.00,33.44],[48.82,50.92],[68.76,69.94],[71.70,74.14],[116.34,118.30],[119.36,121.02],[141.40,142.98],[149.30,152.54]]);
+assert.deepEqual(Array.from(data.items,item=>[item.start,item.end]),[[31.2,33.52],[48.82,50.96],[68.76,69.94],[72.26,74.05],[116.34,118.32],[119.36,121.02],[141.9,142.98],[149.94,152.58]]);
 assert.equal(data.comprehension.length,6,"the six existing app questions changed");
 assert.deepEqual(Array.from(data.comprehension,item=>item.id),["c1","c2","c3","c4","c5","c6"]);
 assert.equal(data.textbookQuestions.length,8);
@@ -56,12 +56,13 @@ try{
     assert.equal(await page.locator(".focus-line").count(),8);
     assert.equal(await page.locator('.dialogue-row [data-listen]').count(),8);
     await page.locator('[data-listen="1"]').click();
-    assert(Math.abs((await page.locator("#lesson-audio").evaluate(audio=>audio.currentTime))-31.00)<.05);
+    assert(Math.abs((await page.locator("#lesson-audio").evaluate(audio=>audio.currentTime))-data.items[0].start)<.05);
     await page.locator('[data-listen="2"]').click();
+    const pauseBaseline = await page.locator("#lesson-audio").getAttribute("data-pause-count");
     await page.locator("#lesson-audio").evaluate(audio=>{audio.currentTime=34;audio.dispatchEvent(new Event("timeupdate"));});
-    assert.equal(await page.locator("#lesson-audio").getAttribute("data-pause-count"),null,"stale replay listener paused a newer sentence");
+    assert.equal(await page.locator("#lesson-audio").getAttribute("data-pause-count"),pauseBaseline,"stale replay listener paused a newer sentence");
     await page.locator("#lesson-audio").evaluate(audio=>{audio.currentTime=51;audio.dispatchEvent(new Event("timeupdate"));});
-    assert.equal(await page.locator("#lesson-audio").getAttribute("data-pause-count"),"1","active sentence did not stop at its verified end");
+    assert.equal(await page.locator("#lesson-audio").getAttribute("data-pause-count"),String(Number(pauseBaseline)+1),"active sentence did not stop at its verified end");
     await page.locator(".focus-line").first().click();
     assert.equal(await page.locator("[data-dialog-listen]").isVisible(),true);
     await page.locator("[data-dialog-close]").first().click();

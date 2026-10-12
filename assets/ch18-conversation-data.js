@@ -62,19 +62,19 @@ window.JPY5_CONVERSATION = {
     ["泉","嗯，好啊。來，吃飯吧。可以替我開酒瓶嗎？"]
   ],
   listeningTargets: [
-    {id:1,speaker:"ワット",answer:"しょっちゅう何か捜してるね",context:"また捜し物？＿＿。",start:23.04,end:25.72},
-    {id:2,speaker:"ワット",answer:"ちょっと食器、多すぎるんじゃないの",context:"ねえ、いずみ。＿＿？ こんなにたくさん要らないだろう。",start:29.94,end:32.16},
+    {id:1,speaker:"ワット",answer:"しょっちゅう何か捜してるね",context:"また捜し物？＿＿。",start:23.88,end:25.74},
+    {id:2,speaker:"ワット",answer:"ちょっと食器、多すぎるんじゃないの",context:"ねえ、いずみ。＿＿？ こんなにたくさん要らないだろう。",start:29.88,end:32.16},
     {id:3,speaker:"いずみ",answer:"だって",context:"＿＿、このお皿もお茶碗も……",start:53.18,end:53.90},
-    {id:4,speaker:"いずみ",answer:"もの",context:"新婚時代の思い出がいっぱいなんだ＿＿。",start:57.48,end:57.94},
-    {id:5,speaker:"ワット",answer:"だいたい食器だけじゃなくて",context:"＿＿、ここにあるスーパーの袋の山……",start:63.60,end:65.38},
-    {id:6,speaker:"ワット",answer:"何だよ",context:"ここにあるスーパーの袋の山、＿＿。",start:67.66,end:68.70},
-    {id:7,speaker:"いずみ",answer:"あなたこそ",context:"＿＿、あの本の山は……",start:87.60,end:88.36},
-    {id:8,speaker:"いずみ",answer:"いったい何なの",context:"あの本の山は＿＿！",start:89.52,end:90.68},
+    {id:4,speaker:"いずみ",answer:"もの",context:"新婚時代の思い出がいっぱいなんだ＿＿。",start:57.48,end:58.16},
+    {id:5,speaker:"ワット",answer:"だいたい食器だけじゃなくて",context:"＿＿、ここにあるスーパーの袋の山……",start:63.60,end:65.40},
+    {id:6,speaker:"ワット",answer:"何だよ",context:"ここにあるスーパーの袋の山、＿＿。",start:67.66,end:68.66},
+    {id:7,speaker:"いずみ",answer:"あなたこそ",context:"＿＿、あの本の山は……",start:87.36,end:88.40},
+    {id:8,speaker:"いずみ",answer:"いったい何なの",context:"あの本の山は＿＿！",start:89.60,end:90.70},
     {id:9,speaker:"いずみ",answer:"お互いさまなんじゃない",context:"＿＿？",start:91.14,end:92.68,variants:["お互い様なんじゃない"]},
-    {id:10,speaker:"ワット",answer:"だいたい君は整理が下手なんだ",context:"場所をとるだけだよ。＿＿よ。",start:100.56,end:103.34},
-    {id:11,speaker:"いずみ",answer:"そんなに言わなくたっていいじゃない",context:"＿＿！！",start:103.78,end:105.88},
-    {id:12,speaker:"ワット",answer:"ごめん、ちょっと言い過ぎたみたい",context:"＿＿。いずみが物を大事にするってことは……",start:108.30,end:110.34},
-    {id:13,speaker:"いずみ",answer:"私こそ、ごめん",context:"ううん、＿＿。",start:116.50,end:118.36}
+    {id:10,speaker:"ワット",answer:"だいたい君は整理が下手なんだ",context:"場所をとるだけだよ。＿＿よ。",start:100.56,end:102.84},
+    {id:11,speaker:"いずみ",answer:"そんなに言わなくたっていいじゃない",context:"＿＿！！",start:103.52,end:106.18},
+    {id:12,speaker:"ワット",answer:"ごめん、ちょっと言い過ぎたみたい",context:"＿＿。いずみが物を大事にするってことは……",start:108.28,end:110.42},
+    {id:13,speaker:"いずみ",answer:"私こそ、ごめん",context:"ううん、＿＿。",start:116.50,end:118.04}
   ],
   sourcePrompts: [
     {id:"listen-1",number:"①",section:"内容を聞き取りましょう",jp:"最初に不満を言ったのはどちらですか。どんなことを言いましたか。",answer:"ワットさん　食器が多すぎること"},

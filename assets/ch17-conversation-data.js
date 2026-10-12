@@ -66,13 +66,13 @@ window.JPY5_CONVERSATION={
     ["優太","好！"]
   ],
   listeningTargets:[
-    {id:1,speaker:"サントス",answer:"ご無沙汰しています",context:"こんにちは。＿＿。",start:12.30,end:13.42,variants:["ごぶさたしています"]},
-    {id:2,speaker:"サントス",answer:"お口に合うかどうか分かりませんが",context:"あの、これ、＿＿、皆さんでどうぞ。",start:17.40,end:19.60,variants:["お口に合うかどうかわかりませんが"]},
-    {id:3,speaker:"サントス",answer:"お休みのところ",context:"今日は＿＿、お邪魔してすみません。",start:31.02,end:31.90},
-    {id:4,speaker:"ミランダ",answer:"何のおかまいもできません",context:"いいえ。＿＿が、どうぞごゆっくりなさってください。",start:34.18,end:35.78,variants:["何のお構いもできません"]},
-    {id:5,speaker:"池田",answer:"お父さんのお友達",context:"＿＿のサントスさんだよ。",start:43.68,end:45.05},
+    {id:1,speaker:"サントス",answer:"ご無沙汰しています",context:"こんにちは。＿＿。",start:12.30,end:13.50,variants:["ごぶさたしています"]},
+    {id:2,speaker:"サントス",answer:"お口に合うかどうか分かりませんが",context:"あの、これ、＿＿、皆さんでどうぞ。",start:17.90,end:19.70,variants:["お口に合うかどうかわかりませんが"]},
+    {id:3,speaker:"サントス",answer:"お休みのところ",context:"今日は＿＿、お邪魔してすみません。",start:30.90,end:31.94},
+    {id:4,speaker:"ミランダ",answer:"何のおかまいもできません",context:"いいえ。＿＿が、どうぞごゆっくりなさってください。",start:34.38,end:35.78,variants:["何のお構いもできません"]},
+    {id:5,speaker:"池田",answer:"お父さんのお友達",context:"＿＿のサントスさんだよ。",start:43.68,end:45.08},
     {id:6,speaker:"サントス",answer:"お兄ちゃん",context:"もう＿＿だね。",start:55.46,end:56.02},
-    {id:7,speaker:"優太",answer:"あのね",context:"＿＿、あした豆まきするんだ。",start:108.38,end:109.08},
+    {id:7,speaker:"優太",answer:"あのね",context:"＿＿、あした豆まきするんだ。",start:108.38,end:109.14},
     {id:8,speaker:"サントス",answer:"お父さんが鬼なの",context:"へえ、＿＿。",start:114.18,end:116.17},
     {id:9,speaker:"サントス",answer:"おじさん",context:"＿＿も子どものとき、ユースに入ってたんだよ。",start:131.54,end:132.16}
   ],

@@ -2,12 +2,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const data = window.JPY5_CONVERSATION;
   const stage = document.querySelector("#conversation-stage");
   const audio = document.querySelector("#lesson-audio");
+  const segmentPlayer = JPY5SegmentPlayer.attach(audio);
   const fresh = () => ({mode:"dialogue", card:0, flipped:false, furigana:true, attempts:0, marks:{}, mistakes:{}, stars:{}, comprehensionAnswers:{}, comprehensionMistakes:{}, drafts:{}});
   let state = {...fresh(), ...JPY5.read("conversation", {})};
   let current = 0;
   let built = [];
   let orderPool = [];
-  let detailScrollY = 0, detailReturnFocus = null, activeAudioStop = null, audioPlayToken = 0;
+  let detailScrollY = 0, detailReturnFocus = null;
   const lockDetailBackground = () => { detailScrollY = window.scrollY; document.body.classList.add("grammar-extra-open"); document.body.style.top = "-" + detailScrollY + "px"; };
   const unlockDetailBackground = () => { const root=document.documentElement, previous=root.style.scrollBehavior; root.style.scrollBehavior="auto"; document.body.classList.remove("grammar-extra-open"); document.body.style.top=""; window.scrollTo({left:0,top:detailScrollY,behavior:"auto"}); requestAnimationFrame(()=>{root.style.scrollBehavior=previous;}); };
 
@@ -32,14 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     save();
   }
   function play(id) {
-    const x = item(id); if (!x) return;
-    if (!Number.isFinite(x.start) || !Number.isFinite(x.end) || x.end <= x.start) return;
-    if (activeAudioStop) audio.removeEventListener("timeupdate", activeAudioStop);
-    const token=++audioPlayToken;
-    audio.currentTime = x.start;
-    audio.play().catch(() => {});
-    const stop = () => { if(token!==audioPlayToken)return;if(audio.currentTime >= x.end){audio.pause();audio.removeEventListener("timeupdate",stop);if(activeAudioStop===stop)activeAudioStop=null;} };
-    activeAudioStop=stop; audio.addEventListener("timeupdate", stop);
+    segmentPlayer.play(item(id));
   }
   function setMode(mode) {
     state.mode = mode; state.flipped = false; current = 0; built = []; orderPool = []; save();
@@ -150,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }).join("")}</section>`;
     }).join("")}</div>`;
     bindDraftsAndReferences();
-    stage.querySelector("[data-play-main]")?.addEventListener("click",()=>{audioPlayToken++;if(activeAudioStop)audio.removeEventListener("timeupdate",activeAudioStop);activeAudioStop=null;audio.currentTime=0;audio.play().catch(()=>{});});
+    stage.querySelector("[data-play-main]")?.addEventListener("click",()=>{segmentPlayer.full();});
     if(window.JPY5?.sources?.textbook)stage.querySelectorAll("[data-ch15-textbook]").forEach(link=>link.href=window.JPY5.sources.textbook);
   }
   function renderOrder() {
@@ -172,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const blank = id ? `<label class="cloze-blank"><span>底線 ${id}</span><input data-cloze="${id}" lang="ja" autocomplete="off" placeholder="輸入聽到的句子"></label>` : "";
       return `<article class="dialogue-row"><b>${esc(speaker)}</b><p>${esc(before)}${blank}${esc(after || "")}</p></article>`;
     }).join("")}</div><div class="practice-actions"><button class="text-button" id="reveal-cloze">官方答案を見る</button><button class="primary-button" id="check-cloze">檢查八項</button></div><div class="reference-answer cloze-official-answers" id="cloze-official-answers" hidden><b>官方答案 / 課本解答</b><ol>${data.items.map(x=>`<li>${ruby(x.jp)}</li>`).join("")}</ol></div><p class="answer-message"></p></article>`;
-    stage.querySelector("#play-full").onclick = () => { audioPlayToken++;if(activeAudioStop)audio.removeEventListener("timeupdate",activeAudioStop);activeAudioStop=null;audio.currentTime=0;audio.play().catch(()=>{}); };
+    stage.querySelector("#play-full").onclick = () => { segmentPlayer.full(); };
     stage.querySelector("#reveal-cloze").onclick = e => { const answers=stage.querySelector("#cloze-official-answers"), opening=answers.hidden; answers.hidden=!opening; e.currentTarget.textContent=opening?"官方答案を隠す":"官方答案を見る"; };
     stage.querySelector("#check-cloze").onclick = () => {
       let score=0;
