@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const data=window.JPY5_READING, stage=document.querySelector("#reading-stage");
   const teacherData=window.JPY5_READING_TEACHER_NOTES;
+  const teacherExtras=window.JPY5_TEACHER;
   const defaults=()=>({mode:"original",font:1,furigana:true,answered:{},wrong:[],vocabIndex:0,vocabFlipped:false,attempts:[],examAnswers:{},textbookDrafts:{}});
   let state={...defaults(),...JPY5.read("reading",{})}, findIndex=0;
   const esc=v=>String(v).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
@@ -70,10 +71,11 @@ document.addEventListener("DOMContentLoaded", () => {
         body=`<ol class="textbook-free-response-list">${section.items.map((item,i)=>`<li>${item.text?`<p lang="ja">${ruby(item.text)}</p>`:""}<label><span>我的答案（不計分）</span><textarea rows="3" data-textbook-draft="${section.id}-${i}" aria-label="${esc(section.instruction)} 第 ${i+1} 題"></textarea></label></li>`).join("")}</ol>`;
         answers=`<ol>${section.items.map(item=>`<li lang="ja">${ruby(item.answer,{furiganaContext:"monthlyParking"})}</li>`).join("")}</ol>`;
       }
-      return `<article class="textbook-exercise" data-textbook-section="${section.id}"><header><span>${exercises.sourceLabel} · ${section.number}</span><h3 lang="ja">${ruby(section.instruction)}</h3>${section.note?`<p lang="ja">${ruby(section.note)}</p>`:""}</header>${body}${answerBlock(section,answers)}</article>`;
+      return `<article class="textbook-exercise" data-textbook-section="${section.id}"><header><span>${exercises.sourceLabel} · ${section.number}</span><h3 lang="ja">${ruby(section.instruction)}</h3>${section.note?`<p lang="ja">${ruby(section.note)}</p>`:""}</header>${body}${answerBlock(section,answers)}${section.id==="completion" ? teacherExtras?.block(teacherExtras.ending,state.furigana)||"" : ""}</article>`;
     }).join("");
     const checkGroup=`<section class="textbook-activity-group"><header class="textbook-activity-heading"><span>${exercises.sourceLabel}</span><h2 lang="ja">${ruby(exercises.title)}</h2><p>按課文內容整理時間線、完成句子並回答問題；自由記述不作嚴格自動評分。</p></header><aside class="textbook-no-grade"><strong>作答說明</strong><p lang="ja">${ruby(exercises.note)}</p></aside><div class="textbook-exercise-list">${sections}</div></section>`;
     const modelBlock=(activity,item,index)=>{
+      if(item.kind==="teacher-writing")return "";
       const id=`textbook-model-${activity.id}-${item.id}`;
       let content="";
       if(item.modelSections){
@@ -96,7 +98,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }else{
         response=`<label class="textbook-draft-label"><span>${item.kind==="research"?"我的查考與發表準備":"我的回答準備"}（不計分）</span><textarea rows="${item.kind==="research"?8:6}" data-textbook-draft="activity-${item.id}" aria-label="${esc(activity.title)} ${index+1} 我的回答"></textarea></label>`;
       }
-      return `<article class="textbook-activity-card"><span>${activity.number}.${index+1} · 不計分</span><h3 lang="ja">${rubyLines(item.prompt)}</h3>${response}${modelBlock(activity,item,index)}</article>`;
+      const writing=item.kind==="teacher-writing";
+      const guide=writing ? `<p>${esc(item.teacherTip)}</p><ol class="teacher-writing-guide">${item.teacherGuide.map(line=>`<li lang="ja">${teacherExtras.jp(line,state.furigana)}</li>`).join("")}</ol><p>文章の流れ＝文章結構：時間順序與想法的變化。</p>${teacherExtras.source("reading","13")}` : "";
+      return `<article class="textbook-activity-card"${writing ? ' id="teacher-writing"' : ""}><span>${writing?"老師補充 · ":""}${activity.number}.${index+1} · 不計分</span><h3 lang="ja">${item.teacherPrompt ? teacherExtras.jp(item.teacherPrompt,state.furigana) : rubyLines(item.prompt)}</h3>${item.id==="japanese-difficulty" ? teacherExtras?.block(teacherExtras.presentation,state.furigana)||"" : ""}${guide}${response}${writing ? '<output class="teacher-writing-count" aria-live="polite">0 字 · 目標約400字（不計空白）</output>' : ""}${modelBlock(activity,item,index)}</article>`;
     };
     const activityGroup=activity=>`<section class="textbook-activity-group"><header class="textbook-activity-heading"><span>${activity.sourceLabel}</span><h2 lang="ja">${ruby(`${activity.number}. ${activity.title}`)}</h2><p>${activity.id==="think"?"先想想自己平日查漢字讀音的方法。":activity.id==="think-speak"?"先整理自己的想法，再練習口頭發表。":"用自己的經驗介紹一個讀法出乎意料的漢字詞。"}</p></header><div class="textbook-activity-cards">${activity.items.map((item,index)=>activityCard(activity,item,index)).join("")}</div></section>`;
     const beforeCheck=data.textbookActivities.filter(activity=>activity.number<3).map(activityGroup).join("");
@@ -128,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if(!teacherData)return shell("老師筆記","資料載入中……","");
     const title=`${ruby("ゲッキョク")}<button type="button" class="teacher-annotation" data-teacher-note="company" aria-haspopup="dialog" aria-label="開啟「株式会社」老師筆記">${ruby("株式会社")}</button>`;
     const paragraphLabel=p=>{const source=teacherData.sourceParagraphs[p.id];return `原文第 ${source.sourceParagraph} 段${source.part?`（${source.part}）`:""}`;};
-    return shell("老師筆記",teacherData.objective,`<section class="teacher-overview"><span class="reading-badge">老師閱讀重點</span><p>${esc(teacherData.objective)}</p><ol class="teacher-timeline">${teacherData.timeline.map((item,i)=>`<li>${esc(item)}${i<teacherData.timeline.length-1?'<span aria-hidden="true">→</span>':''}</li>`).join("")}</ol><small class="teacher-reference">老師筆記來源：福田州平老師</small></section><article class="reading-paper teacher-paper" style="--reading-size:${[.98,1.1,1.24][state.font]}"><h3>${title}</h3>${teacherData.paragraphs.map(p=>`<section class="teacher-paragraph" data-teacher-paragraph="${p.id}"><div class="teacher-paragraph-meta"><span>${paragraphLabel(p)}</span><button type="button" class="teacher-focus" data-paragraph-focus="${p.id}" aria-expanded="false">💡 段落重點</button></div><p>${teacherText(p)}</p><aside class="teacher-focus-note" id="paragraph-focus-${p.id}" hidden>${esc(p.focus)}</aside></section>`).join("")}</article>`);
+    return shell("老師筆記",teacherData.objective,`<section class="teacher-overview"><span class="reading-badge">老師閱讀重點</span><p>${esc(teacherData.objective)}</p><ol class="teacher-timeline">${teacherData.timeline.map((item,i)=>`<li>${esc(item)}${i<teacherData.timeline.length-1?'<span aria-hidden="true">→</span>':''}</li>`).join("")}</ol><small class="teacher-reference">老師筆記來源：福田州平老師</small></section><article class="reading-paper teacher-paper" style="--reading-size:${[.98,1.1,1.24][state.font]}"><h3>${title}</h3>${teacherExtras?.block(teacherExtras.ending,state.furigana)||""}${teacherData.paragraphs.map(p=>`<section class="teacher-paragraph" data-teacher-paragraph="${p.id}"><div class="teacher-paragraph-meta"><span>${paragraphLabel(p)}</span><button type="button" class="teacher-focus" data-paragraph-focus="${p.id}" aria-expanded="false">💡 段落重點</button></div><p>${teacherText(p)}</p><aside class="teacher-focus-note" id="paragraph-focus-${p.id}" hidden>${esc(p.focus)}</aside></section>`).join("")}</article>`);
   }
   function findAnswers(){
     const task=data.find[findIndex%data.find.length];
@@ -187,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
     stage.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>scoreQuestion(b));
     stage.querySelectorAll("[data-textbook-answer-toggle]").forEach(button=>button.onclick=()=>{const answer=stage.querySelector(`#textbook-answer-${button.dataset.textbookAnswerToggle}`),show=answer.hidden;answer.hidden=!show;button.setAttribute("aria-expanded",String(show));button.textContent=show?"答案を隠す / 隱藏答案":"答案を見る / 顯示答案";});
     stage.querySelectorAll("[data-textbook-model-toggle]").forEach(button=>button.onclick=()=>{const answer=stage.querySelector(`#${button.dataset.textbookModelToggle}`),show=answer.hidden;answer.hidden=!show;button.setAttribute("aria-expanded",String(show));button.textContent=show?"參考回答例を隠す":"參考回答例を見る";});
-    stage.querySelectorAll("[data-textbook-draft]").forEach(input=>{const key=input.dataset.textbookDraft;input.value=state.textbookDrafts?.[key]||"";input.oninput=()=>{state.textbookDrafts={...(state.textbookDrafts||{}),[key]:input.value};save();};});
+    stage.querySelectorAll("[data-textbook-draft]").forEach(input=>{const key=input.dataset.textbookDraft;input.value=state.textbookDrafts?.[key]||"";const counter=input.closest("#teacher-writing")?.querySelector(".teacher-writing-count");const count=()=>{if(counter)counter.textContent=`${Array.from(input.value.replace(/\s/g,"")).length} 字 · 目標約400字（不計空白）`;};count();input.oninput=()=>{state.textbookDrafts={...(state.textbookDrafts||{}),[key]:input.value};count();save();};});
     stage.querySelectorAll("[data-find]").forEach(b=>b.onclick=()=>{const task=data.find[findIndex%data.find.length],ok=Number(b.dataset.find)===task.answer;stage.querySelectorAll("[data-find]").forEach(x=>x.disabled=true);b.classList.add(ok?"correct":"wrong");stage.querySelector(`[data-find="${task.answer}"]`).classList.add("correct");stage.querySelector(".find-feedback").textContent=ok?"搵啱了，呢段包含完整答案。":"答案在綠色段落；再對照問題讀一次。";stage.querySelector(".find-next").hidden=false;});
     stage.querySelector(".find-next")?.addEventListener("click",()=>{findIndex=(findIndex+1)%data.find.length;render()});
     stage.querySelector("#reading-vocab-card")?.addEventListener("click",()=>{state.vocabFlipped=!state.vocabFlipped;save();render()});
@@ -208,5 +212,8 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("pointerdown",e=>{if(notePopup&&!notePopup.contains(e.target)&&!activeNoteButton?.contains(e.target))closeTeacherPopup({restoreFocus:false})});
   document.addEventListener("scroll",e=>{if(!notePopup||!(e.target instanceof Element)||!e.target.closest(".teacher-note-popup"))closeTeacherPopup({restoreFocus:false})},true);
   document.addEventListener("keydown",e=>{if(e.key==="Escape"&&notePopup){e.preventDefault();closeTeacherPopup();return}if(e.target.matches("input,textarea,select"))return;if(state.mode==="vocab"&&e.code==="Space"){e.preventDefault();state.vocabFlipped=!state.vocabFlipped;save();render()}if(state.mode==="vocab"&&["ArrowLeft","ArrowRight"].includes(e.key)){state.vocabIndex=(state.vocabIndex+(e.key==="ArrowRight"?1:data.vocab.length-1))%data.vocab.length;state.vocabFlipped=false;save();render()}});
+  const teacherMode=new URLSearchParams(location.search).get("mode");
+  if(["questions","teacher"].includes(teacherMode))state.mode=teacherMode;
   render();
+  if(location.hash==="#teacher-writing")document.querySelector("#teacher-writing")?.scrollIntoView({behavior:"instant",block:"start"});
 });

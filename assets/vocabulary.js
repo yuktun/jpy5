@@ -52,9 +52,9 @@ function renderList() {
   const query = $("#vocab-search").value.trim().toLowerCase(), selectedSection = $("#list-section").value;
   const matches = vocabulary.filter(item => {
     const inSection = selectedSection === "all" || item.section === selectedSection;
-    return inSection && [item.kana,item.written,item.original,item.meaning,item.type,item.note,sectionLabel(item)].some(value => value.toLowerCase().includes(query));
+    return inSection && [item.kana,item.written,item.original,item.meaning,item.type,item.note,window.JPY5_TEACHER?.vocabulary[item.written]?.text || "",sectionLabel(item)].some(value => value.toLowerCase().includes(query));
   });
-  $("#vocab-list").innerHTML = matches.map(item => `<article class="vocab-row"><span>${item.id}</span><div><b lang="ja">${item.original || item.written}</b><small>${item.kana}${item.original ? ` · ${item.written}` : ""}</small></div>${pronunciation.button(item, "vocab-row-speak", `data-vocab-speak="${item.id}"`)}<p>${item.meaning}${item.note ? `<small>${item.note}</small>` : ""}</p><em>${item.type}<small>${sectionLabel(item)}</small></em></article>`).join("");
+  $("#vocab-list").innerHTML = matches.map(item => `<article class="vocab-row"><span>${item.id}</span><div><b lang="ja">${item.original || item.written}</b><small>${item.kana}${item.original ? ` · ${item.written}` : ""}</small></div>${pronunciation.button(item, "vocab-row-speak", `data-vocab-speak="${item.id}"`)}<p>${item.meaning}${item.note ? `<small>${item.note}</small>` : ""}</p><em>${item.type}<small>${sectionLabel(item)}</small></em>${window.JPY5_TEACHER?.block(window.JPY5_TEACHER.vocabulary[item.written])||""}</article>`).join("");
   $("#vocab-count").textContent = `顯示 ${matches.length} / ${vocabulary.length}`;
 }
 
@@ -107,5 +107,5 @@ $("#reset-vocabulary").onclick = () => { if(confirm("清除全部 159 詞的記�
 document.querySelectorAll("[data-vocab-section]").forEach(button => button.onclick=()=>{state.section=button.dataset.vocabSection;state.filter="all";resetPosition();renderCard();});
 document.querySelectorAll("[data-vocab-direction]").forEach(button => button.onclick=()=>{state.direction=button.dataset.vocabDirection;flipped=false;renderCard();});
 document.querySelectorAll("[data-vocab-filter]").forEach(button => button.onclick=()=>{state.filter=button.dataset.vocabFilter;resetPosition();renderCard();});
-document.addEventListener("keydown", event => { if(event.target.matches("input,textarea,select"))return; if(event.code==="Space"){event.preventDefault();if(current()){flipped=!flipped;renderCard();}} if(event.key==="ArrowLeft")move(-1); if(event.key==="ArrowRight")move(1); });
+document.addEventListener("keydown", event => { if(event.target.closest("input,textarea,select,summary,a"))return; if(event.code==="Space"){event.preventDefault();if(current()){flipped=!flipped;renderCard();}} if(event.key==="ArrowLeft")move(-1); if(event.key==="ArrowRight")move(1); });
 renderList(); renderCard();

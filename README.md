@@ -49,6 +49,12 @@ The dependency-free static site is organized around a homepage, a Chapter 13 lea
 - Textbook/listening: the complete Chapter 13 `3. もう一度聞こう` dialogue and official audio, seven source-aligned comprehension questions, five clickable underlined expressions with reading/meaning/usage popups, focused replay, flashcards, multiple choice, sentence ordering, dialogue fill-in, exact dictation, and mistake review
 - Experience: responsive layout, automatic/light/dark themes, and app icons for browser/iPhone shortcuts
 
+### Lesson 13 teacher additions (3–10 October 2026)
+
+The existing modules include source-linked teacher notes for all eight grammar patterns, seven conversation explanations, six role-play hints, and twelve vocabulary usage notes. Reading activities include the teacher's presentation framework and an approximately 400-character writing exercise with a saved draft and character count. Open answers remain ungraded; existing vocabulary IDs, quiz records, and audio timing are preserved. The Review page links directly to the additions.
+
+Teacher content and PDF page references live in `assets/ch13-teacher-additions.js`. Duplicate scans are consolidated with their corresponding handouts. Where the reading slides simplify the ending, a labelled note preserves the original text's distinction between Ikebukuro and Aomori. Run `node scripts/test-lesson13-additions.mjs` with Playwright available, alongside the existing Lesson 13 checks, after changing these additions.
+
 ## Source
 
 Most lesson material and audio are adapted for study use from [ttrw.jp](https://ttrw.jp/). Textbook PDF links are maintained centrally in `assets/common.js`:

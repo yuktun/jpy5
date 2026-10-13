@@ -1,0 +1,19 @@
+.teacher-addition { margin: 1rem 0; border: 1px solid var(--line); border-radius: 12px; background: var(--white); color: var(--ink); min-width: 0; text-align: left; }
+.teacher-addition summary { padding: .85rem 1rem; cursor: pointer; font-weight: 650; line-height: 1.8; overflow-wrap: anywhere; }
+.teacher-addition summary span { color: var(--primary-dark); font-size: .8rem; }
+.teacher-addition summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 10px; }
+.teacher-addition-body { padding: 0 1rem 1rem; line-height: 1.9; font-size: .95rem; overflow-wrap: anywhere; }
+.teacher-addition-body p { margin: .65rem 0; }
+.teacher-example { border-left: 3px solid var(--primary); padding: .3rem .8rem; margin: .8rem 0; background: var(--reading-surface); border-radius: 4px; }
+.teacher-example p[lang="ja"] { line-height: 2.3; }
+.teacher-example p[lang="zh-Hant"], .teacher-source { font-size: .85rem; color: var(--muted); }
+.teacher-source { display: inline-block; text-decoration: underline; line-height: 1.8; }
+.dialogue-row > .teacher-addition { grid-column: 2 / -1; width: 100%; }
+.vocab-row > .teacher-addition { grid-column: 2 / -1; width: 100%; margin: .3rem 0; }
+.teacher-review-shortcuts { padding: 1.2rem; border: 1px solid var(--line); border-radius: 16px; margin: 1rem 0 2rem; background: var(--white); }
+.teacher-review-shortcuts nav { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1rem; }
+.teacher-review-shortcuts a { border: 1px solid var(--line); border-radius: 8px; padding: .65rem .9rem; }
+.teacher-writing-guide { line-height: 2; padding-left: 1.5rem; }
+.teacher-writing-count { display: block; color: var(--muted); margin-top: .5rem; }
+#teacher-writing { scroll-margin-top: 220px; }
+@media(max-width:600px) { .dialogue-row > .teacher-addition, .vocab-row > .teacher-addition { grid-column: 1 / -1; } }

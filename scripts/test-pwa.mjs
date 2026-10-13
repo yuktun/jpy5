@@ -116,13 +116,15 @@ for (const module of conversationModules) {
   const source = await readFile(join(root, "assets", module), "utf8");
   if (module === "ch17-conversation.js") {
     assert.doesNotMatch(source, /showModal\(/, "Lesson 17 must keep its inline answer-and-replay interface");
-    assert.match(source, /const renderers=\{dialogue,translation,comprehension,activities,focus,blanks,guide\}/, "Lesson 17 must retain all completed listening study modes");
+    const modes = source.match(/const renderers=\{([^}]+)\}/)?.[1].split(",");
+    assert(["dialogue","translation","comprehension","activities","focus","blanks","guide"].every(mode=>modes?.includes(mode)), "Lesson 17 must retain all completed listening study modes");
     continue;
   }
   if (["ch18-conversation.js", "ch19-conversation.js", "ch20-conversation.js"].includes(module)) {
     assert.doesNotMatch(source, /showModal\(/, "Lesson 18 must keep its inline answer-and-replay interface");
-    assert.match(source, /const renderers=\{dialogue,translation,comprehension,activities,focus,blanks,guide\}/, "Lesson 18 must retain all completed listening study modes");
-    assert.match(source, /JPY5SegmentPlayer\.attach\(audio\)/, `${module} must attach the shared replay controller`);
+    const modes = source.match(/const renderers=\{([^}]+)\}/)?.[1].split(",");
+    assert(["dialogue","translation","comprehension","activities","focus","blanks","guide"].every(mode=>modes?.includes(mode)), `${module} must retain all completed listening study modes`);
+    assert.match(source, /JPY5SegmentPlayer\.attach\(audio\)/, `${module} must attach the verified segment player`);
     assert.match(source, /segmentPlayer\.play\(target\)/, `${module} must retain verified sentence replay`);
     continue;
   }

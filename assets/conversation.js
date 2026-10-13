@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   const data = window.JPY5_CONVERSATION;
+  const teacher = window.JPY5_TEACHER;
   const stage = document.querySelector("#conversation-stage");
   const audio = document.querySelector("#lesson-audio");
   const segmentPlayer = JPY5SegmentPlayer.attach(audio);
@@ -92,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
     stage.innerHTML = `<div class="stage-heading"><div><p class="kicker">完整會話</p><h2>${ruby(data.title)}</h2></div><div class="heading-actions"><button class="chip" data-shadow-start type="button">🎧 シャドーイング</button><button class="chip" id="toggle-focus" type="button">隱藏底線句</button></div></div>${shadowPanel}<div class="dialogue-list">${data.dialogue.map(row => {
       const [speaker,before,id,after] = row;
       const focus = id ? `<button class="focus-line" data-focus-line="${id}" data-answer-text="${esc(item(id).jp)}" type="button" aria-haspopup="dialog" aria-label="查看底線句解釋：${esc(item(id).jp)}">${ruby(item(id).jp)}</button>` : "";
-      return `<article class="dialogue-row"><b>${ruby(speaker)}</b><p>${ruby(before)}${focus}${ruby(after || "")}</p>${id ? listenButton(id,"播放這句") : ""}</article>`;
+      return `<article class="dialogue-row"><b>${ruby(speaker)}</b><p>${ruby(before)}${focus}${ruby(after || "")}</p>${id ? listenButton(id,"播放這句") : ""}${teacher ? teacher.conversation.filter(note=>dialogueText(row).includes(note.match)).map(note=>teacher.block(note,state.furigana)).join("") : ""}</article>`;
     }).join("")}</div>`;
     let hidden = false;
     stage.querySelector("#toggle-focus").onclick = e => {
@@ -145,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function activityTask(task) {
-    return `<article class="textbook-task-card"><p class="textbook-prompt" lang="ja">${ruby(task.prompt).replace(/\n/g,"<br>")}</p><label>你的準備／回答<textarea rows="5" data-draft="${task.id}" lang="ja" placeholder="ここに入力してください">${esc(state.textbookDrafts[task.id]||"")}</textarea></label><button class="secondary-button" type="button" data-reveal="${task.id}">參考回答例を見る</button><div class="reference-answer" data-answer-panel="${task.id}" hidden><b>${esc(task.modelLabel)}</b><p lang="ja">${ruby(task.model).replace(/\n/g,"<br>")}</p></div></article>`;
+    return `<article class="textbook-task-card"><p class="textbook-prompt" lang="ja">${ruby(task.prompt).replace(/\n/g,"<br>")}</p>${teacher?.block(teacher.practice[task.id],state.furigana)||""}<label>你的準備／回答<textarea rows="5" data-draft="${task.id}" lang="ja" placeholder="ここに入力してください">${esc(state.textbookDrafts[task.id]||"")}</textarea></label><button class="secondary-button" type="button" data-reveal="${task.id}">參考回答例を見る</button><div class="reference-answer" data-answer-panel="${task.id}" hidden><b>${esc(task.modelLabel)}</b><p lang="ja">${ruby(task.model).replace(/\n/g,"<br>")}</p></div></article>`;
   }
   function renderActivities() {
     stage.innerHTML=`<div class="stage-heading"><div><p class="kicker">課本活動</p><h2>話して、考えて、練習しよう</h2></div><span>不自動評分 · 草稿自動保存</span></div><div class="textbook-activity-list">${data.textbook.activities.map(section=>`<section class="textbook-activity-card"><header><span>${esc(section.label)}</span><h2>${ruby(section.title)}</h2></header>${section.groups?section.groups.map(group=>`<div class="activity-group"><h3>${ruby(group.title)}</h3><p lang="ja">${ruby(group.instruction)}</p><div class="textbook-example"><b>課本例</b><p lang="ja">${ruby(group.example).replace(/\n/g,"<br>")}</p></div>${group.tasks.map(activityTask).join("")}</div>`).join(""):section.tasks.map(activityTask).join("")}</section>`).join("")}</div>`;
@@ -228,5 +229,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (state.mode === "cards" && ["ArrowLeft","ArrowRight"].includes(e.key)) { state.card=(state.card+(e.key==="ArrowRight"?1:data.items.length-1))%data.items.length; state.flipped=false; save(); render(); }
   });
   document.querySelectorAll("[data-mode]").forEach(b => b.classList.toggle("active",b.dataset.mode===state.mode));
+  const teacherMode=new URLSearchParams(location.search).get("mode");
+  if(["dialogue","activities"].includes(teacherMode))state.mode=teacherMode;
   updateSummary(); render();
+  if(teacherMode)document.querySelectorAll("[data-mode]").forEach(button=>button.classList.toggle("active",button.dataset.mode===state.mode));
 });

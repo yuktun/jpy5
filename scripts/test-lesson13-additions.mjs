@@ -1,0 +1,105 @@
+import assert from "node:assert/strict";
+import { createServer } from "node:http";
+import { readFile, mkdir } from "node:fs/promises";
+import { resolve, extname, sep } from "node:path";
+import { createRequire } from "node:module";
+import vm from "node:vm";
+const { chromium } = createRequire(import.meta.url)("playwright");
+const root=process.cwd(), folder=resolve("tmp/lesson13-additions-browser");
+const ctx={window:{}};
+for(const name of ["data","vocabulary-data","conversation-data","reading-data","ch13-teacher-additions"])
+  vm.runInNewContext(await readFile(`assets/${name}.js`,"utf8"),ctx);
+const {JPY5_TEACHER:teacher,JPY5_VOCABULARY:vocab,JPY5_CONVERSATION:conversation,JPY5_READING:reading}=ctx.window;
+assert.equal(vocab.items.length,159);
+assert.equal(conversation.items.length,5);
+assert.equal(conversation.comprehension.length,7);
+assert.equal(reading.questions.length,13);
+assert.equal(Object.keys(teacher.grammar).length,8);
+for(const key of Object.keys(teacher.grammar))assert(ctx.window.JPY5_DATA.patterns.some(p=>p.id===key));
+for(const key of Object.keys(teacher.vocabulary))assert(vocab.items.some(item=>item.written===key),`unmatched vocabulary: ${key}`);
+for(const entry of teacher.conversation)assert.equal(conversation.dialogue.filter(row=>row.join(" ").includes(entry.match)).length,1,entry.match);
+const server=createServer(async(req,res)=>{
+  try {
+    const file=resolve(root,"."+decodeURIComponent(new URL(req.url,"http://localhost").pathname));
+    if(!file.startsWith(root+sep))return res.writeHead(403).end();
+    res.setHeader("Content-Type",({".html":"text/html",".js":"text/javascript",".css":"text/css",".png":"image/png"})[extname(file)]||"application/octet-stream");
+    res.end(await readFile(file));
+  } catch {res.writeHead(404).end();}
+});
+await new Promise(done=>server.listen(0,"127.0.0.1",done));
+const base=`http://127.0.0.1:${server.address().port}`;
+await mkdir(folder,{recursive:true});
+const browser=await chromium.launch({headless:true,...(process.env.JPY5_BROWSER_CHANNEL?{channel:process.env.JPY5_BROWSER_CHANNEL}:{})});
+const context=await browser.newContext({serviceWorkers:"block"}),page=await context.newPage(),errors=[];
+page.on("pageerror",e=>errors.push(e.message));
+const noOverflow=async(label)=>assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${label}: horizontal overflow`);
+try {
+  for(const width of [390,810,1280]) {
+    await page.setViewportSize({width,height:900});
+    await page.goto(`${base}/chapter-13-notes.html`);
+    assert.equal(await page.locator(".teacher-addition").count(),8);
+    await page.locator(".teacher-addition summary").first().click();
+    assert(await page.locator(".teacher-addition[open] .teacher-source").isVisible());
+    await page.locator(".teacher-addition").evaluateAll(nodes=>nodes.forEach(node=>node.open=true));
+    await noOverflow("grammar");
+    await page.screenshot({path:resolve(folder,`grammar-${width}.png`),fullPage:true});
+    await page.goto(`${base}/chapter-13-textbook.html?mode=dialogue`);
+    assert.equal(await page.locator(".teacher-addition").count(),7);
+    await page.locator(".teacher-addition").evaluateAll(nodes=>nodes.forEach(node=>node.open=true));
+    await noOverflow("dialogue");
+    await page.screenshot({path:resolve(folder,`dialogue-${width}.png`),fullPage:true});
+    await page.locator('[data-mode="activities"]').click();
+    assert.equal(await page.locator(".teacher-addition").count(),6);
+    await page.locator(".teacher-addition summary").first().focus();
+    await page.keyboard.press("Enter");
+    assert.equal(await page.locator(".teacher-addition[open]").count(),1);
+    assert.equal(await page.locator(".reference-answer:not([hidden])").count(),0);
+    const task=page.locator('[data-draft="practice-1a"]');
+    await task.fill(`既存の練習 ${width}`);
+    await page.locator("#furigana-toggle").click();
+    assert.equal(await task.inputValue(),`既存の練習 ${width}`);
+    assert.equal(await page.locator(".teacher-addition ruby").count(),0);
+    await page.locator("#furigana-toggle").click();
+    assert((await page.locator(".teacher-addition ruby").count())>0);
+    await page.locator(".teacher-addition").evaluateAll(nodes=>nodes.forEach(node=>node.open=true));
+    await noOverflow("practice");
+    await page.screenshot({path:resolve(folder,`practice-${width}.png`),fullPage:true});
+    await page.goto(`${base}/chapter-13-reading.html?mode=questions#teacher-writing`);
+    assert(await page.locator("#teacher-writing").isVisible());
+    const draft=page.locator('[data-textbook-draft="activity-teacher-time-writing"]');
+    // Seed an unrelated saved answer and preserve it through the new draft writes.
+    await page.locator('[data-textbook-draft="activity-kanji-lookup"]').fill("辞書で調べます。");
+    await draft.fill("日本語\n学習 😀");
+    assert.match(await page.locator(".teacher-writing-count").textContent(),/^6 字/);
+    await page.reload();
+    assert.equal(await draft.inputValue(),"日本語\n学習 😀");
+    assert.equal(await page.locator('[data-textbook-draft="activity-kanji-lookup"]').inputValue(),"辞書で調べます。");
+    assert.equal(await page.locator(".textbook-model-answer:not([hidden])").count(),0);
+    await page.locator("#furigana-toggle").click();
+    assert.equal(await page.locator("#teacher-writing ruby").count(),0);
+    assert.equal(await draft.inputValue(),"日本語\n学習 😀");
+    await page.locator("#furigana-toggle").click();
+    await noOverflow("writing");
+    await page.locator("#teacher-writing").screenshot({path:resolve(folder,`writing-${width}.png`)});
+    await page.goto(`${base}/chapter-13-vocabulary.html`);
+    await page.locator("#vocab-search").fill("逆さま");
+    assert.equal(await page.locator(".teacher-addition").count(),1);
+    await page.locator(".teacher-addition summary").focus();
+    await page.keyboard.press("Space");
+    assert.equal(await page.locator(".teacher-addition[open]").count(),1);
+    await noOverflow("vocabulary");
+    await page.locator("#vocab-list").screenshot({path:resolve(folder,`vocabulary-${width}.png`)});
+  }
+  await page.goto(`${base}/chapter-13-review.html`);
+  await page.locator('.teacher-review-shortcuts a[href*="teacher-writing"]').click();
+  assert(await page.locator("#teacher-writing").isVisible());
+  await page.goto(`${base}/chapter-14-notes.html`);
+  assert.equal(await page.locator(".teacher-addition").count(),0);
+  assert((await page.locator(".grammar-card").count())>0);
+  await page.goto(`${base}/chapter-13-notes.html`);
+  await page.locator('[data-theme-select]').selectOption("dark");
+  await page.locator(".teacher-addition").first().evaluate(node=>node.open=true);
+  await page.locator(".grammar-card").first().screenshot({path:resolve(folder,"grammar-dark.png")});
+  assert.deepEqual(errors,[]);
+  console.log("Lesson 13 additions: sources, preserved IDs, hints, drafts, shortcuts, furigana and responsive layout passed.");
+} finally {await browser.close();await new Promise(done=>server.close(done));}

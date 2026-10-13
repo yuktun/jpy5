@@ -64,13 +64,13 @@ try {
     assert.equal(await page.locator(".textbook-activity-group").count(), 4);
     assert.deepEqual(await page.locator(".textbook-activity-heading h2").allTextContents(), ["1. 考えてみよう","3. 確かめよう","4. 考えよう・話そう","5. チャレンジしよう"]);
     assert.equal(await page.locator(".textbook-exercise").count(), 4);
-    assert.equal(await page.locator(".textbook-activity-card").count(), 5);
+    assert.equal(await page.locator(".textbook-activity-card").count(), 6);
     assert.equal(await page.locator(".textbook-answer:not([hidden])").count(), 0, "answers must start hidden");
     assert.equal(await page.locator(".textbook-model-answer:not([hidden])").count(), 0, "reference examples must start hidden");
     assert.equal(await page.locator('.textbook-activity-group').first().locator(".textbook-model-answer[hidden]").count(), 2, "section 1 models must start hidden");
     assert.equal(await page.locator("[data-q]").count(), 0, "legacy scored questions leaked into textbook mode");
     assert.equal(await page.locator(".textbook-completion-list input").count(), 7);
-    assert.equal(await page.locator("textarea[data-textbook-draft]").count(), 9);
+    assert.equal(await page.locator("textarea[data-textbook-draft]").count(), 10);
     assert.equal(await page.locator("[data-textbook-model-toggle]").count(), 5);
     assert.equal(await page.getByText("課本第 3 頁的原題", { exact: false }).count(), 0);
     assert.equal(await page.locator(".textbook-model-answer>span").nth(0).innerText(), "參考回答例（非課本官方答案）");
