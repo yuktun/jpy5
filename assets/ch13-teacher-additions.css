@@ -8,6 +8,9 @@
 .teacher-example p[lang="ja"] { line-height: 2.3; }
 .teacher-example p[lang="zh-Hant"], .teacher-source { font-size: .85rem; color: var(--muted); }
 .teacher-source { display: inline-block; text-decoration: underline; line-height: 1.8; }
+.teacher-addition-correction { border-top: 1px solid var(--line); margin-top: 1rem; padding-top: .7rem; }
+.teacher-addition-correction > b { color: var(--primary-dark); }
+.teacher-study-caution { display: block; margin: .65rem 0; padding: .6rem .8rem; border-left: 3px solid var(--primary); background: var(--reading-surface); color: var(--ink); font-size: .9rem; line-height: 1.9; }
 .dialogue-row > .teacher-addition { grid-column: 2 / -1; width: 100%; }
 .vocab-row > .teacher-addition { grid-column: 2 / -1; width: 100%; margin: .3rem 0; }
 .teacher-review-shortcuts { padding: 1.2rem; border: 1px solid var(--line); border-radius: 16px; margin: 1rem 0 2rem; background: var(--white); }

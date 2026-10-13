@@ -57,16 +57,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   function questionCards(){
     const exercises=data.textbookExercises;
+    const studyCaution=(sectionId,itemIndex)=>{const text=teacherExtras?.readingChecks[sectionId]?.[itemIndex];return text?`<span class="teacher-study-caution" lang="zh-Hant">${esc(text)}</span>`:"";};
     const blank=(sectionId,itemIndex,answerIndex)=>`<label class="textbook-blank"><span class="sr-only">第 ${itemIndex+1} 題空格 ${answerIndex+1}</span><input type="text" autocomplete="off" data-textbook-draft="${sectionId}-${itemIndex}-${answerIndex}" aria-label="第 ${itemIndex+1} 題空格 ${answerIndex+1}"></label>`;
     const answerBlock=(section,body)=>`<button type="button" class="textbook-answer-toggle" data-textbook-answer-toggle="${section.id}" aria-expanded="false" aria-controls="textbook-answer-${section.id}">答案を見る / 顯示答案</button><div class="textbook-answer" id="textbook-answer-${section.id}" hidden><span>參考答案</span>${body}</div>`;
     const sections=exercises.sections.map(section=>{
       let body="",answers="";
       if(section.id==="timeline"){
-        body=`<ol class="textbook-timeline-list">${section.items.map((item,i)=>`<li><label><input type="number" min="1" max="5" inputmode="numeric" aria-label="第 ${i+1} 項時間順序"><span lang="ja">${ruby(item.text)}</span></label></li>`).join("")}</ol>`;
-        answers=`<ol>${section.items.map(item=>`<li><b>${esc(item.answer)}</b>　<span lang="ja">${ruby(item.text)}</span></li>`).join("")}</ol>`;
+        body=`<ol class="textbook-timeline-list">${section.items.map((item,i)=>`<li><label><input type="number" min="1" max="5" inputmode="numeric" aria-label="第 ${i+1} 項時間順序"><span lang="ja">${ruby(item.text)}</span></label>${studyCaution(section.id,i)}</li>`).join("")}</ol>`;
+        answers=`<ol>${section.items.map((item,i)=>`<li><b>${esc(item.answer)}</b>　<span lang="ja">${ruby(item.text)}</span>${studyCaution(section.id,i)}</li>`).join("")}</ol>`;
       }else if(section.id==="completion"){
-        body=`<ol class="textbook-completion-list">${section.items.map((item,i)=>`<li lang="ja">${item.parts.map((part,n)=>`${ruby(part)}${n<item.answers.length?blank(section.id,i,n):""}`).join("")}</li>`).join("")}</ol>`;
-        answers=`<ol>${section.items.map(item=>`<li lang="ja">${item.answers.map(answer=>ruby(answer,{furiganaContext:"monthlyParking"})).join(" ／ ")}</li>`).join("")}</ol>`;
+        body=`<ol class="textbook-completion-list">${section.items.map((item,i)=>`<li lang="ja">${item.parts.map((part,n)=>`${ruby(part)}${n<item.answers.length?blank(section.id,i,n):""}`).join("")}${studyCaution(section.id,i)}</li>`).join("")}</ol>`;
+        answers=`<ol>${section.items.map((item,i)=>`<li lang="ja">${item.answers.map(answer=>ruby(answer,{furiganaContext:"monthlyParking"})).join(" ／ ")}${studyCaution(section.id,i)}</li>`).join("")}</ol>`;
       }else{
         body=`<ol class="textbook-free-response-list">${section.items.map((item,i)=>`<li>${item.text?`<p lang="ja">${ruby(item.text)}</p>`:""}<label><span>我的答案（不計分）</span><textarea rows="3" data-textbook-draft="${section.id}-${i}" aria-label="${esc(section.instruction)} 第 ${i+1} 題"></textarea></label></li>`).join("")}</ol>`;
         answers=`<ol>${section.items.map(item=>`<li lang="ja">${ruby(item.answer,{furiganaContext:"monthlyParking"})}</li>`).join("")}</ol>`;

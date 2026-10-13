@@ -18,6 +18,19 @@ assert.equal(Object.keys(teacher.grammar).length,8);
 for(const key of Object.keys(teacher.grammar))assert(ctx.window.JPY5_DATA.patterns.some(p=>p.id===key));
 for(const key of Object.keys(teacher.vocabulary))assert(vocab.items.some(item=>item.written===key),`unmatched vocabulary: ${key}`);
 for(const entry of teacher.conversation)assert.equal(conversation.dialogue.filter(row=>row.join(" ").includes(entry.match)).length,1,entry.match);
+const notes=[...Object.values(teacher.grammar),...teacher.conversation,...Object.values(teacher.practice),...Object.values(teacher.vocabulary),teacher.presentation,teacher.ending];
+assert.equal(notes.length,35,"all 35 supplemental notes must be covered by the source audit");
+for(const item of notes){
+  assert.match(teacher.block(item),/drive\.google\.com\/file\/d\//,"every note must cite its teacher source");
+  if(item.correction)assert.match(teacher.block(item),/校對依據：/,"independent corrections must cite their evidence");
+}
+assert.match(teacher.grammar.tate.text,/故意.*找錯練習/,"an intentionally wrong exercise must not be mistaken for a correct teacher example");
+assert.match(teacher.grammar.tatoe.correction.text,/假設條件/);
+assert.match(teacher.practice["practice-1b"].examples[1][0],/転勤\|てんきん\}するそうですね。/);
+assert.doesNotMatch(teacher.practice["practice-1b"].text,/「そうですね？」/);
+const writing=reading.textbookActivities.find(activity=>activity.id==="challenge").items.find(item=>item.id==="teacher-time-writing");
+for(const expression of ["～の頃","そのうち","～か月目／年目にして","今でも"])assert(writing.prompt.includes(expression));
+assert.match(writing.prompt,/を使って/);
 const server=createServer(async(req,res)=>{
   try {
     const file=resolve(root,"."+decodeURIComponent(new URL(req.url,"http://localhost").pathname));
@@ -41,11 +54,16 @@ try {
     await page.locator(".teacher-addition summary").first().click();
     assert(await page.locator(".teacher-addition[open] .teacher-source").isVisible());
     await page.locator(".teacher-addition").evaluateAll(nodes=>nodes.forEach(node=>node.open=true));
+    const tatoe=page.locator(".teacher-addition").filter({hasText:"假設情況與程度的分別"});
+    assert(await tatoe.locator(".teacher-addition-correction").isVisible());
+    assert.match(await tatoe.locator(".teacher-addition-correction a").getAttribute("href"),/^https:\/\/kotobank\.jp\//);
     await noOverflow("grammar");
     await page.screenshot({path:resolve(folder,`grammar-${width}.png`),fullPage:true});
     await page.goto(`${base}/chapter-13-textbook.html?mode=dialogue`);
     assert.equal(await page.locator(".teacher-addition").count(),7);
     await page.locator(".teacher-addition").evaluateAll(nodes=>nodes.forEach(node=>node.open=true));
+    const saying=page.locator(".teacher-addition").filter({hasText:"言うんです／言ったんです"});
+    assert.match(await saying.locator(".teacher-addition-correction").textContent(),/並不表示現在已沒有感動/);
     await noOverflow("dialogue");
     await page.screenshot({path:resolve(folder,`dialogue-${width}.png`),fullPage:true});
     await page.locator('[data-mode="activities"]').click();
@@ -62,10 +80,21 @@ try {
     await page.locator("#furigana-toggle").click();
     assert((await page.locator(".teacher-addition ruby").count())>0);
     await page.locator(".teacher-addition").evaluateAll(nodes=>nodes.forEach(node=>node.open=true));
+    const colleague=page.locator(".teacher-addition").filter({hasText:"同事間：傳聞、確認與回應"});
+    assert.match(await colleague.textContent(),/句末的傳聞/);
+    assert.match(await colleague.locator(".teacher-addition-correction a").getAttribute("href"),/^https:\/\/www\.jpf\.go\.jp\//);
     await noOverflow("practice");
     await page.screenshot({path:resolve(folder,`practice-${width}.png`),fullPage:true});
     await page.goto(`${base}/chapter-13-reading.html?mode=questions#teacher-writing`);
     assert(await page.locator("#teacher-writing").isVisible());
+    assert.match(await page.locator("#teacher-writing h3").textContent(),/を.*使.*って/);
+    const completion=page.locator('[data-textbook-section="completion"]');
+    assert.equal(await completion.locator(".textbook-completion-list .teacher-study-caution").count(),2);
+    assert(await completion.locator(".textbook-completion-list .teacher-study-caution").first().isVisible(),"source cautions must be visible before answers are revealed");
+    assert.match(await completion.locator(".textbook-completion-list .teacher-study-caution").first().textContent(),/第六年/);
+    await page.locator('[data-textbook-answer-toggle="completion"]').click();
+    assert.equal(await page.locator("#textbook-answer-completion .teacher-study-caution").count(),2);
+    assert.match(await page.locator("#textbook-answer-completion .teacher-study-caution").last().textContent(),/池袋.*青森/);
     const draft=page.locator('[data-textbook-draft="activity-teacher-time-writing"]');
     // Seed an unrelated saved answer and preserve it through the new draft writes.
     await page.locator('[data-textbook-draft="activity-kanji-lookup"]').fill("辞書で調べます。");

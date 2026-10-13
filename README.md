@@ -55,6 +55,8 @@ The existing modules include source-linked teacher notes for all eight grammar p
 
 Teacher content and PDF page references live in `assets/ch13-teacher-additions.js`. Duplicate scans are consolidated with their corresponding handouts. Where the reading slides simplify the ending, a labelled note preserves the original text's distinction between Ikebukuro and Aomori. Run `node scripts/test-lesson13-additions.mjs` with Playwright available, alongside the existing Lesson 13 checks, after changing these additions.
 
+All 35 added notes and the writing task were checked against their sources on 2026-10-13. [Lesson 13 source audit](LESSON13_SOURCE_AUDIT.md) records corrections, qualifications, and independent dictionary/research references. The modules label these as `校對補充`, distinguish a teacher's contextual interpretation from a general grammar rule, and display source cautions beside simplified reading questions and answers.
+
 ## Source
 
 Most lesson material and audio are adapted for study use from [ttrw.jp](https://ttrw.jp/). Textbook PDF links are maintained centrally in `assets/common.js`:
