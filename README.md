@@ -57,6 +57,21 @@ Teacher content and PDF page references live in `assets/ch13-teacher-additions.j
 
 All 35 added notes and the writing task were checked against their sources on 2026-10-13. [Lesson 13 source audit](LESSON13_SOURCE_AUDIT.md) records corrections, qualifications, and independent dictionary/research references. The modules label these as `校對補充`, distinguish a teacher's contextual interpretation from a general grammar rule, and display source cautions beside simplified reading questions and answers.
 
+### Teacher exercises for Lessons 14–20
+
+Each lesson's Review page includes **老師 Exercise**, following Lesson 13's worksheet layout. The seven teacher PDFs (41 pages) are transcribed in source order with hidden answers, labelled suggested responses for open questions, and contextual Traditional Chinese word-bank help. These exercises do not change scores or saved progress. Each page links its source PDF and identifies source inconsistencies beside the affected questions.
+
+[Exercise source audit](LESSONS14_20_EXERCISE_AUDIT.md) records page coverage, answer review and source cautions. Browser checks cover all seven lessons at mobile, tablet and desktop widths, answer disclosure, word help, accessibility and progress retention:
+
+```bash
+node scripts/test-lessons14-20-teacher.mjs
+node scripts/test-lesson13-teacher.mjs
+node scripts/generate-offline-manifest.mjs
+node scripts/test-pwa.mjs
+```
+
+`scripts/test-teacher-exercise-update.mjs` checks the real service-worker update from a prior published revision, progress retention, and all seven updated pages offline. Set `JPY5_PREVIOUS_REF=HEAD` before committing this release, or select the preceding published commit after committing. Browser checks require Playwright and an installed browser, using `JPY5_BROWSER_CHANNEL=msedge` on Windows when needed.
+
 ## Source
 
 Most lesson material and audio are adapted for study use from [ttrw.jp](https://ttrw.jp/). Textbook PDF links are maintained centrally in `assets/common.js`:
