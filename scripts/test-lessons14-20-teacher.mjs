@@ -48,6 +48,7 @@ try {
       const label = `Lesson ${lesson} at ${viewport.width}px`;
       await page.goto(urlFor(lesson));
       await page.waitForLoadState("domcontentloaded");
+      await page.locator(".lesson-quick-switcher").waitFor({ state: "visible" });
       const shell = page.locator("#teacher-exercise");
       assert.equal(await shell.count(), 1, `${label}: missing teacher exercise`);
       assert.equal(await page.locator('.review-path > a[href="#teacher-exercise"]').count(), 1);
@@ -136,8 +137,13 @@ try {
   touchPage.on("pageerror", error => errors.push(error.message));
   for (const lesson of lessons) {
     await touchPage.goto(urlFor(lesson));
+    await touchPage.locator(".lesson-quick-switcher").waitFor({ state: "visible" });
     const word = touchPage.locator("#teacher-exercise .teacher-word-bank button").first();
     const help = touchPage.locator(".teacher-word-help-popover");
+    // Do not let tap's automatic scroll race dismissal or a late navigation
+    // layout shift on the live site.
+    await word.evaluate(node => node.scrollIntoView({ behavior: "instant", block: "center" }));
+    await touchPage.evaluate(() => new Promise(done => requestAnimationFrame(() => requestAnimationFrame(done))));
     await word.tap();
     assert.equal(await help.isVisible(), true, `Lesson ${lesson}: tap did not open help`);
     await word.tap();
@@ -150,6 +156,7 @@ try {
     await help.waitFor({ state: "hidden" });
     assert.equal(await touchPage.locator(".teacher-answer:not([hidden])").count(), 0);
     await assertFits(touchPage, `Lesson ${lesson} touch`);
+    console.log(`Lesson ${lesson}: touch word help passed.`);
   }
   await touch.close();
   assert.deepEqual(errors, [], errors.join("\n"));
