@@ -15,6 +15,8 @@ const oldFiles = new Map(changed.map(file => [file, execFileSync("git", ["show",
 const previousVersion = oldFiles.get("assets/offline-assets.js").toString().match(/version: "([^"]+)"/)[1];
 const nextVersion = (await readFile(resolve(root, "assets/offline-assets.js"), "utf8")).match(/version: "([^"]+)"/)[1];
 assert.notEqual(previousVersion, nextVersion, "Regenerate the offline manifest; choose a revision preceding this release.");
+const exerciseMarkup = html => new DOMParser().parseFromString(html, "text/html").querySelector("#teacher-exercise")?.outerHTML ?? null;
+const currentExercise = () => document.querySelector("#teacher-exercise")?.outerHTML ?? null;
 let serveNew = false;
 const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".png": "image/png", ".webmanifest": "application/manifest+json" };
 const server = createServer(async (request, response) => {
@@ -38,8 +40,9 @@ try {
   await page.goto(`${base}chapter-14-review.html`);
   // pwa.js reloads on controllerchange after the initial activation. Wait for
   // that transition rather than racing it with a second explicit reload.
-  await page.waitForFunction(() => navigator.serviceWorker.controller && document.querySelector(".pwa-status")?.dataset.state === "ready", null, { timeout: 60000 });
-  assert.equal(await page.locator("#teacher-exercise").count(), 0, "Previous published page should precede these worksheets.");
+  await page.waitForFunction(() => performance.getEntriesByType("navigation")[0]?.type === "reload" && navigator.serviceWorker.controller && document.querySelector(".pwa-status")?.dataset.state === "ready", null, { timeout: 60000 });
+  const previousExercise = await page.evaluate(exerciseMarkup, oldFiles.get("chapter-14-review.html").toString());
+  assert.equal(await page.evaluate(currentExercise), previousExercise, "Initial page must match the previous published revision.");
   await page.evaluate(() => {
     localStorage.setItem("jpy5.chapter14.teacherUpdateSentinel", JSON.stringify({ attempts: 3, starred: ["keep"] }));
     localStorage.setItem("jpy5.chapter20.teacherUpdateSentinel", "retained");
@@ -47,7 +50,7 @@ try {
   serveNew = true;
   await page.evaluate(async () => (await navigator.serviceWorker.getRegistration()).update());
   await page.locator(".pwa-update").waitFor({ state: "visible", timeout: 60000 });
-  assert.equal(await page.locator("#teacher-exercise").count(), 0, "Waiting update should not replace the active lesson.");
+  assert.equal(await page.evaluate(currentExercise), previousExercise, "Waiting update should not replace the active lesson.");
   await Promise.all([
     page.waitForEvent("load"),
     page.locator(".pwa-update button").filter({ hasText: "立即更新" }).click()
@@ -59,6 +62,8 @@ try {
   for (let lesson = 14; lesson <= 20; lesson++) {
     await page.goto(`${base}chapter-${lesson}-review.html`);
     assert.equal(await page.locator("#teacher-exercise details.teacher-exercise").count(), 3, `Lesson ${lesson} missing from updated offline cache`);
+    const expected = await page.evaluate(exerciseMarkup, await readFile(resolve(root, `chapter-${lesson}-review.html`), "utf8"));
+    assert.equal(await page.evaluate(currentExercise), expected, `Lesson ${lesson}: offline content must match the corrected release`);
     const first = page.locator("#teacher-exercise [data-answer-toggle]").first();
     const answerId = await first.getAttribute("aria-controls");
     await first.click();
