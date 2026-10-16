@@ -72,6 +72,12 @@ node scripts/test-pwa.mjs
 
 `scripts/test-teacher-exercise-update.mjs` checks the real service-worker update from a prior published revision, progress retention, and all seven updated pages offline. Set `JPY5_PREVIOUS_REF=HEAD` before committing this release, or select the preceding published commit after committing. Browser checks require Playwright and an installed browser, using `JPY5_BROWSER_CHANNEL=msedge` on Windows when needed.
 
+### Teacher adverbs for Lessons 13–20
+
+Every Vocabulary page includes **老師副詞 · 例句・語感・練習**. All eight lessons share the same responsive cards, Traditional Chinese meanings and translations, teacher-source disclosures, comparison notes, cross-lesson links and hidden practice answers. The full eight-page handout contributes 34 grouped cards, 73 example blocks and 50 practice prompts. Lesson 13 now uses the shared format too. Ambiguous questions and simplified source rules are qualified beside the relevant content; reference answers are labelled as learning additions.
+
+Edit `scripts/adverb-notes-data.mjs`, then run `node scripts/generate-adverb-notes.mjs` and `node scripts/generate-offline-manifest.mjs`. [Adverb source audit](ADVERB_SOURCE_AUDIT.md) records coverage and qualifications. Validate with `node scripts/test-adverb-notes.mjs`, `node scripts/test-lesson13-teacher.mjs`, `node scripts/test-pwa.mjs` and `node scripts/test-adverb-update.mjs` (set `JPY5_PREVIOUS_REF=HEAD` before committing). Existing vocabulary counts and saved progress are unchanged.
+
 ## Source
 
 Most lesson material and audio are adapted for study use from [ttrw.jp](https://ttrw.jp/). Textbook PDF links are maintained centrally in `assets/common.js`:

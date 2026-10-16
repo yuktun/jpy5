@@ -1,4 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Keep the vocabulary page's global flashcard shortcuts from consuming
+  // Space/arrow keys used by the adverb section's native buttons and disclosures.
+  document.getElementById("teacher-adverbs")?.addEventListener("keydown", event => {
+    if (event.target.closest("button,summary,a,input,select,textarea")) event.stopPropagation();
+  });
   const wordButtons = document.querySelectorAll(".teacher-word-bank [data-word-meaning]");
   if (wordButtons.length) {
     const popover = document.createElement("div");

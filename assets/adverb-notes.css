@@ -1,0 +1,35 @@
+/* Shared teacher-adverb layout for Lessons 13–20. */
+.adverb-notes{width:min(1120px,calc(100% - 40px));margin:36px auto 52px;padding:30px;scroll-margin-top:130px}
+.adverb-notes .teacher-supplement-header{margin-bottom:20px}
+.adverb-notes .teacher-supplement-header h2{font-size:clamp(1.5rem,3.5vw,2.25rem);line-height:1.5}
+.adverb-source{display:inline-block;margin-top:12px;color:var(--primary-dark);font-size:.85rem;text-underline-offset:3px}
+.adverb-lesson-nav{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0}
+.adverb-lesson-nav a,.adverb-jump{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 14px;border:1px solid var(--line);border-radius:10px;color:var(--primary-dark);background:var(--white);font-size:.85rem;text-decoration:none}
+.adverb-lesson-nav a[aria-current]{background:var(--button-bg);color:var(--button-text);border-color:var(--button-bg)}
+.adverb-jump{margin-top:14px;font-weight:700}
+.adverb-notes .teacher-adverb-grid{align-items:start}
+.adverb-notes .teacher-adverb-card{padding:24px;overflow-wrap:anywhere}
+.adverb-notes .teacher-adverb-card h3{font-size:1.65rem;line-height:1.6}
+.adverb-word{display:inline-block}
+.adverb-meaning{margin:5px 0 14px;font-weight:700;font-size:1.05rem}
+.adverb-help{padding:14px;background:var(--paper);border-radius:10px;margin-bottom:18px}
+.adverb-help .learning-label{font-size:.65rem;letter-spacing:0}
+.adverb-help p{margin:8px 0 0;font-size:.9rem;line-height:1.85}
+.adverb-example-heading{margin:0 0 10px;font-size:.8rem;color:var(--muted)}
+.adverb-notes .teacher-example-list{list-style:none;padding:0;gap:12px}
+.adverb-notes .teacher-example-list li{padding:12px 14px;border-left:3px solid var(--primary);background:var(--primary-light);border-radius:0 8px 8px 0}
+.adverb-ja,.adverb-translation,.adverb-notes .teacher-question-list>li,.adverb-notes .teacher-answer li{white-space:pre-line;line-height:1.85}
+.adverb-ja{display:block;font-size:1rem}
+.adverb-translation{display:block;font-size:.85rem;margin-top:6px;color:var(--muted)}
+.adverb-original{margin-top:14px;border-top:1px solid var(--line);font-size:.85rem}
+.adverb-original summary{min-height:44px;padding:12px 0;cursor:pointer;color:var(--primary-dark);font-weight:700}
+.adverb-original p{margin:0 0 10px;line-height:1.8}
+.adverb-notes .adverb-memory-guide{grid-template-columns:1fr;margin:22px 0;padding:22px}
+.adverb-notes .adverb-memory-guide ul{margin-top:12px;line-height:1.85}
+.adverb-notes .teacher-practice{padding:22px;background:var(--white);border:1px solid var(--line);border-radius:14px;margin-top:18px}
+.adverb-notes .teacher-practice h3{font-size:1.15rem;line-height:1.7}
+.adverb-notes .teacher-question-list{gap:18px}
+.adverb-answer-note{margin-top:12px!important;font-size:.85rem;line-height:1.8}
+.adverb-notes :is(a,button,summary):focus-visible,.adverb-jump:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+@media(max-width:720px){.adverb-notes{width:calc(100% - 30px);padding:18px 12px}.adverb-notes .teacher-adverb-card{padding:18px 15px}.adverb-notes .teacher-adverb-card h3{font-size:1.45rem}.adverb-notes .teacher-practice{padding:18px 14px}.adverb-lesson-nav{gap:6px}.adverb-lesson-nav a{padding:8px 11px}.adverb-notes .adverb-memory-guide{padding:18px 15px}}
+@media print{.adverb-lesson-nav,.adverb-jump{display:none}.adverb-notes .teacher-adverb-grid{grid-template-columns:1fr}.teacher-adverb-card{break-inside:avoid}}
