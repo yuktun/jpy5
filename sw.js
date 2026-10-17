@@ -6,27 +6,53 @@ const SCOPE = self.registration.scope;
 const PREFIX = `jpy5-offline-${encodeURIComponent(SCOPE)}-`;
 const META = `${PREFIX}metadata`;
 const STATE = new URL("__offline_state__", SCOPE).href;
+const SECURITY = `${PREFIX}teacher-security-${MANIFEST.version}`;
+const securityAssets = new Set(['assets/grammar-ruby.js','assets/quiz-progress.js','assets/pwa.js','assets/teacher-progress-privacy.mjs'].map(path=>new URL(path,SCOPE).href));
 let job = null;
 let removing = false;
 let lastError = null;
 
 const allowed = url => url.origin === self.location.origin && url.href.startsWith(SCOPE) && !/\.pdf$/i.test(decodeURIComponent(url.pathname));
 const urls = MANIFEST.assets.map(path => new URL(path, SCOPE).href);
-const retiredTeacherPaths = new Set(['chapter-14-review.html', 'chapter-14-vocabulary.html', 'ADVERB_SOURCE_AUDIT.md', 'LESSONS14_20_EXERCISE_AUDIT.md'].map(path => new URL(path, SCOPE).href));
+const retiredTeacherPaths = new Set(['chapter-14-review.html', 'chapter-14-vocabulary.html', 'chapter-14-notes.html', 'chapter-14-flashcards.html', 'chapter-14-quiz.html', 'chapter-14-history.html', 'assets/ch14-data.js', 'assets/ch14-grammar-extra-data.js', 'assets/grammar-ruby.js', 'assets/quiz-progress.js', 'ADVERB_SOURCE_AUDIT.md', 'LESSONS14_20_EXERCISE_AUDIT.md'].map(path => new URL(path, SCOPE).href));
 
 async function retirePublicTeacherCopies() {
   const state = await readState();
-  if (state?.teacherProtection === 1) return;
+  if (state?.teacherProtection === 2) return;
   for (const key of await caches.keys()) {
     if (!key.startsWith(`${PREFIX}package-`) && !/^jpy5-precache-[a-f0-9]+$/.test(key)) continue;
     const cache = await caches.open(key);
     for (const request of await cache.keys()) {
       const url = new URL(request.url); url.search = ''; url.hash = '';
-      if (retiredTeacherPaths.has(url.href)) await cache.delete(request);
+      if (retiredTeacherPaths.has(url.href)) {
+        await cache.delete(request);
+        // Shared furigana is needed by public lessons too. Replace its old
+        // plaintext-bearing copy with the verified public-only module.
+        if(securityAssets.has(url.href)) {
+          const clean=await(await caches.open(SECURITY)).match(url.href);
+          if(!clean)throw new Error('Missing security upgrade');
+          await cache.put(request,clean);
+        }
+      }
     }
   }
   // Missing retired files mark an old package incomplete until an explicit update.
   // All its other public resources remain usable. Learner storage is untouched.
+}
+
+async function prepareTeacherUpgrade() {
+  const state=await readState(),keys=await caches.keys();
+  if(state?.teacherProtection===2 || !keys.some(key=>key.startsWith(`${PREFIX}package-`)||/^jpy5-precache-[a-f0-9]+$/.test(key)))return;
+  const cache=await caches.open(SECURITY);
+  for(const url of securityAssets){
+    const response=await fetch(url,{cache:'no-store',redirect:'error'});
+    if(!response.ok)throw new Error('Security upgrade unavailable');
+    const text=(await response.clone().text()).replace(/\r\n/g,'\n');
+    const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));
+    const hash=Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');
+    if(hash!==MANIFEST.hashes[url.slice(SCOPE.length)])throw new Error('Security upgrade changed');
+    await cache.put(url,response);
+  }
 }
 
 async function readState() {
@@ -100,7 +126,7 @@ async function download(current) {
       current.completed++;
       await tellClients();
     }
-    const state = { cache: candidate, version: MANIFEST.version, urls, teacherProtection: 1 };
+    const state = { cache: candidate, version: MANIFEST.version, urls, teacherProtection: 2 };
     if (current.controller.signal.aborted || !await complete(state)) throw new Error("incomplete");
     // Commit one pointer only after every required response has been verified.
     await (await caches.open(META)).put(STATE, new Response(JSON.stringify(state)));
@@ -117,9 +143,10 @@ async function download(current) {
   }
 }
 
-// Installation updates only the worker and its small inventory, never the pack.
-// Existing packs remain pinned until the user explicitly downloads an update.
-self.addEventListener("install", event => event.waitUntil(self.skipWaiting()));
+// Installation does not download a full pack. Old installations receive four
+// verified public security modules so public lessons survive text retirement.
+// A complete new pack still requires an explicit download.
+self.addEventListener("install", event => event.waitUntil(prepareTeacherUpgrade().then(()=>self.skipWaiting())));
 self.addEventListener("activate", event => event.waitUntil(retirePublicTeacherCopies().then(() => clients.claim())));
 self.addEventListener("message", event => {
   if (!event.source?.url?.startsWith(SCOPE)) return;
@@ -157,7 +184,11 @@ self.addEventListener("fetch", event => {
   if (url.href === SCOPE) url.pathname += "index.html";
   event.respondWith((async () => {
     const state = await readState().catch(() => null);
-    if (state?.cache?.startsWith(PREFIX) && state.urls?.includes(url.href) && (state.teacherProtection === 1 || !retiredTeacherPaths.has(url.href))) {
+    if(state?.cache?.startsWith(PREFIX) && state.teacherProtection!==2 && securityAssets.has(url.href)){
+      const clean=await(await caches.open(SECURITY)).match(url.href);
+      if(clean)return clean;
+    }
+    if (state?.cache?.startsWith(PREFIX) && state.urls?.includes(url.href) && (state.teacherProtection === 2 || !retiredTeacherPaths.has(url.href))) {
       const cached = await (await caches.open(state.cache)).match(url.href);
       if (cached) return cached;
     }

@@ -1,7 +1,7 @@
 // Device-local drafts: cloud snapshots deliberately exclude active runs.
 window.JPY5QuizProgress = (() => {
   const key="quiz.activeRun", version=1;
-  const signature=q=>JSON.stringify([q.id,q.pattern,q.prompt,q.options,q.answer]);
+  const signature=q=>window.JPY5ProtectedLesson==='14' ? window.JPY5QuestionSignatures?.[q.id] : JSON.stringify([q.id,q.pattern,q.prompt,q.options,q.answer]);
   const list=(key)=>{
     const value=JPY5.read(key,[]);if(!Array.isArray(value))return [];
     return key==='quiz.starred'||key==='quiz.lastWrong'?value.filter(id=>typeof id==='string'):value;

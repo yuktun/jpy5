@@ -4,3 +4,4 @@
 [data-teacher-content] table { max-width: 100%; }
 [data-teacher-word-help] { padding: .75rem; border: 1px solid currentColor; border-radius: .5rem; }
 @media print { [data-teacher-content] { display: none; } }
+.teacher-grammar-frame { display:block; width:100%; height:calc(100dvh - 12rem); min-height:500px; border:0; background:transparent; }

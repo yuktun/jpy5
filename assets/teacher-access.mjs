@@ -1,5 +1,7 @@
 import {firebaseConfig} from './firebase-config.mjs';
 import {createTeacherController, fetchTeacherNote} from './teacher-access-core.mjs';
+import {mountGrammarFrame} from './teacher-grammar-frame.mjs';
+import {teacherDraftReady} from './teacher-progress-privacy.mjs';
 
 // Reconstruct only inert, permitted markup. Never execute stored HTML as code.
 export function safeTeacherFragment(html, documentRef = document) {
@@ -25,7 +27,7 @@ const messages = {
   'signed-out': '請用 Google 帳戶登入；只有管理員核准的帳戶可讀取老師文字。',
   ready: '已登入。請按「讀取老師文字」驗證存取權限。',
   loading: '正在驗證權限及讀取老師文字…',
-  loaded: '已通過存取驗證。文字只在本頁暫時顯示，60 秒後需重新讀取。',
+  loaded: '已通過存取驗證。保持連線時會自動重新驗證；文字不會存入離線套件。',
   denied: '此帳戶尚未獲核准。請聯絡管理員；登入本身不會取得權限。',
   missing: '老師文字尚未上載。請稍後重試。',
   offline: '老師文字需要網絡連線。一般課程內容仍可離線使用。',
@@ -36,17 +38,20 @@ const messages = {
 export async function mountTeacherAccess(root, serviceFactory = createAuthService) {
   const content = root.querySelector('[data-teacher-content]'), status = root.querySelector('[data-teacher-status]');
   const login = root.querySelector('[data-teacher-login]'), read = root.querySelector('[data-teacher-load]'), logout = root.querySelector('[data-teacher-logout]');
-  let serviceReady = false;
+  let serviceReady = false, disposeFrame;
   const controller = createTeacherController({
-    load: (user, signal) => fetchTeacherNote({user, signal, projectId: firebaseConfig.projectId}),
-    render({state, signedIn, data}) {
-      content.replaceChildren();
+    load: async (user, signal) => { await teacherDraftReady; return fetchTeacherNote({user, signal, projectId: firebaseConfig.projectId}); },
+    render({state, signedIn, data, preserve}) {
+      if (!preserve) { disposeFrame?.(); disposeFrame = null; content.replaceChildren(); }
       root.dataset.accessState = state;
       status.textContent = messages[state];
       login.hidden = signedIn; read.hidden = !signedIn; logout.hidden = !signedIn;
       login.disabled = !serviceReady;
       read.disabled = state === 'loading' || state === 'offline';
-      if (data) content.append(safeTeacherFragment(data[root.dataset.teacherSection]));
+      if (data) {
+        if (root.dataset.teacherSection === 'grammar') disposeFrame = mountGrammarFrame(root,data.grammar);
+        else content.append(safeTeacherFragment(data[root.dataset.teacherSection]));
+      }
     }
   });
   const clear = () => serviceReady ? controller.clear() : controller.unavailable();

@@ -138,6 +138,12 @@ for (const file of conversationDataFiles) {
 assert.match(notes, /const hasRowLabel = comparison\.rows\.every\(row => row\.length === comparison\.headings\.length \+ 1\)/, "comparison tables must detect the optional row-label column from the data shape");
 for (const file of grammarExtraFiles) {
   const extras = await grammarExtras(file);
+  if(file==='ch14-grammar-extra-data.js'){
+    assert.equal(extras,undefined,'protected lesson 14 extras must not ship publicly');
+    // Authorized rendering is covered by the synthetic grammar browser suite;
+    // private payload parity is checked without embedding the source here.
+    continue;
+  }
   for (const extra of extras) {
     const { headings, rows } = extra.comparison;
     assert(rows.every(row => row.length === headings.length || row.length === headings.length + 1), `${file} ${extra.title} contains an unsupported comparison row`);

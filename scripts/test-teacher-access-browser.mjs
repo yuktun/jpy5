@@ -3,6 +3,7 @@ import {createServer} from 'node:http';
 import {readFile} from 'node:fs/promises';
 import {resolve,sep,extname} from 'node:path';
 import {chromium} from 'playwright';
+import {firestoreFixture} from './teacher-test-fixtures.mjs';
 const root=process.cwd();
 const server=createServer(async(req,res)=>{
   const file=resolve(root,'.'+new URL(req.url,'http://localhost').pathname);
@@ -14,7 +15,6 @@ const base=`http://127.0.0.1:${server.address().port}/`;
 const browser=await chromium.launch({headless:true,channel:process.env.JPY5_BROWSER_CHANNEL||'msedge'});
 const context=await browser.newContext();
 let responseCode=200, reads=0;
-const fixture='<article><h3>SYNTHETIC PROTECTED TEXT</h3><p>Test content only.</p><button data-answer-toggle aria-controls="synthetic-answer" aria-expanded="false">Answer</button><div id="synthetic-answer" hidden>SYNTHETIC ANSWER</div><script>window.BAD=true</script><img src=x onerror="window.BAD=true"><a href="javascript:alert(1)">Unsafe link</a></article>';
 try {
   await context.route('https://**/*',async route=>{
     const url=route.request().url();
@@ -22,7 +22,7 @@ try {
     if(url.includes('firebase-auth.js'))return route.fulfill({contentType:'text/javascript',body:`const callbacks=[];const auth={};window.testAccount=uid=>{auth.currentUser=uid?{uid,getIdToken:async()=> 'synthetic'}:null;callbacks.forEach(f=>f(auth.currentUser));};export const getAuth=()=>auth;export const onIdTokenChanged=(a,f)=>{callbacks.push(f);f(a.currentUser||null);return()=>{};};export const signInWithPopup=async()=>window.testAccount('approved');export const signOut=async()=>window.testAccount(null);export class GoogleAuthProvider{setCustomParameters(){}};`});
     if(url.startsWith('https://firestore.googleapis.com/')){
       reads++; assert.equal(route.request().headers().authorization,'Bearer synthetic');
-      return route.fulfill({status:responseCode,contentType:'application/json',body:JSON.stringify({fields:{schemaVersion:{integerValue:'1'},exercises:{stringValue:fixture},adverbs:{stringValue:fixture}}})});
+      return route.fulfill({status:responseCode,contentType:'application/json',body:JSON.stringify(firestoreFixture)});
     }
     return route.abort();
   });
@@ -57,17 +57,20 @@ try {
   await migrationPage.evaluate(async()=>{
     const scope=new URL('./',location.href).href,prefix=`jpy5-offline-${encodeURIComponent(scope)}-`,cache=prefix+'package-old';
     const old=await caches.open(cache);await old.put(new URL('chapter-14-review.html',scope),new Response('SYNTHETIC OLD SECRET'));await old.put(new URL('chapter-13-notes.html',scope),new Response('PUBLIC RETAINED'));
+    await old.put(new URL('assets/grammar-ruby.js',scope),new Response('SYNTHETIC OLD SECRET'));
+    await old.put(new URL('assets/ch14-data.js',scope),new Response('SYNTHETIC OLD SECRET'));
     await (await caches.open(prefix+'metadata')).put(new URL('__offline_state__',scope),new Response(JSON.stringify({cache,version:'old',urls:[new URL('chapter-14-review.html',scope).href,new URL('chapter-13-notes.html',scope).href]})));
     await navigator.serviceWorker.register('sw.js');
   });
   await migrationPage.waitForFunction(async()=>{const scope=new URL('./',location.href).href,old=await caches.open(`jpy5-offline-${encodeURIComponent(scope)}-package-old`);return !await old.match(new URL('chapter-14-review.html',scope));});
   assert.equal(await migrationPage.evaluate(async()=>{const scope=new URL('./',location.href).href;return(await(await caches.open(`jpy5-offline-${encodeURIComponent(scope)}-package-old`)).match(new URL('chapter-13-notes.html',scope))).text();}),'PUBLIC RETAINED');
+  await migrationPage.waitForFunction(async()=>{const scope=new URL('./',location.href).href,cache=await caches.open(`jpy5-offline-${encodeURIComponent(scope)}-package-old`),ruby=await cache.match(new URL('assets/grammar-ruby.js',scope));return ruby&&!(await ruby.text()).includes('SYNTHETIC OLD SECRET')&&!await cache.match(new URL('assets/ch14-data.js',scope));});
   await migrationContext.close();
   await page.reload();await page.evaluate(async()=>{const r=await navigator.serviceWorker.ready;r.active.postMessage({type:'JPY5_DOWNLOAD'});});
-  await page.waitForFunction(async()=>{const scope=new URL('./',location.href).href,response=await(await caches.open(`jpy5-offline-${encodeURIComponent(scope)}-metadata`)).match(new URL('__offline_state__',scope));return response&&(await response.json()).teacherProtection===1;},{},{timeout:90000});
+  await page.waitForFunction(async()=>{const scope=new URL('./',location.href).href,response=await(await caches.open(`jpy5-offline-${encodeURIComponent(scope)}-metadata`)).match(new URL('__offline_state__',scope));return response&&(await response.json()).teacherProtection===2;},{},{timeout:90000});
   assert.equal(await page.evaluate(async()=>{for(const name of await caches.keys())for(const req of await(await caches.open(name)).keys()){const text=await(await(await caches.open(name)).match(req)).text();if(text.includes('SYNTHETIC PROTECTED TEXT'))return true;}return false;}),false);
   await context.setOffline(true);
-  for(const file of ['chapter-14-review.html','chapter-14-vocabulary.html','chapter-13-notes.html','chapter-13-vocabulary.html']){
+  for(const file of ['chapter-14-review.html','chapter-14-vocabulary.html','chapter-14-notes.html','chapter-14-flashcards.html','chapter-14-quiz.html','chapter-14-history.html','chapter-13-notes.html','chapter-13-vocabulary.html']){
     await page.goto(base+file);assert(!await page.locator('body').textContent().then(text=>text.includes('SYNTHETIC PROTECTED TEXT')));
     if(file.includes('14'))assert.equal(await page.locator('[data-teacher-content]').textContent(),'');
     else { assert.equal(await page.locator('main').count(),1,`${file}: public page should remain available; retained sentinel=${(await page.locator('body').textContent()).includes('PUBLIC RETAINED')}; url=${page.url()}`); assert(await page.locator('main').textContent()); }

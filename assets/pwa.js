@@ -1,3 +1,5 @@
+// Remove legacy lesson 14 question plaintext from local drafts on every page.
+import('./teacher-progress-privacy.mjs').catch(()=>{});
 (() => {
   const script = document.currentScript;
   const root = new URL("../", script.src).pathname;

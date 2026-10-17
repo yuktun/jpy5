@@ -16,10 +16,16 @@ const sandbox={self:{}};vm.runInNewContext(await readFile('assets/offline-assets
 assert(!sandbox.self.JPY5_OFFLINE_MANIFEST.assets.some(file=>/private-migration|teacher.*\.json|^scripts\//.test(file)));
 // Lesson 13 and general lesson 14 content must remain byte-for-byte unchanged.
 const base='8a4a519af833679e37d334a9aa20a7b86be7d27c';
-for(const file of tracked.filter(file=>/^chapter-13|^assets\/(?:ch13|ch14|data\.js|grammar-extra-data\.js|firebase-sync\.mjs)/.test(file))){
+for(const file of tracked.filter(file=>/^chapter-13|^assets\/(?:ch13|ch14|data\.js|grammar-extra-data\.js|firebase-sync\.mjs)/.test(file)&&!['assets/ch14-data.js','assets/ch14-grammar-extra-data.js'].includes(file))){
   const original=execFileSync('git',['show',`${base}:${file}`],{encoding:'utf8'}).replace(/\r\n/g,'\n');
   assert.equal((await readFile(file,'utf8')).replace(/\r\n/g,'\n'),original,`${file}: unexpected public-content change`);
 }
+for(const page of ['notes','flashcards','quiz','history']){
+  const source=await readFile(`chapter-14-${page}.html`,'utf8');
+  assert.match(source,/data-teacher-section="grammar"/);
+  assert.doesNotMatch(source,/<script[^>]*src="assets\/(ch14-data|ch14-grammar-extra-data|grammar-ruby|flashcards|notes|history|ch14-quiz|quiz-progress)\.js/);
+}
+for(const file of ['assets/ch14-data.js','assets/ch14-grammar-extra-data.js'])assert.doesNotMatch(await readFile(file,'utf8'),/JPY5_DATA|JPY5_GRAMMAR_EXTRA|patterns:|grammarIds/);
 // Optional local check: no lesson-unique long fragment from the migration copy
 // may survive in a tracked public file. Shared exercise directions/labels also
 // occur in the unchanged lessons and are deliberately kept public there.
@@ -32,5 +38,19 @@ if(payload){
     assert(!fragments.some(text=>source.includes(text)),`${file}: protected fragment found (content withheld)`);
   }
   console.log(`Local migration check: ${fragments.length} lesson-unique long fragments absent from public files.`);
+  const grammar=JSON.parse(payload.grammarJson),values=[];
+  function collect(value,path=[]){if(typeof value==='string'&&value.length>=12)values.push({value,path:path.join('.')});else if(value&&typeof value==='object')Object.entries(value).forEach(([key,item])=>collect(item,[...path,key]));}
+  collect(grammar.data,['data']);collect(grammar.extras,['extras']);collect(grammar.ruby,['ruby']);
+  // Existing shared grammar tokens and one independently public lesson 15
+  // example are disclosed in the runbook. Do not republish the text here.
+  const shared={
+    'assets/ch15-grammar-extra-data.js':new Set([grammar.extras[6].examples[0][0]]),
+    'assets/grammar-ruby.js':new Set([grammar.data.patterns[8].id,grammar.extras[5].formation[0]])
+  };
+  for(const file of tracked.filter(file=>/\.(html|js|mjs|md|json)$/.test(file))){
+    const source=await readFile(file,'utf8');
+    for(const entry of values)assert(!source.includes(entry.value)||shared[file]?.has(entry.value),`${file}: protected grammar fragment at ${entry.path} (content withheld)`);
+  }
+  console.log(`Local grammar audit: ${values.length} data, quiz, extra and ruby strings checked; only documented shared tokens/example allowed.`);
 }
 console.log('Static boundary, unchanged public lesson content, Drive link and offline inventory checks passed.');
