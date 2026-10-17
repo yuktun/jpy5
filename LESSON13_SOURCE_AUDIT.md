@@ -1,5 +1,26 @@
 # Lesson 13 teacher-additions source audit
 
+## Textbook grammar exercises added 2026-10-17
+
+The supplied textbook PDF was visually checked at PDF/printed pages 9-12. The two supplied copies have identical content. These pages are the source of the question wording, word bank and worked examples in `assets/ch13-textbook-exercises.js`. Traditional Chinese directions and explanations are learning aids. No PDF or scan is bundled with the site.
+
+| Grammar ID | PDF page | Response items |
+| --- | --- | --- |
+| tate | 9 | 1 comprehension choice |
+| tatoe | 9 | 1 comprehension choice |
+| tarishinai | 9 | 1 comprehension choice |
+| hodo | 10 | Practice 1: 3; Practice 2: 3 |
+| ndatte | 10 | 1 comprehension choice |
+| nagara | 10-11 | Practice 1: 3; Practice 2: 2; Practice 3: 1 personal response |
+| tsumari | 11 | Practice 1: 2; Practice 2: 1 personal response |
+| yone | 12 | 2 choices |
+
+Sources: [textbook](https://ttrw.jp/static/textbook//1027/%E5%A4%A7%E5%AE%B6%E7%9A%84%E6%97%A5%E8%AF%AD%E4%B8%AD%E7%BA%A72%E7%AC%AC13%E8%AF%BE.pdf), [answer scan](https://drive.google.com/file/d/11B7PYBhsThVzk6VA0RMB-h2nfBK8JfSt/view). The answer scan is a separate 16-page Lessons 13-16 key; only the Lesson 13 grammar material on pages 3-4 was consulted. Personal activities `nagara` Practice 3 and `tsumari` Practice 2 are omitted in that key; this app supplies clearly labelled original example responses. Other open completions allow grammatically and contextually appropriate alternatives. No answers from Lessons 14-16 were imported.
+
+The two `yone` choices are both **a**. In the first, the respondent confirms information about their own country with `そうですよ`; this is not an instruction to echo every `よね` with `よね`. In the second, the respondent did not know the sorting rule, so the speaker supplies new information with `よ`.
+
+The integration is optional in the shared notes renderer and loaded only by Chapter 13. It changes no grammar IDs, scored keys, storage schema, flashcards or quiz drafts. Each of the 21 answers uses a separate native disclosure. `scripts/test-lesson13-textbook-exercises.mjs` checks source grouping, individual keyboard/mouse disclosure, closed-on-reload behavior, layouts and progress retention, with no automatic PDF requests.
+
 Reviewed on 2026-10-13. Scope: all 35 new explanatory notes and the new writing task, plus the reading references directly implicated by these notes. This is a content audit as well as an implementation check. It does not certify every older exercise in every lesson.
 
 ## Evidence and study guidance

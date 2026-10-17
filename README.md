@@ -54,6 +54,8 @@ The dependency-free static site is organized around a homepage, a Chapter 13 lea
 
 ### Lesson 13 teacher additions (3–10 October 2026)
 
+The Grammar Notes page also places all 21 textbook response items from PDF pages 9-12 beside their matching eight grammar patterns, after the examples. Each answer has its own keyboard-accessible disclosure, closed initially and after reload. Open answers are labelled as suggestions; the two personal-response activities have explicitly non-official example responses. The exercises do not score or write progress. Their text is included only in an explicitly requested offline package; linked PDFs remain online-only. Run `node scripts/test-lesson13-textbook-exercises.mjs` after changing these exercises.
+
 The existing modules include source-linked teacher notes for all eight grammar patterns, seven conversation explanations, six role-play hints, and twelve vocabulary usage notes. Reading activities include the teacher's presentation framework and an approximately 400-character writing exercise with a saved draft and character count. Open answers remain ungraded; existing vocabulary IDs, quiz records, and audio timing are preserved. The Review page links directly to the additions.
 
 Teacher content and PDF page references live in `assets/ch13-teacher-additions.js`. Duplicate scans are consolidated with their corresponding handouts. Where the reading slides simplify the ending, a labelled note preserves the original text's distinction between Ikebukuro and Aomori. Run `node scripts/test-lesson13-additions.mjs` with Playwright available, alongside the existing Lesson 13 checks, after changing these additions.
