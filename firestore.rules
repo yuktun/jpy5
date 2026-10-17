@@ -4,5 +4,17 @@ service cloud.firestore {
     match /jpy5Users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
+    // Approval is managed only by a trusted administrator, never a client.
+    match /jpy5TeacherAccess/{userId} {
+      allow read, write: if false;
+    }
+    match /jpy5TeacherNotes/{noteId} {
+      allow get: if noteId == 'lesson14'
+        && request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.firebase.sign_in_provider == 'google.com'
+        && get(/databases/$(database)/documents/jpy5TeacherAccess/$(request.auth.uid)).data.lesson14 == true;
+      allow list, write: if false;
+    }
   }
 }

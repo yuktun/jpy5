@@ -12,6 +12,22 @@ let lastError = null;
 
 const allowed = url => url.origin === self.location.origin && url.href.startsWith(SCOPE) && !/\.pdf$/i.test(decodeURIComponent(url.pathname));
 const urls = MANIFEST.assets.map(path => new URL(path, SCOPE).href);
+const retiredTeacherPaths = new Set(['chapter-14-review.html', 'chapter-14-vocabulary.html', 'ADVERB_SOURCE_AUDIT.md', 'LESSONS14_20_EXERCISE_AUDIT.md'].map(path => new URL(path, SCOPE).href));
+
+async function retirePublicTeacherCopies() {
+  const state = await readState();
+  if (state?.teacherProtection === 1) return;
+  for (const key of await caches.keys()) {
+    if (!key.startsWith(`${PREFIX}package-`) && !/^jpy5-precache-[a-f0-9]+$/.test(key)) continue;
+    const cache = await caches.open(key);
+    for (const request of await cache.keys()) {
+      const url = new URL(request.url); url.search = ''; url.hash = '';
+      if (retiredTeacherPaths.has(url.href)) await cache.delete(request);
+    }
+  }
+  // Missing retired files mark an old package incomplete until an explicit update.
+  // All its other public resources remain usable. Learner storage is untouched.
+}
 
 async function readState() {
   if (!await caches.has(META)) return null;
@@ -84,7 +100,7 @@ async function download(current) {
       current.completed++;
       await tellClients();
     }
-    const state = { cache: candidate, version: MANIFEST.version, urls };
+    const state = { cache: candidate, version: MANIFEST.version, urls, teacherProtection: 1 };
     if (current.controller.signal.aborted || !await complete(state)) throw new Error("incomplete");
     // Commit one pointer only after every required response has been verified.
     await (await caches.open(META)).put(STATE, new Response(JSON.stringify(state)));
@@ -104,7 +120,7 @@ async function download(current) {
 // Installation updates only the worker and its small inventory, never the pack.
 // Existing packs remain pinned until the user explicitly downloads an update.
 self.addEventListener("install", event => event.waitUntil(self.skipWaiting()));
-self.addEventListener("activate", event => event.waitUntil(clients.claim()));
+self.addEventListener("activate", event => event.waitUntil(retirePublicTeacherCopies().then(() => clients.claim())));
 self.addEventListener("message", event => {
   if (!event.source?.url?.startsWith(SCOPE)) return;
   const type = event.data?.type;
@@ -141,7 +157,7 @@ self.addEventListener("fetch", event => {
   if (url.href === SCOPE) url.pathname += "index.html";
   event.respondWith((async () => {
     const state = await readState().catch(() => null);
-    if (state?.cache?.startsWith(PREFIX) && state.urls?.includes(url.href)) {
+    if (state?.cache?.startsWith(PREFIX) && state.urls?.includes(url.href) && (state.teacherProtection === 1 || !retiredTeacherPaths.has(url.href))) {
       const cached = await (await caches.open(state.cache)).match(url.href);
       if (cached) return cached;
     }

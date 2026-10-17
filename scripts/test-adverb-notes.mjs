@@ -30,6 +30,12 @@ try {
       await page.goto(`${base}/chapter-${n}-vocabulary.html`);
       const shell=page.locator('#teacher-adverbs');
       assert.equal(await shell.count(),1);
+      if(Number(n)===14){
+        assert.equal(await shell.getAttribute('data-teacher-section'),'adverbs');
+        assert.equal(await shell.locator('[data-teacher-content]').textContent(),'');
+        assert.equal(await shell.locator('.teacher-adverb-card').count(),0);
+        continue;
+      }
       assert.equal(await shell.getAttribute('data-source-page'),String(Number(n)-12));
       assert.equal(await shell.locator('.teacher-adverb-card').count(),cards);
       assert.equal(await shell.locator('.adverb-ja').count(),examples);

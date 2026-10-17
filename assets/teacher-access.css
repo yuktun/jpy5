@@ -1,0 +1,6 @@
+[data-teacher-section] { overflow-wrap: anywhere; min-width: 0; }
+[data-teacher-section] > button { margin: .3rem .5rem .7rem 0; }
+[data-teacher-content] { min-width: 0; }
+[data-teacher-content] table { max-width: 100%; }
+[data-teacher-word-help] { padding: .75rem; border: 1px solid currentColor; border-radius: .5rem; }
+@media print { [data-teacher-content] { display: none; } }

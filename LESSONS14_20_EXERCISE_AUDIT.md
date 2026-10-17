@@ -1,5 +1,8 @@
 # Lessons 14–20 teacher exercise source audit
 
+Lesson 14's source quotations have been removed from this public audit for the
+[teacher-text trial](TEACHER_ACCESS_TRIAL.md). Other lessons retain their existing scope.
+
 Reviewed on 2026-10-14. Scope: the seven teacher exercise PDFs, all 41 scanned pages, and their new Review-page questions and reference answers. The existing Lesson 13 Exercise is the layout and interaction reference.
 
 ## Evidence and answer status
@@ -10,7 +13,7 @@ No teacher answer key was supplied for these worksheets. The displayed answers a
 
 | Lesson | Source PDF | Pages | Top-level prompts | Hidden answer panels | Contextual word-help choices |
 | --- | --- | ---: | ---: | ---: | ---: |
-| 14 | [L14_exercise.pdf](https://drive.google.com/file/d/1S6fJRP1c0NIT5wtkQtxU0weSVxGaZifk/view) | 6 | 45 | 13 | 33 |
+
 | 15 | [L15_exercise.pdf](https://drive.google.com/file/d/1jUrKiCQxhXOrfXK4DNLozXE1DRX3q9qL/view) | 6 | 37 | 12 | 37 |
 | 16 | [L16_exercise.pdf](https://drive.google.com/file/d/1Kd2LzsJ7KmJWAEFyR4sz2SMzInYiAf4I/view) | 5 | 31 | 12 | 23 |
 | 17 | [L17_exercise.pdf](https://drive.google.com/file/d/125QqxLD7rXefPpe2zygGa0yDo-WBC5KT/view) | 6 | 44 | 13 | 35 |
@@ -27,12 +30,12 @@ R = 読む・書く, S = 話す・聞く, G = 文法・練習. Roman numerals re
 
 | Lesson | PDF page | Reconciled coverage |
 | --- | ---: | --- |
-| 14 | 1 | R I: six prompts, including supplied プロ; II: eight choices |
-| 14 | 2 | R III: five fills plus 夢中 example and required readings; IV: three questions, including two requested methods |
-| 14 | 3 | S I: complete dialogue, scenario and six blanks |
-| 14 | 4 | S II: four げ transformations plus example; III: title/type metadata and four story prompts |
-| 14 | 5 | G I: seven bank fills; II: three questions, including all nested completions |
-| 14 | 6 | G III: example and full dialogue with two blanks; IV: three once-only choices |
+
+
+
+
+
+
 | 15 | 1 | R I: three fills; II: six fills; III: example and all four alternatives |
 | 15 | 2 | R IV: two questions, including seven summary blanks and all three thesis alternatives |
 | 15 | 3 | S I: complete business-social dialogue with five blanks |
@@ -71,7 +74,7 @@ R = 読む・書く, S = 話す・聞く, G = 文法・練習. Roman numerals re
 
 ## Answer checks and source cautions
 
-- **Lesson 14:** R II2 requires もかかって for the time taken to graduate, rather than にわたって. R IV1's それ refers to Japan's high-level manga technique; IV2 includes both exaggerated depiction and cliffhangers; IV3 selects the unstated reason, option 3. All six story-dialogue expressions are used once. The 円安 completion is labelled a hypothetical exercise scenario, not a statement about present exchange rates.
+
 - **Lesson 15:** The reading summary preserves the 2:6:2 ratio and both examples of talent-only organizations; the thesis is the importance of supporting roles, option 3. Required idioms appear in the three-line speaking model. G II permits repeated bank items because it has no once-only restriction; natural alternative answers are acknowledged where the context allows them.
 - **Lesson 16:** R III1's exact answer is `MNK社`, four Unicode characters, present in the opening passage. R III4 selects A/B: the text's 50-plus total covers complaints or consultations together, not complaints alone. R III5 selects B/D. The worksheet's paragraph/line reference is mapped to the app's paragraph arrangement. G I1② is `としている` after the explicit reporting subject 警察は; G I6 is the impersonal estimate `とみられる`. These two answers were corrected in the fresh re-audit below; the earlier claim that G I6 had a source defect was wrong and has been removed. Printed stems such as 持って来なけれ and suffix ば are not duplicated in answers.
 - **Lesson 17:** Reading answers follow the supplied passage. The worksheet's 太陽太陰暦 is retained as source wording and corrected to 太陰太陽暦 in a note. The family table retains ages, occupations and relationships; kinship references are evaluated from the child's perspective. する becomes せざるを得ない. Compound verbs use the required stems without duplicating printed suffixes. The four-line writing example follows the source's format.

@@ -1,0 +1,6 @@
+node_modules/
+private-migration/
+tmp/
+test-results/
+*-debug.log
+.firebase/

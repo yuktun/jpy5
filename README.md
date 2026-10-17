@@ -4,6 +4,11 @@ A mobile-friendly study site for **みんなの日本語 中級Ⅱ**. Lessons 13
 
 ## Run locally
 
+The lesson 14 teacher-text trial uses protected online sections. See
+[the trial boundary, local tests and approval checklist](TEACHER_ACCESS_TRIAL.md).
+When ignored migration material is present, use `node scripts/serve-public.mjs`
+for a preview that serves only public release files.
+
 No build step or dependencies are required.
 
 ```bash

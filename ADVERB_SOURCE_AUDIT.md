@@ -1,5 +1,8 @@
 # 副詞 handout: Lessons 13–20
 
+Lesson 14's source quotations have been removed from this public audit for the
+[teacher-text trial](TEACHER_ACCESS_TRIAL.md). Other lessons retain their existing scope.
+
 Source: [teacher's eight-page 副詞.pdf](https://drive.google.com/file/d/1h2t9BYb8IYg4wTvl3_mn2MgaBPwlZDGL/view). All eight scanned pages were rendered and read on 17 October 2026 (Hong Kong time).
 
 ## Coverage
@@ -7,7 +10,7 @@ Source: [teacher's eight-page 副詞.pdf](https://drive.google.com/file/d/1h2t9B
 | Lesson | PDF page | Topic | Cards (source groupings) | Example blocks | Practice prompts |
 | --- | --- | --- | ---: | ---: | ---: |
 | 13 | 1 | 時間関係の副詞（１） | 4 | 8 | 7 |
-| 14 | 2 | 時間関係の副詞（２） | 4 | 8 | 7 |
+
 | 15 | 3 | 否定の副詞（１） | 4 | 9 | 7 |
 | 16 | 4 | 否定の副詞（２） | 3 | 6 | 7 |
 | 17 | 5 | 条件の文に使う副詞 | 5 | 14 | 5 |
@@ -21,7 +24,7 @@ The Lesson 13 father/son exchange counts as one example block. Grouped synonymou
 ## Qualifications and ambiguous questions
 
 - **13, すでに:** the new scan says 終わってから時間が経っている状況, rather than the older page's inserted 長時間. The source category still says 長い時間; the adjoining Chinese note explains that a long elapsed time is not required. [小学館 類語例解辞典, 既に / とっくに](https://dictionary.goo.ne.jp/thsrs/15202/meaning/m0u/) distinguishes prior completion from an emphasis on much earlier completion. Lesson 13 question 1 prefers もう for ordinary conversation but does not make すでに ungrammatical. The old timeline suggesting a fixed temporal ranking was replaced by a compact comparison; existing extra examples were retained in the cards, memory guide or completion answers.
-- **14, 今に:** the source's “opposite of the present” describes its examples, not every possible use.
+
 - **15:** the source's degree ranking for そんなに / それほど / そう is preserved in its disclosure but qualified as context-sensitive. 全く also has affirmative uses. たいして does not invariably convey disappointment.
 - **16:** 必ずしも is not total negation. The source's responsibility and school-closure interpretations are contextual examples, not a fixed responsibility share or frequency encoded in the adverb. 何も in this lesson means “no need to,” distinct from its indefinite-pronoun use.
 - **17, もしも:** the source's たら-only grouping is explicitly scoped to the worksheet. [小学館 dictionaries, 若しも](https://kotobank.jp/word/%E8%8B%A5%E3%81%97%E3%82%82-645546) describe an emphatic hypothetical and include a ば example. The first exercise has two grammatically possible continuations; the likely classroom intent is explained without declaring the other impossible. The second is preserved as a language exercise; its medication-related option is explicitly not endorsed as an ingestion-treatment instruction.
