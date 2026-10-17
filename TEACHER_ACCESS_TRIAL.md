@@ -2,6 +2,29 @@
 
 Local implementation only. No live rules, content, identities, grants or hosting have been changed. Base: `8a4a519af833679e37d334a9aa20a7b86be7d27c`, verified against a fresh clone of `yuktun/jpy5` main. No repository AGENTS.md or applicable engineering skill was available in this checkout/catalog; README contributor guidance was followed.
 
+**Deployment hold:** do not deploy the rules from `5160c02`. The current tracked
+`firestore.rules` supersedes that incomplete repository baseline and preserves
+the existing live permissions for both study apps. Content-scope confirmation for
+the original school grammar and derived exercises is still pending. Local rule
+reconciliation does not authorize deployment, content upload, grants or publication.
+
+## Verified live rule baseline
+
+Read-only Firebase Console inspection on 2026-10-17 verified the default database's
+starred rules release displayed as `Sept 25, 2026 • 10:57 am` (console display).
+It allows owner read/write at `/users/{userId}`, at
+`/users/{userId}/progress/{documentId}`, at `/jpy5Users/{userId}`, and recursively
+below `/jpy5Users/{userId}`. The shared owner predicate checks a signed-in UID
+against the path's user ID. These permissions are all retained in the current
+tracked rules. The teacher matches are isolated top-level collections and do not
+overlap those existing owner paths.
+
+The console's Authentication directory verified the intended account's UID and
+Google provider. That private mapping is kept outside tracked files. The inspected
+directory does not expose the `email_verified` token claim; real token eligibility
+still requires private verification. No credentials were created, and no write
+permission or live authorization test was attempted.
+
 ## Content boundary and provenance
 
 Two existing sections have explicit teacher-source provenance:
@@ -11,13 +34,20 @@ Two existing sections have explicit teacher-source provenance:
 
 The trial protects each complete section, including its attached editorial answers/help. General vocabulary, grammar, reading, listening, quizzes and review navigation stay public. `ch14-grammar-extra-data.js` identifies general learning additions, with no established teacher provenance; it is unchanged. No separate lesson 14 teacher grammar-note dataset was found. Confirm any additional intended material before broadening the boundary.
 
+The original school/source grammar in `ch14-data.js` contains 11 patterns and
+46 examples and supplies 57 grammar flashcards and 33 quiz questions. Its teacher
+provenance is unresolved; the absence of a separate teacher-labelled dataset does
+not establish that this material is textbook-only. The worksheet/adverb trial does
+not protect those grammar copies. Keep scope unchanged until classification is
+confirmed, then audit all derived copies before any necessary expansion.
+
 Removed public copies: both HTML sections, lesson 14's generator record in `scripts/adverb-notes-data.mjs`, and lesson-specific quotations in both source audits. The generator retains only `{protected: true}` for lesson 14 and will not regenerate its text. Tests, shared data and offline inventory were audited. Remaining long-text overlaps are shared instructions/disclaimers in other lessons, not a separate lesson 14 payload. The local optional fragment check supplements structural checks; it is not a proof that no short phrase coincides with textbook content.
 
 Lesson 13 and lesson 14's general data are checked against the base revision. Lessons 15–20 remain public for this first trial. The `sasukimm/jpy5` copy and all Drive links/permissions are unchanged.
 
 ## Authorization and caching
 
-`jpy5TeacherNotes/lesson14` contains `schemaVersion: 1`, `exercises: string`, `adverbs: string`. Only a single-document read is allowed, and only for a verified Google-authenticated UID whose administrator-created `jpy5TeacherAccess/{uid}` document has boolean `lesson14: true`. Other note IDs, collection listing, all note writes and all client reads/writes to approvals are denied. Existing `jpy5Users/{uid}` progress ownership rules are unchanged. No wildcard grants are introduced; emulator tests include a deliberate broad-allow negative control.
+`jpy5TeacherNotes/lesson14` contains `schemaVersion: 1`, `exercises: string`, `adverbs: string`. Only a single-document read is allowed, and only for a verified Google-authenticated UID whose administrator-created `jpy5TeacherAccess/{uid}` document has boolean `lesson14: true`. Other note IDs, collection listing, all note writes and all client reads/writes to approvals are denied. Both apps' deployed owner permissions are preserved, including the existing JPY5 subcollection wildcard. No root-wide wildcard grant is introduced; emulator tests include a deliberate broad-allow negative control and an attempted approval within a user's own subcollection.
 
 The client shares the existing Firebase Auth instance but reads notes through Firestore REST with the Firebase ID token, `cache: no-store`, no cookies and no redirects. It never puts notes in the progress SDK, IndexedDB, localStorage, sessionStorage or Cache Storage. Firestore evaluates these Firebase-token REST reads against Security Rules: [Firebase REST authentication](https://firebase.google.com/docs/firestore/use-rest-api). A deny does not override an overlapping allow: [rule structure](https://firebase.google.com/docs/firestore/security/rules-structure).
 
@@ -47,7 +77,7 @@ Use the public-only server when private migration files are present; do not serv
 
 ## Proposed live sequence — requires separate approval
 
-Local verification completed: 42 Firestore authorization/progress checks and an
+Local verification completed: 76 Firestore authorization/progress checks and an
 overlapping-allow negative control; three controller/transport unit tests; both
 protected sections at 390, 810 and 1280 pixels in light/dark themes; synthetic
 sign-in, denied, authorized, logout/account-switch, sanitization and cache-retirement
@@ -55,13 +85,14 @@ checks; the existing offline suite covering all 73 pages, cold start, download
 failures, cancellation, updates, integrity, removal, eviction and retry; existing
 lesson 14 reading/listening and lesson 13 teacher browser suites; progress-sync
 regressions; and public-source/manifest checks. The private fragment audit found
-118 lesson-unique long fragments absent from public files. A real Google account,
-live deployed rules and iPhone/Safari were not exercised. No live credentials were
-used by the tests.
+118 lesson-unique long fragments absent from public files. The live rules and
+intended account's directory record were inspected read-only; real-account
+authorization and iPhone/Safari were not exercised. The emulator tests use only
+synthetic identities and preserve owner reads, writes and deletes for both apps.
 
-1. Privately verify the intended test account's Firebase Authentication UID in the existing project `japanese-study-sync`. Confirm Google provider and verified email. Do not infer the UID from an email or put either in Git. No new identity/provider/account/security-setting change is proposed.
-2. Retrieve and review the currently deployed rules and preserve a private backup. This local test validates repository rules only. Merge any legitimate live rules while ensuring no broader overlapping allow grants note or approval access. Re-run the emulator checks against the exact complete proposed ruleset before approval/deployment.
-3. After approval, deploy only the reviewed Firestore rules to that project (not Hosting, Storage or other services). Preserve the progress match exactly. Confirm unapproved and signed-out reads are denied before uploading real text.
+1. Resolve the pending classification of core grammar/source material and its derived copies. Privately recheck the already matched intended UID and Google provider in `japanese-study-sync`, and verify token eligibility. Do not infer the UID from an email or put either in Git. No new identity/provider/account/security-setting change is proposed.
+2. Recheck the active rules release immediately before deployment and preserve a private backup. The current tracked rules already retain the 2026-10-17 inspected baseline. Reconcile any subsequent live changes while ensuring no broader overlapping allow grants note or approval access. Re-run the emulator suite against the exact complete ruleset to be reviewed. Never substitute `5160c02`'s obsolete rules.
+3. After approval, deploy only the reviewed current tracked `firestore.rules` to that project (not Hosting, Storage or other services). Preserve all four existing owner boundaries listed above. Confirm unapproved and signed-out reads are denied before uploading real text.
 4. A trusted administrator imports the ignored local `private-migration/lesson14.json` into the **single** document `jpy5TeacherNotes/lesson14`, with numeric `schemaVersion` and string `exercises`/`adverbs`. The source retains the original section markup and answer labels. Validate content privately and keep the local source out of Git, logs, public attachments and deployment artifacts. No service-account key, token or credential is to be created or committed for this task.
 5. After confirming the UID and approving the grant, an administrator creates only `jpy5TeacherAccess/{confirmedUid}` with `{lesson14: true}`. No client approval UI exists. No other users or lessons are granted.
 6. Publish the reviewed feature commit to **yuktun/jpy5 only**, after approval, with its regenerated inventory and service worker. Verify the deployed HTML, source generator and audit files contain no removed lesson 14 payload. Reopen/update existing clients and download a new offline package explicitly.

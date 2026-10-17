@@ -45,7 +45,27 @@ try {
   await denied(setDoc(doc(db('approved'),'jpy5Users/unapproved'),{progress:{}}));
   await denied(getDoc(doc(db(null),'jpy5Users/unapproved')));
   await denied(getDocs(collection(user,'jpy5Users')));
-  await denied(setDoc(doc(user,'jpy5Users/unapproved/nested/approval'),{lesson14:true}));
+  // Existing JPY5 subcollection ownership must survive the teacher trial.
+  // An approval-shaped document inside a user's progress tree grants nothing.
+  await allowed(setDoc(doc(user,'jpy5Users/unapproved/nested/approval'),{lesson14:true}));
+  await denied(getDoc(doc(user,'jpy5TeacherNotes/lesson14')));
+  for(const path of [
+    'users/unapproved',
+    'users/unapproved/progress/synthetic',
+    'jpy5Users/unapproved/settings/synthetic',
+    'jpy5Users/unapproved/progress/deep/nested/synthetic'
+  ]) {
+    await allowed(setDoc(doc(user,path),{synthetic:true}));
+    await allowed(getDoc(doc(user,path)));
+    await denied(getDoc(doc(db('approved'),path)));
+    await denied(setDoc(doc(db('approved'),path),{synthetic:true}));
+    await denied(deleteDoc(doc(db('approved'),path)));
+    await denied(getDoc(doc(db(null),path)));
+    await denied(setDoc(doc(db(null),path),{synthetic:true}));
+    await allowed(deleteDoc(doc(user,path)));
+  }
+  // The other app's original subcollection permission is progress-only.
+  await denied(setDoc(doc(user,'users/unapproved/other/synthetic'),{synthetic:true}));
   await denied(getDoc(doc(user,'unmatched/content')));
   await env.withSecurityRulesDisabled(context=>deleteDoc(doc(context.firestore(),'jpy5TeacherAccess/approved')));
   await denied(getDoc(doc(db('approved'),'jpy5TeacherNotes/lesson14')));

@@ -1,8 +1,21 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Preserve the deployed owner boundaries for both existing study apps.
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+      match /progress/{documentId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
     match /jpy5Users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read, write: if isOwner(userId);
+      match /{document=**} {
+        allow read, write: if isOwner(userId);
+      }
     }
     // Approval is managed only by a trusted administrator, never a client.
     match /jpy5TeacherAccess/{userId} {
