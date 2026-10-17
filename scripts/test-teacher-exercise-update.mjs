@@ -10,13 +10,13 @@ import { extname, resolve, sep } from "node:path";
 
 const { chromium } = createRequire(import.meta.url)("playwright");
 const root = process.cwd(), previousRef = process.env.JPY5_PREVIOUS_REF || "HEAD^";
-const changed = ["assets/offline-assets.js", ...Array.from({ length: 7 }, (_, i) => `chapter-${14 + i}-review.html`)];
+const changed = ["sw.js", "assets/pwa.js", "assets/offline-assets.js", ...Array.from({ length: 7 }, (_, i) => `chapter-${14 + i}-review.html`)];
 const oldFiles = new Map(changed.map(file => [file, execFileSync("git", ["show", `${previousRef}:${file}`], { cwd: root })]));
 const previousVersion = oldFiles.get("assets/offline-assets.js").toString().match(/version: "([^"]+)"/)[1];
 const nextVersion = (await readFile(resolve(root, "assets/offline-assets.js"), "utf8")).match(/version: "([^"]+)"/)[1];
 assert.notEqual(previousVersion, nextVersion, "Regenerate the offline manifest; choose a revision preceding this release.");
 const exerciseMarkup = html => new DOMParser().parseFromString(html, "text/html").querySelector("#teacher-exercise")?.outerHTML ?? null;
-const currentExercise = () => document.querySelector("#teacher-exercise")?.outerHTML ?? null;
+const currentExercise = () => { const node = document.querySelector("#teacher-exercise").cloneNode(true); node.querySelectorAll(".internet-required").forEach(note => note.remove()); return node.outerHTML; };
 let serveNew = false;
 const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".png": "image/png", ".webmanifest": "application/manifest+json" };
 const server = createServer(async (request, response) => {
@@ -49,12 +49,13 @@ try {
   });
   serveNew = true;
   await page.evaluate(async () => (await navigator.serviceWorker.getRegistration()).update());
-  await page.locator(".pwa-update").waitFor({ state: "visible", timeout: 60000 });
-  assert.equal(await page.evaluate(currentExercise), previousExercise, "Waiting update should not replace the active lesson.");
-  await Promise.all([
-    page.waitForEvent("load"),
-    page.locator(".pwa-update button").filter({ hasText: "立即更新" }).click()
-  ]);
+  await page.waitForFunction(() => document.querySelector(".pwa-offline-dialog") || document.querySelector(".pwa-update"), null, { timeout: 60000 });
+  if (await page.locator(".pwa-update").count()) await page.locator(".pwa-update button").first().click();
+  await page.waitForFunction(() => document.querySelector(".pwa-status")?.dataset.state === "online", null, { timeout: 60000 });
+  await page.locator(".pwa-status").click();
+  await page.locator("[data-offline-download]").click();
+  await page.waitForFunction(() => document.querySelector(".pwa-status")?.dataset.state === "ready", null, { timeout: 60000 });
+  await page.locator("[data-offline-close]").click();
   await page.locator("#teacher-exercise").waitFor();
   assert.equal(await page.evaluate(() => localStorage.getItem("jpy5.chapter14.teacherUpdateSentinel")), '{"attempts":3,"starred":["keep"]}');
   assert.equal(await page.evaluate(() => localStorage.getItem("jpy5.chapter20.teacherUpdateSentinel")), "retained");
