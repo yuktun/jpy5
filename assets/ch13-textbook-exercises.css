@@ -1,10 +1,13 @@
-.textbook-practice{margin-top:24px;padding-top:20px;border-top:2px solid var(--line);min-width:0}
-.textbook-practice h4{margin:0 0 8px;font-size:1.15rem;color:var(--primary-dark)}
+.textbook-practice{margin:1rem 0;padding:0;min-width:0}
+.textbook-practice>summary{min-height:44px}
 .textbook-practice-note{font-size:.85rem;color:var(--muted)}
 .textbook-practice-group{margin-top:20px;min-width:0}
-.textbook-practice h5{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin:0;font-size:1rem}
-.textbook-practice h5 a{font-size:.82rem;font-weight:500;padding:8px 0;min-height:44px;display:inline-flex;align-items:center;flex-wrap:wrap}
+.textbook-practice h4{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin:0;font-size:1rem}
+.textbook-practice h4 a{font-size:.82rem;font-weight:500;padding:8px 0;min-height:44px;display:inline-flex;align-items:center;flex-wrap:wrap}
 .textbook-practice p{white-space:pre-line;overflow-wrap:anywhere;line-height:1.85}
+.textbook-practice [lang="ja"]{line-height:2.35}
+.textbook-practice ruby{ruby-position:over;ruby-align:center}
+.textbook-practice rt{font-size:.6em;font-weight:400}
 .textbook-model{padding:12px 14px;border-left:3px solid var(--primary);background:var(--paper);border-radius:6px;font-size:.9rem}
 .textbook-model p{margin:6px 0 0}
 .textbook-word-bank{list-style:none;display:flex;flex-wrap:wrap;gap:8px;padding:12px;background:var(--paper);border:1px dashed var(--line);border-radius:8px}

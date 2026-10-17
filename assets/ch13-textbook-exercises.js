@@ -54,11 +54,48 @@ window.JPY5_TEXTBOOK_EXERCISES = (() => {
     ]}]
   };
   const escape = text => String(text).replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
+  // Readings are scoped to these Japanese exercise fields, never Chinese notes.
+  // Longer compounds and contextual forms win before individual kanji.
+  // Use the teacher supplement's explicit {base|reading} -> ruby/rt convention.
+  const readings = [
+    ["入社","にゅうしゃ"],["社員","しゃいん"],["仕事","しごと"],["不安","ふあん"],["安心","あんしん"],
+    ["宇宙","うちゅう"],["彼女","かのじょ"],["我慢強","がまんづよ"],["掃除機","そうじき"],
+    ["歌手","かしゅ"],["人気","にんき"],["最近","さいきん"],["時間","じかん"],["結婚","けっこん"],
+    ["緊張","きんちょう"],["舞台","ぶたい"],["大切","たいせつ"],["友達","ともだち"],["田中","たなか"],["本当","ほんとう"],
+    ["息子","むすこ"],["受験生","じゅけんせい"],["勉強","べんきょう"],["都心","としん"],["運転","うんてん"],
+    ["気持","きも"],["公園","こうえん"],["二人","ふたり"],["双子","ふたご"],["性格","せいかく"],["全然","ぜんぜん"],
+    ["世界的","せかいてき"],["毎日","まいにち"],["自分","じぶん"],["経験","けいけん"],["冷蔵庫","れいぞうこ"],
+    ["野菜","やさい"],["結局","けっきょく"],["約束","やくそく"],["部屋","へや"],["昼間","ひるま"],
+    ["授業","じゅぎょう"],["店長","てんちょう"],["売上","うりあ"],["最後","さいご"],["両親","りょうしん"],
+    ["音楽家","おんがくか"],["音楽大学","おんがくだいがく"],["音楽関係","おんがくかんけい"],
+    ["音楽","おんがく"],["大学","だいがく"],["工学部","こうがくぶ"],["影響","えいきょう"],["以前","いぜん"],
+    ["日本語","にほんご"],["日本","にほん"],["内容","ないよう"],["食品","しょくひん"],["家族","かぞく"],
+    ["慣","な"],["妻","つま"],["行","い"],["僕","ぼく"],["止","と"],["誰","だれ"],["疲","つか"],["口","くち"],
+    ["人","ひと"],["使","つか"],["気","き"],["静","しず"],["若","わか"],["頃","ころ"],["息","いき"],
+    ["出","で"],["美","うつく"],["寝","ね"],["忙","いそが"],["箱","ばこ"],["捨","す"],["彼","かれ"],
+    ["申","もう"],["込","こ"],["死","し"],["思","おも"],["初","はじ"],["立","た"],["声","こえ"],
+    ["悲","かな"],["遠","とお"],["引","ひ"],["越","こ"],["何","なに"],["店","みせ"],["大","おお"],
+    ["言","い"],["聞","き"],["車","くるま"],["持","も"],["兄","あに"],["月","つき"],["分","わ"],
+    ["森","もり"],["中","なか"],["顔","かお"],["違","ちが"],["体","からだ"],["悪","わる"],["吸","す"],
+    ["話","はなし"],["私","わたし"],["着","き"],["古","ふる"],["今","いま"],["実","じつ"],["残","のこ"],
+    ["知","し"],["買","か"],["食","た"],["忘","わす"],["遅","おく"],["多","おお"],["片","かた"],
+    ["夜","よる"],["書","か"],["来","こ"],["暇","ひま"],["落","お"],["働","はたら"],["例","れい"],
+    ["入","はい"],["好","す"],["前","まえ"],["直","なお"],["親","おや"],["少","すこ"],["続","つづ"],
+    ["答","こた"],["国","くに"],["過","す"],["待","ま"],["見","み"]
+  ].map(([base, reading]) => [base, `{${base}|${reading}}`]);
+  readings.push(["出し","{出|だ}し"], ["話し","{話|はな}し"], ["１回","{１回|いっかい}"], ["30歳","{30歳|さんじゅっさい}"]);
+  readings.sort((a,b)=>b[0].length-a[0].length);
+  const readingMap = new Map(readings);
+  const readingPattern = new RegExp(readings.map(([base])=>base).join("|"), "g");
+  const jp = text => window.JPY5_TEACHER.jp(String(text).replace(readingPattern, base=>readingMap.get(base)));
   function render(id) {
     const sections = groups[id];
     if (!sections) return "";
     const source = window.JPY5.sources.textbooks[13];
-    return `<section class="textbook-practice" data-textbook-pattern="${id}" aria-labelledby="textbook-${id}-title"><h4 id="textbook-${id}-title">課本原題練習</h4><p class="textbook-practice-note">先自行作答，再逐題展開答案。此練習不計分，不改動學習進度。</p>${sections.map(section=>`<section class="textbook-practice-group"><h5>${escape(section.title)} <a href="${source}#page=${section.page}" target="_blank" rel="noopener">P.${section.page} 原頁 ↗ <small class="internet-required">（需網絡）</small></a></h5><p${section.japaneseInstruction?' lang="ja"':''}>${escape(section.instruction)}</p>${section.model?`<div class="textbook-model"><b>課本例</b><p lang="ja">${escape(section.model)}</p></div>`:""}${section.bank?`<ul class="textbook-word-bank" aria-label="詞庫" lang="ja">${section.bank.map(word=>`<li>${escape(word)}</li>`).join("")}</ul>`:""}<ol class="textbook-question-list">${section.items.map((item,index)=>`<li data-textbook-question="${item.id}"><p lang="ja">${escape(item.prompt)}</p>${item.options?`<ol type="a" lang="ja">${item.options.map(option=>`<li>${escape(option)}</li>`).join("")}</ol>`:""}<details class="textbook-answer"><summary>${escape(section.title)} ${index+1} · ${item.personal?"顯示個人作答示例":item.suggested?"顯示建議答案":"顯示答案"}</summary><div class="textbook-answer-body">${item.suggested?`<p class="textbook-practice-note">${item.personal?"個人作答示例；並非官方或唯一答案。":"建議例：其他符合題意、文法正確的表達也可以。"}</p>`:""}<p lang="ja">${escape(item.answer)}</p>${item.explanation?`<p>${escape(item.explanation)}</p>`:""}</div></details></li>`).join("")}</ol></section>`).join("")}</section>`;
+    const pages = [...new Set(sections.map(section=>section.page))];
+    const pageLabel = pages.length > 1 ? `${pages[0]}–${pages.at(-1)}` : pages[0];
+    const count = sections.reduce((total, section)=>total+section.items.length, 0);
+    return `<details class="teacher-addition textbook-practice" data-textbook-pattern="${id}"><summary id="textbook-${id}-title"><span>課本原題練習</span> · P.${pageLabel} · ${count} 題</summary><div class="teacher-addition-body"><p class="textbook-practice-note">先自行作答，再逐題展開答案。此練習不計分，不改動學習進度。</p>${sections.map(section=>`<section class="textbook-practice-group"><h4>${escape(section.title)} <a href="${source}#page=${section.page}" target="_blank" rel="noopener">P.${section.page} 原頁 ↗ <small class="internet-required">（需網絡）</small></a></h4><p${section.japaneseInstruction?' lang="ja"':''}>${section.japaneseInstruction?jp(section.instruction):escape(section.instruction)}</p>${section.model?`<div class="textbook-model"><b>課本例</b><p lang="ja">${jp(section.model)}</p></div>`:""}${section.bank?`<ul class="textbook-word-bank" aria-label="詞庫" lang="ja">${section.bank.map(word=>`<li>${jp(word)}</li>`).join("")}</ul>`:""}<ol class="textbook-question-list">${section.items.map((item,index)=>`<li data-textbook-question="${item.id}"><p lang="ja">${jp(item.prompt)}</p>${item.options?`<ol type="a" lang="ja">${item.options.map(option=>`<li>${jp(option)}</li>`).join("")}</ol>`:""}<details class="textbook-answer"><summary>${escape(section.title)} ${index+1} · ${item.personal?"顯示個人作答示例":item.suggested?"顯示建議答案":"顯示答案"}</summary><div class="textbook-answer-body">${item.suggested?`<p class="textbook-practice-note">${item.personal?"個人作答示例；並非官方或唯一答案。":"建議例：其他符合題意、文法正確的表達也可以。"}</p>`:""}<p lang="ja">${jp(item.answer)}</p>${item.explanation?`<p>${escape(item.explanation)}</p>`:""}</div></details></li>`).join("")}</ol></section>`).join("")}</div></details>`;
   }
-  return {groups, render};
+  return {groups, render, jp};
 })();

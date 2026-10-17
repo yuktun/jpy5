@@ -50,11 +50,11 @@ try {
   for(const width of [390,810,1280]) {
     await page.setViewportSize({width,height:900});
     await page.goto(`${base}/chapter-13-notes.html`);
-    assert.equal(await page.locator(".teacher-addition").count(),8);
-    await page.locator(".teacher-addition summary").first().click();
-    assert(await page.locator(".teacher-addition[open] .teacher-source").isVisible());
-    await page.locator(".teacher-addition").evaluateAll(nodes=>nodes.forEach(node=>node.open=true));
-    const tatoe=page.locator(".teacher-addition").filter({hasText:"假設情況與程度的分別"});
+    assert.equal(await page.locator(".teacher-addition:not(.textbook-practice)").count(),8);
+    await page.locator(".teacher-addition:not(.textbook-practice) summary").first().click();
+    assert(await page.locator(".teacher-addition:not(.textbook-practice)[open] .teacher-source").isVisible());
+    await page.locator(".teacher-addition:not(.textbook-practice)").evaluateAll(nodes=>nodes.forEach(node=>node.open=true));
+    const tatoe=page.locator(".teacher-addition:not(.textbook-practice)").filter({hasText:"假設情況與程度的分別"});
     assert(await tatoe.locator(".teacher-addition-correction").isVisible());
     assert.match(await tatoe.locator(".teacher-addition-correction a").getAttribute("href"),/^https:\/\/kotobank\.jp\//);
     await noOverflow("grammar");
