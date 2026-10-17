@@ -71,6 +71,7 @@ npm run test:teacher
 npm run test:rules
 npm run test:teacher-browser
 npm run test:teacher-grammar
+npm run test:teacher-autoload
 node scripts/test-teacher-static.mjs
 node scripts/test-teacher-parity.mjs
 node scripts/test-firebase-sync.mjs
@@ -85,6 +86,12 @@ node scripts/serve-public.mjs
 Use the public-only server when private migration files are present; do not serve the repository directory with an unrestricted static file server. The preview allowlist excludes migration sources, Git objects, dependencies and logs.
 
 The optional parity test requires the ignored migration source. It compares hashes of original data, four page layouts, ruby outputs, highlights, IDs and fingerprints without printing teacher text. The private static audit uses that source when present. Public browser fixtures contain synthetic text only.
+
+### Lesson 14 automatic-loading follow-up (local only)
+
+Signed-in users now load lesson 14 automatically when a protected page opens or sign-in completes. Every fetch still requires the server's existing approval check. The extra read button is hidden during normal use and appears only for recoverable errors or an expired lease. Repeated notifications for the same UID and overlapping lifecycle events share one request and retain a loaded study view. Account changes, logout and offline/hidden pages clear content; returning online or to the page reloads through authorization. Background revalidation and the hard lease remain in force.
+
+This follow-up proposes only a static application update; it needs no Firebase rules, note document, allowlist or credential changes. Lessons 15-20 remain public. Existing pinned offline packages receive the updated loader after an explicit package update, following the app's existing update behavior.
 
 ## Proposed live sequence — requires separate approval
 

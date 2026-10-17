@@ -28,6 +28,22 @@ test('background revalidation retains context; failed authorization clears it', 
   allowed=false;await control.read({refresh:true});assert.equal(states.at(-1).state,'denied');assert.equal(states.at(-1).preserve,undefined);
 });
 
+test('duplicate requests and same-account notifications preserve the current study view',async()=>{
+  let calls=0,resolve,states=[];
+  const control=createTeacherController({online:()=>true,visible:()=>true,render:value=>states.push(value),load:()=>{calls++;return new Promise(done=>resolve=done);}});
+  assert.equal(control.account({uid:'approved'}),true);
+  const first=control.read(),second=control.read();
+  assert.equal(first,second);assert.equal(calls,1);
+  assert.equal(control.account({uid:'approved'}),false);
+  resolve({synthetic:true});await first;
+  const count=states.length;await control.read();
+  assert.equal(calls,1);assert.equal(states.length,count,'a resume or auth refresh does not rebuild loaded content');
+  assert.equal(control.account({uid:'other'}),true);assert.equal(states.at(-1).data,undefined);
+  const stale=control.read();assert.equal(calls,2);
+  control.account(null);resolve({synthetic:true});await stale;
+  assert.equal(states.at(-1).state,'signed-out');assert.equal(states.at(-1).data,undefined);
+});
+
 test('legacy question signatures become hashes without losing progress',async()=>{
   const draft={version:1,id:'synthetic-run',mode:'exam',questionIds:['synthetic-q'],signatures:['SYNTHETIC SECRET'],index:0,answers:{'synthetic-q':1},startedAt:'synthetic',revision:3};
   let value=JSON.stringify(draft);const storage={getItem:()=>value,setItem:(_,next)=>value=next,removeItem:()=>value=null};

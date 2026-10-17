@@ -13,26 +13,33 @@ export async function fetchTeacherNote({user, projectId, signal, fetchImpl = fet
 }
 
 export function createTeacherController({load, render, online = () => navigator.onLine, visible = () => !document.hidden, timeoutMs = 15000, leaseMs = 60000, refreshMs = 45000}) {
-  let user = null, generation = 0, request, expiry, refreshTimer, displayed = false;
+  let user = null, generation = 0, request, pending, expiry, refreshTimer, displayed = false, initialized = false;
   function clear(state) {
-    generation++; request?.abort(); request = null; clearTimeout(expiry); clearTimeout(refreshTimer); displayed = false;
+    generation++; request?.abort(); request = null; pending = null; clearTimeout(expiry); clearTimeout(refreshTimer); displayed = false;
     render({state, signedIn: Boolean(user)});
   }
   function idle() { return !online() ? 'offline' : user ? 'ready' : 'signed-out'; }
   const control = {
-    account(next) { user = next; clear(idle()); },
+    account(next) {
+      const changed = !initialized || user?.uid !== next?.uid;
+      initialized = true; user = next;
+      if (changed) clear(idle());
+      return changed;
+    },
     clear() { clear(idle()); },
     unavailable() { clear(online() ? 'error' : 'offline'); },
-    async read({refresh = false} = {}) {
+    read({refresh = false} = {}) {
+      if (request) return pending;
+      if (displayed && !refresh) return Promise.resolve();
       const preserve = refresh && displayed;
       if (!preserve) clear(idle());
-      if (!user || !online() || !visible()) return;
+      if (!user || !online() || !visible()) return Promise.resolve();
       const epoch = generation, identity = user;
       request = new AbortController();
-      const signal = request.signal;
+      const activeRequest = request, signal = request.signal;
       if (!preserve) render({state: 'loading', signedIn: true});
       const timeout = setTimeout(() => { if (epoch === generation) clear('error'); }, timeoutMs);
-      try {
+      pending = (async () => { try {
         const data = await load(identity, signal);
         if (epoch !== generation || signal.aborted || !online() || !visible()) return;
         render({state: 'loaded', signedIn: true, data: preserve ? undefined : data, preserve});
@@ -44,7 +51,11 @@ export function createTeacherController({load, render, online = () => navigator.
         refreshTimer = setTimeout(() => control.read({refresh:true}), refreshMs);
       } catch (error) {
         if (epoch === generation) clear(error.code === 'denied' ? 'denied' : error.code === 'missing' ? 'missing' : 'error');
-      } finally { clearTimeout(timeout); }
+      } finally {
+        clearTimeout(timeout);
+        if (request === activeRequest) { request = null; pending = null; }
+      } })();
+      return pending;
     }
   };
   return control;

@@ -25,7 +25,7 @@ try{
   await context.route('**/assets/firebase-sync.mjs',route=>route.fulfill({contentType:'text/javascript',body:'export const initialiseFirebaseSync=()=>{window.JPY5Sync={ready:true,localChanged(){},logout:async()=>window.testAccount(null)};};'}));
   const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
   const state=value=>page.waitForFunction(value=>document.querySelector('[data-teacher-section]')?.dataset.accessState===value,value);
-  const load=async file=>{console.log('Checking',file);await page.goto(base+file);await state('signed-out');assert.equal(await page.locator('iframe').count(),0);await page.locator('[data-teacher-login]').click();await state('ready');await page.locator('[data-teacher-load]').click();await state('loaded');return page.frameLocator('.teacher-grammar-frame');};
+  const load=async file=>{console.log('Checking',file);await page.goto(base+file);await state('signed-out');assert.equal(await page.locator('iframe').count(),0);await page.locator('[data-teacher-login]').click();await state('loaded');assert.equal(await page.locator('[data-teacher-load]').isHidden(),true);return page.frameLocator('.teacher-grammar-frame');};
   const noText=async()=>assert(!await page.evaluate(()=>JSON.stringify({...localStorage,...sessionStorage}).includes('SYNTHETIC QUESTION')||JSON.stringify({...localStorage,...sessionStorage}).includes('SYNTHETIC GRAMMAR')));
   for(const width of [390,810,1280]){
     await page.setViewportSize({width,height:900});
@@ -51,13 +51,13 @@ try{
     await page.evaluate(({prefix,questions})=>{const d=JSON.parse(localStorage.getItem(prefix+'activeRun'));d.signatures=d.questionIds.map(id=>{const q=questions.find(q=>q.id===id);return JSON.stringify([q.id,q.pattern,q.prompt,q.options,q.answer]);});localStorage.setItem(prefix+'activeRun',JSON.stringify(d));},{prefix,questions});
     frame=await load('chapter-14-quiz.html');await frame.locator('#continue-quiz').click();assert.deepEqual(await page.evaluate(prefix=>JSON.parse(localStorage.getItem(prefix+'activeRun')),prefix),before);await noText();
     await context.setOffline(true);await state('offline');assert.equal(await page.locator('iframe').count(),0);await context.setOffline(false);
-    await page.locator('[data-teacher-load]').click();await state('loaded');frame=page.frameLocator('.teacher-grammar-frame');await frame.locator('#continue-quiz').click();
+    await state('loaded');frame=page.frameLocator('.teacher-grammar-frame');await frame.locator('#continue-quiz').click();
     for(let index=1;index<questions.length;index++){
       if(index!==1)await frame.locator('[data-answer="0"]').click();await frame.locator('#next-question').click();
     }
     await frame.locator('#quiz-result').waitFor({state:'visible'});assert.equal(await page.evaluate(prefix=>localStorage.getItem(prefix+'activeRun'),prefix),null);await noText();
     frame=await load('chapter-14-history.html');await frame.locator('.history-card').first().waitFor();await frame.locator('.history-card details summary').first().click();assert.match(await frame.locator('.history-answer').first().textContent(),/SYNTHETIC QUESTION/);
-    responseCode=403;await page.locator('[data-teacher-load]').click();await state('denied');assert.equal(await page.locator('iframe').count(),0);responseCode=200;
+    responseCode=403;await page.evaluate(()=>window.testAccount('unapproved'));await state('denied');assert.equal(await page.locator('iframe').count(),0);responseCode=200;
     await page.evaluate(()=>localStorage.clear());
   }
   assert.deepEqual(errors,[]);console.log('Protected grammar browser checks passed: 4 original UIs, 3 widths, 2 themes, notes/dialogs, flashcards, quiz resume/completion/history, private draft migration, account switch/logout/offline/denied clearing and no persisted text.');

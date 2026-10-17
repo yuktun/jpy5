@@ -25,7 +25,7 @@ export function safeTeacherFragment(html, documentRef = document) {
 
 const messages = {
   'signed-out': '請用 Google 帳戶登入；只有管理員核准的帳戶可讀取老師文字。',
-  ready: '已登入。請按「讀取老師文字」驗證存取權限。',
+  ready: '已登入，正在驗證存取權限…',
   loading: '正在驗證權限及讀取老師文字…',
   loaded: '已通過存取驗證。保持連線時會自動重新驗證；文字不會存入離線套件。',
   denied: '此帳戶尚未獲核准。請聯絡管理員；登入本身不會取得權限。',
@@ -45,7 +45,10 @@ export async function mountTeacherAccess(root, serviceFactory = createAuthServic
       if (!preserve) { disposeFrame?.(); disposeFrame = null; content.replaceChildren(); }
       root.dataset.accessState = state;
       status.textContent = messages[state];
-      login.hidden = signedIn; read.hidden = !signedIn; logout.hidden = !signedIn;
+      login.hidden = signedIn;
+      read.hidden = !signedIn || !['error','missing','expired'].includes(state);
+      read.textContent = '重試讀取';
+      logout.hidden = !signedIn;
       login.disabled = !serviceReady;
       read.disabled = state === 'loading' || state === 'offline';
       if (data) {
@@ -54,12 +57,12 @@ export async function mountTeacherAccess(root, serviceFactory = createAuthServic
       }
     }
   });
-  const clear = () => serviceReady ? controller.clear() : controller.unavailable();
-  window.addEventListener('offline', clear);
-  window.addEventListener('online', clear);
-  window.addEventListener('pagehide', clear);
-  window.addEventListener('pageshow', clear);
-  document.addEventListener('visibilitychange', clear);
+  const resume=()=>{if(serviceReady&&!document.hidden&&navigator.onLine)void controller.read();};
+  window.addEventListener('offline',()=>controller.clear());
+  window.addEventListener('online',resume);
+  window.addEventListener('pagehide',()=>controller.clear());
+  window.addEventListener('pageshow',resume);
+  document.addEventListener('visibilitychange',()=>document.hidden?controller.clear():resume());
   root.addEventListener('keydown', event => { if (event.target.closest('button,summary,a')) event.stopPropagation(); });
   content.addEventListener('click', event => {
     const button = event.target.closest('[data-answer-toggle]');
@@ -79,14 +82,14 @@ export async function mountTeacherAccess(root, serviceFactory = createAuthServic
   try {
     const service = await serviceFactory();
     serviceReady = true;
-    service.subscribe(user => controller.account(user));
+    service.subscribe(user => {if(controller.account(user)&&user)void controller.read();});
     login.addEventListener('click', async () => {
       controller.clear(); login.disabled = true;
       try { await service.login(); } catch { controller.unavailable(); }
       finally { login.disabled = false; }
     });
     logout.addEventListener('click', async () => {
-      controller.clear();
+      controller.account(null);
       try { await service.logout(); } catch { controller.unavailable(); }
     });
   } catch { controller.unavailable(); login.hidden = true; }

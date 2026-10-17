@@ -32,19 +32,23 @@ try {
     await page.setViewportSize({width,height:900});await page.goto(base+file);
     const shell=page.locator('[data-teacher-section]');await page.waitForFunction(()=>document.querySelector('[data-teacher-section]')?.dataset.accessState==='signed-out');
     const before=reads;assert.equal(await shell.locator('[data-teacher-content]').textContent(),'');assert.equal(reads,before);
-    await shell.locator('[data-teacher-login]').click();await page.waitForFunction(()=>document.querySelector('[data-teacher-section]').dataset.accessState==='ready');
-    responseCode=403;await shell.locator('[data-teacher-load]').click();await page.waitForFunction(()=>document.querySelector('[data-teacher-section]').dataset.accessState==='denied');
+    responseCode=403;await shell.locator('[data-teacher-login]').click();await page.waitForFunction(()=>document.querySelector('[data-teacher-section]').dataset.accessState==='denied');
     assert.equal(await shell.locator('[data-teacher-content]').textContent(),'');
-    responseCode=200;await shell.locator('[data-teacher-load]').click();await page.waitForFunction(()=>document.querySelector('[data-teacher-section]').dataset.accessState==='loaded');
+    assert.equal(await shell.locator('[data-teacher-load]').isHidden(),true);
+    responseCode=200;await page.evaluate(()=>window.testAccount('approved-second'));await page.waitForFunction(()=>document.querySelector('[data-teacher-section]').dataset.accessState==='loaded');
     assert.match(await shell.textContent(),/SYNTHETIC PROTECTED TEXT/);assert.equal(await page.evaluate(()=>window.BAD),undefined);
     assert.equal(await shell.locator('script,img,[href^="javascript:"]').count(),0);
     await shell.locator('[data-answer-toggle]').click();assert.equal(await shell.locator('#synthetic-answer').isVisible(),true);
     for(const theme of ['light','dark']){await page.evaluate(theme=>document.documentElement.dataset.theme=theme,theme);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));}
-    await page.evaluate(()=>window.testAccount('other'));assert.equal(await shell.locator('[data-teacher-content]').textContent(),'');
-    await shell.locator('[data-teacher-load]').click();await page.waitForFunction(()=>document.querySelector('[data-teacher-section]').dataset.accessState==='loaded');
+    const loadedReads=reads;
+    await page.evaluate(()=>{window.testAccount('approved-second');window.dispatchEvent(new Event('pageshow'));window.dispatchEvent(new Event('online'));});
+    assert.equal(reads,loadedReads,'duplicate identity/lifecycle notifications do not reload loaded content');
+    responseCode=500;await page.evaluate(()=>window.testAccount('other'));await page.waitForFunction(()=>document.querySelector('[data-teacher-section]').dataset.accessState==='error');
+    assert.equal(await shell.locator('[data-teacher-content]').textContent(),'');
+    responseCode=200;await shell.locator('[data-teacher-load]').click();await page.waitForFunction(()=>document.querySelector('[data-teacher-section]').dataset.accessState==='loaded');
     await context.setOffline(true);await page.waitForFunction(()=>document.querySelector('[data-teacher-section]').dataset.accessState==='offline');
     assert.equal(await shell.locator('[data-teacher-content]').textContent(),'');await context.setOffline(false);
-    await shell.locator('[data-teacher-load]').click();await page.waitForFunction(()=>document.querySelector('[data-teacher-section]').dataset.accessState==='loaded');
+    await page.waitForFunction(()=>document.querySelector('[data-teacher-section]').dataset.accessState==='loaded');
     await shell.locator('[data-teacher-logout]').click();assert.equal(await shell.locator('[data-teacher-content]').textContent(),'');
     assert(!await page.evaluate(()=>JSON.stringify({...localStorage,...sessionStorage}).includes('SYNTHETIC PROTECTED TEXT')));
   }
