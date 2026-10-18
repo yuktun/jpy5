@@ -4,7 +4,7 @@
 defines the revised boundary and single-document public grammar layout. It
 supersedes the historical conservative grammar boundary described below.
 The revised scope makes lesson 14 review/Exercise public, including offline
-copies. The adverb manuscript stays protected; the non-secret grammar-panel
+copies. The user subsequently approved the lesson 14 adverb supplement as public too, with its native closed panel and optional offline copy. The non-secret grammar-panel
 demonstration appears only after a masked server authorization check. No
 Firebase or credential change is part of this static revision. The historical
 trial/deployment record below does not override this current content boundary.

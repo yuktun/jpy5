@@ -8,7 +8,7 @@ The local lesson 14 layout proposal restores general grammar, flashcards, quiz
 and history as public study tools, with collapsed teacher-note demonstrations whose
 non-secret dummy bodies display only after server authorization.
 The lesson 14 review/Exercise is public, including the optional offline package.
-The adverb manuscript supplement still requires online authorization.
+The collapsed lesson 14 adverb supplement is also public, including the optional offline package. The grammar teacher-note demonstration still requires server authorization.
 Review [the proposed disclosure boundary](LESSON14_LAYOUT_REVIEW.md) before release.
 Lesson 13 remains public. See
 [the trial boundary, local tests and approval checklist](TEACHER_ACCESS_TRIAL.md).
@@ -48,7 +48,7 @@ node scripts/test-offline-manifest.mjs
 node scripts/test-offline-mode.mjs
 ```
 
-The browser suite requires Playwright and an installed Edge (or set JPY5_BROWSER_CHANNEL). It uses isolated profiles, a local server and no live accounts. It covers the online default, download/retry/cancellation, persistent-profile cold start, all 73 pages offline, PDFs/external links, update detection and integrity failures, removal/re-enabling, partial eviction and scoped legacy-cache cleanup. The existing adverb and teacher-exercise update suites exercise actual migration from the previous automatic worker followed by explicit offline download; set JPY5_PREVIOUS_REF to the last pre-opt-in commit for those migration suites.
+The browser suite requires Playwright and an installed Edge (or set JPY5_BROWSER_CHANNEL). It uses isolated profiles, a local server and no live accounts. It covers the online default, download/retry/cancellation, persistent-profile cold start, all 73 pages offline, PDFs/external links, update detection and integrity failures, removal/re-enabling, partial eviction and scoped legacy-cache cleanup. The adverb update suite exercises explicit package update from published revision `2cb386d9fe158d8ccc18b6d43c3f09d93afd8fee`; override `JPY5_PREVIOUS_REF` only when testing another prior release. The older teacher-exercise migration suite uses the pre-opt-in worker.
 
 ## Structure
 
@@ -96,7 +96,7 @@ node scripts/test-pwa.mjs
 
 Every Vocabulary page includes **老師副詞 · 例句・語感・練習**. All eight lessons share the same responsive cards, Traditional Chinese meanings and translations, teacher-source disclosures, comparison notes, cross-lesson links and hidden practice answers. The full eight-page handout contributes 34 grouped cards, 73 example blocks and 50 practice prompts. Lesson 13 now uses the shared format too. Ambiguous questions and simplified source rules are qualified beside the relevant content; reference answers are labelled as learning additions.
 
-Edit `scripts/adverb-notes-data.mjs`, then run `node scripts/generate-adverb-notes.mjs` and `node scripts/generate-offline-manifest.mjs`. [Adverb source audit](ADVERB_SOURCE_AUDIT.md) records coverage and qualifications. Validate with `node scripts/test-adverb-notes.mjs`, `node scripts/test-lesson13-teacher.mjs`, `node scripts/test-pwa.mjs` and `node scripts/test-adverb-update.mjs` (set `JPY5_PREVIOUS_REF=HEAD` before committing). Existing vocabulary counts and saved progress are unchanged.
+Edit `scripts/adverb-notes-data.mjs`, then run `node scripts/generate-adverb-notes.mjs` and `node scripts/generate-offline-manifest.mjs`. [Adverb source audit](ADVERB_SOURCE_AUDIT.md) records coverage and qualifications. Validate with `node scripts/test-adverb-notes.mjs`, `node scripts/test-lesson13-teacher.mjs`, `node scripts/test-pwa.mjs` and `node scripts/test-adverb-update.mjs` (defaults to the preceding published adverb release). Existing vocabulary counts and saved progress are unchanged.
 
 ## Source
 

@@ -18,7 +18,12 @@ const server=createServer(async(req,res)=>{
 await new Promise(done=>server.listen(0,'127.0.0.1',done));
 const base=`http://127.0.0.1:${server.address().port}`;
 const browser=await chromium.launch({headless:true,channel:process.env.JPY5_BROWSER_CHANNEL||'msedge'});
-const context=await browser.newContext({serviceWorkers:'block',reducedMotion:'reduce'}), page=await context.newPage(), errors=[];
+const context=await browser.newContext({serviceWorkers:'block',reducedMotion:'reduce',hasTouch:true}), page=await context.newPage(), errors=[];
+let protectedReads=0;
+await context.route('https://**/*',route=>{
+  if(route.request().url().startsWith('https://firestore.googleapis.com/'))protectedReads++;
+  return route.abort();
+});
 page.on('pageerror',e=>errors.push(e.message));
 // Independent inventory from the eight scanned pages: grouped rows, example
 // blocks (a dialogue counts as one), and all numbered practice prompts.
@@ -31,10 +36,18 @@ try {
       const shell=page.locator('#teacher-adverbs');
       assert.equal(await shell.count(),1);
       if(Number(n)===14){
-        assert.equal(await shell.getAttribute('data-teacher-section'),'adverbs');
-        assert.equal(await shell.locator('[data-teacher-content]').textContent(),'');
-        assert.equal(await shell.locator('.teacher-adverb-card').count(),0);
-        continue;
+        assert.equal(await shell.evaluate(node=>node.tagName),'DETAILS');
+        assert.equal(await shell.evaluate(node=>node.open),false);
+        assert.equal(await shell.locator('[data-teacher-login],[data-teacher-content]').count(),0);
+        const summary=shell.locator(':scope > summary');
+        await summary.focus();await page.keyboard.press('Enter');
+        assert.equal(await shell.evaluate(node=>node.open),true);
+        await page.keyboard.press('Space');
+        assert.equal(await shell.evaluate(node=>node.open),false);
+        if(width===390)await summary.tap();else await summary.click();
+        assert.equal(await shell.evaluate(node=>node.open),true);
+        assert.match(await page.locator('.vocab-summary').innerText(),/208/);
+        assert.equal(await page.locator('script[src*="teacher-access"]').count(),0);
       }
       assert.equal(await shell.getAttribute('data-source-page'),String(Number(n)-12));
       assert.equal(await shell.locator('.teacher-adverb-card').count(),cards);
@@ -52,6 +65,10 @@ try {
       await page.locator('.adverb-jump').click();
       for(const button of await shell.locator('[data-answer-toggle]').all()) {
         const answer=page.locator(`#${await button.getAttribute('aria-controls')}`);
+        if(Number(n)===14&&width===390){
+          await button.tap();assert.equal(await answer.isVisible(),true);
+          await button.tap();assert.equal(await answer.isVisible(),false);
+        }
         await button.focus(); await page.keyboard.press('Enter');
         assert.equal(await answer.isVisible(),true);
         assert.equal(await button.getAttribute('aria-expanded'),'true');
@@ -83,5 +100,6 @@ try {
   const position=await page.locator('#teacher-adverbs').boundingBox();
   assert(position.y>=0&&position.y<250,'Cross-lesson link did not land at adverbs');
   assert.deepEqual(errors,[]);
+  assert.equal(protectedReads,0,'Public supplements requested protected content');
   console.log('All eight adverb sections passed source inventory, 3 widths × 2 themes, keyboard, answer disclosure, navigation and progress checks.');
 } finally {await browser.close();await new Promise(done=>server.close(done));}

@@ -4,12 +4,22 @@ import {readFile} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
 import vm from 'node:vm';
 import {lessons} from './adverb-notes-data.mjs';
-assert.deepEqual(lessons[14],{protected:true});
+assert.equal(lessons[14].cards.length,4);
+assert.equal(lessons[14].practices.reduce((n,p)=>n+p.questions.length,0),7);
 for(const file of ['chapter-14-vocabulary.html']){
   const source=await readFile(file,'utf8');
-  assert.match(source,/data-teacher-section=/);assert.match(source,/data-teacher-content><\/div>/);
-  assert.doesNotMatch(source,/data-answer-toggle|class="teacher-adverb-card"|data-word-meaning/);
+  assert.doesNotMatch(source,/data-teacher-section|data-teacher-content|teacher-access\.mjs/);
+  assert.equal((source.match(/class="teacher-adverb-card"/g)||[]).length,4);
+  assert.equal((source.match(/data-answer-toggle/g)||[]).length,2);
+  assert.match(source,/<details[^>]+id="teacher-adverbs"[^>]*>\s*<summary>老師副詞筆記<\/summary>/);
   assert.match(source,/https:\/\/drive\.google\.com\/file\//);
+  const published=execFileSync('git',['show',`2cb386d9fe158d8ccc18b6d43c3f09d93afd8fee:${file}`],{encoding:'utf8'});
+  const outsidePanel=html=>html.replace(/\r\n/g,'\n').replace(/<!-- BEGIN SHARED ADVERB NOTES -->[\s\S]*?<!-- END SHARED ADVERB NOTES -->/,'').replace('<script type="module" src="assets/teacher-access.mjs"></script>','');
+  assert.equal(outsidePanel(source),outsidePanel(published),'Unrelated vocabulary page content changed');
+}
+for(const file of ['firestore.rules','assets/teacher-access.mjs','assets/teacher-access-core.mjs','assets/teacher-demo.mjs','assets/teacher-progress-privacy.mjs','assets/firebase-sync.mjs']){
+  const published=execFileSync('git',['show',`2cb386d9fe158d8ccc18b6d43c3f09d93afd8fee:${file}`],{encoding:'utf8'});
+  assert.equal((await readFile(file,'utf8')).replace(/\r\n/g,'\n'),published.replace(/\r\n/g,'\n'),`${file}: authorization/progress changed outside approved scope`);
 }
 const publicReview=await readFile('chapter-14-review.html','utf8');
 assert.doesNotMatch(publicReview,/data-teacher-section|teacher-access\.mjs/);
@@ -36,21 +46,13 @@ const placeholder=await readFile('assets/ch14-teacher-placeholders.js','utf8');
 assert.match(placeholder,/data-teacher-demo-content><\/div>/);
 assert.doesNotMatch(placeholder,/Teacher\\'s notes here/);
 assert.match(await readFile('assets/teacher-demo.mjs','utf8'),/verifyTeacherAccess/);
-// Optional local check: no lesson-unique long fragment from the migration copy
-// may survive in a tracked public file. Shared exercise directions/labels also
-// occur in the unchanged lessons and are deliberately kept public there.
+// The approved public adverbs must match the ignored migration source exactly.
 let payload;try{payload=JSON.parse(await readFile('private-migration/lesson14.json','utf8'));}catch{}
 if(payload){
-  const otherLessons=(await Promise.all(tracked.filter(file=>/^chapter-(?:13|15|16|17|18|19|20)-.*\.html$/.test(file)).map(file=>readFile(file,'utf8')))).join('\n');
-  const general=JSON.parse(payload.grammarJson),generalStrings=[];
-  function strings(value){if(typeof value==='string')generalStrings.push(value);else if(value&&typeof value==='object')Object.values(value).forEach(strings);}
-  strings(general.data);strings(general.extras);
-  const fragments=[...new Set(payload.adverbs.replace(/<rt>.*?<\/rt>/g,'').split(/<[^>]*>/).map(text=>text.trim()).filter(text=>text.length>=18&&!otherLessons.includes(text)&&!publicReview.includes(text)&&!generalStrings.some(value=>value.includes(text))))];
-  for(const file of tracked.filter(file=>/\.(html|js|mjs|md|json)$/.test(file))){
-    const source=await readFile(file,'utf8');
-    assert(!fragments.some(text=>source.includes(text)),`${file}: protected fragment found (content withheld)`);
-  }
-  console.log(`Local migration check: ${fragments.length} lesson-unique long fragments absent from public files.`);
-  console.log('General grammar and the approved public review are parity-checked separately; teacher-only adverb text remains excluded.');
+  const html=await readFile('chapter-14-vocabulary.html','utf8');
+  const inner=html.match(/<div class="teacher-note-panel-body">([\s\S]*?)<\/div>\s*<\/details>\s*<!-- END SHARED ADVERB NOTES -->/)[1];
+  const normalize=s=>s.replace(/\r\n/g,'\n').trim();
+  assert.equal(normalize(inner),normalize(payload.adverbs),'Approved public adverbs differ from the migration source');
+  console.log('Public adverb migration parity passed; remaining grammar authorization is unchanged.');
 }
 console.log('Static boundary, unchanged public lesson content, Drive link and offline inventory checks passed.');
