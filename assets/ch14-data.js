@@ -1,1 +1,46 @@
-// Lesson 14 grammar data is available only through the authorized online loader.
+window.JPY5_DATA = (() => {
+  const patterns=[
+    {id:"sai",group:"読む・書く",title:"～際（に）・～際の",meaning:"……的時候／之際（較正式）",formation:"V 辭書形／た形 ＋ 際（は／に）｜N の＋際（は／に）｜際の＋N",note:"用於某事件或場合發生時，語氣較正式。來源註明否定形和形容詞例子較少。",contrast:"不要把它一概等同所有口語「とき」；本課例句多見於申請、通知、緊急情況等正式語境。",examples:[["これはパスポートを申請する際に必要です。","這是在申請護照時必需的資料。"],["カードを紛失した際はカード会社にすぐ知らせたほうがいい。","信用卡遺失時，最好立即通知信用卡公司。"],["非常の際はエレベーターを使わずに、階段をご利用ください。","緊急時請勿使用升降機，請使用樓梯。"],["外出の際、必ずかぎをかけてください。","外出時請務必鎖門。"],["私の国へお越しの際は、ぜひご連絡ください。","您來到我的國家時，請務必聯絡我。"]]},
+    {id:"toitta",group:"読む・書く",title:"～といった",meaning:"像……等的……",formation:"N、N＋といった＋N",note:"列舉具代表性的例子，並暗示還有其他同類項目。",contrast:"後面通常接概括這些例子的名詞。",examples:[["東京、ニューヨークといった大都市ではゴミ問題が深刻だ。","東京、紐約等大城市的垃圾問題很嚴重。"],["北京には故宮、万里の長城といった観光地がある。","北京有故宮、萬里長城等旅遊景點。"],["香港のセントラルにはグッチ、シャネルといった有名ブランド店がある。","香港中環有 Gucci、Chanel 等名牌店。"]]},
+    {id:"niwatatte",group:"読む・書く",title:"～にわたって／にわたり／にわたる",meaning:"跨越整個時間或空間範圍",formation:"N＋にわたって／にわたり｜N＋にわたる／にわたった＋N",note:"接期間、次數、場所範圍等，強調規模廣或時間長，常見於正式文章。",contrast:"修飾名詞時用「にわたる／にわたった」。",examples:[["チンさんは病気のため、2か月にわたって学校を休んだ。","陳先生因病連續兩個月沒有上學。"],["西日本全域にわたり、台風の被害を受けた。","整個西日本都遭受颱風災害。"],["母は5時間にわたる大手術を受けた。","母親接受了長達五小時的大手術。"],["広範囲にわたる海の汚染が深刻な問題になっている。","廣泛的海洋污染已成為嚴重問題。"]]},
+    {id:"uchini",group:"読む・書く",title:"～うちに",meaning:"在……期間逐漸變化／趁狀態未改變前",formation:"V 辭書形／ない形／ている＋うちに｜いA＋うちに｜なA な＋うちに｜N の＋うちに",note:"來源分兩義：期間中出現原先沒有的變化；或趁某狀態仍持續時做某事。",contrast:"「今日のうちに」表示在今天結束前；變化義常與「～ているうちに」一起使用。",examples:[["寒かったが、走っているうちに体が温かくなった。","雖然很冷，但跑著跑著身體暖起來了。"],["彼女の話を聞いているうちに、涙が出てきました。","聽著她說話，不知不覺流下淚來。"],["何度も話し合ううちに、互いの理解が深まった。","經過多次交談，彼此理解逐漸加深。"],["しばらく会わないうちに、日本語が上手になりました。","一段時間沒見，日語變流利了。"],["日本にいるうちに、一度京都を訪ねたいと思っている。","想趁仍在日本時去一次京都。"],["子どもが寝ているうちに、掃除をしてしまいましょう。","趁孩子睡著把清潔做完吧。"],["若いうちに、いろいろ経験したほうがいい。","年輕時最好多作各種體驗。"],["花がきれいなうちに、花見に行きたい。","想趁花還漂亮時去賞花。"],["今日のうちに、旅行の準備をしておこう。","今天之內先做好旅行準備。"],["冷めないうちに、どうぞ召し上がってください。","請趁熱享用。"]]},
+    {id:"nitotte",group:"読む・書く",title:"～にとって／～にとっての",meaning:"對……而言；從其立場評價",formation:"N＋にとって（は／も）｜N＋にとっての＋N",note:"多接人或組織，後面常是可能性或評價。",contrast:"來源特別指出不能接「賛成・反対・感謝する」等直接表態度的詞；「として」則表示資格、立場或名目。",examples:[["この写真はわたしにとって、何より大切なものです。","這張照片對我而言比甚麼都重要。"],["社員にとっては給料は高いほうがいい。","對員工而言，薪金高一點較好。"],["だれにとっても一番大切なのは健康です。","對任何人而言，健康都是最重要的。"],["環境問題は人間にとっての課題だ。","環境問題是人類面對的課題。"]]},
+    {id:"towa",group:"読む・書く",title:"～とは",meaning:"所謂……就是……（定義）",formation:"N＋とは＋ものだ／のことだ／ということだ／意味だ",note:"書面語，用來陳述事物的意義、性質或內容。",contrast:"口語常用「というのは」。",examples:[["パソコンとは個人で使える小型コンピューターのことだ。","所謂個人電腦，就是個人可使用的小型電腦。"],["『普遍的』とはどんな場合にも広く一般的に当てはまるという意味だ。","所謂「普遍」，是指廣泛適用於任何情況。"]]},
+    {id:"nioite",group:"読む・書く",title:"～において／～における",meaning:"在……地點、時代或方面",formation:"N＋において（は／も）｜N＋における＋N",note:"相當於較正式的「で」，可表示地點、時間或範疇。",contrast:"修飾名詞時用「における」。",examples:[["現代においてはコンピューターは不可欠なものである。","在現代，電腦是不可或缺的。"],["わが国においても、青少年犯罪が増えている。","在我國，青少年犯罪也正在增加。"],["それは私の人生における最良の日であった。","那是我人生中最美好的一天。"]]},
+    {id:"wakeda",group:"読む・書く",title:"～わけだ／～わけである",meaning:"難怪／所以理所當然是……",formation:"V・いA 普通形＋わけだ｜なA・N＋な／である＋わけだ",note:"根據已知理由得出自然、合乎道理的結論，常與「だから・から・ので」呼應。",contrast:"不是單純說明原因，而是表示從原因推導出的當然結論。",examples:[["ジョンさんはお母さんが日本人ですから、日本語が上手なわけです。","John 的母親是日本人，難怪他的日語很好。"],["暗いわけだ。蛍光灯が1本切れている。","難怪這麼暗，原來有一支光管壞了。"],["このスケジュール表を見ると、京都には1泊しかしないから水曜日の午前中には東京へ戻って来られるわけだ。","看這個行程，在京都只住一晚，所以星期三上午理應可回到東京。"],["もともとファッションモデルだったんだから、スタイルがいいわけだ。","原來她本來是時裝模特兒，難怪身材好。"]]},
+    {id:"nodewanaidarouka",group:"読む・書く",title:"～のではないだろうか",meaning:"是不是……呢；會不會……呢",formation:"V・いA 普通形＋のではないだろうか｜なA・N＋な＋のではないだろうか",note:"以較委婉、較低確信度提出推測或判斷；禮貌形是「のではないでしょうか」。",contrast:"相關形式還有「～ではないかと思う」和「～ではないか」；會話中也可用來向聽者確認自己的推測。",examples:[["この本は子どもにはまだ難しいのではないだろうか。","這本書對小孩來說是不是仍太難呢？"],["不況は長引くのではないだろうか。","經濟不景氣會不會持續下去呢？"]]},
+    {id:"kke",group:"話す・聞く",title:"～っけ",meaning:"……來著？（記不清而確認）",formation:"V た＋っけ｜いA かった＋っけ｜なA・N＋だ（った）っけ｜V・いA 普通形＋んだ（った）っけ｜N・なA だ→な＋んだ（った）っけ",note:"說話者記不清楚，向自己或對方確認，屬口語。",contrast:"不適合正式書面語。",examples:[["あの人、鈴木先生だっけ？","那個人是鈴木老師來著？"],["加藤さん、これ嫌いだったっけ？","加藤，你是不是不喜歡這個來著？"],["この前の日曜日、寒かったっけ？","上星期日很冷來著？"],["明日、田中さんも来るんだっけ？","明天田中也會來，是吧？"],["来週はクイズだったっけ？","下星期有測驗來著？"]]},
+    {id:"ge",group:"話す・聞く",title:"～げ（な）",meaning:"顯得……；帶著……的樣子",formation:"V ます形語幹／いA 去い／なA 語幹＋げ（に／な）",note:"描述從外表看得出的神情或樣子。",contrast:"來源例子包括「不満ありげ」；不是直接斷言當事人的內在感受。",examples:[["陽子さんは楽しげに初めての海外旅行の話をしてくれた。","陽子顯得很開心地說起第一次海外旅行。"],["高い熱がある広志くんは私と話すのも苦しげだった。","發高燒的廣志連跟我說話時也顯得很辛苦。"],["会議のあと、彼は不満ありげな顔をしていた。","會議後，他露出看來不滿的表情。"],["子どもは悲しげな顔をしていた。","孩子露出悲傷的神情。"]]}
+  ];
+  const qs=[]; const choices=p=>patterns.filter(x=>x.id!==p.id).slice(0,3).map(x=>x.title);
+  patterns.forEach(p=>{
+    qs.push({id:`${p.id}-meaning`,pattern:p.id,kind:"meaning",prompt:`「${p.title}」最接近哪個意思？`,options:[p.meaning,...choices(p)],answer:0,explanation:p.note});
+    qs.push({id:`${p.id}-formation`,pattern:p.id,kind:"formation",prompt:`選出「${p.title}」的正確接續。`,options:[p.formation,"只可接動詞ます形","只可接名詞＋で","沒有固定接續"],answer:0,explanation:p.formation});
+    qs.push({id:`${p.id}-source`,pattern:p.id,kind:"source",prompt:`哪一句是來源例句？`,options:[p.examples[0][0],...patterns.filter(x=>x.id!==p.id).slice(0,3).map(x=>x.examples[0][0])],answer:0,explanation:p.examples[0][1]});
+  });
+  return {patterns,questions:qs};
+})();
+
+// Preserve hash-only signatures so existing device-local quiz drafts resume.
+window.JPY5ProtectedLesson="14";
+window.JPY5QuestionSignatures={"sai-meaning":"sha256:0033f9e7c4745aadfc8d7b26757db3336dc8548f680571fc5c5febb41ac12eba","sai-formation":"sha256:6fdbb8476124e6f66ec64805f16f9c20f7c63194e5f31b9d177b060eba221ba0","sai-source":"sha256:a4f6bf053d5f70ab4cb1f3a856f5ebd6dee42020f3de412baca8a08eb02b2f5b","toitta-meaning":"sha256:cae6ba14d02b909ff117735d62de8e6fc217b72fca6eb9250f9088dfdf884d0a","toitta-formation":"sha256:df8cfc6fdd1ff2ed2b732e2dfa2aeebbc43d16efaf76dab5d9ca6fd11b2451c5","toitta-source":"sha256:e68e4096dcfa39f4f7145ac99c83be165e8c6ed5ca6f63d942db1dfb145dea10","niwatatte-meaning":"sha256:a6d3796ed24c3a487911afcaf2671bfe3ff28d3b9e6b36d845e23f1ca7ea18db","niwatatte-formation":"sha256:180869562ee42ab0ef541da3d9414c9fd6f9a63d0d4f7fbc06908035a3216b32","niwatatte-source":"sha256:aa634bbbe36cfb8cbb11810760f0617f5e8a3e731bdd2ee483403c32ff4d6291","uchini-meaning":"sha256:ba17b575eda7f72b002aa92464064e28d26d495ab0c6e766140d3ffcbd9ba1d9","uchini-formation":"sha256:e817d2ce51e3625c56742600d3d3d6d776b8b6669b2a564a6fdada229590499f","uchini-source":"sha256:f1744f93dc14def63d25bbf342a7a5c599c75e7dc6e132d1d16b62c5c78dd721","nitotte-meaning":"sha256:b80139203a490c81d57a6994b23af93dbe95490736d83392d827289154032f51","nitotte-formation":"sha256:a708b6b3e12484e28785369626dc6fb109bbb7ccad13caede0eb023a3a6940cf","nitotte-source":"sha256:887d7f61f83a0e6237a4ee7fbaa1b7f33bea9298667d01101b1912b845049496","towa-meaning":"sha256:056711e0b9a7d575d98c9bab6d8789ece3f75b29ca0dc72d395566cfc8d4781d","towa-formation":"sha256:bdd9003db4295aad081890f53b861a178bd37338efdae9eb47d8c665082878ff","towa-source":"sha256:67e82911c47f42bd68f1f4f57bbf116abba47e3441a10c76f00748d5b1704695","nioite-meaning":"sha256:fe2d1c213728264b427107942c5ca9af1b3e86d8a71b709094a6ae1a4ddaeeb8","nioite-formation":"sha256:05715d536028e99c97793249559baffe5e9b2ce7de0af3c71b774e90d9a75477","nioite-source":"sha256:958af0f427a320d69e06539745b66c06357c4f3c1c79fbf16134fdebd5065f51","wakeda-meaning":"sha256:c60b641bbee4e2c0e7e627bcbba44623cb0936bd7f2dafe758aa17410b106955","wakeda-formation":"sha256:7d1876c3cc52367377d09d2c326c0f29914ae5a13136cfa51fe591e4471825c0","wakeda-source":"sha256:91ca79a60030ec17ca4c46f11425b9a62e03fcc8bb2c12e961888c968ea032cb","nodewanaidarouka-meaning":"sha256:3a26bdbb77fb11bb52062a6af4a5abd7f9efb2601f945631953f2ef833922f6b","nodewanaidarouka-formation":"sha256:7464a4b28d88fccbf2b2f49105548e594ab07df38ddabac28e2f8a09c7a70521","nodewanaidarouka-source":"sha256:647f93001b4d5f9e5e6a0940ff36ade3e4f24cf6633f2fe97b6e8726df54abfa","kke-meaning":"sha256:655f3f8505fd7aefba97df9ab9bd9816e60357ef85ef764694f945df8a2f840c","kke-formation":"sha256:6492c8a73f46058df67bad4822d864d7bf60472f3467a18e90ce6b141a1c8b04","kke-source":"sha256:34e15b32ac89d02beb3054f3b06da75335db40175643a5ce0aa53ef9c355f00b","ge-meaning":"sha256:9eb235d7febd41dd0a2fec103eecd476bebd72b774de9ccaebb8cafdcf9aab82","ge-formation":"sha256:f4124a9df3c0ad0a967324fd6529fea19b8356dc35be9faaff300bec70361a07","ge-source":"sha256:9dbb2587407ad8d37d5272ab408f0854265a18cf1b05a6456afbd56d85d3092c"};
+
+// Migrate a compatible pre-protection draft before the ordinary quiz starts.
+// Only the signature representation changes; answers, ordering and IDs stay.
+(() => {
+  try {
+    const key='jpy5.chapter14.quiz.activeRun',raw=localStorage.getItem(key);
+    if(!raw)return;
+    const draft=JSON.parse(raw);
+    if(!Array.isArray(draft?.signatures)||!Array.isArray(draft.questionIds))return;
+    let changed=false;
+    const signatures=draft.signatures.map((value,index)=>{
+      const question=window.JPY5_DATA.questions.find(item=>item.id===draft.questionIds[index]);
+      if(question&&value===JSON.stringify([question.id,question.pattern,question.prompt,question.options,question.answer])){
+        changed=true;return window.JPY5QuestionSignatures[question.id];
+      }
+      return value;
+    });
+    if(changed&&localStorage.getItem(key)===raw)localStorage.setItem(key,JSON.stringify({...draft,signatures}));
+  } catch { /* Corrupt or unavailable storage remains handled by quiz progress. */ }
+})();

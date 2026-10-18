@@ -12,9 +12,6 @@ const base=`http://127.0.0.1:${server.address().port}`,browser=await chromium.la
 let checks=0;
 try{
   for(let lesson=13;lesson<=20;lesson++){
-    // Lesson 14 uses the authenticated frame and is exercised by
-    // test-teacher-grammar-browser.mjs with synthetic protected data.
-    if(lesson===14)continue;
     const context=await browser.newContext({serviceWorkers:'block'}),page=await context.newPage(),errors=[];
     await context.route('**/*',route=>route.request().url().startsWith(base)?route.continue():route.abort());
     page.on('pageerror',error=>errors.push(error.message));

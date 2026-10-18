@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {existsSync} from 'node:fs';
 import {readFile} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
 import vm from 'node:vm';
@@ -10,47 +11,37 @@ for(const file of ['chapter-14-review.html','chapter-14-vocabulary.html']){
   assert.doesNotMatch(source,/data-answer-toggle|class="teacher-adverb-card"|data-word-meaning/);
   assert.match(source,/https:\/\/drive\.google\.com\/file\//);
 }
-const tracked=execFileSync('git',['ls-files'],{encoding:'utf8'}).trim().split('\n');
+const tracked=execFileSync('git',['ls-files'],{encoding:'utf8'}).trim().split('\n').filter(file=>existsSync(file));
 assert(!tracked.some(file=>file.startsWith('private-migration/')));
 const sandbox={self:{}};vm.runInNewContext(await readFile('assets/offline-assets.js','utf8'),sandbox);
 assert(!sandbox.self.JPY5_OFFLINE_MANIFEST.assets.some(file=>/private-migration|teacher.*\.json|^scripts\//.test(file)));
 // Lesson 13 and general lesson 14 content must remain byte-for-byte unchanged.
 const base='8a4a519af833679e37d334a9aa20a7b86be7d27c';
-for(const file of tracked.filter(file=>/^chapter-13|^assets\/(?:ch13|ch14|data\.js|grammar-extra-data\.js|firebase-sync\.mjs)/.test(file)&&!['assets/ch14-data.js','assets/ch14-grammar-extra-data.js'].includes(file))){
+for(const file of tracked.filter(file=>/^chapter-13|^assets\/(?:ch13|ch14|data\.js|grammar-extra-data\.js|firebase-sync\.mjs)/.test(file)&&!['assets/ch14-data.js','assets/ch14-grammar-extra-data.js','assets/ch14-teacher-placeholders.js'].includes(file))){
   const original=execFileSync('git',['show',`${base}:${file}`],{encoding:'utf8'}).replace(/\r\n/g,'\n');
   assert.equal((await readFile(file,'utf8')).replace(/\r\n/g,'\n'),original,`${file}: unexpected public-content change`);
 }
 for(const page of ['notes','flashcards','quiz','history']){
   const source=await readFile(`chapter-14-${page}.html`,'utf8');
-  assert.match(source,/data-teacher-section="grammar"/);
-  assert.doesNotMatch(source,/<script[^>]*src="assets\/(ch14-data|ch14-grammar-extra-data|grammar-ruby|flashcards|notes|history|ch14-quiz|quiz-progress)\.js/);
+  assert.match(source,/<script[^>]*src="assets\/ch14-data\.js/);
+  assert.doesNotMatch(source,/data-teacher-section="grammar"|data-grammar-template|teacher-grammar-frame|module-lesson-switcher/);
 }
-for(const file of ['assets/ch14-data.js','assets/ch14-grammar-extra-data.js'])assert.doesNotMatch(await readFile(file,'utf8'),/JPY5_DATA|JPY5_GRAMMAR_EXTRA|patterns:|grammarIds/);
+assert.match(await readFile('assets/ch14-teacher-placeholders.js','utf8'),/Teacher\\'s notes here/);
 // Optional local check: no lesson-unique long fragment from the migration copy
 // may survive in a tracked public file. Shared exercise directions/labels also
 // occur in the unchanged lessons and are deliberately kept public there.
 let payload;try{payload=JSON.parse(await readFile('private-migration/lesson14.json','utf8'));}catch{}
 if(payload){
   const otherLessons=(await Promise.all(tracked.filter(file=>/^chapter-(?:13|15|16|17|18|19|20)-.*\.html$/.test(file)).map(file=>readFile(file,'utf8')))).join('\n');
-  const fragments=[...new Set((payload.exercises+payload.adverbs).replace(/<rt>.*?<\/rt>/g,'').split(/<[^>]*>/).map(text=>text.trim()).filter(text=>text.length>=18&&!otherLessons.includes(text)))];
+  const general=JSON.parse(payload.grammarJson),generalStrings=[];
+  function strings(value){if(typeof value==='string')generalStrings.push(value);else if(value&&typeof value==='object')Object.values(value).forEach(strings);}
+  strings(general.data);strings(general.extras);
+  const fragments=[...new Set((payload.exercises+payload.adverbs).replace(/<rt>.*?<\/rt>/g,'').split(/<[^>]*>/).map(text=>text.trim()).filter(text=>text.length>=18&&!otherLessons.includes(text)&&!generalStrings.some(value=>value.includes(text))))];
   for(const file of tracked.filter(file=>/\.(html|js|mjs|md|json)$/.test(file))){
     const source=await readFile(file,'utf8');
     assert(!fragments.some(text=>source.includes(text)),`${file}: protected fragment found (content withheld)`);
   }
   console.log(`Local migration check: ${fragments.length} lesson-unique long fragments absent from public files.`);
-  const grammar=JSON.parse(payload.grammarJson),values=[];
-  function collect(value,path=[]){if(typeof value==='string'&&value.length>=12)values.push({value,path:path.join('.')});else if(value&&typeof value==='object')Object.entries(value).forEach(([key,item])=>collect(item,[...path,key]));}
-  collect(grammar.data,['data']);collect(grammar.extras,['extras']);collect(grammar.ruby,['ruby']);
-  // Existing shared grammar tokens and one independently public lesson 15
-  // example are disclosed in the runbook. Do not republish the text here.
-  const shared={
-    'assets/ch15-grammar-extra-data.js':new Set([grammar.extras[6].examples[0][0]]),
-    'assets/grammar-ruby.js':new Set([grammar.data.patterns[8].id,grammar.extras[5].formation[0]])
-  };
-  for(const file of tracked.filter(file=>/\.(html|js|mjs|md|json)$/.test(file))){
-    const source=await readFile(file,'utf8');
-    for(const entry of values)assert(!source.includes(entry.value)||shared[file]?.has(entry.value),`${file}: protected grammar fragment at ${entry.path} (content withheld)`);
-  }
-  console.log(`Local grammar audit: ${values.length} data, quiz, extra and ruby strings checked; only documented shared tokens/example allowed.`);
+  console.log('General grammar restoration is parity-checked separately; teacher-only handout text remains excluded.');
 }
 console.log('Static boundary, unchanged public lesson content, Drive link and offline inventory checks passed.');

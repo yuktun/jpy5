@@ -1,5 +1,11 @@
 # Lesson 14 teacher-text trial
 
+**Local layout follow-up:** [LESSON14_LAYOUT_REVIEW.md](LESSON14_LAYOUT_REVIEW.md)
+proposes a revised boundary and single-document public grammar layout. Its
+explicit disclosure review supersedes the conservative grammar boundary below
+only if that static revision is approved for publication. Teacher handouts stay
+protected; no Firebase or credential change is part of that proposal.
+
 Local implementation only. No live rules, content, identities, grants or hosting have been changed. Base: `8a4a519af833679e37d334a9aa20a7b86be7d27c`, verified against a fresh clone of `yuktun/jpy5` main. No repository AGENTS.md or applicable engineering skill was available in this checkout/catalog; README contributor guidance was followed.
 
 **Deployment hold:** do not deploy the rules from `5160c02`. The current tracked

@@ -4,4 +4,10 @@
 [data-teacher-content] table { max-width: 100%; }
 [data-teacher-word-help] { padding: .75rem; border: 1px solid currentColor; border-radius: .5rem; }
 @media print { [data-teacher-content] { display: none; } }
-.teacher-grammar-frame { display:block; width:100%; height:calc(100dvh - 12rem); min-height:500px; border:0; background:transparent; }
+.teacher-note-panel { padding:0; }
+.teacher-note-panel > summary { padding:1rem 1.25rem; cursor:pointer; font-weight:700; }
+.teacher-note-panel-body { padding:0 1.25rem 1.25rem; }
+.teacher-note-panel-body > [data-teacher-status] { font-size:.875rem; }
+.teacher-grammar-placeholder { margin-top:1rem; padding-top:.75rem; border-top:1px solid var(--line); }
+.teacher-grammar-placeholder > summary { cursor:pointer; font-weight:600; }
+.teacher-grammar-placeholder > p { color:var(--muted); }

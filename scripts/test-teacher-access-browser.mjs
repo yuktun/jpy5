@@ -31,6 +31,10 @@ try {
   for(const width of [390,810,1280])for(const file of ['chapter-14-review.html','chapter-14-vocabulary.html']){
     await page.setViewportSize({width,height:900});await page.goto(base+file);
     const shell=page.locator('[data-teacher-section]');await page.waitForFunction(()=>document.querySelector('[data-teacher-section]')?.dataset.accessState==='signed-out');
+    assert.equal(await shell.evaluate(node=>node.tagName),'DETAILS');
+    assert.equal(await shell.evaluate(node=>node.open),false);
+    assert.equal(await shell.locator('[data-teacher-logout]').count(),0);
+    await shell.locator(':scope > summary').click();
     const before=reads;assert.equal(await shell.locator('[data-teacher-content]').textContent(),'');assert.equal(reads,before);
     responseCode=403;await shell.locator('[data-teacher-login]').click();await page.waitForFunction(()=>document.querySelector('[data-teacher-section]').dataset.accessState==='denied');
     assert.equal(await shell.locator('[data-teacher-content]').textContent(),'');
@@ -49,7 +53,7 @@ try {
     await context.setOffline(true);await page.waitForFunction(()=>document.querySelector('[data-teacher-section]').dataset.accessState==='offline');
     assert.equal(await shell.locator('[data-teacher-content]').textContent(),'');await context.setOffline(false);
     await page.waitForFunction(()=>document.querySelector('[data-teacher-section]').dataset.accessState==='loaded');
-    await shell.locator('[data-teacher-logout]').click();assert.equal(await shell.locator('[data-teacher-content]').textContent(),'');
+    await page.evaluate(()=>window.testAccount(null));assert.equal(await shell.locator('[data-teacher-content]').textContent(),'');
     assert(!await page.evaluate(()=>JSON.stringify({...localStorage,...sessionStorage}).includes('SYNTHETIC PROTECTED TEXT')));
   }
   // Exercise security retirement using synthetic cached plaintext only.
@@ -76,7 +80,8 @@ try {
   await context.setOffline(true);
   for(const file of ['chapter-14-review.html','chapter-14-vocabulary.html','chapter-14-notes.html','chapter-14-flashcards.html','chapter-14-quiz.html','chapter-14-history.html','chapter-13-notes.html','chapter-13-vocabulary.html']){
     await page.goto(base+file);assert(!await page.locator('body').textContent().then(text=>text.includes('SYNTHETIC PROTECTED TEXT')));
-    if(file.includes('14'))assert.equal(await page.locator('[data-teacher-content]').textContent(),'');
+    if(/chapter-14-(review|vocabulary)/.test(file))assert.equal(await page.locator('[data-teacher-content]').textContent(),'');
+    else if(file.includes('14'))assert.equal(await page.locator('main').count(),1);
     else { assert.equal(await page.locator('main').count(),1,`${file}: public page should remain available; retained sentinel=${(await page.locator('body').textContent()).includes('PUBLIC RETAINED')}; url=${page.url()}`); assert(await page.locator('main').textContent()); }
   }
   assert.deepEqual(errors,[]);

@@ -4,8 +4,10 @@ A mobile-friendly study site for **みんなの日本語 中級Ⅱ**. Lessons 13
 
 ## Run locally
 
-The lesson 14 teacher-text trial protects worksheet/adverb sections and the
-original grammar notes, flashcards, quiz and history behind online authorization.
+The local lesson 14 layout proposal restores general grammar, flashcards, quiz
+and history as public study tools, with collapsed placeholder teacher notes.
+Actual worksheet/adverb supplements still require online authorization.
+Review [the proposed disclosure boundary](LESSON14_LAYOUT_REVIEW.md) before release.
 Lesson 13 remains public. See
 [the trial boundary, local tests and approval checklist](TEACHER_ACCESS_TRIAL.md).
 When ignored migration material is present, use `node scripts/serve-public.mjs`

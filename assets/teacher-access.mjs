@@ -1,6 +1,5 @@
 import {firebaseConfig} from './firebase-config.mjs';
 import {createTeacherController, fetchTeacherNote} from './teacher-access-core.mjs';
-import {mountGrammarFrame} from './teacher-grammar-frame.mjs';
 import {teacherDraftReady} from './teacher-progress-privacy.mjs';
 
 // Reconstruct only inert, permitted markup. Never execute stored HTML as code.
@@ -38,23 +37,21 @@ const messages = {
 export async function mountTeacherAccess(root, serviceFactory = createAuthService) {
   const content = root.querySelector('[data-teacher-content]'), status = root.querySelector('[data-teacher-status]');
   const login = root.querySelector('[data-teacher-login]'), read = root.querySelector('[data-teacher-load]'), logout = root.querySelector('[data-teacher-logout]');
-  let serviceReady = false, disposeFrame;
+  let serviceReady = false;
   const controller = createTeacherController({
     load: async (user, signal) => { await teacherDraftReady; return fetchTeacherNote({user, signal, projectId: firebaseConfig.projectId}); },
     render({state, signedIn, data, preserve}) {
-      if (!preserve) { disposeFrame?.(); disposeFrame = null; content.replaceChildren(); }
+      if (!preserve) content.replaceChildren();
       root.dataset.accessState = state;
       status.textContent = messages[state];
       login.hidden = signedIn;
       read.hidden = !signedIn || !['error','missing','expired'].includes(state);
       read.textContent = '重試讀取';
-      logout.hidden = !signedIn;
+      if(logout)logout.hidden = !signedIn;
+      status.hidden = state === 'loaded';
       login.disabled = !serviceReady;
       read.disabled = state === 'loading' || state === 'offline';
-      if (data) {
-        if (root.dataset.teacherSection === 'grammar') disposeFrame = mountGrammarFrame(root,data.grammar);
-        else content.append(safeTeacherFragment(data[root.dataset.teacherSection]));
-      }
+      if (data) content.append(safeTeacherFragment(data[root.dataset.teacherSection]));
     }
   });
   const resume=()=>{if(serviceReady&&!document.hidden&&navigator.onLine)void controller.read();};
@@ -88,7 +85,7 @@ export async function mountTeacherAccess(root, serviceFactory = createAuthServic
       try { await service.login(); } catch { controller.unavailable(); }
       finally { login.disabled = false; }
     });
-    logout.addEventListener('click', async () => {
+    logout?.addEventListener('click', async () => {
       controller.account(null);
       try { await service.logout(); } catch { controller.unavailable(); }
     });
