@@ -11,8 +11,9 @@ vm.runInNewContext(await readFile('assets/ch13-textbook-exercises.js','utf8'),co
 const groups=contextData.window.JPY5_TEXTBOOK_EXERCISES.groups;
 const counts={tate:1,tatoe:1,tarishinai:1,hodo:6,ndatte:1,nagara:6,tsumari:3,yone:2};
 const questions=Object.values(groups).flatMap(parts=>parts.flatMap(part=>part.items));
+const lesson13QuestionIds=new Set(questions.map(q=>q.id));
 assert.equal(questions.length,21);
-assert.equal(new Set(questions.map(q=>q.id)).size,21);
+assert.equal(lesson13QuestionIds.size,21);
 assert.equal(questions.filter(q=>q.personal).length,2);
 for(const [id,count] of Object.entries(counts)) assert.equal(groups[id].flatMap(part=>part.items).length,count,id);
 for(const part of Object.values(groups).flat()) assert.ok([9,10,11,12].includes(part.page));
@@ -107,8 +108,14 @@ try {
     assert.equal(await page.locator('.textbook-answer[open]').count(),0);
     assert.equal(await page.locator('.textbook-practice[open]').count(),0);
     assert.equal(await page.evaluate(()=>JSON.stringify({...localStorage})),before);
-    await page.goto(base+'chapter-14-notes.html');
-    assert.equal(await page.locator('.textbook-practice').count(),0,'Lesson 13 content leaked to another lesson');
+    for(const lesson of [14,15,16]) {
+      await page.goto(base+`chapter-${lesson}-notes.html`);
+      await page.waitForSelector('[data-textbook-question]',{state:'attached'});
+      assert.equal(await page.locator('script[src*="assets/ch13-textbook-exercises.js"]').count(),0,`Lesson 13 exercise script loaded in lesson ${lesson}`);
+      assert.equal(await page.evaluate(()=>window.JPY5_TEXTBOOK_EXERCISE_DATA?.lesson),lesson,`Wrong textbook dataset in lesson ${lesson}`);
+      const loadedQuestionIds=await page.locator('[data-textbook-question]').evaluateAll(nodes=>nodes.map(node=>node.dataset.textbookQuestion));
+      assert.ok(loadedQuestionIds.every(id=>!lesson13QuestionIds.has(id)),`Lesson 13 question IDs leaked to lesson ${lesson}`);
+    }
   }
   assert.deepEqual(pdfRequests,[]);assert.deepEqual(errors,[]);
   if(!process.env.JPY5_LIVE_URL) {

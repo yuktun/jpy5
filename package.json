@@ -8,7 +8,10 @@
     "test:teacher-grammar": "node scripts/test-teacher-grammar-browser.mjs",
     "test:teacher-autoload": "node scripts/test-teacher-autoload.mjs",
     "test:teacher-demo": "node scripts/test-teacher-demo.mjs",
-    "test:lesson14-review": "node scripts/test-lesson14-review.mjs"
+    "test:lesson14-review": "node scripts/test-lesson14-review.mjs",
+    "test:textbook-renderer": "node scripts/test-textbook-exercises-renderer.mjs",
+    "test:textbook-14-20": "node scripts/test-textbook-exercises-14-20.mjs",
+    "test:textbook-offline": "node scripts/test-textbook-exercises-offline.mjs"
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "4.0.1",

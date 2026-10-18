@@ -73,7 +73,11 @@ Teacher content and PDF page references live in `assets/ch13-teacher-additions.j
 
 All 35 added notes and the writing task were checked against their sources on 2026-10-13. [Lesson 13 source audit](LESSON13_SOURCE_AUDIT.md) records corrections, qualifications, and independent dictionary/research references. The modules label these as `校對補充`, distinguish a teacher's contextual interpretation from a general grammar rule, and display source cautions beside simplified reading questions and answers.
 
-### Teacher exercises for Lessons 14–20
+### Textbook grammar exercises for Lessons 14-20
+
+Grammar Notes now place 199 textbook response items in 110 collapsed sections beside 69 grammar groups, with separate hidden answers, hiragana ruby, printed exercise models, and source-page links. Fixed official answers, answer-book examples, and fourteen omitted personal-response keys are distinguished. Lesson 17's source-only 上（じょう） check appears in an unscored appendix; existing quiz banks and saved progress are preserved. The public text/code can be saved in the optional offline package; linked PDFs require internet and private source scans are excluded. See [the textbook exercise audit](TEXTBOOK_EXERCISES_14_20_AUDIT.md) for per-lesson coverage, answer policy, and completed local validation. Run `npm run test:textbook-renderer`, `npm run test:textbook-14-20`, and `npm run test:textbook-offline` alongside the existing Lesson 13 and offline checks. All 199 items passed integration and fresh-tab offline checks; existing quiz, offline, and protected-content regressions also passed. These results are local and unpublished; no Firebase, authentication, or protection settings were changed.
+
+### Teacher exercises for Lessons 14-20
 
 Each lesson's Review page includes **老師 Exercise**, following Lesson 13's worksheet layout. The seven teacher PDFs (41 pages) are transcribed in source order with hidden answers, labelled suggested responses for open questions, and contextual Traditional Chinese word-bank help. These exercises do not change scores or saved progress. Each page links its source PDF and identifies source inconsistencies beside the affected questions.
 
