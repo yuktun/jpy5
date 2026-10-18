@@ -7,7 +7,8 @@
     "test:teacher-browser": "node scripts/test-teacher-access-browser.mjs",
     "test:teacher-grammar": "node scripts/test-teacher-grammar-browser.mjs",
     "test:teacher-autoload": "node scripts/test-teacher-autoload.mjs",
-    "test:teacher-demo": "node scripts/test-teacher-demo.mjs"
+    "test:teacher-demo": "node scripts/test-teacher-demo.mjs",
+    "test:lesson14-review": "node scripts/test-lesson14-review.mjs"
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "4.0.1",

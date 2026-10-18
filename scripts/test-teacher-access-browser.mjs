@@ -31,10 +31,12 @@ try {
   for(const width of [390,810,1280])for(const file of ['chapter-14-review.html','chapter-14-vocabulary.html']){
     await page.setViewportSize({width,height:900});await page.goto(base+file);
     const shell=page.locator('[data-teacher-section]');await page.waitForFunction(()=>document.querySelector('[data-teacher-section]')?.dataset.accessState==='signed-out');
-    assert.equal(await shell.evaluate(node=>node.tagName),'DETAILS');
-    assert.equal(await shell.evaluate(node=>node.open),false);
+    assert.equal(await shell.evaluate(node=>node.tagName),file.includes('review')?'SECTION':'DETAILS');
     assert.equal(await shell.locator('[data-teacher-logout]').count(),0);
-    await shell.locator(':scope > summary').click();
+    if(file.includes('vocabulary')){
+      assert.equal(await shell.evaluate(node=>node.open),false);
+      await shell.locator(':scope > summary').click();
+    }
     const before=reads;assert.equal(await shell.locator('[data-teacher-content]').textContent(),'');assert.equal(reads,before);
     responseCode=403;await shell.locator('[data-teacher-login]').click();await page.waitForFunction(()=>document.querySelector('[data-teacher-section]').dataset.accessState==='denied');
     assert.equal(await shell.locator('[data-teacher-content]').textContent(),'');

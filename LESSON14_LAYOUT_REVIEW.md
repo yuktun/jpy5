@@ -31,3 +31,11 @@ If approved, publish only the reviewed static revision to yuktun/jpy5. No Firest
 Lesson 13, lessons 15-20, unrelated vocabulary/reading/listening and the classmates repository remain outside this change.
 
 The annotated Library screenshot was resolved, but the official materialization helper could not apply Library metadata on this Windows environment; its native image read returned metadata rather than pixels. No local screenshot was claimed as verified. Layout work follows the supplied description and the actual lesson 13/14 DOM. This screenshot inspection limitation remains open.
+
+## Local review interaction follow-up
+
+The review module now uses the same exercise shell as lesson 13. Its public sign-in/source gate is visible only while protected content is unavailable. Once authorized, the original protected header, source link and exercise disclosures provide the layout directly; there is no extra outer disclosure or green padded wrapper. The public PDF link relies on the existing automatic network label, avoiding a duplicate label.
+
+Lesson 13's shared word-help and answer behavior now has an idempotent mount/dispose lifecycle. The protected loader mounts it after sanitized content arrives, and disposes listeners, timers and the body-level tooltip before clearing/replacing content. Mouse hover, keyboard focus/activation/Escape and touch tap/outside/scroll dismissal share the same implementation. Answer buttons also restore their original labels when closed. Revalidation preserves the mounted view; logout, account changes, errors and offline clearing remove it.
+
+This follow-up changes no protected payload or Firebase state. Local private parity checks confirm unchanged wording, ruby, all 33 word definitions/usages (six in the top word bank) and thirteen answer panels. Public tests use synthetic content only. The new supplied screenshot could not be materialized after one bounded retry because the supported metadata helper is unavailable on Windows; comparison used the inspected screenshot description and actual lesson implementations. This follow-up is local and unpublished pending review.
