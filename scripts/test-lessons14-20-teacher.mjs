@@ -51,13 +51,6 @@ try {
       await page.locator(".lesson-quick-switcher").waitFor({ state: "visible" });
       const shell = page.locator("#teacher-exercise");
       assert.equal(await shell.count(), 1, `${label}: missing teacher exercise`);
-      if(lesson===14){
-        assert.equal(await shell.getAttribute('data-teacher-section'),'exercises');
-        assert.equal(await shell.locator('[data-teacher-content]').textContent(),'');
-        assert.equal(await shell.locator('details.teacher-exercise').count(),0);
-        await assertFits(page,label);
-        continue;
-      }
       assert.equal(await page.locator('.review-path > a[href="#teacher-exercise"]').count(), 1);
       assert.equal(await page.locator(".review-path > a").count(), 7);
       assert.equal(await shell.locator("details.teacher-exercise").count(), 3);

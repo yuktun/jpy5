@@ -1,7 +1,10 @@
 # Lessons 14–20 teacher exercise source audit
 
-Lesson 14's source quotations have been removed from this public audit for the
-[teacher-text trial](TEACHER_ACCESS_TRIAL.md). Other lessons retain their existing scope.
+Lesson 14's review/Exercise is public under the revised
+[teacher-text trial scope](TEACHER_ACCESS_TRIAL.md). Its source quotations remain
+omitted from this audit; the original review markup is restored on its page.
+The adverb manuscript retains its separate protected boundary. Other lessons
+retain their existing scope.
 
 Reviewed on 2026-10-14. Scope: the seven teacher exercise PDFs, all 41 scanned pages, and their new Review-page questions and reference answers. The existing Lesson 13 Exercise is the layout and interaction reference.
 
@@ -13,6 +16,7 @@ No teacher answer key was supplied for these worksheets. The displayed answers a
 
 | Lesson | Source PDF | Pages | Top-level prompts | Hidden answer panels | Contextual word-help choices |
 | --- | --- | ---: | ---: | ---: | ---: |
+| 14 | [L14_exercise.pdf](https://drive.google.com/file/d/1S6fJRP1c0NIT5wtkQtxU0weSVxGaZifk/view) | 6 | 45 | 13 | 33 |
 
 | 15 | [L15_exercise.pdf](https://drive.google.com/file/d/1jUrKiCQxhXOrfXK4DNLozXE1DRX3q9qL/view) | 6 | 37 | 12 | 37 |
 | 16 | [L16_exercise.pdf](https://drive.google.com/file/d/1Kd2LzsJ7KmJWAEFyR4sz2SMzInYiAf4I/view) | 5 | 31 | 12 | 23 |

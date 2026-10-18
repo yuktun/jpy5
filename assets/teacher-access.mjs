@@ -1,7 +1,6 @@
 import {firebaseConfig} from './firebase-config.mjs';
 import {createTeacherController, fetchTeacherNote} from './teacher-access-core.mjs';
 import {teacherDraftReady} from './teacher-progress-privacy.mjs';
-import './teacher-supplements.js';
 
 // Reconstruct only inert, permitted markup. Never execute stored HTML as code.
 export function safeTeacherFragment(html, documentRef = document) {
@@ -38,11 +37,11 @@ const messages = {
 export async function mountTeacherAccess(root, serviceFactory = createAuthService) {
   const content = root.querySelector('[data-teacher-content]'), status = root.querySelector('[data-teacher-status]');
   const login = root.querySelector('[data-teacher-login]'), read = root.querySelector('[data-teacher-load]'), logout = root.querySelector('[data-teacher-logout]');
-  let serviceReady = false, disposeSupplements = () => {};
+  let serviceReady = false;
   const controller = createTeacherController({
     load: async (user, signal) => { await teacherDraftReady; return fetchTeacherNote({user, signal, projectId: firebaseConfig.projectId}); },
     render({state, signedIn, data, preserve}) {
-      if (!preserve) { disposeSupplements(); disposeSupplements = () => {}; content.replaceChildren(); }
+      if (!preserve) content.replaceChildren();
       root.dataset.accessState = state;
       status.textContent = messages[state];
       login.hidden = signedIn;
@@ -50,14 +49,9 @@ export async function mountTeacherAccess(root, serviceFactory = createAuthServic
       read.textContent = '重試讀取';
       if(logout)logout.hidden = !signedIn;
       status.hidden = state === 'loaded';
-      const gate = root.querySelector('[data-teacher-gate]');
-      if (gate) gate.hidden = state === 'loaded';
       login.disabled = !serviceReady;
       read.disabled = state === 'loading' || state === 'offline';
-      if (data) {
-        content.append(safeTeacherFragment(data[root.dataset.teacherSection]));
-        disposeSupplements = window.JPY5TeacherSupplements.mount(content);
-      }
+      if (data) content.append(safeTeacherFragment(data[root.dataset.teacherSection]));
     }
   });
   const resume=()=>{if(serviceReady&&!document.hidden&&navigator.onLine)void controller.read();};
@@ -67,6 +61,20 @@ export async function mountTeacherAccess(root, serviceFactory = createAuthServic
   window.addEventListener('pageshow',resume);
   document.addEventListener('visibilitychange',()=>document.hidden?controller.clear():resume());
   root.addEventListener('keydown', event => { if (event.target.closest('button,summary,a')) event.stopPropagation(); });
+  content.addEventListener('click', event => {
+    const button = event.target.closest('[data-answer-toggle]');
+    if (button) {
+      const answer = [...content.querySelectorAll('[id]')].find(node => node.id === button.getAttribute('aria-controls'));
+      if (answer) { answer.hidden = !answer.hidden; button.setAttribute('aria-expanded', String(!answer.hidden)); }
+    }
+    const word = event.target.closest('[data-word-meaning]');
+    if (word) {
+      content.querySelector('[data-teacher-word-help]')?.remove();
+      const help = document.createElement('p'); help.dataset.teacherWordHelp = ''; help.setAttribute('role', 'status');
+      help.textContent = `${word.dataset.wordMeaning} ${word.dataset.wordUsage || ''}`;
+      word.closest('.teacher-word-bank')?.after(help);
+    }
+  });
   read.addEventListener('click', () => controller.read());
   try {
     const service = await serviceFactory();

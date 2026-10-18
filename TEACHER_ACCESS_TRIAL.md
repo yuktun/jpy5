@@ -3,9 +3,11 @@
 **Current layout follow-up:** [LESSON14_LAYOUT_REVIEW.md](LESSON14_LAYOUT_REVIEW.md)
 defines the revised boundary and single-document public grammar layout. It
 supersedes the historical conservative grammar boundary described below.
-Teacher handouts stay protected; the non-secret grammar-panel demonstration
-appears only after a masked server authorization check. No Firebase or
-credential change is part of this static revision.
+The revised scope makes lesson 14 review/Exercise public, including offline
+copies. The adverb manuscript stays protected; the non-secret grammar-panel
+demonstration appears only after a masked server authorization check. No
+Firebase or credential change is part of this static revision. The historical
+trial/deployment record below does not override this current content boundary.
 
 Local implementation only. No live rules, content, identities, grants or hosting have been changed. Base: `8a4a519af833679e37d334a9aa20a7b86be7d27c`, verified against a fresh clone of `yuktun/jpy5` main. No repository AGENTS.md or applicable engineering skill was available in this checkout/catalog; README contributor guidance was followed.
 

@@ -5,12 +5,16 @@ import {execFileSync} from 'node:child_process';
 import vm from 'node:vm';
 import {lessons} from './adverb-notes-data.mjs';
 assert.deepEqual(lessons[14],{protected:true});
-for(const file of ['chapter-14-review.html','chapter-14-vocabulary.html']){
+for(const file of ['chapter-14-vocabulary.html']){
   const source=await readFile(file,'utf8');
   assert.match(source,/data-teacher-section=/);assert.match(source,/data-teacher-content><\/div>/);
   assert.doesNotMatch(source,/data-answer-toggle|class="teacher-adverb-card"|data-word-meaning/);
   assert.match(source,/https:\/\/drive\.google\.com\/file\//);
 }
+const publicReview=await readFile('chapter-14-review.html','utf8');
+assert.doesNotMatch(publicReview,/data-teacher-section|teacher-access\.mjs/);
+assert.match(publicReview,/class="teacher-review-shell"/);
+assert.equal((publicReview.match(/data-answer-toggle/g)||[]).length,13);
 const tracked=execFileSync('git',['ls-files'],{encoding:'utf8'}).trim().split('\n').filter(file=>existsSync(file));
 assert(!tracked.some(file=>file.startsWith('private-migration/')));
 const sandbox={self:{}};vm.runInNewContext(await readFile('assets/offline-assets.js','utf8'),sandbox);
@@ -39,12 +43,12 @@ if(payload){
   const general=JSON.parse(payload.grammarJson),generalStrings=[];
   function strings(value){if(typeof value==='string')generalStrings.push(value);else if(value&&typeof value==='object')Object.values(value).forEach(strings);}
   strings(general.data);strings(general.extras);
-  const fragments=[...new Set((payload.exercises+payload.adverbs).replace(/<rt>.*?<\/rt>/g,'').split(/<[^>]*>/).map(text=>text.trim()).filter(text=>text.length>=18&&!otherLessons.includes(text)&&!generalStrings.some(value=>value.includes(text))))];
+  const fragments=[...new Set(payload.adverbs.replace(/<rt>.*?<\/rt>/g,'').split(/<[^>]*>/).map(text=>text.trim()).filter(text=>text.length>=18&&!otherLessons.includes(text)&&!publicReview.includes(text)&&!generalStrings.some(value=>value.includes(text))))];
   for(const file of tracked.filter(file=>/\.(html|js|mjs|md|json)$/.test(file))){
     const source=await readFile(file,'utf8');
     assert(!fragments.some(text=>source.includes(text)),`${file}: protected fragment found (content withheld)`);
   }
   console.log(`Local migration check: ${fragments.length} lesson-unique long fragments absent from public files.`);
-  console.log('General grammar restoration is parity-checked separately; teacher-only handout text remains excluded.');
+  console.log('General grammar and the approved public review are parity-checked separately; teacher-only adverb text remains excluded.');
 }
 console.log('Static boundary, unchanged public lesson content, Drive link and offline inventory checks passed.');
