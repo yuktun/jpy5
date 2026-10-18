@@ -93,7 +93,7 @@ export async function mountTeacherAccess(root, serviceFactory = createAuthServic
   return controller;
 }
 
-async function createAuthService() {
+export async function createAuthService() {
   const sdk = 'https://www.gstatic.com/firebasejs/10.14.1';
   const [apps, authSdk] = await Promise.all([import(`${sdk}/firebase-app.js`), import(`${sdk}/firebase-auth.js`)]);
   const app = apps.getApps().length ? apps.getApp() : apps.initializeApp(firebaseConfig);

@@ -5,7 +5,8 @@ A mobile-friendly study site for **みんなの日本語 中級Ⅱ**. Lessons 13
 ## Run locally
 
 The local lesson 14 layout proposal restores general grammar, flashcards, quiz
-and history as public study tools, with collapsed placeholder teacher notes.
+and history as public study tools, with collapsed teacher-note demonstrations whose
+non-secret dummy bodies display only after server authorization.
 Actual worksheet/adverb supplements still require online authorization.
 Review [the proposed disclosure boundary](LESSON14_LAYOUT_REVIEW.md) before release.
 Lesson 13 remains public. See

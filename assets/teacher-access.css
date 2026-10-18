@@ -11,3 +11,5 @@
 .teacher-grammar-placeholder { margin-top:1rem; padding-top:.75rem; border-top:1px solid var(--line); }
 .teacher-grammar-placeholder > summary { cursor:pointer; font-weight:600; }
 .teacher-grammar-placeholder > p { color:var(--muted); }
+.teacher-grammar-placeholder [data-teacher-demo-status] { font-size:.85rem; color:var(--muted); }
+@media print { [data-teacher-demo-content] { display:none; } }

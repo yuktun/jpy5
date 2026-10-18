@@ -1,6 +1,6 @@
 # Lesson 14 layout and content-boundary review
 
-Local proposal based on published `40b3d7d045e48f71d05748516ca248051fef8f62`. No release, Firebase change or new authorization is performed by this revision.
+Layout revision based on `40b3d7d045e48f71d05748516ca248051fef8f62`. This static update requires no Firebase configuration, document or authorization changes.
 
 ## Proposed public content
 
@@ -12,13 +12,15 @@ Compatible older raw-signature drafts are converted synchronously before the pub
 
 The linked public textbook is *大家的日語中級2 第14課*, available from the repository's existing ttrw.jp textbook link. The 28-page scan was downloaded and its grammar pages 9-12 (printed pages 23-26) visually inspected. Their eleven grammar headings and sequence correspond to the application's eleven patterns. The repository's original study-flow commit identifies ttrw.jp as the overall material source. The separate explanation module identifies itself as an application learning addition independent of the original school grammar data.
 
-This supports treating the core grammar and application explanations as general study material under the user's revised scope. It does **not** establish individual authorship of every translation, explanation, generated exercise or example. There is no independent teacher-specific attribution for those fields. This remaining provenance limitation, and the fact that this entire dataset becomes static/offline again, require explicit review before publication.
+This supports treating the core grammar and application explanations as general study material under the user's revised scope. It does **not** establish individual authorship of every translation, explanation, generated exercise or example. There is no independent teacher-specific attribution for those fields. The approved public scope includes this dataset and its offline copies with that provenance limitation disclosed.
 
 ## Teacher content remains protected
 
 The explicitly teacher-sourced worksheet and adverb handouts, including attached editorial answers/help, remain in the ignored private migration source and existing protected Firestore document. Their public pages contain only collapsed supplement gates. Sign-in and server approval are still required; denial, logout, offline and lifecycle clearing remain enforced. Success/status/logout chrome is removed from the ordinary grammar experience. The existing Home page remains the account-management entry point.
 
-No separate teacher-authored lesson 14 grammar-note dataset was found. Each grammar card therefore has a closed placeholder labelled Teacher's notes, with the exact dummy text "Teacher's notes here". Placeholders are public and contain no actual teacher material. They do not trigger a protected-content request. New real teacher grammar notes would need a separately reviewed private content mapping; this revision does not fabricate notes or upload replacements.
+No separate teacher-authored lesson 14 grammar-note dataset was found. Each grammar card therefore has a closed demonstration labelled Teacher's notes. Its body stays empty until Firebase authorizes a read of the existing protected document. All eleven cards share one request with a field mask returning only schemaVersion; no handout or grammar text is downloaded for this demonstration. Signed-out, denied, error, logout and offline states keep or clear the body to empty. The existing controller periodically revalidates authorization and limits the display lease.
+
+The exact dummy text "Teacher's notes here" is intentionally non-secret and is shipped in the public module/offline package. Only its display is gated; this is a UI demonstration, not protection of that literal. Actual teacher text remains server-only. New real teacher grammar notes would need a separately reviewed private content mapping; this revision does not fabricate notes or upload replacements.
 
 Phrases already shared with the public textbook/general exercises cannot be made private by protecting a teacher handout. Leak checks continue to exclude teacher-only wording from the public release; known general/source overlaps are reported without reproducing the protected text.
 

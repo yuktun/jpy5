@@ -26,7 +26,10 @@ for(const page of ['notes','flashcards','quiz','history']){
   assert.match(source,/<script[^>]*src="assets\/ch14-data\.js/);
   assert.doesNotMatch(source,/data-teacher-section="grammar"|data-grammar-template|teacher-grammar-frame|module-lesson-switcher/);
 }
-assert.match(await readFile('assets/ch14-teacher-placeholders.js','utf8'),/Teacher\\'s notes here/);
+const placeholder=await readFile('assets/ch14-teacher-placeholders.js','utf8');
+assert.match(placeholder,/data-teacher-demo-content><\/div>/);
+assert.doesNotMatch(placeholder,/Teacher\\'s notes here/);
+assert.match(await readFile('assets/teacher-demo.mjs','utf8'),/verifyTeacherAccess/);
 // Optional local check: no lesson-unique long fragment from the migration copy
 // may survive in a tracked public file. Shared exercise directions/labels also
 // occur in the unchanged lessons and are deliberately kept public there.

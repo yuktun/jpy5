@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {initializeTestEnvironment, assertFails, assertSucceeds} from '@firebase/rules-unit-testing';
 import {doc, getDoc, setDoc, deleteDoc, collection, getDocs} from 'firebase/firestore';
+import {createMockUserToken} from '@firebase/util';
 
 if(!/^(localhost|127\.0\.0\.1):\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST||'')) throw Error('Local emulator required');
 const projectId='demo-jpy5-teacher';
@@ -16,7 +17,7 @@ try {
   await env.clearFirestore();
   await env.withSecurityRulesDisabled(async context=>{
     const admin=context.firestore();
-    await setDoc(doc(admin,'jpy5TeacherNotes/lesson14'),{schemaVersion:1,exercises:'synthetic',adverbs:'synthetic'});
+    await setDoc(doc(admin,'jpy5TeacherNotes/lesson14'),{schemaVersion:2,exercises:'synthetic',adverbs:'synthetic',grammarJson:'{"synthetic":true}'});
     await setDoc(doc(admin,'jpy5TeacherNotes/lesson15'),{synthetic:true});
     await setDoc(doc(admin,'jpy5TeacherAccess/approved'),{lesson14:true});
     await setDoc(doc(admin,'jpy5TeacherAccess/disabled'),{lesson14:false});
@@ -24,6 +25,14 @@ try {
   });
   for(const uid of [null,'unapproved','disabled','malformed']) await denied(getDoc(doc(db(uid),'jpy5TeacherNotes/lesson14')));
   await allowed(getDoc(doc(db('approved'),'jpy5TeacherNotes/lesson14')));
+  // Field masks limit returned fields, not the document's read permission.
+  // These unsigned mock tokens are accepted only by the loopback emulator.
+  for(const[uid,tokenClaims,status]of[[null,claims,403],['unapproved',claims,403],['approved',claims,200],['approved',{...claims,email_verified:false},403]]){
+    const headers=uid?{Authorization:`Bearer ${createMockUserToken({sub:uid,...tokenClaims},projectId)}`} : {};
+    const response=await fetch(`http://${process.env.FIRESTORE_EMULATOR_HOST}/v1/projects/${projectId}/databases/(default)/documents/jpy5TeacherNotes/lesson14?mask.fieldPaths=schemaVersion`,{headers});
+    assert.equal(response.status,status);checks++;
+    if(status===200){const document=await response.json();assert.deepEqual(Object.keys(document.fields),['schemaVersion']);assert.equal(document.fields.schemaVersion.integerValue,'2');}
+  }
   for(const claims of [{email_verified:false,firebase:{sign_in_provider:'google.com'}},{email_verified:true,firebase:{sign_in_provider:'password'}},{}]) await denied(getDoc(doc(db('approved',claims),'jpy5TeacherNotes/lesson14')));
   for(const uid of [null,'unapproved','approved']) {
     const client=db(uid);

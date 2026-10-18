@@ -1,8 +1,20 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {createTeacherController, fetchTeacherNote} from '../assets/teacher-access-core.mjs';
+import {createTeacherController, fetchTeacherNote,verifyTeacherAccess} from '../assets/teacher-access-core.mjs';
 import {migrateTeacherDraft} from '../assets/teacher-progress-privacy.mjs';
 import {webcrypto} from 'node:crypto';
+
+test('demo authorization reads only the schema marker and fails closed',async()=>{
+  const signal=new AbortController().signal,user={getIdToken:async()=> 'synthetic-test-token'};
+  let request;
+  const check=fetchImpl=>verifyTeacherAccess({user,signal,projectId:'demo-jpy5-teacher',fetchImpl});
+  assert.deepEqual(await check(async(url,options)=>{request={url,...options};return{ok:true,json:async()=>({fields:{schemaVersion:{integerValue:'2'}}})};}),{approved:true});
+  const url=new URL(request.url);assert.equal(url.searchParams.get('mask.fieldPaths'),'schemaVersion');
+  assert.equal([...url.searchParams].length,1);assert.equal(request.cache,'no-store');assert.equal(request.credentials,'omit');assert.equal(request.redirect,'error');
+  assert.equal(request.headers.Authorization,'Bearer synthetic-test-token');
+  for(const[status,code]of[[403,'denied'],[404,'missing'],[401,'error'],[500,'error']])await assert.rejects(check(async()=>({ok:false,status})),error=>error.code===code);
+  await assert.rejects(check(async()=>({ok:true,json:async()=>({fields:{}})})));
+});
 
 test('REST uses only authorized non-cached reads; rejects errors and malformed records', async () => {
   const signal = new AbortController().signal;

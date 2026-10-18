@@ -25,9 +25,10 @@ try{
    await page.waitForFunction(()=>scrollY===0);
    await page.screenshot({path:`tmp/lesson14-layout/${width===390?'mobile':'desktop'}.png`,fullPage:false});
   }
-  assert.equal(await page.locator('[data-teacher-placeholder]').count(),11);
-  assert.equal(await page.locator('[data-teacher-placeholder][open]').count(),0);
-  await page.locator('[data-teacher-placeholder] summary').first().click();assert.equal(await page.locator('[data-teacher-placeholder] p').first().innerText(),"Teacher's notes here");
+  assert.equal(await page.locator('[data-teacher-demo]').count(),11);
+  assert.equal(await page.locator('[data-teacher-demo][open]').count(),0);
+  await page.locator('[data-teacher-demo] summary').first().click();
+  assert.equal((await page.locator('[data-teacher-demo-content]').allTextContents()).join(''),'');
   assert.equal(await page.locator('iframe,[data-teacher-status],[data-teacher-logout],[data-teacher-section="grammar"]').count(),0);
   await page.locator('.lesson-quick-switcher').waitFor();assert.equal(await page.locator('.lesson-quick-switcher').count(),1);assert.equal(await page.locator('.module-lesson-switcher').count(),0);
   assert(await page.evaluate(()=>document.documentElement.scrollHeight>innerHeight),'ordinary document scrolling');
@@ -47,5 +48,5 @@ try{
   await page.evaluate(()=>localStorage.clear());
  }
  assert.equal(protectedReads,0,'general grammar and placeholders never request teacher data');assert.deepEqual(errors,[]);
- console.log('Public lesson 14 layout passed: 11 patterns/46 examples, 11 collapsed dummy notes, one navigation, no frame/access banner, 3 widths/2 themes, dialogs, flashcards, hash-compatible quiz resume/history and zero protected requests.');
+  console.log('Public lesson 14 layout passed: 11 patterns/46 examples, 11 closed access-gated demos, one navigation, no frame/access banner, 3 widths/2 themes, dialogs, flashcards, hash-compatible quiz resume/history and zero protected requests when auth is unavailable.');
 }finally{await context.close();await browser.close();await new Promise(done=>server.close(done));}

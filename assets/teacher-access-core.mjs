@@ -1,5 +1,18 @@
 // REST with a Firebase ID token is evaluated by Firestore Security Rules.
 // Keep this separate from the progress SDK's persistent cache.
+export async function verifyTeacherAccess({user, projectId, signal, fetchImpl = fetch}) {
+  const token = await user.getIdToken();
+  if(signal.aborted)throw new DOMException('Aborted','AbortError');
+  // The same document get permission is evaluated by Security Rules, but the
+  // response includes only the schema marker, never handouts or grammar text.
+  const url=new URL(`https://firestore.googleapis.com/v1/projects/${encodeURIComponent(projectId)}/databases/(default)/documents/jpy5TeacherNotes/lesson14`);
+  url.searchParams.set('mask.fieldPaths','schemaVersion');
+  const response=await fetchImpl(url.href,{headers:{Authorization:`Bearer ${token}`},cache:'no-store',credentials:'omit',redirect:'error',signal});
+  if(!response.ok)throw Object.assign(new Error('Teacher authorization unavailable'),{code:response.status===403?'denied':response.status===404?'missing':'error'});
+  if((await response.json()).fields?.schemaVersion?.integerValue!=='2')throw new Error('Unsupported teacher authorization marker');
+  return {approved:true};
+}
+
 export async function fetchTeacherNote({user, projectId, signal, fetchImpl = fetch}) {
   const token = await user.getIdToken();
   if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
