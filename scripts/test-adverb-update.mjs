@@ -7,10 +7,16 @@ import { createRequire } from "node:module";
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { extname, resolve, sep } from "node:path";
+import vm from "node:vm";
 
 const { chromium } = createRequire(import.meta.url)("playwright");
 const root = process.cwd(), previousRef = process.env.JPY5_PREVIOUS_REF || "2cb386d9fe158d8ccc18b6d43c3f09d93afd8fee";
-const changed = ["sw.js", "assets/pwa.js", "assets/offline-assets.js", "assets/teacher-supplements.js", ...Array.from({ length: 8 }, (_, i) => `chapter-${13 + i}-vocabulary.html`)];
+// Serve every changed package dependency from the old release during install.
+// Otherwise an unrelated shared-script fix makes the old integrity check fail.
+const decode = source => { const context={self:{}}; vm.runInNewContext(source,context); return context.self.JPY5_OFFLINE_MANIFEST; };
+const oldManifest=decode(execFileSync('git',['show',`${previousRef}:assets/offline-assets.js`],{encoding:'utf8'}));
+const newManifest=decode(await readFile('assets/offline-assets.js','utf8'));
+const changed = [...new Set(['sw.js','assets/offline-assets.js','chapter-13-vocabulary.html',...oldManifest.assets.filter(file=>oldManifest.hashes[file]!==newManifest.hashes[file])])];
 const oldFiles = new Map(changed.map(file => [file, execFileSync("git", ["show", `${previousRef}:${file}`], { cwd: root })]));
 const previousVersion = oldFiles.get("assets/offline-assets.js").toString().match(/version: "([^"]+)"/)[1];
 const nextVersion = (await readFile(resolve(root, "assets/offline-assets.js"), "utf8")).match(/version: "([^"]+)"/)[1];

@@ -46,6 +46,8 @@ node scripts/generate-offline-manifest.mjs
 node scripts/test-pwa.mjs
 node scripts/test-offline-manifest.mjs
 node scripts/test-offline-mode.mjs
+node scripts/test-flashcard-prompts-layout.mjs
+node scripts/test-flashcard-update.mjs
 ```
 
 The browser suite requires Playwright and an installed Edge (or set JPY5_BROWSER_CHANNEL). It uses isolated profiles, a local server and no live accounts. It covers the online default, download/retry/cancellation, persistent-profile cold start, all 73 pages offline, PDFs/external links, update detection and integrity failures, removal/re-enabling, partial eviction and scoped legacy-cache cleanup. The adverb update suite exercises explicit package update from published revision `2cb386d9fe158d8ccc18b6d43c3f09d93afd8fee`; override `JPY5_PREVIOUS_REF` only when testing another prior release. The older teacher-exercise migration suite uses the pre-opt-in worker.

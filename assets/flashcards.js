@@ -32,6 +32,10 @@ function backMarkup(card) {
   else details=details.replace(`<p>${card.zh}</p>`,"");
   return `<div class="card-retained-block"><small>題目</small>${frontMarkup(card,true)}</div><div class="card-revealed-details"><small>答案與詳解</small>${details}</div>`;
 }
+function renderCardLabel(card, index, total) {
+  const label = state.direction === "jp" || flipped ? `${card.label} · ` : "";
+  document.querySelector("#card-kicker").textContent = `${label}${index+1}/${total}`;
+}
 function render() {
   const deck=activeDeck(), index=currentIndex(), card=deck[index]; flipped=false;
   document.querySelectorAll("[data-deck]").forEach(b=>b.classList.toggle("active",b.dataset.deck===state.deck));
@@ -45,14 +49,30 @@ function render() {
   document.querySelector("#deck-label").textContent=`${state.deck==="summary"?"句型概要":"例句練習"} · ${state.filter==="all"?"全部":state.filter==="right"?"答對":state.filter==="wrong"?"答錯":"已標記"}`;
   document.querySelector("#card-jump").max=deck.length||1; document.querySelector("#card-jump").value=card?index+1:""; document.querySelector("#card-total").textContent=`/ ${deck.length}`;
   const el=document.querySelector("#flashcard"); el.disabled=!card;
+  document.querySelector("#flip-hint").textContent="點擊或按 Space 查看答案";
+  el.setAttribute("aria-expanded","false");
+  el.setAttribute("aria-describedby","card-kicker card-front flip-hint");
+  document.querySelector("#card-front").hidden=false;
+  document.querySelector("#card-back").replaceChildren();
+  document.querySelector("#card-back").hidden=true;
   if(!card){ document.querySelector("#card-kicker").textContent="沒有卡片"; document.querySelector("#card-front").innerHTML="<h2>這個分類暫時是空的。</h2><p>先回答或標記一些卡片，再回來重溫。</p>"; document.querySelector("#card-back").hidden=true; document.querySelector("#flip-hint").hidden=true; return; }
-  document.querySelector("#card-kicker").textContent=`${card.label} · ${index+1}/${deck.length}`;
+  renderCardLabel(card,index,deck.length);
   document.querySelector("#card-front").innerHTML=frontMarkup(card);
-  document.querySelector("#card-back").innerHTML=backMarkup(card); document.querySelector("#card-front").hidden=false; document.querySelector("#card-back").hidden=true; document.querySelector("#flip-hint").hidden=false;
+  document.querySelector("#card-front").hidden=false; document.querySelector("#card-back").hidden=true; document.querySelector("#flip-hint").hidden=false;
   document.querySelector("#star-card").textContent=state.starred.includes(card.id)?"★":"☆";
   save();
 }
-function flip(){ if(!activeDeck()[currentIndex()])return; flipped=!flipped; document.querySelector("#card-front").hidden=flipped; document.querySelector("#card-back").hidden=!flipped; document.querySelector("#flip-hint").textContent=flipped?"點擊或按 Space 返回題目":"點擊或按 Space 查看答案"; }
+function flip(){
+  const deck=activeDeck(),index=currentIndex(),card=deck[index];if(!card)return;
+  flipped=!flipped;
+  document.querySelector("#card-back").innerHTML=flipped?backMarkup(card):"";
+  document.querySelector("#card-front").hidden=flipped;
+  document.querySelector("#card-back").hidden=!flipped;
+  renderCardLabel(card,index,deck.length);
+  document.querySelector("#flashcard").setAttribute("aria-expanded",String(flipped));
+  document.querySelector("#flashcard").setAttribute("aria-describedby",`card-kicker ${flipped?"card-back":"card-front"} flip-hint`);
+  document.querySelector("#flip-hint").textContent=flipped?"點擊或按 Space 返回題目":"點擊或按 Space 查看答案";
+}
 function move(delta){ const d=activeDeck(); if(!d.length)return; state.positions[state.deck]=(currentIndex()+delta+d.length)%d.length; render(); }
 function mark(value){ const card=activeDeck()[currentIndex()]; if(!card)return; state.results[card.id]=value; save(); move(1); }
 document.querySelectorAll("[data-deck]").forEach(b=>b.onclick=()=>{state.deck=b.dataset.deck;state.filter="all";render();});
@@ -65,5 +85,5 @@ document.querySelector("#mark-right").onclick=()=>mark("right"); document.queryS
 document.querySelector("#star-card").onclick=()=>{const c=activeDeck()[currentIndex()];if(!c)return;state.starred=state.starred.includes(c.id)?state.starred.filter(id=>id!==c.id):[...state.starred,c.id];render();};
 document.querySelector("#card-jump").onchange=e=>{state.positions[state.deck]=Math.max(0,Number(e.target.value)-1);render();};
 document.querySelector("#reset-flashcards").onclick=()=>{if(confirm("清除所有 Flashcard 進度和標記？")){state=structuredClone(defaults);render();}};
-document.addEventListener("keydown",e=>{if(e.target.matches("input,select"))return;if(e.code==="Space"){e.preventDefault();flip();}if(e.key==="ArrowLeft")move(-1);if(e.key==="ArrowRight")move(1);});
+document.addEventListener("keydown",e=>{if(e.target.closest("input,select,textarea,a,button:not(#flashcard),[contenteditable]"))return;if(e.code==="Space"){e.preventDefault();flip();}if(e.key==="ArrowLeft")move(-1);if(e.key==="ArrowRight")move(1);});
 render();

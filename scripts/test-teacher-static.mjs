@@ -35,12 +35,13 @@ assert(!sandbox.self.JPY5_OFFLINE_MANIFEST.assets.some(file=>/private-migration|
 const base='8a4a519af833679e37d334a9aa20a7b86be7d27c';
 for(const file of tracked.filter(file=>/^chapter-13|^assets\/(?:ch13|ch14|data\.js|grammar-extra-data\.js|firebase-sync\.mjs)/.test(file)&&!['assets/ch14-data.js','assets/ch14-grammar-extra-data.js','assets/ch14-teacher-placeholders.js','assets/ch14-textbook-exercises-data.js'].includes(file))){
   const original=execFileSync('git',['show',`${base}:${file}`],{encoding:'utf8'}).replace(/\r\n/g,'\n');
-  assert.equal((await readFile(file,'utf8')).replace(/\r\n/g,'\n'),original,`${file}: unexpected public-content change`);
+  assert.equal((await readFile(file,'utf8')).replace(/\r\n/g,'\n').replace(/flashcards\.js\?v=\d+/,'flashcards.js'),original.replace(/flashcards\.js\?v=\d+/,'flashcards.js'),`${file}: unexpected public-content change`);
 }
 for(const page of ['notes','flashcards','quiz','history']){
   const source=await readFile(`chapter-14-${page}.html`,'utf8');
   assert.match(source,/<script[^>]*src="assets\/ch14-data\.js/);
-  assert.doesNotMatch(source,/data-teacher-section="grammar"|data-grammar-template|teacher-grammar-frame|module-lesson-switcher/);
+  assert.equal((source.match(/class="lesson-pills module-lesson-switcher"/g)||[]).length,page==='notes'?0:1);
+  assert.doesNotMatch(source,/data-teacher-section="grammar"|data-grammar-template|teacher-grammar-frame/);
 }
 const placeholder=await readFile('assets/ch14-teacher-placeholders.js','utf8');
 assert.match(placeholder,/data-teacher-demo-content><\/div>/);
