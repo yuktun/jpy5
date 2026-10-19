@@ -50,7 +50,7 @@ try {
   for(const width of [390,810,1280]) {
     await page.setViewportSize({width,height:900});
     await page.goto(`${base}/chapter-13-notes.html`);
-    assert.equal(await page.locator(".teacher-addition:not(.textbook-practice)").count(),8);
+    assert.equal(await page.locator(".teacher-addition:not(.textbook-practice):not([data-oct17-grammar])").count(),8);
     await page.locator(".teacher-addition:not(.textbook-practice) summary").first().click();
     assert(await page.locator(".teacher-addition:not(.textbook-practice)[open] .teacher-source").isVisible());
     await page.locator(".teacher-addition:not(.textbook-practice)").evaluateAll(nodes=>nodes.forEach(node=>node.open=true));
@@ -123,7 +123,7 @@ try {
   await page.locator('.teacher-review-shortcuts a[href*="teacher-writing"]').click();
   assert(await page.locator("#teacher-writing").isVisible());
   await page.goto(`${base}/chapter-14-notes.html`);
-  assert.equal(await page.locator(".teacher-addition").count(),0);
+  assert.equal(await page.locator(".teacher-addition:not(.textbook-practice)").count(),0);
   assert((await page.locator(".grammar-card").count())>0);
   await page.goto(`${base}/chapter-13-notes.html`);
   await page.locator('[data-theme-select]').selectOption("dark");

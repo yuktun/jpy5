@@ -87,7 +87,7 @@ try {
       await summary.focus();await page.keyboard.press('Enter');
       assert.equal(await body.isVisible(),true);
       assert.equal(await page.locator('.textbook-answer[open]').count(),1);
-      assert.ok(await body.locator('ruby rt').count()>0||!(await body.locator('p[lang="ja"]').innerText()).match(/[\p{Script=Han}々]/u));
+      assert.ok(await body.locator('ruby rt').count()>0||!(await body.locator(':scope > p[lang="ja"]').innerText()).match(/[\p{Script=Han}々]/u));
       const questionId=await details.evaluate(el=>el.parentElement.dataset.textbookQuestion);
       if(width===390&&['nagara-3-1','tsumari-1-1','tsumari-2-1'].includes(questionId)) await body.screenshot({path:resolve(out,`answer-${questionId}.png`),style:'.lesson-quick-switcher,.site-header{visibility:hidden}'});
       await page.keyboard.press('Space');assert.equal(await body.isVisible(),false);

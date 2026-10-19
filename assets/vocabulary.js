@@ -52,9 +52,9 @@ function renderList() {
   const query = $("#vocab-search").value.trim().toLowerCase(), selectedSection = $("#list-section").value;
   const matches = vocabulary.filter(item => {
     const inSection = selectedSection === "all" || item.section === selectedSection;
-    return inSection && [item.kana,item.written,item.original,item.meaning,item.type,item.note,window.JPY5_TEACHER?.vocabulary[item.written]?.text || "",sectionLabel(item)].some(value => value.toLowerCase().includes(query));
+    return inSection && [item.kana,item.written,item.original,item.meaning,item.type,item.note,window.JPY5_TEACHER?.vocabulary[item.written]?.text || "",window.JPY5_TEACHER?.oct17?.vocabulary[item.written]?.gloss || "",window.JPY5_TEACHER?.oct17?.vocabulary[item.written]?.study || "",sectionLabel(item)].some(value => value.toLowerCase().includes(query));
   });
-  $("#vocab-list").innerHTML = matches.map(item => `<article class="vocab-row"><span>${item.id}</span><div><b lang="ja">${item.original || item.written}</b><small>${item.kana}${item.original ? ` · ${item.written}` : ""}</small></div>${pronunciation.button(item, "vocab-row-speak", `data-vocab-speak="${item.id}"`)}<p>${item.meaning}${item.note ? `<small>${item.note}</small>` : ""}</p><em>${item.type}<small>${sectionLabel(item)}</small></em>${window.JPY5_TEACHER?.block(window.JPY5_TEACHER.vocabulary[item.written])||""}</article>`).join("");
+  $("#vocab-list").innerHTML = matches.map(item => `<article class="vocab-row"><span>${item.id}</span><div><b lang="ja">${item.original || item.written}</b><small>${item.kana}${item.original ? ` · ${item.written}` : ""}</small></div>${pronunciation.button(item, "vocab-row-speak", `data-vocab-speak="${item.id}"`)}<p>${item.meaning}${item.note ? `<small>${item.note}</small>` : ""}</p><em>${item.type}<small>${sectionLabel(item)}</small></em>${window.JPY5_TEACHER?.block(window.JPY5_TEACHER.vocabulary[item.written])||""}${window.JPY5_TEACHER?.oct17?.vocabularyBlock(item.written)||""}</article>`).join("");
   $("#vocab-count").textContent = `顯示 ${matches.length} / ${vocabulary.length}`;
 }
 

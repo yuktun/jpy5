@@ -4,9 +4,13 @@ import {execFileSync} from 'node:child_process';
 import {createServer} from 'node:http';
 import {readFile} from 'node:fs/promises';
 import {resolve,sep,extname} from 'node:path';
+import vm from 'node:vm';
 import {chromium} from 'playwright';
 const root=process.cwd(),previous='00325d1c5e17ae0c411c9397ec09ff48afe6474c';
-const changed=['assets/flashcards.js','assets/offline-assets.js','chapter-14-history.html','chapter-14-quiz.html',...Array.from({length:8},(_,i)=>`chapter-${13+i}-flashcards.html`)];
+const decode=source=>{const context={self:{}};vm.runInNewContext(source,context);return context.self.JPY5_OFFLINE_MANIFEST;};
+const oldManifest=decode(execFileSync('git',['show',`${previous}:assets/offline-assets.js`],{encoding:'utf8'}));
+const currentManifest=decode(await readFile('assets/offline-assets.js','utf8'));
+const changed=['assets/offline-assets.js',...oldManifest.assets.filter(file=>oldManifest.hashes[file]!==currentManifest.hashes[file])];
 const oldFiles=new Map(changed.map(file=>[file,execFileSync('git',['show',`${previous}:${file}`])]));
 let serveNew=false;
 const server=createServer(async(req,res)=>{
