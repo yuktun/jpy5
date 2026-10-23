@@ -58,14 +58,30 @@ import('./teacher-progress-privacy.mjs').catch(()=>{});
       note.textContent = "（需網絡）";
       link.append(note);
     }
-    for (const audio of document.querySelectorAll("audio[src],audio source[src]")) {
-      if (new URL(audio.src, location.href).origin === location.origin) continue;
-      const player = audio.closest("audio");
-      if (player.nextElementSibling?.classList.contains("audio-internet-required")) continue;
-      const note = document.createElement("small");
+    // One notice belongs to the card's visible controls, not to each media
+    // element. Reading also has a hidden player for sentence/paragraph clips.
+    const cards = new Map([...document.querySelectorAll(".reading-audio-workspace,.audio-workspace")].map(card => [card, []]));
+    for (const player of document.querySelectorAll("audio")) {
+      const card = player.closest(".reading-audio-workspace,.audio-workspace") || player.parentElement;
+      if (!cards.has(card)) cards.set(card, []);
+      if (!player.controls || player.closest("[hidden]")) continue;
+      const sources = [player.src, ...[...player.querySelectorAll("source[src]")].map(source => source.src)];
+      if (sources.some(src => {
+        if (!src) return false;
+        const url = new URL(src, location.href);
+        return /^https?:$/.test(url.protocol) && url.origin !== location.origin;
+      })) cards.get(card).push(player);
+    }
+    for (const [card, players] of cards) {
+      const notes = [...card.querySelectorAll(".audio-internet-required")].filter(note =>
+        (note.closest(".reading-audio-workspace,.audio-workspace") || note.parentElement) === card);
+      const note = players.length ? notes.shift() || document.createElement("small") : null;
+      notes.forEach(extra => extra.remove());
+      if (!note) continue;
       note.className = "internet-required audio-internet-required";
-      note.textContent = "音訊需網絡，不包括在離線內容內。";
-      player.insertAdjacentElement("afterend", note);
+      const message = "音訊需網絡，不包括在離線內容內。";
+      if (note.textContent !== message) note.textContent = message;
+      if (players[0].nextElementSibling !== note) players[0].insertAdjacentElement("afterend", note);
     }
   }
 
@@ -125,7 +141,7 @@ import('./teacher-progress-privacy.mjs').catch(()=>{});
         scheduled = true;
         requestAnimationFrame(() => { scheduled = false; markOnlineLinks(); });
       }
-    }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["href", "src"] });
+    }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["href", "src", "hidden", "controls"] });
     if (!("serviceWorker" in navigator) || !window.isSecureContext) {
       state = { error: "unsupported", unavailable: true }; render(); return;
     }

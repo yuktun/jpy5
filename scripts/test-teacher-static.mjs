@@ -36,6 +36,9 @@ const base='8a4a519af833679e37d334a9aa20a7b86be7d27c';
 for(const file of tracked.filter(file=>/^chapter-13|^assets\/(?:ch13|ch14|data\.js|grammar-extra-data\.js|firebase-sync\.mjs)/.test(file)&&!['assets/ch13-textbook-exercises.js','assets/ch13-teacher-oct17.js','assets/ch14-data.js','assets/ch14-grammar-extra-data.js','assets/ch14-teacher-placeholders.js','assets/ch14-textbook-exercises-data.js'].includes(file))){
   const original=execFileSync('git',['show',`${base}:${file}`],{encoding:'utf8'}).replace(/\r\n/g,'\n');
   let current=await readFile(file,'utf8');
+  // The approved notice correction versions only the PWA resource on lesson 13;
+  // its original source attribution elsewhere on the page remains unchanged.
+  if(/^chapter-13-(reading|textbook)\.html$/.test(file)) current=current.replace('assets/pwa.js?v=2','assets/pwa.js');
   // Shared speed resources change controls only, never protected lesson content.
   if(/^chapter-13-(reading|textbook)\.html$/.test(file)) current=current.replace(/  <link rel="stylesheet" href="assets\/audio-playback-speed\.css\?v=1">\r?\n/,'').replace(/  <script src="assets\/audio-playback-speed\.js\?v=1" defer><\/script>\r?\n/,'').replace('assets/audio-segment-player.js?v=2','assets/audio-segment-player.js?v=1');
   // The later authorized sentence pilot adds only these resources/version bumps
