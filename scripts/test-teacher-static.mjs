@@ -39,6 +39,8 @@ for(const file of tracked.filter(file=>/^chapter-13|^assets\/(?:ch13|ch14|data\.
   // The later authorized sentence pilot adds only these resources/version bumps
   // to lesson 13's reading page. Keep the rest of this historical parity check.
   if(file==='chapter-13-reading.html') current=current.replace(/  <link rel="stylesheet" href="assets\/reading-sentence-audio\.css\?v=1">\r?\n/,'').replace(/  <script src="assets\/reading-sentence-audio-data\.js\?v=1" defer><\/script>\r?\n/,'').replace('assets/reading.js?v=15','assets/reading.js?v=14').replace('assets/reading-paragraph-audio.js?v=3','assets/reading-paragraph-audio.js?v=2');
+  // The lesson 14 sentence pilot changes only translation guidance/font size.
+  if(file==='assets/ch14-reading.js') current=current.replace('每段中文下方附有完整日文原文。點按日文句子，只播放該句原聲；再按可重播。','每段中文下方附有完整日文原文。').replace('<div class="translation-list" style="--reading-size:${[.98,1.1,1.24][state.font]}rem">','<div class="translation-list">');
   assert.equal(current.replace(/\r\n/g,'\n').replace(/flashcards\.js\?v=\d+/,'flashcards.js').replace('<script src="assets/ch13-teacher-oct17.js?v=1" defer></script>','').replace('assets/ch13-textbook-exercises.js?v=3','assets/ch13-textbook-exercises.js?v=2').replace('assets/vocabulary.js?v=12','assets/vocabulary.js?v=11').replace(/<aside class="source-note" data-oct17-index>[\s\S]*?<\/aside>/,''),original.replace(/flashcards\.js\?v=\d+/,'flashcards.js'),`${file}: unexpected public-content change`);
 }
 for(const page of ['notes','flashcards','quiz','history']){
