@@ -112,7 +112,7 @@ window.JPY5_READING_PARAGRAPH_AUDIO = {
         "id": 4,
         "start": 104.66,
         "end": 131.08,
-        "startText": "このアリの行動に関する、この観察研究はビ",
+        "startText": "ご存じの方も多いと思うが、この観察研究は",
         "endText": "っているのではないかという気がしてくる。"
       },
       {
