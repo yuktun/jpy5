@@ -1,0 +1,17 @@
+/* A labelled native select remains compact and keyboard/touch accessible. */
+.audio-speed-controls {display:flex; flex-direction:column; gap:.6rem; min-width:0}
+.playback-speed-control {
+  display:flex; align-items:center; gap:.5rem; align-self:flex-end;
+  font-size:.9rem; color:inherit; white-space:nowrap;
+}
+.playback-speed-control select {
+  min-height:44px; min-width:88px; padding:.35rem .6rem;
+  font:inherit; color:var(--ink); background:var(--white);
+  border:1px solid currentColor; border-radius:.45rem;
+}
+.playback-speed-control select:focus-visible {
+  outline:2px solid var(--reading-deep); outline-offset:3px;
+}
+@media (max-width:600px) {
+  .playback-speed-control {align-self:flex-start}
+}

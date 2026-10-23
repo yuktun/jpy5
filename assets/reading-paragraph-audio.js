@@ -9,48 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   audio.hidden = true;
   audio.dataset.readingParagraphAudio = "";
   fullAudio.after(audio);
-  const speeds = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
-  const speedKey = "jpy5.reading.playbackRate";
-  const validSpeed = value => speeds.includes(Number(value)) ? Number(value) : 1;
-  let speed = 1;
-  try { speed = validSpeed(localStorage.getItem(speedKey)); } catch { /* Storage is optional. */ }
-  const speedControl = document.createElement("label");
-  speedControl.className = "reading-playback-speed";
-  speedControl.append("播放速度 ");
-  const speedSelect = document.createElement("select");
-  speedSelect.dataset.readingPlaybackSpeed = "";
-  for (const value of speeds) {
-    const option = document.createElement("option");
-    option.value = String(value);
-    option.textContent = `${value}×`;
-    speedSelect.append(option);
-  }
-  speedControl.append(speedSelect);
-  const audioControls = document.createElement("div");
-  audioControls.className = "reading-audio-controls";
-  fullAudio.before(audioControls);
-  audioControls.append(fullAudio, audio, speedControl);
-  function applySpeed(value, remember = false) {
-    speed = validSpeed(value);
-    speedSelect.value = String(speed);
-    for (const media of [fullAudio, audio]) {
-      media.defaultPlaybackRate = speed;
-      if (media.playbackRate !== speed) media.playbackRate = speed;
-      for (const property of ["preservesPitch", "webkitPreservesPitch", "mozPreservesPitch"]) {
-        if (property in media) media[property] = true;
-      }
-    }
-    if (remember) {
-      try { localStorage.setItem(speedKey, String(speed)); } catch { /* Playback still works. */ }
-    }
-  }
-  applySpeed(speed);
-  speedSelect.addEventListener("change", () => { applySpeed(speedSelect.value, true); checkEnd(); });
-  for (const media of [fullAudio, audio]) media.addEventListener("ratechange", () => {
-    // Native full-track controls and the shared selector stay in sync.
-    if (media.playbackRate !== speed) applySpeed(media.playbackRate, true);
-    checkEnd();
-  });
+  window.JPY5PlaybackSpeed.attach([fullAudio, audio]);
   let active = null;
   let range = null;
   let serial = 0;
@@ -218,6 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
     pendingStart = false;
     if (audio.paused) playCurrent();
   });
+  audio.addEventListener("ratechange", checkEnd);
   audio.addEventListener("timeupdate", checkEnd);
   audio.addEventListener("ended", stop);
   audio.addEventListener("error", showError);

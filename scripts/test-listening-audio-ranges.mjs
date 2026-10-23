@@ -40,7 +40,8 @@ if (!native) {
       if (!states.has(audio)) states.set(audio, { time: 0, paused: true });
       return states.get(audio);
     };
-    Object.defineProperty(HTMLMediaElement.prototype, "currentTime", { get() { return state(this).time; }, set(value) { state(this).time = value; } });
+    Object.defineProperty(HTMLMediaElement.prototype, "currentTime", { get() { return state(this).time; }, set(value) { state(this).time = value; queueMicrotask(() => this.dispatchEvent(new Event("seeked"))); } });
+    Object.defineProperty(HTMLMediaElement.prototype, "readyState", { get() { return 4; } });
     Object.defineProperty(HTMLMediaElement.prototype, "paused", { get() { return state(this).paused; } });
     HTMLMediaElement.prototype.load = function() {};
     HTMLMediaElement.prototype.pause = function() {
@@ -60,6 +61,16 @@ if (!native) {
 }
 try {
   for (const lesson of lessons) {
+    if (native && process.env.JPY5_LISTENING_AUDIO_DIR) {
+      const html = await readFile(`chapter-${lesson.number}-textbook.html`, "utf8");
+      const url = html.match(/<audio[^>]*src="([^"]+)"/)[1];
+      const bytes = await readFile(resolve(process.env.JPY5_LISTENING_AUDIO_DIR, `${lesson.number}.mp3`));
+      await page.route(url, route => {
+        const m = route.request().headers().range?.match(/^bytes=(\d+)-(\d*)$/);
+        const start = m ? Number(m[1]) : 0, end = m?.[2] ? Math.min(Number(m[2]), bytes.length - 1) : bytes.length - 1;
+        return route.fulfill({status:m?206:200,contentType:"audio/mpeg",body:bytes.subarray(start,end+1),headers:{"accept-ranges":"bytes",...(m?{"content-range":`bytes ${start}-${end}/${bytes.length}`}:{})}});
+      });
+    }
     await page.goto(`http://127.0.0.1:${server.address().port}/chapter-${lesson.number}-textbook.html`, { waitUntil: native ? "domcontentloaded" : "load" });
     await page.locator('[data-mode="focus"]').click();
     const audio = page.locator("#lesson-audio");

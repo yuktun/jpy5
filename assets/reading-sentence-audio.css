@@ -17,21 +17,3 @@
   outline:2px solid var(--reading-deep); outline-offset:3px;
 }
 .reading-stage .translation-list .translation-original {font-size:var(--reading-size,.92rem)}
-
-/* A labelled native select remains compact and keyboard/touch accessible. */
-.reading-audio-controls {display:flex; flex-direction:column; gap:.6rem; min-width:0}
-.reading-playback-speed {
-  display:flex; align-items:center; gap:.5rem; align-self:flex-end;
-  font-size:.9rem; color:inherit; white-space:nowrap;
-}
-.reading-playback-speed select {
-  min-height:44px; min-width:88px; padding:.35rem .6rem;
-  font:inherit; color:var(--ink); background:var(--white);
-  border:1px solid currentColor; border-radius:.45rem;
-}
-.reading-playback-speed select:focus-visible {
-  outline:2px solid var(--reading-deep); outline-offset:3px;
-}
-@media (max-width:600px) {
-  .reading-playback-speed {align-self:flex-start}
-}
