@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return shell(ruby(data.title),"先掌握時間線：來日初期 → 活動範圍擴大 → 在日第六年解開誤會。",`<article class="reading-paper" style="--reading-size:${[.98,1.1,1.24][state.font]}rem"><div class="reading-badge">第13課</div>${data.paragraphs.map(p=>`<p data-paragraph="${p.id}">${paragraphRuby(p)}</p>`).join("")}<footer>（${ruby(data.author)}）</footer>`);
   }
   function translation(){
-    return shell("繁體中文翻譯","每段中文下方附有完整日文原文。",`<div class="translation-list">${data.paragraphs.map(p=>`<article data-reading-paragraph="${p.id}"><span>0${p.id}</span><p>${esc(p.zh)}<span class="translation-original" lang="ja">${paragraphRuby(p)}</span></p></article>`).join("")}</div>`);
+    return shell("繁體中文翻譯","每段中文下方附有完整日文原文。點按日文句子，只播放該句原聲；再按可重播。",`<div class="translation-list" style="--reading-size:${[.98,1.1,1.24][state.font]}rem">${data.paragraphs.map(p=>`<article data-reading-paragraph="${p.id}"><span>0${p.id}</span><p>${esc(p.zh)}<span class="translation-original" lang="ja">${paragraphRuby(p)}</span></p></article>`).join("")}</div>`);
   }
   function questionCards(){
     const exercises=data.textbookExercises;

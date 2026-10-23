@@ -35,7 +35,11 @@ assert(!sandbox.self.JPY5_OFFLINE_MANIFEST.assets.some(file=>/private-migration|
 const base='8a4a519af833679e37d334a9aa20a7b86be7d27c';
 for(const file of tracked.filter(file=>/^chapter-13|^assets\/(?:ch13|ch14|data\.js|grammar-extra-data\.js|firebase-sync\.mjs)/.test(file)&&!['assets/ch13-textbook-exercises.js','assets/ch13-teacher-oct17.js','assets/ch14-data.js','assets/ch14-grammar-extra-data.js','assets/ch14-teacher-placeholders.js','assets/ch14-textbook-exercises-data.js'].includes(file))){
   const original=execFileSync('git',['show',`${base}:${file}`],{encoding:'utf8'}).replace(/\r\n/g,'\n');
-  assert.equal((await readFile(file,'utf8')).replace(/\r\n/g,'\n').replace(/flashcards\.js\?v=\d+/,'flashcards.js').replace('<script src="assets/ch13-teacher-oct17.js?v=1" defer></script>','').replace('assets/ch13-textbook-exercises.js?v=3','assets/ch13-textbook-exercises.js?v=2').replace('assets/vocabulary.js?v=12','assets/vocabulary.js?v=11').replace(/<aside class="source-note" data-oct17-index>[\s\S]*?<\/aside>/,''),original.replace(/flashcards\.js\?v=\d+/,'flashcards.js'),`${file}: unexpected public-content change`);
+  let current=await readFile(file,'utf8');
+  // The later authorized sentence pilot adds only these resources/version bumps
+  // to lesson 13's reading page. Keep the rest of this historical parity check.
+  if(file==='chapter-13-reading.html') current=current.replace(/  <link rel="stylesheet" href="assets\/reading-sentence-audio\.css\?v=1">\r?\n/,'').replace(/  <script src="assets\/reading-sentence-audio-data\.js\?v=1" defer><\/script>\r?\n/,'').replace('assets/reading.js?v=15','assets/reading.js?v=14').replace('assets/reading-paragraph-audio.js?v=3','assets/reading-paragraph-audio.js?v=2');
+  assert.equal(current.replace(/\r\n/g,'\n').replace(/flashcards\.js\?v=\d+/,'flashcards.js').replace('<script src="assets/ch13-teacher-oct17.js?v=1" defer></script>','').replace('assets/ch13-textbook-exercises.js?v=3','assets/ch13-textbook-exercises.js?v=2').replace('assets/vocabulary.js?v=12','assets/vocabulary.js?v=11').replace(/<aside class="source-note" data-oct17-index>[\s\S]*?<\/aside>/,''),original.replace(/flashcards\.js\?v=\d+/,'flashcards.js'),`${file}: unexpected public-content change`);
 }
 for(const page of ['notes','flashcards','quiz','history']){
   const source=await readFile(`chapter-14-${page}.html`,'utf8');
