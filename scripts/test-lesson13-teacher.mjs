@@ -90,7 +90,10 @@ try {
   const touchPage = await touchContext.newPage();
   touchPage.on("pageerror", error => errors.push(error.message));
   await touchPage.goto(`${base}/chapter-13-review.html`);
+  await touchPage.locator("#teacher-exercise [data-review-group-toggle]").tap();
   const touchWords = touchPage.locator(".teacher-word-bank button"), touchHelp = touchPage.locator(".teacher-word-help-popover");
+  await touchWords.first().evaluate(node => node.scrollIntoView({behavior:"instant",block:"center"}));
+  await touchPage.evaluate(() => new Promise(done => requestAnimationFrame(() => requestAnimationFrame(done))));
   await touchWords.first().tap();
   assert.equal(await touchHelp.isVisible(), true, "iPhone tap should show meaning");
   assert.equal(await touchHelp.locator("h2").textContent(), "出くわす");

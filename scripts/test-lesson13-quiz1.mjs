@@ -45,7 +45,7 @@ for(const [file,anchors] of [
 assert.equal(data.sections[2].items[5].answer,'に／出くわし');
 const html=await readFile('chapter-13-review.html','utf8');
 const baseline=execFileSync('git',['show','33bfbd8:chapter-13-review.html'],{encoding:'utf8'});
-assert.equal(html.replace(/<!-- BEGIN LESSON 13 QUIZ1 (?:RESOURCES|LINK|EXERCISE) -->[\s\S]*?<!-- END LESSON 13 QUIZ1 (?:RESOURCES|LINK|EXERCISE) -->/g,'').replace(/\r\n/g,'\n'),baseline.replace(/\r\n/g,'\n'),'Existing review content changed');
+assert.equal(html.replace(/<!-- BEGIN LESSON 13 QUIZ1 (?:RESOURCES|LINK|EXERCISE) -->[\s\S]*?<!-- END LESSON 13 QUIZ1 (?:RESOURCES|LINK|EXERCISE) -->/g,'').replace(/\r\n/g,'\n'),baseline.replace(/\r\n/g,'\n').replace('<details class="teacher-exercise" open>','<details class="teacher-exercise">').replace('assets/teacher-supplements.js?v=3','assets/teacher-supplements.js?v=4').replace('assets/teacher-word-help.css?v=2','assets/teacher-word-help.css?v=3'),'Existing review content changed');
 const server=createServer(async(req,res)=>{try {const p=resolve(root,'.'+decodeURIComponent(new URL(req.url,'http://localhost').pathname));if(!p.startsWith(root+sep))return res.writeHead(403).end();res.setHeader('Content-Type',({'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.png':'image/png','.webmanifest':'application/manifest+json'})[extname(p)]||'application/octet-stream');res.end(await readFile(p));}catch{res.writeHead(404).end();}});
 await new Promise(r=>server.listen(0,'127.0.0.1',r));
 const base=`http://127.0.0.1:${server.address().port}`;

@@ -585,4 +585,5 @@
   const target = host.querySelector(location.hash && /^#quiz13-[IVX]+$/.test(location.hash) ? location.hash : "#quiz13-I");
   if (location.hash.startsWith("#quiz13-") && target) target.open = true;
   announce();
+  window.JPY5ReviewGroups?.init();
 })();

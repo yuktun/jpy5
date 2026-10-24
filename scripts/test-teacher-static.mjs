@@ -38,6 +38,8 @@ for(const file of tracked.filter(file=>/^chapter-13|^assets\/(?:ch13|ch14|data\.
   let current=await readFile(file,'utf8');
   // Supplied Lesson 13 Quiz 1 is public exercise content; all historical content remains exact.
   if(file==='chapter-13-review.html') current=current.replace(/<!-- BEGIN LESSON 13 QUIZ1 (?:RESOURCES|LINK|EXERCISE) -->[\s\S]*?<!-- END LESSON 13 QUIZ1 (?:RESOURCES|LINK|EXERCISE) -->/g,'');
+  // Approved review UX changes only defaults and the shared controls' resource versions.
+  if(file==='chapter-13-review.html') current=current.replace('<details class="teacher-exercise">','<details class="teacher-exercise" open>').replace('assets/teacher-supplements.js?v=4','assets/teacher-supplements.js?v=3').replace('assets/teacher-word-help.css?v=3','assets/teacher-word-help.css?v=2');
   // The approved notice correction versions only the PWA resource on lesson 13;
   // its original source attribution elsewhere on the page remains unchanged.
   if(/^chapter-13-(reading|textbook)\.html$/.test(file)) current=current.replace('assets/pwa.js?v=2','assets/pwa.js');

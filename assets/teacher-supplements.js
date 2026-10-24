@@ -1,3 +1,49 @@
+// Bulk controls target only outer question sections, never answer disclosures.
+window.JPY5ReviewGroups ||= (() => {
+  const initialized = new WeakSet();
+  function init() {
+    for (const group of document.querySelectorAll('#teacher-exercise, #lesson13-quiz1')) {
+      const sections = [...group.querySelectorAll(':scope > details.teacher-exercise')];
+      if (!sections.length || initialized.has(group)) continue;
+      initialized.add(group);
+      const label = group.id === 'teacher-exercise' ? 'Exercise' : 'Quiz①';
+      const toolbar = document.createElement('div');
+      toolbar.className = 'review-group-controls';
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'secondary-button';
+      button.dataset.reviewGroupToggle = '';
+      button.setAttribute('aria-controls', group.id);
+      const note = document.createElement('span');
+      note.textContent = '只展開題目；答案需另按顯示。';
+      toolbar.append(button, note);
+      const header = group.querySelector(':scope > .teacher-supplement-header');
+      if (header) header.after(toolbar);
+      else group.insertBefore(toolbar, sections[0]);
+      function sync() {
+        const count = sections.filter(section => section.open).length;
+        const allOpen = count === sections.length;
+        const action = allOpen ? '全部收起' : '全部展開';
+        button.textContent = action;
+        button.setAttribute('aria-label', `${label}：${action}`);
+        button.setAttribute('aria-expanded', String(allOpen));
+        button.dataset.state = allOpen ? 'expanded' : count ? 'mixed' : 'collapsed';
+      }
+      button.addEventListener('click', () => {
+        const expand = !sections.every(section => section.open);
+        for (const section of sections) section.open = expand;
+        sync();
+      });
+      // Native details toggle does not bubble; listen on the actual targets.
+      for (const section of sections) section.addEventListener('toggle', sync);
+      sync();
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, {once:true});
+  else init();
+  return {init};
+})();
+
 document.addEventListener("DOMContentLoaded", () => {
   // Keep the vocabulary page's global flashcard shortcuts from consuming
   // Space/arrow keys used by the adverb section's native buttons and disclosures.

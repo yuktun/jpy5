@@ -7,3 +7,8 @@
 .teacher-word-help-popover h2{margin:5px 0 9px;font-size:1.15rem}
 .teacher-word-help-popover p{margin:8px 0 0;font-size:.88rem;line-height:1.65}
 .teacher-word-help-popover .teacher-word-meaning{font-size:1rem;font-weight:700;color:var(--primary-dark)}
+
+.review-group-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .65rem 1rem; margin: 1rem 0; }
+.review-group-controls button { min-height: 44px; min-width: 7rem; cursor: pointer; }
+.review-group-controls button:focus-visible { outline: 3px solid var(--primary-dark); outline-offset: 3px; }
+.review-group-controls span { color: var(--muted); font-size: .85rem; line-height: 1.7; }

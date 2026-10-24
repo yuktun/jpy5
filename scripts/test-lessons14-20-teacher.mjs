@@ -54,8 +54,8 @@ try {
       assert.equal(await page.locator('.review-path > a[href="#teacher-exercise"]').count(), 1);
       assert.equal(await page.locator(".review-path > a").count(), 7);
       assert.equal(await shell.locator("details.teacher-exercise").count(), 3);
-      assert.equal(await shell.locator("details.teacher-exercise").first().getAttribute("open"), "");
-      assert.equal(await shell.locator("details.teacher-exercise[open]").count(), 1);
+      assert.equal(await shell.locator("details.teacher-exercise").first().getAttribute("open"), null);
+      assert.equal(await shell.locator("details.teacher-exercise[open]").count(), 0);
       assert.equal(await shell.locator(".teacher-answer:not([hidden])").count(), 0, `${label}: answers exposed initially`);
       assert(await shell.locator(`a[href*="${sourceIds[lesson]}"]`).count() > 0, `${label}: missing source PDF link`);
       const ids = await page.locator("[id]").evaluateAll(nodes => nodes.map(node => node.id));
@@ -138,6 +138,7 @@ try {
   for (const lesson of lessons) {
     await touchPage.goto(urlFor(lesson));
     await touchPage.locator(".lesson-quick-switcher").waitFor({ state: "visible" });
+    await touchPage.locator("#teacher-exercise [data-review-group-toggle]").tap();
     const word = touchPage.locator("#teacher-exercise .teacher-word-bank button").first();
     const help = touchPage.locator(".teacher-word-help-popover");
     // Do not let tap's automatic scroll race dismissal or a late navigation
