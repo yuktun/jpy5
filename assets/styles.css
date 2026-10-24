@@ -62,7 +62,7 @@ main,
 }
 main { overflow: hidden; }
 .hero { min-height: 610px; max-width: 1180px; margin: auto; padding: 110px 28px 100px; position: relative; }
-.hero::after { content: "十三"; position: absolute; right: 2%; top: 30px; z-index: -1; color: rgba(201,73,61,.055); font-family: "Yu Mincho", serif; font-size: clamp(15rem, 32vw, 27rem); line-height: 1; writing-mode: vertical-rl; }
+.hero::after { content: "十四"; position: absolute; right: 2%; top: 30px; z-index: -1; color: rgba(201,73,61,.055); font-family: "Yu Mincho", serif; font-size: clamp(15rem, 32vw, 27rem); line-height: 1; writing-mode: vertical-rl; }
 .eyebrow, .kicker { color: var(--red); text-transform: uppercase; font-size: .72rem; font-weight: 700; letter-spacing: .16em; }
 .eyebrow span { display: inline-block; padding: 4px 11px; margin-right: 10px; color: white; background: var(--red); border-radius: 2px; letter-spacing: .12em; }
 .hero h1 { max-width: 720px; margin: 24px 0; font-family: "Yu Mincho", "Noto Serif JP", Georgia, serif; font-weight: 500; font-size: clamp(3.6rem, 8.5vw, 7.2rem); line-height: 1.05; letter-spacing: -.04em; }
