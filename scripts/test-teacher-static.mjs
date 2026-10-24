@@ -33,9 +33,11 @@ assert(!sandbox.self.JPY5_OFFLINE_MANIFEST.assets.some(file=>/private-migration|
 // The newly authorized public textbook dataset did not exist at this base.
 // Its seven-lesson integration is checked by test-textbook-exercises-14-20.mjs.
 const base='8a4a519af833679e37d334a9aa20a7b86be7d27c';
-for(const file of tracked.filter(file=>/^chapter-13|^assets\/(?:ch13|ch14|data\.js|grammar-extra-data\.js|firebase-sync\.mjs)/.test(file)&&!['assets/ch13-textbook-exercises.js','assets/ch13-teacher-oct17.js','assets/ch14-data.js','assets/ch14-grammar-extra-data.js','assets/ch14-teacher-placeholders.js','assets/ch14-textbook-exercises-data.js'].includes(file))){
+for(const file of tracked.filter(file=>/^chapter-13|^assets\/(?:ch13|ch14|data\.js|grammar-extra-data\.js|firebase-sync\.mjs)/.test(file)&&!['assets/ch13-quiz1.js','assets/ch13-quiz1.css','assets/ch13-textbook-exercises.js','assets/ch13-teacher-oct17.js','assets/ch14-data.js','assets/ch14-grammar-extra-data.js','assets/ch14-teacher-placeholders.js','assets/ch14-textbook-exercises-data.js'].includes(file))){
   const original=execFileSync('git',['show',`${base}:${file}`],{encoding:'utf8'}).replace(/\r\n/g,'\n');
   let current=await readFile(file,'utf8');
+  // Supplied Lesson 13 Quiz 1 is public exercise content; all historical content remains exact.
+  if(file==='chapter-13-review.html') current=current.replace(/<!-- BEGIN LESSON 13 QUIZ1 (?:RESOURCES|LINK|EXERCISE) -->[\s\S]*?<!-- END LESSON 13 QUIZ1 (?:RESOURCES|LINK|EXERCISE) -->/g,'');
   // The approved notice correction versions only the PWA resource on lesson 13;
   // its original source attribution elsewhere on the page remains unchanged.
   if(/^chapter-13-(reading|textbook)\.html$/.test(file)) current=current.replace('assets/pwa.js?v=2','assets/pwa.js');
