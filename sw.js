@@ -12,7 +12,7 @@ let job = null;
 let removing = false;
 let lastError = null;
 
-const allowed = url => url.origin === self.location.origin && url.href.startsWith(SCOPE) && !/\.pdf$/i.test(decodeURIComponent(url.pathname));
+const allowed = url => url.origin === self.location.origin && url.href.startsWith(SCOPE) && !/\.(?:pdf|mp3)$/i.test(decodeURIComponent(url.pathname));
 const urls = MANIFEST.assets.map(path => new URL(path, SCOPE).href);
 const retiredTeacherPaths = new Set(['chapter-14-notes.html', 'chapter-14-flashcards.html', 'chapter-14-quiz.html', 'chapter-14-history.html', 'assets/ch14-data.js', 'assets/ch14-grammar-extra-data.js', 'assets/grammar-ruby.js', 'assets/quiz-progress.js', 'ADVERB_SOURCE_AUDIT.md', 'LESSONS14_20_EXERCISE_AUDIT.md'].map(path => new URL(path, SCOPE).href));
 

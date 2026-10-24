@@ -33,7 +33,7 @@ assert(!sandbox.self.JPY5_OFFLINE_MANIFEST.assets.some(file=>/private-migration|
 // The newly authorized public textbook dataset did not exist at this base.
 // Its seven-lesson integration is checked by test-textbook-exercises-14-20.mjs.
 const base='8a4a519af833679e37d334a9aa20a7b86be7d27c';
-for(const file of tracked.filter(file=>/^chapter-13|^assets\/(?:ch13|ch14|data\.js|grammar-extra-data\.js|firebase-sync\.mjs)/.test(file)&&!['assets/ch13-quiz1.js','assets/ch13-quiz1.css','assets/ch13-textbook-exercises.js','assets/ch13-teacher-oct17.js','assets/ch14-data.js','assets/ch14-grammar-extra-data.js','assets/ch14-teacher-placeholders.js','assets/ch14-textbook-exercises-data.js'].includes(file))){
+for(const file of tracked.filter(file=>/^chapter-13|^assets\/(?:ch13|ch14|data\.js|grammar-extra-data\.js|firebase-sync\.mjs)/.test(file)&&!['assets/ch13-quiz1.js','assets/ch13-quiz1.css','assets/ch13-quiz-audio.mjs','assets/ch13-textbook-exercises.js','assets/ch13-teacher-oct17.js','assets/ch14-data.js','assets/ch14-grammar-extra-data.js','assets/ch14-teacher-placeholders.js','assets/ch14-textbook-exercises-data.js'].includes(file))){
   const original=execFileSync('git',['show',`${base}:${file}`],{encoding:'utf8'}).replace(/\r\n/g,'\n');
   let current=await readFile(file,'utf8');
   // Supplied Lesson 13 Quiz 1 is public exercise content; all historical content remains exact.

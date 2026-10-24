@@ -12,7 +12,7 @@ const root = process.cwd();
 const toWebPath = value => relative(root, value).split(sep).join("/");
 const localReference = /(?:src|href)=["']([^"']+)["']/g;
 const ignored = /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i;
-const excluded = path => /\.pdf$/i.test(decodeURIComponent(path));
+const excluded = path => /\.(?:pdf|mp3)$/i.test(decodeURIComponent(path));
 
 async function filesIn(directory) {
   const entries = await readdir(directory, { withFileTypes: true });

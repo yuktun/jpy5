@@ -18,3 +18,8 @@
 .quiz13-answer>div { padding:0 .8rem .8rem; }
 .quiz13-save-status { font-size:.9rem; }
 #lesson13-quiz1 :focus-visible { outline:3px solid var(--accent,#176b6b); outline-offset:3px; }
+
+.quiz13-audio[hidden] { display: none !important; }
+.quiz13-audio { margin: 1rem 0; padding: 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--white); }
+.quiz13-audio audio { display: block; width: 100%; max-width: 100%; }
+.quiz13-audio h3 { margin: 0 0 .7rem; }

@@ -12,16 +12,18 @@ const decode = source => { const context = { self: {} }; vm.runInNewContext(sour
 try {
   await mkdir(join(fixture, "assets"));
   const files = {
-    "index.html": '<a href="book.PDF?x=1">PDF</a><a href="https://example.com/">external</a><a href="//example.com/file">protocol-relative</a><script src="assets/pwa.js"></script>\r\n',
+    "index.html": '<a href="book.PDF?x=1">PDF</a><a href="quiz.MP3?x=1">audio</a><a href="https://example.com/">external</a><a href="//example.com/file">protocol-relative</a><script src="assets/pwa.js"></script>\r\n',
     "assets/pwa.js": "// local runtime\r\n",
     "assets/local.pdf": "%PDF-local",
+    "assets/quiz.mp3": "synthetic audio fixture",
+    "quiz.MP3": "synthetic linked audio fixture",
     "book.PDF": "%PDF-linked",
     "manifest.webmanifest": "{}"
   };
   for (const [path, content] of Object.entries(files)) await writeFile(join(fixture, path), content);
   execFileSync(process.execPath, [generate], { cwd: fixture });
   const first = decode(await readFile(join(fixture, "assets/offline-assets.js"), "utf8"));
-  assert(first.assets.every(path => !/\.pdf$/i.test(path) && !path.includes("example.com")));
+  assert(first.assets.every(path => !/\.(?:pdf|mp3)$/i.test(path) && !path.includes("example.com")));
   assert(first.assets.includes("index.html") && first.assets.includes("assets/pwa.js"));
   for (const [path, content] of Object.entries(files)) await writeFile(join(fixture, path), content.replace(/\r\n/g, "\n"));
   execFileSync(process.execPath, [generate], { cwd: fixture });
