@@ -9,13 +9,39 @@ const root=process.cwd();
 const source=await readFile('assets/ch13-quiz1.js','utf8');
 const data=JSON.parse(source.match(/const data = ([\s\S]*?);\n  const host/)[1]);
 assert.deepEqual(data.sections.map(s=>[s.id,s.items.length]),[['I',2],['II',9],['III',8],['IV',4],['V',4],['VI',4],['VII',3],['VIII',2],['IX',2]]);
-assert.equal(data.sections.flatMap(s=>s.items).filter(i=>i.answer).length,36);
-assert(data.sections[0].items.every(i=>i.unavailable&&!i.answer));
+assert.equal(data.sections.flatMap(s=>s.items).filter(i=>i.answer).length,38);
+assert.deepEqual(data.sections[0].items.map(i=>i.answer),['ゆうべはシャワーを浴びずに寝てしまうほど疲れていました。','たとえお金をたくさんもらっても、危ない仕事はしたくないです。']);
+assert(data.sections[0].items.every(i=>!i.unavailable&&i.reading&&/機器轉寫/.test(i.provenance)&&/未經真人聽校/.test(i.provenance)&&/非官方/.test(i.provenance)));
+assert.match(data.sections[0].items[0].reading,/あびずにねてしまうほどつかれて/);
+assert.match(data.sections[0].items[1].reading,/おかね.*あぶないしごと/);
+assert.doesNotMatch(source,/soul2\.hkuspace|resource\/view\.php|\.mp3|faster-whisper|file_00000000/);
 assert.deepEqual(data.sections[1].items.map(i=>i.answer),['あまとう','はじ','a）いっしゅん　b）きぎょう','かんちがい','しこうさくご','はんい','横断','直訳','看板']);
 assert.deepEqual(data.sections[3].items.map(i=>i.answer.slice(0,1)),['b','a','a','b']);
 assert.equal(data.sections[7].items[0].answer,'② → ③ → ① → ⑤ → ④');
 assert.equal(data.sections[7].items[1].answer,'①');
 assert(data.sections[5].items.every(i=>i.open&&i.explanation));
+
+// The context audit must never rewrite source questions, choices, answer keys or open models.
+const publishedSource=execFileSync('git',['show','b29bd388:assets/ch13-quiz1.js'],{encoding:'utf8'});
+const publishedData=JSON.parse(publishedSource.match(/const data = ([\s\S]*?);\n  const host/)[1]);
+const withoutAudit=value=>JSON.parse(JSON.stringify(value,(key,value)=>['lessonContext','explanation'].includes(key)?undefined:value));
+assert.deepEqual(withoutAudit(data.sections.slice(1)),withoutAudit(publishedData.sections.slice(1)));
+assert.deepEqual(data.sections[0].items.map(i=>i.prompt),publishedData.sections[0].items.map(i=>i.prompt));
+assert.equal(data.sections[0].instruction,publishedData.sections[0].instruction);
+const audited=data.sections.slice(1).flatMap(s=>s.items).filter(i=>i.answer);
+assert.equal(audited.filter(i=>i.lessonContext).length,36);
+assert(audited.every(i=>i.lessonContext.label&&i.lessonContext.note.length>15));
+assert(data.sections[0].items.every(i=>i.lessonContext.href==='chapter-13-notes.html'));
+assert.match(data.sections[6].items[2].explanation,/すでに.*並非文法上不可能/);
+assert.match(data.sections[2].items[0].explanation,/が／使い分けられない/);
+assert.match(data.sections[5].items[2].explanation,/まじめな／約束を破っ/);
+// Verify the precise supporting lesson material still contains the audited anchors.
+for(const [file,anchors] of [
+ ['assets/reading-data.js',['どう使い分けたら','国語辞典が忍ばせてあった','月日を要した','思い込んだまま','頭にまっすぐ浮かぶ']],
+ ['assets/conversation-data.js',['確かにあわてて間違えちゃうことってよくあるよね','ところで、さっきの話だけど','誰でも失敗することはある','何でも一生懸命続けたら']],
+ ['chapter-13-vocabulary.html',['すでに」並非文法上不可能','宿題なんかとっくにやったよ']]
+]){const text=await readFile(file,'utf8');for(const anchor of anchors)assert(text.includes(anchor),file+': missing source anchor '+anchor);}
+
 assert.equal(data.sections[2].items[5].answer,'に／出くわし');
 const html=await readFile('chapter-13-review.html','utf8');
 const baseline=execFileSync('git',['show','33bfbd8:chapter-13-review.html'],{encoding:'utf8'});
@@ -31,25 +57,29 @@ try{
  await page.goto(base+'/chapter-13-review.html');
  await page.waitForSelector('[data-quiz13-question]',{state:'attached'});
  assert.equal(await page.locator('[data-quiz13-question]').count(),38);
- assert.equal(await page.locator('.quiz13-answer').count(),36);
+ assert.equal(await page.locator('.quiz13-answer').count(),38);
  assert.equal(await page.locator('#lesson13-quiz1 textarea,#lesson13-quiz1 fieldset').count(),40);
  await page.addScriptTag({url:base+'/assets/ch13-quiz1.js'});
  assert.equal(await page.locator('[data-quiz13-question]').count(),38,'Reinitialization duplicated questions');
  assert.equal(await page.locator('.quiz13-answer[open]').count(),0);
+ assert.equal(await page.locator('.quiz13-context-source').count(),38);
+ assert.equal(await page.locator('.quiz13-context-source:visible').count(),0);
  assert.equal(await page.locator('.quiz13-question-list u').count(),10);
  assert.equal(await page.locator('#quiz13-II rt').count(),0,'Kanji readings must not reveal exercise answers');
  await page.evaluate(()=>document.querySelectorAll('.quiz13-section').forEach(d=>d.open=true));
- for(let i=0;i<36;i++){
+ for(let i=0;i<38;i++){
   const answer=page.locator('.quiz13-answer').nth(i);const summary=answer.locator('summary');
-  assert.equal(await answer.locator('div').isVisible(),false);
-  await summary.focus();await page.keyboard.press('Enter');assert.equal(await answer.locator('div').isVisible(),true);
-  await page.keyboard.press('Enter');assert.equal(await answer.locator('div').isVisible(),false);
+  assert.equal(await answer.locator(':scope > div').isVisible(),false);
+  await summary.focus();await page.keyboard.press('Enter');assert.equal(await answer.locator(':scope > div').isVisible(),true);assert(await answer.locator('.quiz13-context-source').isVisible());
+  await page.keyboard.press('Enter');assert.equal(await answer.locator(':scope > div').isVisible(),false);
  }
  // Independent text/radio drafts survive navigation and reload without touching other progress.
  await page.evaluate(()=>{localStorage.setItem('jpy5.quiz13-regression-sentinel','preserved');});
+ await page.locator('#quiz13-I-1-0').fill('以前的聽寫草稿');
  await page.locator('#quiz13-II-1-0').fill('あまとう');
  await page.locator('[name="quiz13-IV-1"][value="1"]').check();
  await page.goto(base+'/chapter-13-reading.html');await page.goto(base+'/chapter-13-review.html');
+ assert.equal(await page.locator('#quiz13-I-1-0').inputValue(),'以前的聽寫草稿');
  assert.equal(await page.locator('#quiz13-II-1-0').inputValue(),'あまとう');
  assert(await page.locator('[name="quiz13-IV-1"][value="1"]').isChecked());
  assert.equal(await page.locator('.quiz13-answer[open]').count(),0);
@@ -67,7 +97,7 @@ try{
  await page.goto(base+'/chapter-13-review.html#quiz13-IX');assert.equal(await page.locator('#quiz13-IX').getAttribute('open'),'');
  await page.evaluate(k=>localStorage.setItem(k,'invalid-json'),key);await page.reload();assert.equal(await page.locator('#quiz13-II-1-0').inputValue(),'');
  const denied=await browser.newContext({serviceWorkers:'block'});await denied.addInitScript(()=>{Storage.prototype.getItem=()=>{throw new DOMException('Unavailable','SecurityError');};Storage.prototype.setItem=()=>{throw new DOMException('Unavailable','QuotaExceededError');};});
- const deniedPage=await denied.newPage();await deniedPage.goto(base+'/chapter-13-review.html#quiz13-II');await deniedPage.locator('#quiz13-II-1-0').fill('あまとう');assert.match(await deniedPage.locator('.quiz13-save-status').textContent(),/暫不可用/);await deniedPage.locator('#quiz13-II .quiz13-answer summary').first().click();assert(await deniedPage.locator('#quiz13-II .quiz13-answer').first().locator('div').isVisible());await denied.close();
+ const deniedPage=await denied.newPage();await deniedPage.goto(base+'/chapter-13-review.html#quiz13-II');await deniedPage.locator('#quiz13-II-1-0').fill('あまとう');assert.match(await deniedPage.locator('.quiz13-save-status').textContent(),/暫不可用/);await deniedPage.locator('#quiz13-II .quiz13-answer summary').first().click();assert(await deniedPage.locator('#quiz13-II .quiz13-answer').first().locator(':scope > div').isVisible());await denied.close();
  const offlineContext=await browser.newContext();
  const offlinePage=await offlineContext.newPage();
  await offlinePage.goto(base+'/chapter-13-review.html');
@@ -79,12 +109,14 @@ try{
  assert.equal(await offlinePage.locator('.quiz13-answer[open]').count(),0);
  await offlinePage.evaluate(()=>document.querySelectorAll('.quiz13-section').forEach(d=>d.open=true));
  await offlinePage.locator('#quiz13-II-1-0').fill('あまとう');
+ assert.equal(await offlinePage.locator('.quiz13-answer').count(),38);
  for(const answer of await offlinePage.locator('.quiz13-answer').all()){
-  await answer.locator('summary').click();assert(await answer.locator('div').isVisible());await answer.locator('summary').click();
+  await answer.locator('summary').click();assert(await answer.locator(':scope > div').isVisible());assert(await answer.locator('.quiz13-context-source').isVisible());await answer.locator('summary').click();
  }
  await offlinePage.reload();assert.equal(await offlinePage.locator('#quiz13-II-1-0').inputValue(),'あまとう');
  assert.equal(await offlinePage.locator('.quiz13-answer[open]').count(),0);
- await offlineContext.close();console.log('PASS explicit offline package: all 36 reference answers reveal/hide, 38 prompts, typed draft retained after offline reload.');
+ await offlineContext.close();console.log('PASS 36 existing context notes and 2 machine-transcribed dictations remain hidden and work offline; original prompts/choices/other keys/models unchanged; dictation draft key retained.');
+ console.log('PASS explicit offline package: all 38 reference answers reveal/hide, 38 prompts, typed draft retained after offline reload.');
  assert.deepEqual(errors,[]);
- console.log('PASS: 9 parts, 38 prompts/40 response fields, 36 hidden suggested answers, 2 explicitly unavailable dictations; all keyboard reveal/hide, saved text/radio drafts, invalid/denied storage, safe draft rendering, anchors, 390/810/1280 light/dark; original review unchanged.');
+ console.log('PASS: 9 parts, 38 prompts/40 response fields, 38 hidden suggested answers, 2 with explicit machine-transcription provenance and kana readings; all keyboard reveal/hide, saved text/radio drafts, invalid/denied storage, safe draft rendering, anchors, 390/810/1280 light/dark; original review unchanged.');
 }finally{await browser.close();await new Promise(r=>server.close(r));}
