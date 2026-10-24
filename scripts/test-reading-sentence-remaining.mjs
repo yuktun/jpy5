@@ -44,7 +44,7 @@ try{
     const m=route.request().headers().range?.match(/^bytes=(\d+)-(\d*)$/),start=m?Number(m[1]):0,end=m?.[2]?Math.min(Number(m[2]),bytes.length-1):bytes.length-1;
     return route.fulfill({status:m?206:200,contentType:'audio/mpeg',body:bytes.subarray(start,end+1),headers:{'accept-ranges':'bytes',...(m?{'content-range':`bytes ${start}-${end}/${bytes.length}`}:{})}});
   };
-  await page.route(timing.src,serve);
+  await page.route('**/'+timing.src,serve);
   const audio=page.locator('[data-reading-paragraph-audio]'),sentence=id=>page.locator(`[data-reading-sentence="${id}"]`);
   const playing=start=>page.waitForFunction(start=>{const a=document.querySelector('[data-reading-paragraph-audio]');return !a.paused&&!a.seeking&&a.currentTime>=start-.001&&a.currentTime<start+1.5},start);
   const stopped=()=>page.waitForFunction(()=>document.querySelector('[data-reading-paragraph-audio]').paused);
@@ -133,11 +133,11 @@ try{
     await sentence(first.id).click();await playing(first.start);
     await page.evaluate(()=>{Object.defineProperty(document,'hidden',{value:true,configurable:true});document.dispatchEvent(new Event('visibilitychange'));delete document.hidden});await stopped();
     await sentence(first.id).click();await playing(first.start);await page.goto(`${base}index.html`,{waitUntil:'domcontentloaded'});
-    await page.unroute(timing.src);await page.route(timing.src,r=>r.abort());
+    await page.unroute('**/'+timing.src);await page.route('**/'+timing.src,r=>r.abort());
     await page.goto(`${base}chapter-${lesson}-reading.html`,{waitUntil:'domcontentloaded'});await page.locator('[data-reading-mode="translation"]').click();await sentence(first.id).click();
     await page.waitForFunction(id=>document.querySelector(`[data-reading-sentence="${id}"]`).title.includes('重試'),first.id);
     assert.equal(await baseText(sentence(first.id)),first.text);assert.equal(await sentence(first.id).getAttribute('aria-pressed'),'false');
-    await page.unroute(timing.src);await page.route(timing.src,serve);await sentence(first.id).click();await playing(first.start);
+    await page.unroute('**/'+timing.src);await page.route('**/'+timing.src,serve);await sentence(first.id).click();await playing(first.start);
     assert.deepEqual(errors,[]);
     await writeFile(resolve(out,`${lesson}-results.json`),JSON.stringify({lesson,sentences:clips.length,playable:playable.length,paragraphs:data.paragraphs.length,pending,results,maxOvershoot:Math.max(...results.map(r=>r.overshoot)),errors},null,2));
     console.log(`PASS lesson ${lesson}: natural end, replay, 60 switches, paragraph/full-track, keyboard/ruby/font/vocab, 4 widths/dark, navigation/background and failed-audio recovery`);

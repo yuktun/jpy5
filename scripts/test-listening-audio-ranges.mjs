@@ -33,7 +33,7 @@ const page = await browser.newPage({ viewport: { width: 390, height: 844 }, serv
 const errors = [];
 page.on("pageerror", error => errors.push(error.message));
 if (!native) {
-  await page.route("https://ttrw.jp/static/sound/**", route => route.abort());
+  await page.route("**/*.mp3", route => route.abort());
   await page.addInitScript(() => {
     const states = new WeakMap();
     const state = audio => {
@@ -61,11 +61,11 @@ if (!native) {
 }
 try {
   for (const lesson of lessons) {
-    if (native && process.env.JPY5_LISTENING_AUDIO_DIR) {
+    if (native) {
       const html = await readFile(`chapter-${lesson.number}-textbook.html`, "utf8");
       const url = html.match(/<audio[^>]*src="([^"]+)"/)[1];
-      const bytes = await readFile(resolve(process.env.JPY5_LISTENING_AUDIO_DIR, `${lesson.number}.mp3`));
-      await page.route(url, route => {
+      const bytes = await readFile(process.env.JPY5_LISTENING_AUDIO_DIR ? resolve(process.env.JPY5_LISTENING_AUDIO_DIR, `${lesson.number}.mp3`) : resolve(url));
+      await page.route('**/'+url, route => {
         const m = route.request().headers().range?.match(/^bytes=(\d+)-(\d*)$/);
         const start = m ? Number(m[1]) : 0, end = m?.[2] ? Math.min(Number(m[2]), bytes.length - 1) : bytes.length - 1;
         return route.fulfill({status:m?206:200,contentType:"audio/mpeg",body:bytes.subarray(start,end+1),headers:{"accept-ranges":"bytes",...(m?{"content-range":`bytes ${start}-${end}/${bytes.length}`}:{})}});

@@ -13,8 +13,8 @@ async function one(){await page.waitForFunction(()=>document.querySelectorAll('.
 try{
  for(let lesson=13;lesson<=20;lesson++)for(const module of ['reading','textbook']){
   await page.goto(base+`chapter-${lesson}-${module}.html`);await one();
-  const src=await card().locator('audio[controls]').getAttribute('src');assert(src.startsWith('https://ttrw.jp/static/sound/'));
-  if(lesson>13){assert((await card().innerText()).includes('音訊由 ttrw.jp 提供。'));assert(!(await card().innerText()).includes('離線模式不保證'));}
+  const src=await card().locator('audio[controls]').getAttribute('src');assert(src.startsWith('assets/audio/'));
+  if(lesson>13){assert((await card().innerText()).includes('音訊來源：ttrw.jp；由本站 GitHub Pages 提供播放。'));assert(!(await card().innerText()).includes('離線模式不保證'));}
   assert.equal(await card().locator('audio').count(),module==='reading'?2:1);
   for(let i=0;i<3;i++){
    for(const mode of module==='reading'?['translation','original']:['translation','dialogue','focus'])await page.locator(`[data-${module==='reading'?'reading-mode':'mode'}="${mode}"]`).click();
@@ -36,11 +36,12 @@ try{
   results.push({lesson,module,count:1});console.log(`PASS lesson ${lesson} ${module}: one notice, source retained, modes/reinitialization/duplicates/hidden audio/reload`);
  }
  await page.evaluate(()=>{const helper=document.createElement('audio');helper.hidden=true;helper.src='https://example.invalid/helper.mp3';document.body.append(helper)});await one();
- // A hidden-only helper or same-origin audio needs no internet label. Multiple
+ // A hidden-only helper needs no label; same-origin MP3s require internet. Multiple
  // external source formats in one visible player still need only one label.
  await page.evaluate(()=>{for(const [id,hidden,src] of [['hidden-only',true,'https://example.invalid/audio.mp3'],['local-only',false,location.origin+'/local.mp3'],['source-formats',false,null]]){const c=document.createElement('section');c.className='audio-workspace';c.id=id;const a=document.createElement('audio');a.controls=true;a.hidden=hidden;if(src)a.src=src;else for(const type of ['mpeg','ogg']){const s=document.createElement('source');s.src='https://example.invalid/audio.'+type;a.append(s)}c.append(a);document.body.append(c)}});
  await page.waitForFunction(()=>document.querySelectorAll('#source-formats .audio-internet-required').length===1);
- assert.equal(await page.locator('#hidden-only .audio-internet-required,#local-only .audio-internet-required').count(),0);
+ assert.equal(await page.locator('#hidden-only .audio-internet-required').count(),0);
+ assert.equal(await page.locator('#local-only .audio-internet-required').count(),1);
  assert.deepEqual(errors,[]);await writeFile('tmp/audio-online-notices/results.json',JSON.stringify(results,null,2));
- console.log('PASS hidden-only/local players excluded; multiple source formats deduplicated; no script errors');
+ console.log('PASS hidden-only players excluded; local MP3 players labelled; multiple source formats deduplicated; no script errors');
 }finally{await browser.close();server.close()}

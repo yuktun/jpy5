@@ -27,7 +27,7 @@ Then open <http://localhost:8000>.
 
 The default is online mode. Opening or installing the app does **not** download an offline package. Normal page requests and browser HTTP caching still work as usual. Open **離線設定** in the header and choose **下載離線內容** to save all 73 study pages, text, vocabulary, exercises and required local assets. The dialog displays the package size, file progress, completion and actionable errors. Keep it open until **離線已就緒** appears.
 
-**All PDFs (including same-origin PDFs), external links, external audio and Google sync require internet and are excluded.** Links and audio players are labelled accordingly. Device pronunciation also requires an installed local Japanese voice; test it before relying on it offline.
+**All PDFs (including same-origin PDFs), external links, all MP3 audio (including same-origin recordings) and Google sync require internet and are excluded.** Links and audio players are labelled accordingly. Device pronunciation also requires an installed local Japanese voice; test it before relying on it offline.
 
 Updates download only when selected. The small service worker/inventory can update automatically, and the dialog reports when the saved package has a newer version available. Each file is checked against the release hash (text line endings are normalized for Windows/Git portability). A new package becomes active only after every required file is present. Failed, interrupted or inconsistent deployments never replace a complete saved package. Choose **重新載入新版本** after an update to reload the current page; other open pages can be reloaded when convenient.
 
@@ -101,6 +101,12 @@ node scripts/test-pwa.mjs
 Every Vocabulary page includes **老師副詞 · 例句・語感・練習**. All eight lessons share the same responsive cards, Traditional Chinese meanings and translations, teacher-source disclosures, comparison notes, cross-lesson links and hidden practice answers. The full eight-page handout contributes 34 grouped cards, 73 example blocks and 50 practice prompts. Lesson 13 now uses the shared format too. Ambiguous questions and simplified source rules are qualified beside the relevant content; reference answers are labelled as learning additions.
 
 Edit `scripts/adverb-notes-data.mjs`, then run `node scripts/generate-adverb-notes.mjs` and `node scripts/generate-offline-manifest.mjs`. [Adverb source audit](ADVERB_SOURCE_AUDIT.md) records coverage and qualifications. Validate with `node scripts/test-adverb-notes.mjs`, `node scripts/test-lesson13-teacher.mjs`, `node scripts/test-pwa.mjs` and `node scripts/test-adverb-update.mjs` (defaults to the preceding published adverb release). Existing vocabulary counts and saved progress are unchanged.
+
+## Audio hosting
+
+The 16 main Reading and Listening recordings for lessons 13–20 are hosted under `assets/audio/reading/` and `assets/audio/listening/` on GitHub Pages, with original filenames and bytes preserved. Full-track, sentence and paragraph playback use the same local recordings. The ten additional exercise tracks not supplied locally retain their original external links. All MP3s remain online-only and are excluded from the optional offline package.
+
+Run `node scripts/test-hosted-audio.mjs` for file/link checks, native playback, sentence/paragraph seeking, preview-server byte ranges, and offline/protected-file exclusions. It starts the public preview on port 8000 and uses Edge (or `JPY5_BROWSER_CHANNEL`).
 
 ## Source
 

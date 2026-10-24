@@ -73,7 +73,7 @@ await page.addInitScript(() => {
   HTMLMediaElement.prototype.pause = function() { state(this).paused = true; };
   HTMLMediaElement.prototype.load = function() {};
 });
-await page.route("https://ttrw.jp/static/sound/**", route => route.abort());
+await page.route("**/*.mp3", route => route.abort());
 
 try {
   for (const lesson of lessons) {

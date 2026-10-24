@@ -51,7 +51,7 @@ import('./teacher-progress-privacy.mjs').catch(()=>{});
     for (const link of document.querySelectorAll("a[href]")) {
       const url = new URL(link.href, location.href);
       if (!/^https?:$/.test(url.protocol)) continue;
-      if (url.origin === location.origin && url.pathname.startsWith(root) && !/\.pdf$/i.test(decodeURIComponent(url.pathname))) continue;
+      if (url.origin === location.origin && url.pathname.startsWith(root) && !/\.(?:pdf|mp3)$/i.test(decodeURIComponent(url.pathname))) continue;
       if (link.querySelector(".internet-required")) continue;
       const note = document.createElement("small");
       note.className = "internet-required";
@@ -69,7 +69,7 @@ import('./teacher-progress-privacy.mjs').catch(()=>{});
       if (sources.some(src => {
         if (!src) return false;
         const url = new URL(src, location.href);
-        return /^https?:$/.test(url.protocol) && url.origin !== location.origin;
+        return /^https?:$/.test(url.protocol) && (url.origin !== location.origin || /\.mp3$/i.test(decodeURIComponent(url.pathname)));
       })) cards.get(card).push(player);
     }
     for (const [card, players] of cards) {

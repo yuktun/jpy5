@@ -2,7 +2,7 @@ window.JPY5_CONVERSATION = {
   title: "あなたこそ、あの本の山はいったい何なの！",
   setting: "ワット家のダイニングキッチン",
   speakers: ["ワット", "いずみ"],
-  audio: "https://ttrw.jp/static/sound/sound202406141718354246.mp3",
+  audio: "assets/audio/listening/sound202406141718354246.mp3",
   sourceStatus: "verified_textbook_answerbook_audio",
   source: {
     textbookPdf: "work/lesson18-source/textbook.pdf",
@@ -11,8 +11,8 @@ window.JPY5_CONVERSATION = {
     followUpPdfPages: [7, 8],
     followUpPrintedPages: [77, 78],
     audioTracks: [
-      { track: "MP3 1-17", url: "https://ttrw.jp/static/sound/sound202406141718354184.mp3", textbookPdfPage: 2, printedPage: 72, activity: "読む 2. 読もう" },
-      { track: "MP3 1-18", url: "https://ttrw.jp/static/sound/sound202406141718354246.mp3", textbookPdfPage: 5, printedPage: 75, activity: "話す・聞く 2. 聞いてみよう／3. もう一度聞こう", conversationTrack: true },
+      { track: "MP3 1-17", url: "assets/audio/reading/sound202406141718354184.mp3", textbookPdfPage: 2, printedPage: 72, activity: "読む 2. 読もう" },
+      { track: "MP3 1-18", url: "assets/audio/listening/sound202406141718354246.mp3", textbookPdfPage: 5, printedPage: 75, activity: "話す・聞く 2. 聞いてみよう／3. もう一度聞こう", conversationTrack: true },
       { track: "MP3 1-19", url: "https://ttrw.jp/static/sound/sound202406141718354323.mp3", textbookPdfPage: 13, printedPage: 83, activity: "問題 I" }
     ]
   },

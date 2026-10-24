@@ -1,5 +1,5 @@
 window.JPY5_READING={
-  title:"ロボットコンテスト―ものづくりは人づくり―",author:"森政弘「ロボットコンテストの教育的効果」『てら』No.11 エヌ・ティ・ティ・コムウェア（株）より、一部を改変して掲載",audio:"https://ttrw.jp/static/sound/sound202406141718354467.mp3",sourceStatus:"textbook_pages_1_to_4_and_answerbook_page_9_visually_verified",
+  title:"ロボットコンテスト―ものづくりは人づくり―",author:"森政弘「ロボットコンテストの教育的効果」『てら』No.11 エヌ・ティ・ティ・コムウェア（株）より、一部を改変して掲載",audio:"assets/audio/reading/sound202406141718354467.mp3",sourceStatus:"textbook_pages_1_to_4_and_answerbook_page_9_visually_verified",
   source:{readingPdfPages:[1,2,3,4],readingPrintedPages:[85,86,87,88],answerBookPdfPage:9,audioTrack:"MP3 1-20"},
   paragraphs:[
     {id:1,jp:"私はロボットコンテスト（ロボコン）を提唱し、1989年以来、その普及に努めてきた。ロボコンとは、与えられた課題を達成するロボットを設計し、製作し、競技を行うというものである。このロボコンは初めのころはNHKの番組で、大学や高専の学生を対象に行われていた。ところが、1991年からは中学校にまで広がり、今日では、ロボコンを技術科の授業として行っている中学校が、全国で3,000校ほどにもなっている。これはロボコンというものが、大きな教育力を備えた活動だということがはっきりしてきたからにほかならない。",zh:"我提倡機械人大賽，並自1989年起致力推廣。參賽者設計、製作能完成指定課題的機械人，再進行比賽。活動最初在NHK節目中以大學和高專學生為對象，1991年起擴展至中學；如今全國約有3,000所中學把它作為技術科課堂，正因其教育力量已逐漸明確。"},

@@ -43,7 +43,7 @@ const serveAudio=route=>{
   const start=match?Number(match[1]):0, end=match?.[2]?Math.min(Number(match[2]),bytes.length-1):bytes.length-1;
   return route.fulfill({status:match?206:200,contentType:'audio/mpeg',body:bytes.subarray(start,end+1),headers:{'accept-ranges':'bytes',...(match?{'content-range':`bytes ${start}-${end}/${bytes.length}`}:{})}});
 };
-await page.route(timing.src,serveAudio);
+await page.route('**/'+timing.src,serveAudio);
 const audio=page.locator('[data-reading-paragraph-audio]');
 const sentence=id=>page.locator(`[data-reading-sentence="${id}"]`);
 async function playing(start){
@@ -139,16 +139,16 @@ try {
   assert.deepEqual(errors,[]);
   console.log('PASS: paragraph/sentence/full-track switching, view changes, keyboard, ruby, font controls, navigation, 320/390/768/1440px');
   // A failed media request must preserve sentence text and allow retry.
-  await page.unroute(timing.src);
-  await page.route(timing.src,route=>route.abort());
+  await page.unroute('**/'+timing.src);
+  await page.route('**/'+timing.src,route=>route.abort());
   await page.goto(`http://127.0.0.1:${server.address().port}/chapter-14-reading.html`,{waitUntil:'domcontentloaded'});
   await page.locator('[data-reading-mode="translation"]').click(); await sentence('1-1').click();
   await page.waitForFunction(()=>document.querySelector('[data-reading-sentence="1-1"]').title.includes('重試'));
   assert.equal(await baseText(sentence('1-1')),clips[0].text);
   assert.equal(await sentence('1-1').getAttribute('aria-pressed'),'false');
   console.log('PASS: audio-load error preserves sentence and clears highlight');
-  await page.unroute(timing.src);
-  await page.route(timing.src,serveAudio);
+  await page.unroute('**/'+timing.src);
+  await page.route('**/'+timing.src,serveAudio);
   await sentence('1-1').click(); await playing(9.6);
   console.log('PASS: retry after restored audio succeeds');
   await writeFile('tmp/sentence14-pilot/results.json',JSON.stringify({browser:'Microsoft Edge / Chromium',results,errors},null,2));

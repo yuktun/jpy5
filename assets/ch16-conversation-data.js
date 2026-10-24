@@ -1,5 +1,5 @@
 window.JPY5_CONVERSATION={
- title:"不幸中の幸いだよ — 富士大学の教室で",audio:"https://ttrw.jp/static/sound/sound202406141718353506.mp3",
+ title:"不幸中の幸いだよ — 富士大学の教室で",audio:"assets/audio/listening/sound202406141718353506.mp3",
  items:[
   {id:1,jp:"人身事故",kana:"じんしんじこ",zh:"涉及人身傷亡的交通事故。",use:"カリナ猜想青木是否闖下了人身事故。",point:"「人身事故」指造成他人受傷或死亡的交通事故。",start:32.50,end:33.40,chunks:["人身","事故"],distractors:["物損事故","交通事情","人身事件"]},
   {id:2,jp:"危うく",kana:"あやうく",zh:"差一點；險些。",use:"說明差一點便釀成人身事故。",point:"「危うく～ところだった」表示幾乎發生某件不好的事情。",start:34.76,end:35.68,chunks:["危うく"],distractors:["危なくて","あいにく","ようやく"]},

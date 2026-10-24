@@ -1,5 +1,5 @@
 window.JPY5_READING={
-  title:"尺八で日本文化を理解",author:"毎日新聞 2000年6月9日付夕刊より、一部を改変して掲載",audio:"https://ttrw.jp/static/sound/sound202406141718355125.mp3",sourceStatus:"textbook_pages_1_to_4_and_answerbook_page_13_visually_verified",
+  title:"尺八で日本文化を理解",author:"毎日新聞 2000年6月9日付夕刊より、一部を改変して掲載",audio:"assets/audio/reading/sound202406141718355125.mp3",sourceStatus:"textbook_pages_1_to_4_and_answerbook_page_13_visually_verified",
   source:{activityPdfPages:[1,3,4],readingPdfPages:[2,3],readingPrintedPages:[100,101],answerBookPdfPage:13,audioTrack:"MP3 2-1"},
   paragraphs:[
     {id:1,jp:"クリストファー遙盟・ブレイズデルさん。邦楽器・尺八の奏者である。1984年に号「遙盟」を授かり、日本の内外で教えながら古典と自身の演奏を続ける。この度、修業に努めた自らの半生を語った著書『尺八オデッセイ―天の音色に魅せられて』で優れたノンフィクション作品に与えられる第6回蓮如賞を受賞した。",zh:"Christopher Yomei Blasdel 是日本傳統樂器尺八的演奏家。1984年獲授號「遙盟」，一面在日本國內外教學，一面持續古典及個人演奏。他以記述自身修行半生的著作獲得第六屆蓮如獎。"},

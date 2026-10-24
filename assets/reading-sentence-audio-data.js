@@ -1,6 +1,6 @@
 // Lesson 13 pilot only. Real recording alignment; see LESSON13_SENTENCE_AUDIO.md.
 window.JPY5_READING_SENTENCE_AUDIO = {
-  "src": "https://ttrw.jp/static/sound/sound202406141718352260.mp3",
+  "src": "assets/audio/reading/sound202406141718352260.mp3",
   "alignment": "Local original MP3: cached word alignment plus silence inspection; not audibly verified.",
   "sentences": [
     {

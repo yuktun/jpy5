@@ -1,5 +1,5 @@
 window.JPY5_CONVERSATION={
-title:"ちょっと自慢話になりますが",setting:"大学演劇部 入部歓迎会",speakers:["山口","南","古田","マヨラン","松下","アンタ"],audio:"https://ttrw.jp/static/sound/sound202406141718354761.mp3",sourceStatus:"textbook_answerbook_audio_verified",source:{conversationPdfPages:[5,6,7,8],conversationPrintedPages:[89,90,91,92],answerBookPdfPages:[9,10],audioTrack:"MP3 1-21",activities:[1,2,3,4,5,6]},sourceNote:"話す・聞くの活動1〜6、会話本文、8個の番号付き空欄、4問の内容設問、5問の表現設問は『みんなの日本語 中級II』第19課PDF pp. 5–8（印刷pp. 89–92）から視覚的に転記した。公式解答は解答冊PDF pp. 9–10（聴解解答は第9頁から第10頁に続く）で確認し、8個の空欄と再生区間は公式MP3 1-21で照合した。",items:[],dialogue:[
+title:"ちょっと自慢話になりますが",setting:"大学演劇部 入部歓迎会",speakers:["山口","南","古田","マヨラン","松下","アンタ"],audio:"assets/audio/listening/sound202406141718354761.mp3",sourceStatus:"textbook_answerbook_audio_verified",source:{conversationPdfPages:[5,6,7,8],conversationPrintedPages:[89,90,91,92],answerBookPdfPages:[9,10],audioTrack:"MP3 1-21",activities:[1,2,3,4,5,6]},sourceNote:"話す・聞くの活動1〜6、会話本文、8個の番号付き空欄、4問の内容設問、5問の表現設問は『みんなの日本語 中級II』第19課PDF pp. 5–8（印刷pp. 89–92）から視覚的に転記した。公式解答は解答冊PDF pp. 9–10（聴解解答は第9頁から第10頁に続く）で確認し、8個の空欄と再生区間は公式MP3 1-21で照合した。",items:[],dialogue:[
 ["山口","司会の山口です。今日は皆さんのさくら大学演劇部への入部を歓迎してささやかな会を行いたいと思います。①＿＿＿＿＿＿＿＿。"],
 ["南","はい。部長の南です。皆さん、入学おめでとうございます。我が演劇部は代々全国大学演劇祭で優秀な成績を収めてきた歴史ある部です。その伝統と誇りをぜひ受け継いでもらいたいと思います。"],
 ["山口","では、次に、古田先輩、②＿＿＿＿＿＿＿＿。続いて、新入生にバトンを回しますので、心の準備をしておいてください。じゃ、古田さん。"],

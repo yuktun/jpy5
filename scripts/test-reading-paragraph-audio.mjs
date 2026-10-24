@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Native media smoke test. JPY5_READING_AUDIO_DIR can supply downloaded official
-// tracks named 13.mp3 ... 20.mp3; otherwise this uses the original remote URLs.
+// tracks named 13.mp3 ... 20.mp3; otherwise this uses the site-hosted recordings.
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 import { createServer } from "node:http";
@@ -29,9 +29,9 @@ page.on("pageerror", error => errors.push(error.message));
 try {
   for (const [lesson, timing] of Object.entries(timings)) {
     if (selectedLessons && !selectedLessons.includes(lesson)) continue;
-    if (process.env.JPY5_READING_AUDIO_DIR) {
-      const bytes = await readFile(resolve(process.env.JPY5_READING_AUDIO_DIR, `${lesson}.mp3`));
-      await page.route(timing.src, route => {
+    {
+      const bytes = await readFile(process.env.JPY5_READING_AUDIO_DIR ? resolve(process.env.JPY5_READING_AUDIO_DIR, `${lesson}.mp3`) : resolve(timing.src));
+      await page.route('**/'+timing.src, route => {
         const range = route.request().headers().range?.match(/^bytes=(\d+)-(\d*)$/);
         const start = range ? Number(range[1]) : 0;
         const end = range?.[2] ? Math.min(Number(range[2]), bytes.length - 1) : bytes.length - 1;

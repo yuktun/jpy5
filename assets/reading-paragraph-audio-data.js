@@ -2,7 +2,7 @@
 // startText/endText bind each audio range to the displayed Japanese paragraph.
 window.JPY5_READING_PARAGRAPH_AUDIO = {
   "13": {
-    "src": "https://ttrw.jp/static/sound/sound202406141718352260.mp3",
+    "src": "assets/audio/reading/sound202406141718352260.mp3",
     "duration": 252.704,
     "paragraphs": [
       {
@@ -43,7 +43,7 @@ window.JPY5_READING_PARAGRAPH_AUDIO = {
     ]
   },
   "14": {
-    "src": "https://ttrw.jp/static/sound/sound202406141718352903.mp3",
+    "src": "assets/audio/reading/sound202406141718352903.mp3",
     "duration": 176.914,
     "paragraphs": [
       {
@@ -84,7 +84,7 @@ window.JPY5_READING_PARAGRAPH_AUDIO = {
     ]
   },
   "15": {
-    "src": "https://ttrw.jp/static/sound/sound202406141718353195.mp3",
+    "src": "assets/audio/reading/sound202406141718353195.mp3",
     "duration": 174.035,
     "paragraphs": [
       {
@@ -132,7 +132,7 @@ window.JPY5_READING_PARAGRAPH_AUDIO = {
     ]
   },
   "16": {
-    "src": "https://ttrw.jp/static/sound/sound202406141718353452.mp3",
+    "src": "assets/audio/reading/sound202406141718353452.mp3",
     "duration": 157.41,
     "paragraphs": [
       {
@@ -173,7 +173,7 @@ window.JPY5_READING_PARAGRAPH_AUDIO = {
     ]
   },
   "17": {
-    "src": "https://ttrw.jp/static/sound/sound202406141718353775.mp3",
+    "src": "assets/audio/reading/sound202406141718353775.mp3",
     "duration": 264.732,
     "paragraphs": [
       {
@@ -221,7 +221,7 @@ window.JPY5_READING_PARAGRAPH_AUDIO = {
     ]
   },
   "18": {
-    "src": "https://ttrw.jp/static/sound/sound202406141718354184.mp3",
+    "src": "assets/audio/reading/sound202406141718354184.mp3",
     "duration": 194.84,
     "paragraphs": [
       {
@@ -283,7 +283,7 @@ window.JPY5_READING_PARAGRAPH_AUDIO = {
     ]
   },
   "19": {
-    "src": "https://ttrw.jp/static/sound/sound202406141718354467.mp3",
+    "src": "assets/audio/reading/sound202406141718354467.mp3",
     "duration": 222.333,
     "paragraphs": [
       {
@@ -324,7 +324,7 @@ window.JPY5_READING_PARAGRAPH_AUDIO = {
     ]
   },
   "20": {
-    "src": "https://ttrw.jp/static/sound/sound202406141718355125.mp3",
+    "src": "assets/audio/reading/sound202406141718355125.mp3",
     "duration": 217.131,
     "paragraphs": [
       {

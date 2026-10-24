@@ -1,6 +1,6 @@
 window.JPY5_CONVERSATION={
   title:"もうお兄ちゃんだね",setting:"池田家のリビングルーム",speakers:["サントス","ミランダ","池田","優太"],
-  audio:"https://ttrw.jp/static/sound/sound202406141718353863.mp3",
+  audio:"assets/audio/listening/sound202406141718353863.mp3",
   sourceStatus:"verified_textbook_answerbook_audio",
   sourceNote:"会話本文と活動は『みんなの日本語 中級II』第17課「話す・聞く」pp.61–64、固定解答・解答例は解答冊、九つの表現と再生区間は公式MP3 1–15で照合した。アプリ作成の説明・回答例は別表示とする。",
   dialogue:[

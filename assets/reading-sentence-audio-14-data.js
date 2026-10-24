@@ -1,6 +1,6 @@
 // Lesson 14 only; see LESSON14_SENTENCE_AUDIO.md.
 window.JPY5_READING_SENTENCE_AUDIO = {
-  "src": "https://ttrw.jp/static/sound/sound202406141718352903.mp3",
+  "src": "assets/audio/reading/sound202406141718352903.mp3",
   "alignment": "Exact local original MP3, cached word timestamps and measured silence; not audibly verified.",
   "sentences": [
     {

@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const stage = document.querySelector("#reading-stage");
   const fullAudio = document.querySelector(".reading-audio-workspace audio");
-  const timing = Object.values(window.JPY5_READING_PARAGRAPH_AUDIO || {}).find(item => item.src === fullAudio?.src);
+  const timing = Object.values(window.JPY5_READING_PARAGRAPH_AUDIO || {}).find(item => new URL(item.src, document.baseURI).href === fullAudio?.src);
   if (!stage || !fullAudio || !timing) return;
   const audio = document.createElement("audio");
   audio.src = timing.src;
