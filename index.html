@@ -7,7 +7,7 @@
     <title>日本語 Year 5</title>
     <link rel="icon" href="assets/app-icon.png">
     <link rel="apple-touch-icon" href="assets/app-icon.png">
-    <link rel="stylesheet" href="assets/styles.css?v=30">
+    <link rel="stylesheet" href="assets/styles.css?v=31">
     <script src="assets/common.js?v=4" defer></script>
     <script src="assets/learning-guide.js?v=2" defer></script>
     <script src="assets/install-app.js?v=1" defer></script>
@@ -39,9 +39,10 @@
           <a href="chapter-14-textbook.html"><span>聴</span>聆聽</a>
           <a href="chapter-14-review.html"><span>復</span>複習</a>
         </nav>
-        <a class="primary-button" href="chapter-14.html">
-          開啟第 14 課學習中心 <span aria-hidden="true">→</span>
-        </a>
+        <div class="home-install-app" data-install-app-section>
+          <button class="install-app-button primary-button" type="button" data-install-app>加入桌面</button>
+          <p class="install-app-feedback" data-install-app-feedback aria-live="polite"></p>
+        </div>
       </section>
 
       <section class="lesson-preview" aria-label="第五年課程">
@@ -146,20 +147,6 @@
             <span class="round-arrow" aria-hidden="true">↗</span>
           </a>
         </section>
-      </section>
-
-      <section class="install-app-section" data-install-app-section aria-labelledby="install-app-heading">
-        <div class="install-app-card">
-          <span class="install-app-icon" aria-hidden="true">📲</span>
-          <div>
-            <h2 id="install-app-heading">將 JPY5 加入桌面</h2>
-            <p>將日文學習工具加入主畫面，下次一按即可開啟。</p>
-          </div>
-          <button class="install-app-button primary-button" type="button" data-install-app>
-            <span aria-hidden="true">📲</span> 安裝桌面 App
-          </button>
-          <p class="install-app-feedback" data-install-app-feedback aria-live="polite"></p>
-        </div>
       </section>
 
       <section class="progress-sync-section" aria-labelledby="progress-sync-heading">
