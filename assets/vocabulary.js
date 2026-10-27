@@ -7,6 +7,8 @@ let flipped = false;
 const $ = selector => document.querySelector(selector);
 const byId = id => vocabulary.find(item => item.id === id);
 const pronunciation = window.JPY5Pronunciation;
+const sourceLabel = item => item.source ? item.source.label + (item.source.page ? ' · PDF第' + item.source.page + '頁（印刷第' + item.source.printedPage + '頁）' : '') : '';
+const sourceLink = item => item.source ? '<small><a href="' + item.source.url + (item.source.page ? '#page=' + item.source.page : '') + '" target="_blank" rel="noopener">' + sourceLabel(item) + ' ↗</a></small>' : '';
 const save = () => JPY5.write("vocabulary.cards.v2", state);
 const sectionItems = () => state.section === "all" ? vocabulary : vocabulary.filter(item => item.section === state.section);
 const orderKey = () => `${state.section}-${state.random ? "random" : "normal"}`;
@@ -15,7 +17,8 @@ function orderedItems() {
   const base = sectionItems();
   if (!state.random) return base;
   const key = orderKey(), baseIds = base.map(item => item.id);
-  if (!state.orders[key] || state.orders[key].length !== baseIds.length || state.orders[key].some(id => !baseIds.includes(id))) state.orders[key] = JPY5.shuffle(baseIds);
+  const retained = [...new Set(state.orders[key] || [])].filter(id => baseIds.includes(id));
+  state.orders[key] = [...retained, ...JPY5.shuffle(baseIds.filter(id => !retained.includes(id)))];
   return state.orders[key].map(byId).filter(Boolean);
 }
 
@@ -54,7 +57,7 @@ function renderList() {
     const inSection = selectedSection === "all" || item.section === selectedSection;
     return inSection && [item.kana,item.written,item.original,item.meaning,item.type,item.note,window.JPY5_TEACHER?.vocabulary[item.written]?.text || "",window.JPY5_TEACHER?.oct17?.vocabulary[item.written]?.gloss || "",window.JPY5_TEACHER?.oct17?.vocabulary[item.written]?.study || "",sectionLabel(item)].some(value => value.toLowerCase().includes(query));
   });
-  $("#vocab-list").innerHTML = matches.map(item => `<article class="vocab-row"><span>${item.id}</span><div><b lang="ja">${item.original || item.written}</b><small>${item.kana}${item.original ? ` · ${item.written}` : ""}</small></div>${pronunciation.button(item, "vocab-row-speak", `data-vocab-speak="${item.id}"`)}<p>${item.meaning}${item.note ? `<small>${item.note}</small>` : ""}</p><em>${item.type}<small>${sectionLabel(item)}</small></em>${window.JPY5_TEACHER?.block(window.JPY5_TEACHER.vocabulary[item.written])||""}${window.JPY5_TEACHER?.oct17?.vocabularyBlock(item.written)||""}</article>`).join("");
+  $("#vocab-list").innerHTML = matches.map(item => `<article class="vocab-row"><span>${item.id}</span><div><b lang="ja">${item.original || item.written}</b><small>${item.kana}${item.original ? ` · ${item.written}` : ""}</small></div>${pronunciation.button(item, "vocab-row-speak", `data-vocab-speak="${item.id}"`)}<p>${item.meaning}${item.note ? `<small>${item.note}</small>` : ""}${sourceLink(item)}</p><em>${item.type}<small>${sectionLabel(item)}</small></em>${window.JPY5_TEACHER?.block(window.JPY5_TEACHER.vocabulary[item.written])||""}${window.JPY5_TEACHER?.oct17?.vocabularyBlock(item.written)||""}</article>`).join("");
   $("#vocab-count").textContent = `顯示 ${matches.length} / ${vocabulary.length}`;
 }
 
@@ -77,7 +80,7 @@ function renderCard() {
   }
   $("#vocab-card-front").hidden = flipped; $("#vocab-card-back").hidden = !flipped;
   $("#vocab-card-front").innerHTML = `<p>${frontLabel()}</p><h2 lang="ja">${frontText(item)}</h2><span>點擊翻面查看答案</span>`;
-  $("#vocab-card-back").innerHTML = `<h2 class="card-retained-prompt" lang="ja">${frontText(item)}</h2><h2 class="card-revealed-answer" lang="ja">${backTitle(item)}</h2>${item.original ? `<span class="vocab-writing">日文表記 · ${item.written}</span>` : ""}<strong>${item.meaning}</strong><span>${item.type}${item.note ? ` · ${item.note}` : ""}</span>`;
+  $("#vocab-card-back").innerHTML = `<h2 class="card-retained-prompt" lang="ja">${frontText(item)}</h2><h2 class="card-revealed-answer" lang="ja">${backTitle(item)}</h2>${item.original ? `<span class="vocab-writing">日文表記 · ${item.written}</span>` : ""}<strong>${item.meaning}</strong><span>${item.type}${item.note ? ` · ${item.note}` : ""}</span><small>${sourceLabel(item)}</small>`;
   $("#vocab-star").textContent = state.starred.includes(item.id) ? "★" : "☆"; save();
 }
 
@@ -103,7 +106,7 @@ $("#vocab-right").onclick = () => mark("right"); $("#vocab-wrong").onclick = () 
 $("#vocab-star").onclick = () => { const item=current(); if(!item)return; state.starred=state.starred.includes(item.id)?state.starred.filter(id=>id!==item.id):[...state.starred,item.id]; renderCard(); };
 $("#vocab-shuffle").onclick = () => { state.random=!state.random; resetPosition(); renderCard(); };
 $("#vocab-jump").onchange = event => { state.index=Math.max(0,Number(event.target.value)-1); flipped=false; renderCard(); };
-$("#reset-vocabulary").onclick = () => { if(confirm("清除全部 159 詞的記憶卡進度、答題標記和收藏？")){state=structuredClone(defaults);renderCard();} };
+$("#reset-vocabulary").onclick = () => { if(confirm("清除全部 191 詞的記憶卡進度、答題標記和收藏？")){state=structuredClone(defaults);renderCard();} };
 document.querySelectorAll("[data-vocab-section]").forEach(button => button.onclick=()=>{state.section=button.dataset.vocabSection;state.filter="all";resetPosition();renderCard();});
 document.querySelectorAll("[data-vocab-direction]").forEach(button => button.onclick=()=>{state.direction=button.dataset.vocabDirection;flipped=false;renderCard();});
 document.querySelectorAll("[data-vocab-filter]").forEach(button => button.onclick=()=>{state.filter=button.dataset.vocabFilter;resetPosition();renderCard();});

@@ -11,7 +11,7 @@ await new Promise(done=>server.listen(0,'127.0.0.1',done));
 const base=`http://127.0.0.1:${server.address().port}`,browser=await chromium.launch({headless:true,channel:process.env.JPY5_BROWSER_CHANNEL||'msedge'});
 let checks=0;
 try{
-  for(let lesson=13;lesson<=20;lesson++){
+  for(const lesson of process.env.JPY5_QUIZ_OFFLINE_ONLY==='1'?[]:[13,14,15,16,17,18,19,20]){
     const context=await browser.newContext({serviceWorkers:'block'}),page=await context.newPage(),errors=[];
     await context.route('**/*',route=>route.request().url().startsWith(base)?route.continue():route.abort());
     page.on('pageerror',error=>errors.push(error.message));
@@ -82,6 +82,11 @@ try{
   await offlineContext.route('**/*',route=>route.request().url().startsWith(base)?route.continue():route.abort());
   await offlinePage.goto(base+'/chapter-20-quiz.html');
   await offlinePage.waitForFunction(()=>Boolean(navigator.serviceWorker.controller),{timeout:30000});
+  // The package is deliberately opt-in; service-worker control alone is not a download.
+  await offlinePage.locator('.pwa-status').click();
+  await offlinePage.locator('[data-offline-download]').click();
+  await offlinePage.waitForFunction(()=>document.querySelector('.pwa-status')?.dataset.state==='ready',{timeout:60000});
+  await offlinePage.getByRole('button',{name:'關閉',exact:true}).click();
   await offlinePage.locator('#start-quiz').click();await offlinePage.locator('[data-answer="0"]').click();await offlinePage.locator('#next-question').click();
   const offlineDraft=await offlinePage.evaluate(()=>JSON.parse(localStorage.getItem('jpy5.chapter20.quiz.activeRun')));
   await offlineContext.setOffline(true);await offlinePage.reload();

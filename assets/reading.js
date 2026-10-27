@@ -27,11 +27,11 @@ document.addEventListener("DOMContentLoaded", () => {
       return `<ruby>${esc(part)}<rt>${esc(kana)}</rt></ruby>`;
     }).join("");
   }
-  function ruby(text,{furiganaContext,furiganaOverrides=[]}={}){
+  function ruby(text,{furiganaContext,furiganaOverrides=[],suppressWords=[]}={}){
     if(!state.furigana)return esc(text);
     const readings=new Map(Object.entries(data.furigana));
     Object.entries(data.furiganaContexts?.[furiganaContext]||{}).forEach(([word,reading])=>readings.set(word,reading));
-    const words=[...readings.keys()].sort((a,b)=>b.length-a.length);
+    const words=[...readings.keys()].filter(word=>!suppressWords.some(target=>word.includes(target))).sort((a,b)=>b.length-a.length);
     const pattern=new RegExp(words.map(word=>word.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|"),"g");
     let out="",last=0,occurrences=new Map;
     for(const match of String(text).matchAll(pattern)){
@@ -91,17 +91,20 @@ document.addEventListener("DOMContentLoaded", () => {
       return `<button type="button" class="textbook-model-toggle" data-textbook-model-toggle="${id}" aria-expanded="false" aria-controls="${id}">參考回答例を見る</button><div class="textbook-model-answer" id="${id}" hidden><span>${esc(item.modelLabel||"參考回答例")}</span>${content}</div>`;
     };
     const activityCard=(activity,item,index)=>{
+      const promptRuby=text=>rubyLines(text,item.kind==="reading-inputs"?{suppressWords:["大人","小人"]}:undefined);
+      const source=item.source||activity.source;
+      const sourceLink=source?`<p class="textbook-reference-note"><a href="${esc(source.url)}" target="_blank" rel="noopener">${esc(source.label)} ↗</a></p>`:"";
       let response="";
       if(item.kind==="open-followup"){
         response=`<aside class="textbook-learning-tip"><strong>課本追問</strong>${item.followUps.map(prompt=>`<p lang="ja">${ruby(prompt)}</p>`).join("")}</aside><label class="textbook-draft-label"><span>我的回答準備（不計分）</span><textarea rows="6" data-textbook-draft="activity-${item.id}" aria-label="${esc(activity.title)} ${index+1} 我的回答"></textarea></label>`;
       }else if(item.kind==="reading-inputs"){
-        response=`<div class="textbook-no-grade"><strong lang="ja">${ruby("動物園　入園料")}</strong><p lang="ja">${ruby("大人・・・500円　　小人・・・250円")}</p></div><div class="textbook-reading-examples">${item.questions.map((question,questionIndex)=>`<div><dt lang="ja">${ruby(questionIndex===0?"大人":"小人")}</dt><dd><label class="textbook-draft-label"><span lang="ja">${ruby(question)}</span><textarea rows="2" data-textbook-draft="activity-${item.id}-${questionIndex}" aria-label="${esc(question)}"></textarea></label></dd></div>`).join("")}</div>`;
+        response=`<div class="textbook-no-grade"><strong lang="ja">${ruby("動物園　入園料")}</strong><p lang="ja">${promptRuby("大人・・・500円　　小人・・・250円")}</p></div><div class="textbook-reading-examples">${item.questions.map((question,questionIndex)=>`<div><dt lang="ja">${promptRuby(questionIndex===0?"大人":"小人")}</dt><dd><label class="textbook-draft-label"><span lang="ja">${promptRuby(question)}</span><textarea rows="2" data-textbook-draft="activity-${item.id}-${questionIndex}" aria-label="${esc(question)}"></textarea></label></dd></div>`).join("")}</div>`;
       }else{
         response=`<label class="textbook-draft-label"><span>${item.kind==="research"?"我的查考與發表準備":"我的回答準備"}（不計分）</span><textarea rows="${item.kind==="research"?8:6}" data-textbook-draft="activity-${item.id}" aria-label="${esc(activity.title)} ${index+1} 我的回答"></textarea></label>`;
       }
       const writing=item.kind==="teacher-writing";
       const guide=writing ? `<p>${esc(item.teacherTip)}</p><ol class="teacher-writing-guide">${item.teacherGuide.map(line=>`<li lang="ja">${teacherExtras.jp(line,state.furigana)}</li>`).join("")}</ol><p>文章の流れ＝文章結構：時間順序與想法的變化。</p>${teacherExtras.source("reading","13")}` : "";
-      return `<article class="textbook-activity-card"${writing ? ' id="teacher-writing"' : ""}><span>${writing?"老師補充 · ":""}${activity.number}.${index+1} · 不計分</span><h3 lang="ja">${item.teacherPrompt ? teacherExtras.jp(item.teacherPrompt,state.furigana) : rubyLines(item.prompt)}</h3>${item.id==="japanese-difficulty" ? teacherExtras?.block(teacherExtras.presentation,state.furigana)||"" : ""}${guide}${response}${writing ? '<output class="teacher-writing-count" aria-live="polite">0 字 · 目標約400字（不計空白）</output>' : ""}${modelBlock(activity,item,index)}</article>`;
+      return `<article class="textbook-activity-card"${writing ? ' id="teacher-writing"' : ""}><span>${writing?"課本原題／老師重點 · ":""}${activity.number}.${index+1} · 不計分</span><h3 lang="ja">${item.teacherPrompt ? teacherExtras.jp(item.teacherPrompt,state.furigana) : promptRuby(item.prompt)}</h3>${item.sourceExamples?`<p class="textbook-source-examples" lang="ja">課本例：${item.sourceExamples.map(word=>ruby(word)).join("　")}</p>`:""}${sourceLink}${item.id==="japanese-difficulty" ? teacherExtras?.block(teacherExtras.presentation,state.furigana)||"" : ""}${guide}${response}${writing ? '<output class="teacher-writing-count" aria-live="polite">0 字 · 目標約400字（不計空白）</output>' : ""}${modelBlock(activity,item,index)}</article>`;
     };
     const activityGroup=activity=>`<section class="textbook-activity-group"><header class="textbook-activity-heading"><span>${activity.sourceLabel}</span><h2 lang="ja">${ruby(`${activity.number}. ${activity.title}`)}</h2><p>${activity.id==="think"?"先想想自己平日查漢字讀音的方法。":activity.id==="think-speak"?"先整理自己的想法，再練習口頭發表。":"用自己的經驗介紹一個讀法出乎意料的漢字詞。"}</p></header><div class="textbook-activity-cards">${activity.items.map((item,index)=>activityCard(activity,item,index)).join("")}</div></section>`;
     const beforeCheck=data.textbookActivities.filter(activity=>activity.number<3).map(activityGroup).join("");
@@ -124,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
       html+=ruby(paragraph.jp.slice(position,target.start),{furiganaContext:"monthlyParking"});
       const note=teacherData.notes[target.note];
       const context=["earlyTsuki","finalTsukiSourceReading"].includes(target.note)?"misreadMonthlyParking":"monthlyParking";
-      html+=`<button type="button" class="teacher-annotation teacher-annotation--${esc(note.type||"vocab")}" data-teacher-note="${esc(target.note)}" aria-haspopup="dialog" aria-label="開啟「${esc(note.term)}」老師筆記">${ruby(target.text,{furiganaContext:context})}</button>`;
+      html+=`<button type="button" class="teacher-annotation teacher-annotation--${esc(note.type||"vocab")}" data-teacher-note="${esc(target.note)}" aria-haspopup="dialog" aria-label="開啟「${esc(note.term)}」學習註解">${ruby(target.text,{furiganaContext:context})}</button>`;
       position=target.start+target.text.length;
     });
     return html+ruby(paragraph.jp.slice(position),{furiganaContext:"monthlyParking"});
@@ -133,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if(!teacherData)return shell("老師筆記","資料載入中……","");
     const title=`${ruby("ゲッキョク")}<button type="button" class="teacher-annotation" data-teacher-note="company" aria-haspopup="dialog" aria-label="開啟「株式会社」老師筆記">${ruby("株式会社")}</button>`;
     const paragraphLabel=p=>{const source=teacherData.sourceParagraphs[p.id];return `原文第 ${source.sourceParagraph} 段${source.part?`（${source.part}）`:""}`;};
-    return shell("老師筆記",teacherData.objective,`<section class="teacher-overview"><span class="reading-badge">老師閱讀重點</span><p>${esc(teacherData.objective)}</p><ol class="teacher-timeline">${teacherData.timeline.map((item,i)=>`<li>${esc(item)}${i<teacherData.timeline.length-1?'<span aria-hidden="true">→</span>':''}</li>`).join("")}</ol><small class="teacher-reference">老師筆記來源：福田州平老師</small></section><article class="reading-paper teacher-paper" style="--reading-size:${[.98,1.1,1.24][state.font]}"><h3>${title}</h3>${teacherExtras?.block(teacherExtras.ending,state.furigana)||""}${teacherData.paragraphs.map(p=>`<section class="teacher-paragraph" data-teacher-paragraph="${p.id}"><div class="teacher-paragraph-meta"><span>${paragraphLabel(p)}</span><button type="button" class="teacher-focus" data-paragraph-focus="${p.id}" aria-expanded="false">💡 段落重點</button></div><p>${teacherText(p)}</p><aside class="teacher-focus-note" id="paragraph-focus-${p.id}" hidden>${esc(p.focus)}</aside></section>`).join("")}</article>`);
+    return shell("閱讀註解與老師補充",teacherData.objective,`<section class="teacher-overview"><span class="reading-badge">App 閱讀整理</span><p>${esc(teacherData.objective)}</p><ol class="teacher-timeline">${teacherData.timeline.map((item,i)=>`<li>${esc(item)}${i<teacherData.timeline.length-1?'<span aria-hidden="true">→</span>':''}</li>`).join("")}</ol><small class="teacher-reference">${esc(teacherData.provenanceSummary)}</small></section><article class="reading-paper teacher-paper" style="--reading-size:${[.98,1.1,1.24][state.font]}"><h3>${title}</h3>${teacherExtras?.block(teacherExtras.ending,state.furigana)||""}${teacherData.paragraphs.map(p=>`<section class="teacher-paragraph" data-teacher-paragraph="${p.id}"><div class="teacher-paragraph-meta"><span>${paragraphLabel(p)}</span><button type="button" class="teacher-focus" data-paragraph-focus="${p.id}" aria-expanded="false">💡 段落重點（App 分析）</button></div><p>${teacherText(p)}</p><aside class="teacher-focus-note" id="paragraph-focus-${p.id}" hidden>${esc(p.focus)}</aside></section>`).join("")}</article>`);
   }
   function findAnswers(){
     const task=data.find[findIndex%data.find.length];
@@ -169,7 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const note=teacherData.notes[button.dataset.teacherNote]; if(!note)return;
     const popup=document.createElement("section"); popup.className="teacher-note-popup"; popup.setAttribute("role","dialog"); popup.setAttribute("aria-modal","false"); popup.setAttribute("aria-label",`${note.term} 老師筆記`); popup.tabIndex=-1;
     const canSpeak=typeof window.speechSynthesis!=="undefined"&&typeof window.SpeechSynthesisUtterance!=="undefined";
-    popup.innerHTML=`<div class="teacher-note-head">${canSpeak?`<button type="button" class="teacher-speak" aria-label="朗讀 ${esc(note.term)}">🔊</button>`:""}<div><strong>${esc(note.term)}</strong>${note.reading?`<small>（${esc(note.reading)}）</small>`:""}</div><button type="button" class="teacher-note-close" aria-label="關閉老師筆記">×</button></div><p class="teacher-note-meaning">${esc(note.meaning)}</p><div><b>老師筆記</b><p>${esc(note.teacherNote)}</p></div>${note.correction?`<div class="teacher-correction"><b>💡 校對補充</b><p>${esc(note.correction)}</p></div>`:""}`;
+    popup.innerHTML=`<div class="teacher-note-head">${canSpeak?`<button type="button" class="teacher-speak" aria-label="朗讀 ${esc(note.term)}">🔊</button>`:""}<div><strong>${esc(note.term)}</strong>${note.reading?`<small>（${esc(note.reading)}）</small>`:""}</div><button type="button" class="teacher-note-close" aria-label="關閉學習註解">×</button></div><p class="teacher-note-meaning">${esc(note.meaning)}</p><div><b>${esc(note.provenance.label)}</b><p>${esc(note.teacherNote)}</p>${note.provenance.url?`<a class="teacher-source" href="${esc(note.provenance.url)}" target="_blank" rel="noopener">老師講義 · PDF 第1頁 ↗</a>`:""}</div>${note.correction?`<div class="teacher-correction"><b>💡 校對補充</b><p>${esc(note.correction)}</p></div>`:""}`;
     document.body.append(popup); notePopup=popup;
     const rect=button.getBoundingClientRect(), compact=window.matchMedia("(max-width: 720px)").matches;
     if(!compact){const width=Math.min(350,window.innerWidth-24);let left=Math.min(Math.max(12,rect.left),window.innerWidth-width-12);let top=rect.bottom+10;popup.style.width=`${width}px`; popup.style.left=`${left}px`; popup.style.top=`${top}px`;const height=popup.getBoundingClientRect().height;if(top+height>window.innerHeight-12){top=Math.max(12,rect.top-height-10);popup.style.top=`${top}px`}}

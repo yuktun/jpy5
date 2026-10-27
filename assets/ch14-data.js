@@ -12,9 +12,24 @@ window.JPY5_DATA = (() => {
     {id:"kke",group:"話す・聞く",title:"～っけ",meaning:"……來著？（記不清而確認）",formation:"V た＋っけ｜いA かった＋っけ｜なA・N＋だ（った）っけ｜V・いA 普通形＋んだ（った）っけ｜N・なA だ→な＋んだ（った）っけ",note:"說話者記不清楚，向自己或對方確認，屬口語。",contrast:"不適合正式書面語。",examples:[["あの人、鈴木先生だっけ？","那個人是鈴木老師來著？"],["加藤さん、これ嫌いだったっけ？","加藤，你是不是不喜歡這個來著？"],["この前の日曜日、寒かったっけ？","上星期日很冷來著？"],["明日、田中さんも来るんだっけ？","明天田中也會來，是吧？"],["来週はクイズだったっけ？","下星期有測驗來著？"]]},
     {id:"ge",group:"話す・聞く",title:"～げ（な）",meaning:"顯得……；帶著……的樣子",formation:"V ます形語幹／いA 去い／なA 語幹＋げ（に／な）",note:"描述從外表看得出的神情或樣子。",contrast:"來源例子包括「不満ありげ」；不是直接斷言當事人的內在感受。",examples:[["陽子さんは楽しげに初めての海外旅行の話をしてくれた。","陽子顯得很開心地說起第一次海外旅行。"],["高い熱がある広志くんは私と話すのも苦しげだった。","發高燒的廣志連跟我說話時也顯得很辛苦。"],["会議のあと、彼は不満ありげな顔をしていた。","會議後，他露出看來不滿的表情。"],["子どもは悲しげな顔をしていた。","孩子露出悲傷的神情。"]]}
   ];
+  // Chinese distractors distinguish meanings; the previous Japanese titles are
+  // retained solely to render existing drafts/history without rewriting records.
+  const meaningDistractors={
+    sai:["在某期限之前完成","在某狀態持續時逐漸發生變化","每當某事發生便反覆出現的結果"],
+    toitta:["也就是說（換句話解釋）","只限於某一項，排除其他項目","包括全部項目，毫無例外"],
+    niwatatte:["在某期限之前完成","經由某種手段或媒介","以某個時間點為起點開始"],
+    uchini:["在某個場合之際（正式）","跨越很長時間或很廣範圍","一旦某事發生，之後就再也不改變"],
+    nitotte:["以某種身分履行職責","對某個對象採取態度或行為","在某地點、時代或領域"],
+    towa:["聽說（轉述消息）","像某些事物等（列舉例子）","即使條件成立，結果仍不變"],
+    nioite:["對某人而言的評價","以某些事物為代表列舉例子","根據結果回推某個原因"],
+    wakeda:["提出尚未確定的委婉推測","說明無論如何都不可能","表示因義務而不能做某事"],
+    nodewanaidarouka:["根據已知事實得出自然結論","向對方下達強烈命令","轉述別人告知的確定消息"],
+    kke:["從外表觀察到某種樣子","提供自己剛得知的新資訊","列出一組有代表性的事物"],
+    ge:["說話者記不清而回想確認","斷言對方內心必定如此","使別人產生某種感受"]
+  };
   const qs=[]; const choices=p=>patterns.filter(x=>x.id!==p.id).slice(0,3).map(x=>x.title);
   patterns.forEach(p=>{
-    qs.push({id:`${p.id}-meaning`,pattern:p.id,kind:"meaning",prompt:`「${p.title}」最接近哪個意思？`,options:[p.meaning,...choices(p)],answer:0,explanation:p.note});
+    qs.push({id:`${p.id}-meaning`,pattern:p.id,kind:"meaning",prompt:`「${p.title}」最接近哪個意思？`,options:[p.meaning,...meaningDistractors[p.id]],legacyOptions:[p.meaning,...choices(p)],answer:0,explanation:p.note});
     qs.push({id:`${p.id}-formation`,pattern:p.id,kind:"formation",prompt:`選出「${p.title}」的正確接續。`,options:[p.formation,"只可接動詞ます形","只可接名詞＋で","沒有固定接續"],answer:0,explanation:p.formation});
     qs.push({id:`${p.id}-source`,pattern:p.id,kind:"source",prompt:`哪一句是來源例句？`,options:[p.examples[0][0],...patterns.filter(x=>x.id!==p.id).slice(0,3).map(x=>x.examples[0][0])],answer:0,explanation:p.examples[0][1]});
   });
@@ -36,7 +51,7 @@ window.JPY5QuestionSignatures={"sai-meaning":"sha256:0033f9e7c4745aadfc8d7b26757
     let changed=false;
     const signatures=draft.signatures.map((value,index)=>{
       const question=window.JPY5_DATA.questions.find(item=>item.id===draft.questionIds[index]);
-      if(question&&value===JSON.stringify([question.id,question.pattern,question.prompt,question.options,question.answer])){
+      if(question&&[question.options,question.legacyOptions].filter(Boolean).some(options=>value===JSON.stringify([question.id,question.pattern,question.prompt,options,question.answer]))){
         changed=true;return window.JPY5QuestionSignatures[question.id];
       }
       return value;

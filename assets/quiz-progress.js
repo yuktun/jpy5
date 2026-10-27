@@ -19,7 +19,7 @@ window.JPY5QuizProgress = (() => {
       notice("另一個分頁已更新這份測驗。請返回設定，繼續最新進度或開始新測驗。",true);
       return false;
     }
-    const stored={version,id:run.id,mode:run.mode,questionIds:run.questions.map(q=>q.id),signatures:run.questions.map(signature),index:run.index,answers:{...run.answers},startedAt:run.startedAt,revision:run.revision+1};
+    const stored={version,id:run.id,mode:run.mode,questionIds:run.questions.map(q=>q.id),signatures:run.questions.map(signature),index:run.index,answers:{...run.answers},startedAt:run.startedAt,revision:run.revision+1,...(run.optionBankVersion===2?{optionBankVersion:2}:{})};
     JPY5.write(key,stored);
     if(JSON.stringify(JPY5.read(key,null))!==JSON.stringify(stored)){
       notice("未能儲存測驗進度，請檢查瀏覽器儲存空間。",true);return false;

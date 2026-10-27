@@ -58,7 +58,7 @@ The dependency-free static site is organized around a homepage, a Chapter 13 lea
 
 ### Chapter 13 complete edition
 
-- Vocabulary: all 159 source words, three textbook sections, searchable/filterable list, two-way kana/kanji-or-original flashcards, keyboard controls, random order, marking, starred and targeted review queues, and saved progress
+- Vocabulary: 191 entries: the original 159-entry bank plus 32 source-linked textbook 問題 vocabulary entries, with stable original IDs, searchable/filterable lists, two-way cards, keyboard controls, retained random order, marking, starred and targeted review queues, and saved progress. Lesson 14 similarly retains its original 208 IDs and appends 18 問題 entries plus 生産 for 227 entries; the original handbooks do not contain all newly appended entries.
 - Grammar: eight source-grounded patterns, 25 source examples, formation rules, usage notes, contrasts, 33 flashcards, two directions, review queues, and saved progress
 - Quiz: 40 questions, practice/exam modes, grammar filters, incorrect retry, starring, and saved history
 - Reading: the complete `ゲッキョク株式会社` text and official reading audio, Traditional Chinese translation, full furigana and font controls, 13 comprehension questions, answer-finding, vocabulary cards, mock exam, and mistake review

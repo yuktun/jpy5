@@ -1,7 +1,7 @@
 /* Lesson 13 teacher-reading data.  Annotation targets are source-text tokens,
    identified by paragraph + occurrence, never replacements in rendered HTML. */
 window.JPY5_READING_TEACHER_NOTES = (() => {
-  const n=(term,reading,meaning,teacherNote,extra={})=>({term,reading,meaning,teacherNote,...extra});
+  const n=(term,reading,meaning,teacherNote,extra={})=>({term,reading,meaning,teacherNote,provenance:{label:"App 學習整理（依課文；老師原稿尚未逐項核對）"},...extra});
   const notes={
     company:n("株式会社","かぶしきがいしゃ","股份有限公司／company limited by shares","公司形式的詞彙；本文標題是作者把「月極」想像成公司的幽默。"),
     nomikomu:n("のみこむ","のみこむ","字面：吞下；此處：理解、消化、掌握","「のみこむのに苦労した日本語」指難以吸收、理解的日語。"),
@@ -21,6 +21,7 @@ window.JPY5_READING_TEACHER_NOTES = (() => {
     zainichi:n("在日６年目にして","ざいにち ろくねんめ にして","到了在日本第六年，才……","時間／年齡／次數＋にして（N1）：到達某階段才發生；常和初めて、ようやく、やっと一起出現。",{type:"grammar"}), toriaezu:n("とりあえず","とりあえず","首先、姑且、先……再說","本句是先往港口方向走。"), bussan:n("観光物産館","かんこうぶっさんかん","觀光物產館／tourism and local-products centre","旅遊地販售本地特產的場所。"), meni:n("目に入った","めに はいった","映入眼簾、catch one's eye","句型：看板が目に入る。"), kokugo:n("国語辞典","こくごじてん","日語國語辭典","他已從雙語字典換成日語字典。"), shinobaseru:n("忍ばせてあった","しのばせて あった","暗中放入、藏在……裡","低調地把字典放在背包。"), tsukigime:n("月決め","つきぎめ","按月、月租","這個寫法成為理解的觸發點。"), correctTsuki:n("月極め","つきぎめ","以一個月為單位決定金額或簽訂契約","「月極／月極め」的正確讀音都是 つきぎめ。"), tsukigoto:n("月ごとの約束、あるいは計算で契約すること","つきごと の やくそく、あるいは けいさんで けいやく する こと","按月約定或計算方式簽約","這就是月極め的字典定義。"), teigi:n("定義","ていぎ","定義／definition","定義する才是 define。",{correction:"校對補充：定義＝definition；定義する＝define。"}), kanyou:n("慣用","かんよう","慣用、習慣性用法、conventional usage","字典說明也慣用「月決め」的寫法。"), isshun:n("一瞬にして","いっしゅん にして","一瞬間便……／in an instant","沒有真實公司消失；消失的是作者腦中虛構的「月極株式会社」。"),
     patto:n("パッと","パッと","一下子、突然、一眼就","視覺上迅速映入眼簾。"), mimi:n("耳の奥","みみの おく","耳朵深處","舊讀音像記憶中的聲音。"), uchinaru:n("内なる声","うちなる こえ","內在聲音、inner voice","心裡自動響起的聲音。"), yomichigaeru:n("読み違えたりしない","よみちがえたり しない","不會讀錯、misread","句型：A を B と 読み違える；本篇例：月極を「ゲッキョク」と読み違える。"), hibi:n("日々","ひび","日日、每天、day by day","作者書名《日々の非常口》中的日々。")
   };
+  notes.yomichigaeru.provenance={label:"老師講義重點 · App 中文整理（PDF 第1頁）",url:"https://drive.google.com/file/d/1BT5vY2PLstzvBTE6vyozA2FG-VcyppoE/view#page=1"};
   const a=(text,note,occurrence=1)=>({text,note,occurrence});
   const sourceParagraphs={
     1:{sourceParagraph:1,part:"上"}, 2:{sourceParagraph:1,part:"下"},
@@ -29,7 +30,8 @@ window.JPY5_READING_TEACHER_NOTES = (() => {
   };
   return {
     objective:"時間の経過の中で変化する筆者の心情を読み取る。",
-    timeline:["來日初期","看板を読み始める","「月極」を会社名だと誤解","行動範囲が広がり誤解が強まる","在日6年目・青森","本当の意味を発見","現在"], sourceParagraphs, notes,
+    provenanceSummary:"61則詞語與文法註解為 App 學習整理，依原課文核對語境；其中「読み違えたりしない」已與老師講義第1頁直接核對，其餘60則尚未逐項核對老師原稿。段落重點與時間線為 App 分析；另附的老師補充各自列出來源頁。",
+    timeline:["來日初期・讀招牌","猜是老闆姓氏或命名","騎車令行動範圍擴大","推測是大型公司","在日6年目・青森","發現真正意思","現在・池袋與青森的對比"], sourceParagraphs, notes,
     paragraphs:[
       {id:1,jp:"「日本語を勉強して、何が一番難しかった？」とときどき聞かれる。",focus:"開頭用提問令讀者好奇：答案到底是甚麼？"},
       {id:2,jp:"のみこむのに苦労した日本語は、佃煮にするほどあった。例えば、「以後」と「以降」と「以来」を一体どう使い分けたらよいのか。また、難しい四字熟語を一生懸命覚えても、「適度」に、いや「適当」に、いな「適切」に使えるようになるのに、さらに一進一退、試行錯誤の月日を要した。ただ、「一番難しかった」とくると、ぼくの頭にまっすぐ浮かぶのは「月極」だ。",focus:"作者列舉不少難題；一被問到唯一最難的，立刻想到「月極」。",annotations:[a("のみこむ","nomikomu"),a("佃煮にするほど","tsukudani"),a("以後","igo"),a("以降","ikou"),a("以来","irai"),a("一体どう","ittai"),a("四字熟語","yojijukugo"),a("適度","tekido"),a("いや","iya"),a("いな","ina"),a("適切","tekisetsu"),a("一進一退","isshin"),a("試行錯誤","shikou"),a("月日","tsukihi"),a("要した","yousu"),a("ただ","tada"),a("頭にまっすぐ浮かぶ","atamaU"),a("月極","earlyTsuki")]},

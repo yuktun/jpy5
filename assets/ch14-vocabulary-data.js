@@ -1,5 +1,5 @@
 window.JPY5_VOCABULARY = (() => {
-  const sections={grammar:{label:"文法・練習",range:"1–60"},speaking:{label:"話す・聞く",range:"61–112"},reading:{label:"読む・書く",range:"113–194"},proper:{label:"固有名詞",range:"195–208"}};
+  const sections={grammar:{label:"文法・練習",range:"1–60"},speaking:{label:"話す・聞く",range:"61–112"},reading:{label:"読む・書く",range:"113–194"},proper:{label:"固有名詞",range:"195–208"},sourceExtra:{label:"教科書・追加語彙",range:"209–227"}};
   const raw=`
 がいしゅつ [する]|外出 [する]|外出|名詞
 ピーシー|PC|電腦|名詞
@@ -52,7 +52,7 @@ window.JPY5_VOCABULARY = (() => {
 マッサージ|－|按摩|名詞
 スポーツジム|－|健身室|名詞
 ～あまり|～余り（260年～）|（260）多（年）|名詞
-グローバル|－|全球性|名詞
+グローバル|－|全球性的；全球規模的|な形容詞
 なつび|夏日|夏日|名詞
 かいふく [する]|回復 [する]|恢復|名詞
 じゅうみん|住民|居民|名詞
@@ -206,11 +206,39 @@ window.JPY5_VOCABULARY = (() => {
 うらしまたろう|浦島太郎|浦島太郎|固有名詞
 ルーマニア|－|羅馬尼亞|固有名詞
 ひがしヨーロッパ|東ヨーロッパ|東歐|固有名詞
-ゆかわひでき|湯川英樹|湯川英樹，日本第一位諾貝爾物理學獎得主|固有名詞
+ゆかわひでき|湯川秀樹|湯川秀樹，日本第一位諾貝爾物理學獎得主|固有名詞
 とねがわすすむ|利根川進|利根川進，1987年諾貝爾生理學或醫學獎得主|固有名詞
 きょうとだいがく|京都大学|京都大學|固有名詞`;
   const rows=raw.trim().split("\n").map(line=>line.split("|"));
   const sectionFor=id=>id<=60?"grammar":id<=112?"speaking":id<=194?"reading":"proper";
   const items=rows.map((row,index)=>({id:index+1,kana:row[0],written:row[1]==="－"?row[0]:row[1],meaning:row[2],type:row[3],section:sectionFor(index+1),original:"",note:""}));
+  items.find(item=>item.id===16).note="來源有別：教科書詞表為欠く（かく→かきます）；手冊為欠かす（かかす→かかします）。本項保留手冊動詞，並更正其ます形。";
+  items.find(item=>item.id===52).note="教科書補充詞表 PDF 第20頁（印刷第15頁）標作グローバル[な]，如グローバルな視点；手冊原列名詞。";
+  items.find(item=>item.id===206).note="來源訂正：手冊第10頁原寫「湯川英樹」；依京都大學湯川紀念館資料更正為「湯川秀樹」。";
+  items.find(item=>item.id===206).source={url:"https://www.yukawa.kyoto-u.ac.jp/contents/about_us/yukawa",label:"京都大學・湯川紀念館"};
+  // Append source omissions without changing IDs 1–208 or device-local results.
+  const sourceRows=[
+    ["じょゆう","女優","女演員","名詞"],
+    ["えんげき","演劇","戲劇","名詞"],
+    ["～ぶ","～部","……部；……社團（演劇部）","接尾語"],
+    ["せいちょうする","成長する","成長；進步","名詞・する"],
+    ["やく","役","角色（演出）","名詞"],
+    ["さいちゅう","最中","正當……的時候","名詞"],
+    ["ひじょうベル","非常ベル","警鈴；警報器","名詞"],
+    ["じつは","実は","其實；說實話","副詞"],
+    ["かっき","活気","活力；生氣","名詞"],
+    ["ふうけい","風景","風景；景象","名詞"],
+    ["いきいきする","生き生きする","充滿活力；生動","副詞・する"],
+    ["じっしゃする","実写する","實景拍攝；寫實地描繪","名詞・する"],
+    ["とおりすぎる","通り過ぎる","經過；走過","動詞Ⅱ・自"],
+    ["カップラーメン","カップラーメン","杯麵","名詞"],
+    ["おんせんりょかん","温泉旅館","溫泉旅館","名詞"],
+    ["りょかん","旅館","日式旅館","名詞"],
+    ["オリジナリティー","オリジナリティー","原創性；獨創性","名詞"],
+    ["キャラクター","キャラクター","角色；人物","名詞"],
+    ["せいさん","生産","生產","名詞・する"]
+  ];
+  const url="https://drive.google.com/file/d/1JWHjSZ8Zx4VTOK_4KdkyqXCPwg-1coTa/view";
+  sourceRows.forEach((row,index)=>{const page=index===18?20:21;items.push({id:209+index,kana:row[0],written:row[1],meaning:row[2],type:row[3],section:"sourceExtra",original:"",note:index===18?"教科書文法詞表補充；手冊208項未收錄。中文及詞性為學習整理。":"教科書「問題」詞表補充；中文及詞性為學習整理。",source:{url,page,printedPage:page-5,label:index===18?"教科書・文法詞表":"教科書・問題詞表"}});});
   return {sections,items};
 })();

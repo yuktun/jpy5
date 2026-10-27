@@ -10,11 +10,11 @@
   <link rel="icon" href="assets/app-icon.png">
   <link rel="apple-touch-icon" href="assets/app-icon.png">
   <script src="assets/common.js?v=4" defer></script>
-  <script src="assets/vocabulary-data.js?v=2" defer></script>
+  <script src="assets/vocabulary-data.js?v=3" defer></script>
   <script src="assets/pronunciation.js?v=1" defer></script>
   <link rel="stylesheet" href="assets/ch13-teacher-additions.css?v=2">
   <script src="assets/ch13-teacher-additions.js?v=2" defer></script>
-  <script src="assets/ch13-teacher-oct17.js?v=1" defer></script><script src="assets/vocabulary.js?v=12" defer></script>
+  <script src="assets/ch13-teacher-oct17.js?v=1" defer></script><script src="assets/vocabulary.js?v=13" defer></script>
   <script src="assets/teacher-supplements.js?v=1" defer></script>
     <link rel="manifest" href="manifest.webmanifest">
     <script src="assets/pwa.js" defer></script>
@@ -30,8 +30,8 @@
     <section class="compact-hero vocab-hero">
       <p class="kicker">LESSON 13 · COMPLETE VOCABULARY</p>
       <h1>完整詞彙</h1>
-      <p>第 13 課全 159 詞：文法・練習 31 詞、話す・聞く 38 詞、読む・書く 90 詞。可分類學習、雙向翻卡及針對性重溫。</p>
-      <div class="vocab-summary"><span><strong>159</strong> 全部詞彙</span><span><strong id="vocab-right-count">0</strong> 答對</span><span><strong id="vocab-wrong-count">0</strong> 答錯</span><span><strong id="vocab-star-count">0</strong> 收藏</span></div>
+      <p>第 13 課共 191 詞：文法・練習 31 詞、話す・聞く 38 詞、読む・書く 90 詞，另附教科書補充 32 詞。可分類學習、雙向翻卡及針對性重溫。</p>
+      <div class="vocab-summary"><span><strong>191</strong> 全部詞彙</span><span><strong id="vocab-right-count">0</strong> 答對</span><span><strong id="vocab-wrong-count">0</strong> 答錯</span><span><strong id="vocab-star-count">0</strong> 收藏</span></div>
       <a class="adverb-jump" href="#teacher-adverbs">老師副詞 · 例句・語感・練習 ↓</a>
     </section>
 
@@ -40,7 +40,8 @@
       <div class="vocab-card-column">
         <div class="section-heading"><div><p class="kicker">FLASHCARDS</p><h2>詞彙記憶卡</h2></div><span id="vocab-progress"></span></div>
         <div class="vocab-section-tabs" aria-label="記憶卡詞彙分類">
-          <button data-vocab-section="all">全部 159</button><button data-vocab-section="grammar">文法 31</button><button data-vocab-section="speaking">會話 38</button><button data-vocab-section="reading">閱讀 90</button>
+          <button data-vocab-section="all">全部 191</button><button data-vocab-section="grammar">文法 31</button><button data-vocab-section="speaking">會話 38</button><button data-vocab-section="reading">閱讀 90</button>
+          <button data-vocab-section="sourceExtra">教科書補充 32</button>
         </div>
         <div class="vocab-mode-controls" aria-label="記憶卡設定">
           <div class="segmented"><button data-vocab-direction="normal" aria-label="假名到漢字或英文原寫"><span class="direction-full">假名 → 漢字・原寫</span><span class="direction-short">假名 → 漢字</span></button><button data-vocab-direction="reverse" aria-label="Reverse：漢字或英文原寫到假名"><span class="direction-full">Reverse · 漢字・原寫 → 假名</span><span class="direction-short">Reverse → 假名</span></button></div>
@@ -54,12 +55,13 @@
       </div>
 
       <div class="vocab-list-column">
-        <div class="section-heading"><div><p class="kicker">WORD LIST</p><h2>159 詞詞彙表</h2></div><span id="vocab-count"></span></div>
-        <div class="vocab-list-tools"><select id="list-section" aria-label="詞彙表分類"><option value="all">全部分類</option><option value="grammar">文法・練習</option><option value="speaking">話す・聞く</option><option value="reading">読む・書く</option></select><input class="search-input" id="vocab-search" type="search" placeholder="搜尋假名、漢字、外語原寫或中文意思"></div>
+        <div class="section-heading"><div><p class="kicker">WORD LIST</p><h2>191 詞詞彙表</h2></div><span id="vocab-count"></span></div>
+        <div class="vocab-list-tools"><select id="list-section" aria-label="詞彙表分類"><option value="all">全部分類</option><option value="grammar">文法・練習</option><option value="speaking">話す・聞く</option><option value="reading">読む・書く</option><option value="sourceExtra">教科書補充</option></select><input class="search-input" id="vocab-search" type="search" placeholder="搜尋假名、漢字、外語原寫或中文意思"></div>
         <div class="vocab-list" id="vocab-list"></div>
       </div>
     </section>
 
+    <aside class="source-note"><div><p class="kicker">VOCABULARY SOURCE COVERAGE</p><h2>詞表範圍及來源訂正</h2><p>原有159項的編號及學習紀錄保留；新增32項為教科書「問題」詞表（PDF第20–21頁／印刷第7–8頁），使用新編號160–191。中文、詞性及整理說明為學習補充；原詞形與假名可由每項來源核對。</p></div></aside>
     <!-- BEGIN SHARED ADVERB NOTES -->
     <section class="teacher-supplement adverb-notes" id="teacher-adverbs" aria-labelledby="teacher-adverbs-title" data-source-page="1">
       <header class="teacher-supplement-header"><div><span class="teacher-label">老師補充 · 第 13 課</span><h2 id="teacher-adverbs-title" lang="ja">時間関係の副詞（１）</h2><p>已經完成，還是以前曾經？先分清「完成」與「過去」，再看正式程度和主觀時間感。</p><a class="adverb-source" href="https://drive.google.com/file/d/1h2t9BYb8IYg4wTvl3_mn2MgaBPwlZDGL/view#page=1" target="_blank" rel="noopener">老師原講義 · PDF 第 1 頁 ↗</a></div></header>
@@ -122,6 +124,6 @@ B：え？とっくに（　　　　　）。</li><li>香港はかつて（　�
     </section>
     <!-- END SHARED ADVERB NOTES -->
   </main>
-  <footer>內容依據 Chapter 13 Vocabulary PDF 全 159 詞整理；進度會自動保存，登入後可跨裝置同步。</footer>
+  <footer>詞表包含原有 Chapter 13 Vocabulary PDF 的159項，以及教科書「問題」詞表補充32項，共191項；中文及詞性為學習整理。進度會自動保存，登入後可跨裝置同步。</footer>
 </body>
 </html>

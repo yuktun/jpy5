@@ -10,7 +10,7 @@
       "pages": "1",
       "points": "5×2=10",
       "instruction": "先生の言う文を聞いて、書いてください。文は３回読みます。漢字を書くときは、ひらがなも書いてください。",
-      "note": "聽寫參考答案依小測錄音的機器轉寫整理；每句三次重複結果一致，未經真人聽校，並非官方答案。原錄音不隨本 App 或離線包提供。",
+      "note": "聽寫參考答案依小測錄音的機器轉寫整理；每句三次重複結果一致，未經真人聽校，並非官方答案。本 App 提供公開的壓縮錄音檔；播放器只向已登入並獲核准帳戶顯示，錄音不包括在離線套件。",
       "items": [
         {
           "prompt": "１）＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿",
@@ -539,7 +539,7 @@
     if (saved && typeof saved === "object" && !Array.isArray(saved)) drafts = saved;
   } catch { canSave = false; }
   host.innerHTML = `<div class="teacher-supplement-header"><div><span class="teacher-label">YEAR 5 · QUIZ ① · 26A</span><h2 id="quiz13-title">Quiz① 練習與參考答案</h2><p lang="ja">${esc(data.title)}</p></div></div>
-    <p class="teacher-source-note">來源：HKU SPACE，<cite>Y5_Quiz1_Ch13_26A.pdf</cite>，全5頁。題目依原稿次序整理；原稿沒有答案頁，以下均為本 App 整理的參考答案，並非老師官方答案。開放題可有其他合理作答。原 PDF 及聽寫錄音不包括在離線內容內。</p>
+    <p class="teacher-source-note">來源：HKU SPACE，<cite>Y5_Quiz1_Ch13_26A.pdf</cite>，全5頁。題目依原稿次序整理；原稿沒有答案頁，以下均為本 App 整理的參考答案，並非老師官方答案。開放題可有其他合理作答。原 PDF 及錄音不包括在離線內容內。本 App 的壓縮聽寫錄音檔是公開檔案；播放器只向已登入並獲核准帳戶顯示。</p>
     <p>先作答，再按「顯示參考答案」核對。呢份練習不自動計分，亦不改動原有測驗成績。草稿只儲存在本機瀏覽器。</p>
     <nav class="quiz13-nav" aria-label="Quiz① 題目部分">${data.sections.map(s=>`<a href="#quiz13-${s.id}">${s.id}</a>`).join("")}</nav>
     <p class="quiz13-save-status" role="status" aria-live="polite"></p>
