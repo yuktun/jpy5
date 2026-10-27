@@ -59,7 +59,7 @@ assert(!sandbox.self.JPY5_OFFLINE_MANIFEST.assets.some(file=>/private-migration|
 const base='8a4a519af833679e37d334a9aa20a7b86be7d27c';
 const approvedStudyCorrections=new Set([
   'assets/ch13-grammar-extra-data.js','assets/ch13-reading-teacher-notes.js',
-  'assets/ch14-conversation-data.js','assets/ch14-hub.js','assets/ch14-quiz.js',
+  'assets/ch14-conversation-data.js','assets/ch14-hub.js','assets/ch14-quiz.js','assets/ch14-quiz-choices.js',
   'assets/ch14-vocabulary-data.js','assets/ch14-vocabulary.js',
   'chapter-13.html','chapter-13-review.html','chapter-13-vocabulary.html'
 ]);
