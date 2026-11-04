@@ -5,10 +5,10 @@ A mobile-friendly study site for **みんなの日本語 中級Ⅱ**. Lessons 13
 ## Run locally
 
 The local lesson 14 layout proposal restores general grammar, flashcards, quiz
-and history as public study tools, with collapsed teacher-note demonstrations whose
-non-secret dummy bodies display only after server authorization.
+and history as public study tools, with collapsed teacher-note panels whose
+real grammar supplements load only after server authorization.
 The lesson 14 review/Exercise is public, including the optional offline package.
-The collapsed lesson 14 adverb supplement is also public, including the optional offline package. The grammar teacher-note demonstration still requires server authorization.
+The collapsed lesson 14 adverb supplement is also public, including the optional offline package. The grammar teacher notes require server authorization and an internet connection.
 Review [the proposed disclosure boundary](LESSON14_LAYOUT_REVIEW.md) before release.
 Lesson 13 remains public. See
 [the trial boundary, local tests and approval checklist](TEACHER_ACCESS_TRIAL.md).
@@ -76,6 +76,12 @@ The existing modules include source-linked teacher notes for all eight grammar p
 Teacher content and PDF page references live in `assets/ch13-teacher-additions.js`. Duplicate scans are consolidated with their corresponding handouts. Where the reading slides simplify the ending, a labelled note preserves the original text's distinction between Ikebukuro and Aomori. Run `node scripts/test-lesson13-additions.mjs` with Playwright available, alongside the existing Lesson 13 checks, after changing these additions.
 
 All 35 added notes and the writing task were checked against their sources on 2026-10-13. [Lesson 13 source audit](LESSON13_SOURCE_AUDIT.md) records corrections, qualifications, and independent dictionary/research references. The modules label these as `校對補充`, distinguish a teacher's contextual interpretation from a general grammar rule, and display source cautions beside simplified reading questions and answers.
+
+### Lesson 14 teacher additions (24–31 October 2026)
+
+The four updated teacher PDFs are mapped to the matching modules, following Lesson 13: seven reading notes, eight dialogue notes, seven hidden-answer response exercises, 104 annotations on existing vocabulary entries, and reading/discussion/writing guidance. Review links lead directly to the additions. Original questions, word IDs, audio and saved progress remain intact. See [the source mapping and validation](LESSON14_OCTOBER_SOURCE_AUDIT.md).
+
+The eleven Teacher’s notes panels now retrieve real grammar supplements from the existing protected Firestore document. The user chose to keep these notes restricted to approved accounts; their bodies are absent from the public repository and offline package. Run `node scripts/test-lesson14-october.mjs` alongside the reading, listening, authorization and offline checks. The private QA flag `JPY5_TEST_PRIVATE=1` uses the ignored local payload; normal test runs use synthetic notes.
 
 ### Textbook grammar exercises for Lessons 14-20
 

@@ -1,5 +1,7 @@
 # Lesson 14 layout and content-boundary review
 
+November 2026 update: [the October source integration](LESSON14_OCTOBER_SOURCE_AUDIT.md) replaces the former non-secret demonstration with eleven real, server-only teacher grammar notes. The user explicitly retained the approval requirement. Historical demo descriptions below record the earlier revision; general grammar, public module boundaries and existing authorization rules remain unchanged.
+
 Layout revision based on `40b3d7d045e48f71d05748516ca248051fef8f62`. This static update requires no Firebase configuration, document or authorization changes.
 
 ## Proposed public content

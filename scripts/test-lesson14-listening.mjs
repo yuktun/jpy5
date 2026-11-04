@@ -35,6 +35,9 @@ const base=`http://127.0.0.1:${server.address().port}`;
 const browser=await chromium.launch({headless:true,...(process.env.JPY5_BROWSER_CHANNEL?{channel:process.env.JPY5_BROWSER_CHANNEL}:{})});
 const browserContext=await browser.newContext({serviceWorkers:"block"});
 await browserContext.addInitScript(()=>{
+  // This suite stubs playback; also provide metadata readiness for segment seeking.
+  Object.defineProperty(HTMLMediaElement.prototype,"readyState",{get:()=>1,configurable:true});
+  Object.defineProperty(HTMLMediaElement.prototype,"currentTime",{get(){return this._testTime||0;},set(value){this._testTime=value;},configurable:true});
   HTMLMediaElement.prototype.play=function(){this.dataset.played="true";return Promise.resolve();};
   HTMLMediaElement.prototype.pause=function(){this.dataset.paused="true";};
 });

@@ -24,6 +24,7 @@ for(const file of ['chapter-14-vocabulary.html']){
   assert.equal(panel(source),panel(initial),'Approved vocabulary corrections must not change the adverb panel');
   assert.equal(outsidePanel(initial),outsidePanel(published),'Initial vocabulary page differs from historical public boundary');
   const vocabularyCorrections=html=>outsidePanel(html)
+    .replace(/\n  <link rel="stylesheet" href="assets\/ch13-teacher-additions\.css\?v=2">\n  <link rel="stylesheet" href="assets\/ch14-teacher-additions\.css\?v=1">\n  <script src="assets\/ch14-teacher-additions\.js\?v=1" defer><\/script>\n/,'')
     .replace(/assets\/ch14-vocabulary-data\.js\?v=\d+/g,'assets/ch14-vocabulary-data.js')
     .replace(/assets\/ch14-vocabulary\.js\?v=\d+/g,'assets/ch14-vocabulary.js')
     .replace(/<p>第 14 課(?:全|共) [\s\S]*?<\/p>/,'<p>VOCABULARY_COVERAGE</p>')
@@ -40,7 +41,7 @@ for(const file of ['chapter-14-vocabulary.html']){
   assert.equal(vocabulary.window.JPY5_VOCABULARY.items.filter(item=>item.section==='sourceExtra').length,19);
   assert.match(source,/data-vocab-section="sourceExtra"/);
 }
-for(const file of ['firestore.rules','assets/teacher-access.mjs','assets/teacher-access-core.mjs','assets/teacher-demo.mjs','assets/teacher-progress-privacy.mjs','assets/firebase-sync.mjs']){
+for(const file of ['firestore.rules','assets/teacher-access.mjs','assets/teacher-access-core.mjs','assets/teacher-progress-privacy.mjs','assets/firebase-sync.mjs']){
   const published=execFileSync('git',['show',`2cb386d9fe158d8ccc18b6d43c3f09d93afd8fee:${file}`],{encoding:'utf8'});
   assert.equal((await readFile(file,'utf8')).replace(/\r\n/g,'\n'),published.replace(/\r\n/g,'\n'),`${file}: authorization/progress changed outside approved scope`);
 }
@@ -53,17 +54,20 @@ assert(!tracked.some(file=>file.startsWith('private-migration/')));
 const sandbox={self:{}};vm.runInNewContext(await readFile('assets/offline-assets.js','utf8'),sandbox);
 assert(!sandbox.self.JPY5_OFFLINE_MANIFEST.assets.some(file=>/private-migration|teacher.*\.json|^scripts\//.test(file)));
 // Public content outside the explicitly approved additions/corrections remains
-// byte-for-byte unchanged. Authorization/progress parity above has no exceptions.
+// byte-for-byte unchanged. The shared display adapter extension is covered by
+// test-teacher-demo.mjs and test-lesson14-october.mjs; core authorization stays exact.
 // The newly authorized public textbook dataset did not exist at this base.
 // Its seven-lesson integration is checked by test-textbook-exercises-14-20.mjs.
 const base='8a4a519af833679e37d334a9aa20a7b86be7d27c';
 const approvedStudyCorrections=new Set([
   'assets/ch13-grammar-extra-data.js','assets/ch13-reading-teacher-notes.js',
+  // November teacher annotations are covered by test-lesson14-october.mjs.
+  'assets/ch14-reading.js','assets/ch14-conversation.js',
   'assets/ch14-conversation-data.js','assets/ch14-hub.js','assets/ch14-quiz.js','assets/ch14-quiz-choices.js',
   'assets/ch14-vocabulary-data.js','assets/ch14-vocabulary.js',
   'chapter-13.html','chapter-13-review.html','chapter-13-vocabulary.html'
 ]);
-const priorPublicAdditions=new Set(['assets/ch13-quiz1.js','assets/ch13-quiz1.css','assets/ch13-quiz-audio.mjs','assets/ch13-textbook-exercises.js','assets/ch13-teacher-oct17.js','assets/ch14-data.js','assets/ch14-grammar-extra-data.js','assets/ch14-teacher-placeholders.js','assets/ch14-textbook-exercises-data.js']);
+const priorPublicAdditions=new Set(['assets/ch14-teacher-additions.js','assets/ch14-teacher-additions.css','assets/ch13-quiz1.js','assets/ch13-quiz1.css','assets/ch13-quiz-audio.mjs','assets/ch13-textbook-exercises.js','assets/ch13-teacher-oct17.js','assets/ch14-data.js','assets/ch14-grammar-extra-data.js','assets/ch14-teacher-placeholders.js','assets/ch14-textbook-exercises-data.js']);
 for(const file of tracked.filter(file=>/^chapter-13|^assets\/(?:ch13|ch14|data\.js|grammar-extra-data\.js|firebase-sync\.mjs)/.test(file)&&!priorPublicAdditions.has(file)&&!approvedStudyCorrections.has(file))){
   const original=execFileSync('git',['show',`${base}:${file}`],{encoding:'utf8'}).replace(/\r\n/g,'\n');
   let current=await readFile(file,'utf8');

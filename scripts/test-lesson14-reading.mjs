@@ -49,7 +49,7 @@ try{
     await page.locator("[data-truth-reveal]").click();
     assert.match(await page.locator("[data-truth-official]").innerText(),/① ○　② ○　③ ○　④ ×　⑤ ×/);
     await page.locator("[data-confirm-reveal]").click();
-    assert.deepEqual(await page.locator("[data-confirm-answer] p").evaluateAll(nodes=>nodes.map(node=>{const copy=node.cloneNode(true);copy.querySelectorAll("rt").forEach(rt=>rt.remove());return copy.textContent;})),Array.from(confirm.questions,item=>item.answer));
+    assert.deepEqual(await page.locator("[data-confirm-answer] > p").evaluateAll(nodes=>nodes.map(node=>{const copy=node.cloneNode(true);copy.querySelectorAll("rt").forEach(rt=>rt.remove());return copy.textContent;})),Array.from(confirm.questions,item=>item.answer));
 
     const draft=`日本のアニメについて考えます。${viewport.width}`;
     await page.locator('[data-textbook-draft="think-1"]').fill(draft);

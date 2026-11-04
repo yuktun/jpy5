@@ -12,17 +12,18 @@ const messages={
   missing:'老師補充暫時未能提供。',offline:'老師補充需要連線，內容已清除。',
   expired:'存取驗證已到期，請重試。',error:'暫時未能驗證存取權限，請重試。'
 };
-export async function mountTeacherDemos(roots,serviceFactory=createAuthService){
+export async function mountTeacherDemos(roots,serviceFactory=createAuthService,options={}){
   roots=[...roots];if(!roots.length)return null;
   let ready=false,loginPending=false;
   const controller=createTeacherController({
-    load:(user,signal)=>verifyTeacherAccess({user,signal,projectId:firebaseConfig.projectId}),
+    load:options.load || ((user,signal)=>verifyTeacherAccess({user,signal,projectId:firebaseConfig.projectId})),
     render({state,signedIn,data,preserve}){
       for(const root of roots){
         const content=root.querySelector('[data-teacher-demo-content]'),status=root.querySelector('[data-teacher-demo-status]'),login=root.querySelector('[data-teacher-demo-login]'),retry=root.querySelector('[data-teacher-demo-retry]');
         root.dataset.accessState=state;
         if(!preserve)content.replaceChildren();
-        if(data?.approved){const paragraph=document.createElement('p');paragraph.textContent=demoText;content.append(paragraph);}
+        if(data && options.renderNote)options.renderNote(content,data,root);
+        else if(data?.approved){const paragraph=document.createElement('p');paragraph.textContent=demoText;content.append(paragraph);}
         status.textContent=messages[state];status.hidden=state==='loaded';
         login.hidden=signedIn;login.disabled=!ready||loginPending;
         retry.hidden=!signedIn||!['error','missing','expired'].includes(state);
@@ -50,6 +51,6 @@ export async function mountTeacherDemos(roots,serviceFactory=createAuthService){
   return controller;
 }
 if(typeof document!=='undefined'){
-  const start=()=>mountTeacherDemos(document.querySelectorAll('[data-teacher-demo]'));
+  const start=()=>mountTeacherDemos(document.querySelectorAll('[data-teacher-demo]:not([data-teacher-grammar-id])'));
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else void start();
 }

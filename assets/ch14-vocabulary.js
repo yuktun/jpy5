@@ -1,3 +1,4 @@
+const teacher = window.JPY5_L14_TEACHER;
 const { items: vocabulary, sections } = window.JPY5_VOCABULARY;
 const defaults = { section:"all", direction:"normal", random:false, filter:"all", index:0, orders:{}, results:{}, starred:[] };
 let state = { ...defaults, ...JPY5.read("vocabulary.cards.v2", {}) };
@@ -55,9 +56,9 @@ function renderList() {
   const query = $("#vocab-search").value.trim().toLowerCase(), selectedSection = $("#list-section").value;
   const matches = vocabulary.filter(item => {
     const inSection = selectedSection === "all" || item.section === selectedSection;
-    return inSection && [item.kana,item.written,item.original,item.meaning,item.type,item.note,sectionLabel(item)].some(value => value.toLowerCase().includes(query));
+    return inSection && [item.kana,item.written,item.original,item.meaning,item.type,item.note,sectionLabel(item),teacher?.vocabulary[item.id]?.text||"",teacher?.vocabulary[item.id]?.title||""].some(value => String(value||"").toLowerCase().includes(query));
   });
-  $("#vocab-list").innerHTML = matches.map(item => `<article class="vocab-row"><span>${item.id}</span><div><b lang="ja">${item.original || item.written}</b><small>${item.kana}${item.original ? ` · ${item.written}` : ""}</small></div>${pronunciation.button(item, "vocab-row-speak", `data-vocab-speak="${item.id}"`)}<p>${item.meaning}${item.note ? `<small>${item.note}</small>` : ""}${sourceLink(item)}</p><em>${item.type}<small>${sectionLabel(item)}</small></em></article>`).join("");
+  $("#vocab-list").innerHTML = matches.map(item => `<article class="vocab-row"><span>${item.id}</span><div><b lang="ja">${item.original || item.written}</b><small>${item.kana}${item.original ? ` · ${item.written}` : ""}</small></div>${pronunciation.button(item, "vocab-row-speak", `data-vocab-speak="${item.id}"`)}<p>${item.meaning}${item.note ? `<small>${item.note}</small>` : ""}${sourceLink(item)}</p><em>${item.type}<small>${sectionLabel(item)}</small></em>${teacher?.block(teacher.vocabulary[item.id])||""}</article>`).join("");
   $("#vocab-count").textContent = `顯示 ${matches.length} / ${vocabulary.length}`;
 }
 

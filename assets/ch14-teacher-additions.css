@@ -1,0 +1,8 @@
+.l14-teacher-note { font-size: 1rem; font-weight: normal; }
+.l14-teacher-note .teacher-source { text-decoration: none; display: block; overflow-wrap: anywhere; }
+.l14-response-task { padding: 1rem 0; border-top: 1px solid var(--line); line-height: 2; }
+.l14-teacher-answer { padding: .6rem .9rem; background: var(--reading-surface); border: 1px solid var(--line); border-radius: 10px; }
+.l14-teacher-answer summary { cursor: pointer; font-weight: 650; }
+.l14-teacher-answer summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.l14-teacher-answer .teacher-source { text-decoration: none; overflow-wrap: anywhere; }
+.l14-teacher-entry, #teacher-response-practice { scroll-margin-top: 220px; }
