@@ -23,3 +23,6 @@
 .quiz13-audio { margin: 1rem 0; padding: 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--white); }
 .quiz13-audio audio { display: block; width: 100%; max-width: 100%; }
 .quiz13-audio h3 { margin: 0 0 .7rem; }
+
+/* Word-bank buttons use the same help styling as practice questions. */
+.quiz13-bank.teacher-word-bank li { border:0; padding:0; }

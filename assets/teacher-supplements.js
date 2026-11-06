@@ -50,8 +50,9 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("teacher-adverbs")?.addEventListener("keydown", event => {
     if (event.target.closest("button,summary,a,input,select,textarea")) event.stopPropagation();
   });
-  const wordButtons = document.querySelectorAll(".teacher-word-bank [data-word-meaning]");
-  if (wordButtons.length) {
+  // Reuse one popover; renderers can initialize newly inserted word banks.
+  window.JPY5WordHelp ||= (() => {
+    const initialized = new WeakSet();
     const popover = document.createElement("div");
     popover.className = "teacher-word-help-popover";
     popover.id = "teacher-word-help";
@@ -87,24 +88,28 @@ document.addEventListener("DOMContentLoaded", () => {
       popover.style.top = `${Math.max(top + 12, Math.min(preferredTop, top + height - bounds.height - 12))}px`;
     }
     const dismissAfterLeave = () => { cancelDismiss(); dismissTimer = setTimeout(hide, 120); };
-    wordButtons.forEach(button => {
-      button.addEventListener("pointerenter", event => {
-        if (event.pointerType === "mouse") show(button, "hover");
+    function init(root = document) {
+      root.querySelectorAll(".teacher-word-bank [data-word-meaning]").forEach(button => {
+        if (initialized.has(button)) return;
+        initialized.add(button);
+        button.addEventListener("pointerenter", event => {
+          if (event.pointerType === "mouse") show(button, "hover");
+        });
+        button.addEventListener("pointerleave", event => {
+          if (trigger === button && interaction === "hover" && event.pointerType === "mouse") dismissAfterLeave();
+        });
+        button.addEventListener("focus", () => {
+          if (pointerType !== "touch" && button.matches(":focus-visible")) show(button, "keyboard");
+        });
+        button.addEventListener("blur", () => { if (trigger === button && interaction === "keyboard") hide(); });
+        button.addEventListener("click", event => {
+          if (pointerType === "touch") {
+            if (trigger === button && !popover.hidden) hide();
+            else show(button, "touch");
+          } else show(button, event.detail === 0 ? "keyboard" : "hover");
+        });
       });
-      button.addEventListener("pointerleave", event => {
-        if (trigger === button && interaction === "hover" && event.pointerType === "mouse") dismissAfterLeave();
-      });
-      button.addEventListener("focus", () => {
-        if (pointerType !== "touch" && button.matches(":focus-visible")) show(button, "keyboard");
-      });
-      button.addEventListener("blur", () => { if (trigger === button && interaction === "keyboard") hide(); });
-      button.addEventListener("click", event => {
-        if (pointerType === "touch") {
-          if (trigger === button && !popover.hidden) hide();
-          else show(button, "touch");
-        } else show(button, event.detail === 0 ? "keyboard" : "hover");
-      });
-    });
+    }
     popover.addEventListener("pointerenter", cancelDismiss);
     popover.addEventListener("pointerleave", () => { if (interaction === "hover") dismissAfterLeave(); });
     document.addEventListener("pointerdown", event => {
@@ -121,7 +126,9 @@ document.addEventListener("DOMContentLoaded", () => {
       else hide();
     }, true);
     window.addEventListener("resize", hide);
-  }
+    return {init};
+  })();
+  window.JPY5WordHelp.init();
   document.querySelectorAll("[data-answer-toggle]").forEach(button => {
     const answer = document.getElementById(button.getAttribute("aria-controls"));
     if (!answer || !answer.hidden) return;

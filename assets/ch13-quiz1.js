@@ -529,6 +529,21 @@
   const host = document.getElementById("lesson13-quiz1");
   if (!host || host.dataset.initialized) return;
   host.dataset.initialized = "true";
+  // Study hints for every word-bank option, independent of suggested answers.
+  const wordHelp = {
+    "のみこむ": ["吞下；理解、領會", "除了把食物吞下，也可表示理解事情或情況；留意題目是在談實際動作，還是抽象的理解。"],
+    "要する": ["需要；花費（時間、費用等）", "表示完成事情所需要的時間或資源，常用「時間・月日・費用を要する」。"],
+    "使い分ける": ["按情況區分使用", "用於意思相近的詞語或不同工具等，重點是依場合選用合適的一個。"],
+    "出くわす": ["偶然遇上；碰見", "表示意料之外遇到人或事情，常用「人・事件に出くわす」，並非事先約好的見面。"],
+    "忍ばせる": ["暗中放好；藏在身上或物品中", "表示把物品悄悄放進某處，讓人不易察覺；也可帶有預先準備的意思。"],
+    "突っ走る": ["猛衝；一股勁向前", "可形容快速奔跑或騎車趕路，也可比喻不顧其他事情一直向前做。"],
+    "思い込む": ["深信；認定（有時是誤以為）", "表示未充分確認就相信某種想法，常用「～と思い込む」；之後可能發現與事實不同。"],
+    "浮かぶ": ["浮起；浮現、想起", "除了浮在水面，也可表示想法、記憶或形象自然出現在腦海，常用「頭に浮かぶ」。"],
+    "猿も木から落ちる": ["即使擅長的人也會失手", "比喻專家或熟練的人也有失敗的時候；可用來看待失誤或安慰別人。"],
+    "石の上にも三年": ["只要耐心堅持，終會有成果", "比喻即使艱辛，只要持續努力也會有進展；常用來鼓勵人不要太快放棄。"],
+    "住めば都": ["住慣了，哪裡都可以是好地方", "比喻一個地方起初不習慣，住久後也會覺得舒適、喜歡，重點是適應生活環境。"],
+    "情けは人のためならず": ["助人也會為自己帶來好處", "表示善待別人，善意終會回到自己身上；並不是「幫人反而對他不好」的意思。"]
+  };
   const esc = value => String(value).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   // Only the source's underlines are markup. No readings on the kanji-answer targets.
   const jp = value => esc(value).replace(/&lt;u&gt;/g,"<u>").replace(/&lt;\/u&gt;/g,"</u>");
@@ -548,7 +563,7 @@
       <div class="teacher-exercise-body">
       ${section.instruction?`<p lang="ja" class="quiz13-source-text">${esc(section.instruction)}</p>`:""}
       ${section.note?`<p class="teacher-source-note">${esc(section.note)}</p>`:""}
-      ${section.bank?`<ul class="quiz13-bank" aria-label="${section.id} 詞語選項" lang="ja">${section.bank.map(word=>`<li>${esc(word)}</li>`).join("")}</ul>`:""}
+      ${section.bank?`<p class="teacher-word-help-hint">滑鼠移到詞語或按一下，可查看中文意思及用法；亦可用鍵盤聚焦查看。</p><ul class="quiz13-bank teacher-word-bank" aria-label="${section.id} 詞語選項" lang="ja">${section.bank.map(word=>`<li><button type="button" data-word-meaning="${esc(wordHelp[word][0])}" data-word-usage="${esc(wordHelp[word][1])}">${esc(word)}</button></li>`).join("")}</ul>`:""}
       ${section.context?`<div class="quiz13-context" lang="ja">${esc(section.context)}</div>`:""}
       ${section.passages?`<div class="quiz13-passages" lang="ja">${section.passages.map(text=>`<p>${esc(text)}</p>`).join("")}</div>`:""}
       <ol class="quiz13-question-list">${section.items.map((item,index)=>{
@@ -586,4 +601,5 @@
   if (location.hash.startsWith("#quiz13-") && target) target.open = true;
   announce();
   window.JPY5ReviewGroups?.init();
+  window.JPY5WordHelp?.init(host);
 })();
