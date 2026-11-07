@@ -203,6 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function render() {
     const renderers = {dialogue:renderDialogue,translation:renderTranslation,comprehension:renderComprehension,activities:renderActivities,focus:renderFocus,cards:renderCards,choice:renderChoice,order:renderOrder,cloze:renderCloze,dictation:renderDictation,mistakes:renderMistakes};
     (renderers[state.mode] || renderDialogue)();
+    if (state.mode === "comprehension") JPY5ListeningPartTwo.prepare(stage);
     stage.querySelectorAll("[data-focus-line]").forEach(b => b.onclick = () => showFocusDetail(b.dataset.focusLine));
     stage.querySelectorAll("[data-listen]").forEach(b => b.onclick = () => play(b.dataset.listen));
     stage.querySelectorAll("[data-star]").forEach(b => b.onclick = () => { const id=b.dataset.star; state.stars[id] = !state.stars[id]; save(); render(); });

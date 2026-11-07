@@ -1,0 +1,9 @@
+.listening-part-nav{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 20px}
+.listening-part-nav a{min-height:44px;text-align:center}
+.listening-part-two-heading{flex-wrap:wrap;gap:12px}
+.listening-part-two-heading>span{white-space:normal}
+.listening-part-two-note{color:var(--muted);line-height:1.8}
+.listening-supplement{margin-top:42px;padding-top:30px;border-top:2px solid var(--line)}
+#listening-part-1,#listening-part-2{scroll-margin-top:24px}
+#listening-part-1-title:focus,#listening-part-2-title:focus{outline:2px solid var(--red);outline-offset:6px}
+@media(max-width:480px){.listening-part-nav{display:grid;grid-template-columns:1fr}.listening-part-two-heading h2{overflow-wrap:anywhere}.listening-part-two-heading>span{white-space:normal}}

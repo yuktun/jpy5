@@ -186,6 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function render() {
     const renderers = {dialogue:renderDialogue,translation:renderTranslation,comprehension:renderComprehension,activities:renderActivities,focus:renderFocus,cards:renderCards,choice:renderChoice,order:renderOrder,cloze:renderCloze,dictation:renderDictation,mistakes:renderMistakes};
     (renderers[state.mode] || renderDialogue)();
+    if (state.mode === "comprehension") JPY5ListeningPartTwo.prepare(stage);
     stage.querySelectorAll('.focus-card h3,.conversation-options button,.sentence-build button,.word-bank button,.card-answer-label + strong,.mistake-list h3').forEach(node=>node.innerHTML=ruby(node.textContent));
     stage.querySelectorAll("[data-focus-line]").forEach(b => b.onclick = () => showFocusDetail(b.dataset.focusLine));
     stage.querySelectorAll("[data-listen]").forEach(b => b.onclick = () => play(b.dataset.listen));
