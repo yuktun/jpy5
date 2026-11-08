@@ -7,7 +7,10 @@ window.JPY5ListeningPartTwo = (() => {
     return node;
   };
 
+  let pendingNavigation;
+
   function prepare(stage) {
+    pendingNavigation?.disconnect();
     const data = window.JPY5_CONVERSATION;
     const questions = data.textbookQuestions || data.textbook?.listenQuestions;
     let groups;
@@ -65,9 +68,22 @@ window.JPY5ListeningPartTwo = (() => {
       link.addEventListener('click', event => {
         event.preventDefault();
         heading.focus({preventScroll: true});
-        const switcher = document.querySelector('.lesson-quick-switcher');
-        const offset = (switcher?.offsetHeight || 0) + 32;
-        window.scrollTo({top: window.scrollY + group.getBoundingClientRect().top - offset, behavior: 'instant'});
+        pendingNavigation?.disconnect();
+        const align = () => {
+          const switcher = document.querySelector('.lesson-quick-switcher');
+          const offset = (switcher?.offsetHeight || 0) + 32;
+          window.scrollTo({top: window.scrollY + group.getBoundingClientRect().top - offset, behavior: 'instant'});
+          return switcher;
+        };
+        if (!align()) {
+          // Navigation is inserted after its JSON fetch, which can finish after a jump.
+          pendingNavigation = new MutationObserver(() => {
+            if (!document.querySelector('.lesson-quick-switcher')) return;
+            pendingNavigation.disconnect();
+            if (heading.isConnected && document.activeElement === heading) align();
+          });
+          pendingNavigation.observe(document.body, {childList: true});
+        }
       });
       navigation.append(link);
     });

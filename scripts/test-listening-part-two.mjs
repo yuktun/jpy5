@@ -28,6 +28,28 @@ page.on('pageerror',error => errors.push(error.message));
 await mkdir('tmp/listening-part-two',{recursive:true});
 
 try {
+  // Hold the asynchronous navigation fetch until after the user jumps.
+  for (const lesson of [19,20]) for (const width of widths) {
+    await page.setViewportSize({width,height:900});
+    let release;
+    const navigationReady = new Promise(done => { release = done; });
+    const delayNavigation = async route => { await navigationReady; await route.continue(); };
+    await page.route('**/assets/lesson-navigation.json',delayNavigation);
+    await page.goto(`${base}/chapter-${lesson}-textbook.html`,{waitUntil:'domcontentloaded'});
+    await page.getByRole('button',{name:'聆聽第二部分',exact:true}).click();
+    assert.equal(await page.locator('.lesson-quick-switcher').count(),0);
+    await page.locator('.listening-part-nav a').first().click();
+    release();
+    await page.locator('.lesson-quick-switcher').waitFor();
+    await page.evaluate(()=>new Promise(done=>requestAnimationFrame(()=>requestAnimationFrame(done))));
+    const heading = await page.locator('#listening-part-1-title').boundingBox();
+    const navigation = await page.locator('.lesson-quick-switcher').boundingBox();
+    assert(heading.y >= navigation.y + navigation.height,`Delayed navigation obscures L${lesson} at ${width}px`);
+    assert(heading.y < 300);
+    assert.equal(await page.evaluate(()=>document.activeElement.id),'listening-part-1-title');
+    await page.unroute('**/assets/lesson-navigation.json',delayNavigation);
+  }
+  console.log('Delayed navigation regression passed for Lessons 19/20 at all viewport widths.');
   for (let lesson=13; lesson<=20; lesson++) {
     const sandbox = {window:{}};
     const stem = lesson === 13 ? 'conversation' : `ch${lesson}-conversation`;
