@@ -84,6 +84,7 @@ try {
         assert.equal(await cards.count(),expected[lesson-13][part-1]);
         await page.locator('.listening-part-nav a').nth(part-1).click();
         assert.equal(await page.evaluate(()=>document.activeElement.id),`listening-part-${part}-title`);
+        await page.locator('.lesson-quick-switcher').waitFor();
         await page.evaluate(()=>new Promise(done=>requestAnimationFrame(()=>requestAnimationFrame(done))));
         const position = await group.boundingBox();
         const switcher = await page.locator('.lesson-quick-switcher').boundingBox();
