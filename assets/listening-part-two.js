@@ -75,12 +75,20 @@ window.JPY5ListeningPartTwo = (() => {
           window.scrollTo({top: window.scrollY + group.getBoundingClientRect().top - offset, behavior: 'instant'});
           return switcher;
         };
+        const settle = () => requestAnimationFrame(() => {
+          if (!heading.isConnected || document.activeElement !== heading) return;
+          align();
+          requestAnimationFrame(() => {
+            if (heading.isConnected && document.activeElement === heading) align();
+          });
+        });
+        settle();
         if (!align()) {
           // Navigation is inserted after its JSON fetch, which can finish after a jump.
           pendingNavigation = new MutationObserver(() => {
             if (!document.querySelector('.lesson-quick-switcher')) return;
             pendingNavigation.disconnect();
-            if (heading.isConnected && document.activeElement === heading) align();
+            if (heading.isConnected && document.activeElement === heading) { align(); settle(); }
           });
           pendingNavigation.observe(document.body, {childList: true});
         }
