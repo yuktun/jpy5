@@ -9,4 +9,4 @@
 @media(max-width:480px){.listening-part-nav{display:grid;grid-template-columns:1fr}.listening-part-two-heading h2{overflow-wrap:anywhere}.listening-part-two-heading>span{white-space:normal}}
 
 /* Keep browser scroll anchoring from undoing an explicit, focused group jump. */
-body:has(.listening-part-nav){overflow-anchor:none}
+html:has(.listening-part-nav){overflow-anchor:none}
