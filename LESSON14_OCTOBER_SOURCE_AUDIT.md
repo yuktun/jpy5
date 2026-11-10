@@ -57,3 +57,28 @@ Run `node scripts/test-lesson14-october.mjs` for public additions and protected-
 Reading/listening regression suites preserve official answers and IDs. The reading test now selects direct original-answer paragraphs so teacher annotations are not mistaken for new official answers. The listening test's existing playback mock now supplies metadata readiness and a mock clock, matching its no-playback intent; actual native audio is checked separately by the hosted-audio and sentence-audio suites.
 
 Local checks also cover the 73-page opt-in offline package, resource hashes, private/PDF/audio exclusions, original grammar/quiz layout and progress, shared demo behavior and seven authorization unit tests. Screenshots of reading notes, exercises, vocabulary and protected grammar are kept locally and inspected without uploads. No commit, push or static-site deployment is included.
+
+
+## Drive folder reconciliation — 10 November 2026
+
+Folder: https://drive.google.com/drive/folders/109EMCIewKVsFY54iguU3viWuF9B-OHfI
+
+All seven direct children were inventoried; there were no subfolders. The local files match the folder filenames and sizes. Drive-readable text was cross-checked for all three November files; both November PDFs (24 pages total) were rendered and visually inspected in full. The four October scans retain their 78-page audit and mappings above. Classroom tasks remain lesson content, not operating instructions.
+
+| File / Drive ID | Coverage and destination |
+| --- | --- |
+| 24 OCT reading / `1Qv-tcslV6fr3UVuqYM1cw2CtXKl9JFRx` | Already integrated: 31 pages, reading teacher tab, vocabulary, activity answer explanations; no duplicates added. |
+| 31 OCT reading / `1g1bjNYBTEgRR4hm1gIRJ68QX8TnXxBkr` | Already integrated: 13 pages, paragraph 4–5 notes and saved writing activities. |
+| 31 OCT conversation / `1jfmhTJaEPhy4Ezrm6-7ODO1mkyAUh31W` | Already integrated: 27 pages, dialogue, response exercises and practice guidance. |
+| L14_LS / `1LIYwX3l-Eh62lZfZHCHkDBYxOg30tTKo` | Already integrated: seven consolidated reading pages; original vocabulary IDs retained. |
+| 7 NOV grammar / `1NfV6m0n1t8-WgYvT0VJ5xz4bDfefLvAF` | Page 1 title; 2–4 → protected `sai`; 5–9 → protected `toitta`; 10–12 → protected `niwatatte`. Existing textbook exercises retained. Added teacher explanations, red-frame checks and contrasts to the same protected notes. Vocabulary 5–9 receives contextual word help; no source images copied. |
+| 7 NOV speaking/listening / `14raXaeQ-2Exz7404rjp0L0qSVaHaP07c` | Pages 1–3 repeat the existing four content and three expression answers: checked and retained. Pages 4–6 → `practice-1` six-step introduction; 7–9 → `practice-2` seven-step event structure and vocabulary; 10 → `practice-2-1` soldier scenario; 11 → existing open event task/group guidance; 12 → `practice-3` storytelling framework. No extra scored questions. |
+| 11月7日.docx / `1eWvBk2HXEx__gexnIapJQIbKZjux3hca` | All eight paragraphs → a separate closed teacher disclosure beside `practice-1`, with the Jolyne, Harry Potter and Doraemon classroom models. The unfinished battle object stays a substitution prompt. These are teacher models, not official textbook answers. |
+
+The existing 104 vocabulary annotations remain; 14 new annotations attach to existing IDs 5–9, 102–106, 108–111, giving 118 annotated entries without changing the 227-card bank. Five November conversation disclosures sit directly beside their matching activities, following Lesson 13. Japanese examples have ruby, sources and Traditional Chinese explanation; disclosures start closed. The reading Original tab remains free of teacher supplements.
+
+The November grammar material updates only three of the existing eleven records inside the already-protected `teacherGrammarOct2026Json` field. Existing October text/examples are retained and November source pages are identified separately. It is never included in public JS, HTML, offline caches or test fixtures. The public grammar disclosure date now covers 24 OCT–7 NOV. Firestore rules, approvals, authorization and progress code are unchanged.
+
+Validation uses the real private payload for authorized/denied/offline/logout states, source placement, all 118 vocabulary notes, hidden answers, unchanged reading text, drafts, ruby and three widths. The historical static suite also fails against an untouched archive of pre-change HEAD at `chapter-13-textbook.html: unexpected public-content change` due to previously published listening-section changes; this is recorded separately from the November feature tests.
+
+The protected field was saved and read back on 10 November at 15:52:12 UTC. The four other fields (schemaVersion, grammarJson, adverbs, exercises) were compared and unchanged. Review now links directly to the reading teacher tab and November conversation activities; its vocabulary count is corrected to the existing 227 entries.

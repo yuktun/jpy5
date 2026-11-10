@@ -24,7 +24,7 @@ for(const file of ['chapter-14-vocabulary.html']){
   assert.equal(panel(source),panel(initial),'Approved vocabulary corrections must not change the adverb panel');
   assert.equal(outsidePanel(initial),outsidePanel(published),'Initial vocabulary page differs from historical public boundary');
   const vocabularyCorrections=html=>outsidePanel(html)
-    .replace(/\n  <link rel="stylesheet" href="assets\/ch13-teacher-additions\.css\?v=2">\n  <link rel="stylesheet" href="assets\/ch14-teacher-additions\.css\?v=1">\n  <script src="assets\/ch14-teacher-additions\.js\?v=1" defer><\/script>\n/,'')
+    .replace(/\n  <link rel="stylesheet" href="assets\/ch13-teacher-additions\.css\?v=2">\n  <link rel="stylesheet" href="assets\/ch14-teacher-additions\.css\?v=1">\n  <script src="assets\/ch14-teacher-additions\.js\?v=[12]" defer><\/script>\n/,'')
     .replace(/assets\/ch14-vocabulary-data\.js\?v=\d+/g,'assets/ch14-vocabulary-data.js')
     .replace(/assets\/ch14-vocabulary\.js\?v=\d+/g,'assets/ch14-vocabulary.js')
     .replace(/<p>第 14 課(?:全|共) [\s\S]*?<\/p>/,'<p>VOCABULARY_COVERAGE</p>')

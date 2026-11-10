@@ -137,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderActivityTask(task) {
-    return `<article class="textbook-task-card"><p class="textbook-prompt">${multiline(task.prompt)}</p>${teacher?.block(teacher.practice[task.id],state.furigana)||""}<label>你的準備稿<textarea rows="6" data-draft="${task.id}" lang="ja" placeholder="ここに入力してください">${esc(state.drafts?.[task.id]||"")}</textarea></label><button class="secondary-button" type="button" data-reference-toggle="${task.id}" data-closed-label="參考回答例を見る">參考回答例を見る</button><div class="reference-answer" data-reference="${task.id}" hidden><b>${esc(task.modelLabel)}</b><p>${multiline(task.model)}</p></div></article>`;
+    return `<article class="textbook-task-card"><p class="textbook-prompt">${multiline(task.prompt)}</p>${teacher?.block(teacher.practice[task.id],state.furigana)||""}${teacher?.blocks(teacher.novemberPractice[task.id],state.furigana)||""}<label>你的準備稿<textarea rows="6" data-draft="${task.id}" lang="ja" placeholder="ここに入力してください">${esc(state.drafts?.[task.id]||"")}</textarea></label><button class="secondary-button" type="button" data-reference-toggle="${task.id}" data-closed-label="參考回答例を見る">參考回答例を見る</button><div class="reference-answer" data-reference="${task.id}" hidden><b>${esc(task.modelLabel)}</b><p>${multiline(task.model)}</p></div></article>`;
   }
 
   function renderActivities() {
@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
     stage.innerHTML=`<div class="stage-heading"><div><p class="kicker">課本活動</p><h2>話して、聞いて、まとめよう</h2></div><span>自由作答 · 不自動評分</span></div><div class="textbook-activity-list">${groups.map(section=>{
       const entries=data.textbookActivities.filter(entry=>entry.section===section);
       return `<section class="textbook-activity-card"><header><span>課本原題</span><h2>${ruby(section)}</h2></header>${entries.map(entry=>{
-        if(entry.tasks){return `<div class="activity-group"><h3>${ruby(entry.exercise)}</h3><p>${ruby(entry.instruction)}</p>${teacher?.block(teacher.practice[entry.id],state.furigana)||""}${entry.example?`<div class="textbook-example"><b>課本例</b><p>${multiline(entry.example)}</p></div>`:""}${entry.framework?`<div class="story-framework"><b>枠組み</b>${entry.framework.map(line=>`<p>${ruby(line)}</p>`).join("")}</div>`:""}${entry.tasks.map(renderActivityTask).join("")}</div>`;}
+        if(entry.tasks){return `<div class="activity-group"><h3>${ruby(entry.exercise)}</h3><p>${ruby(entry.instruction)}</p>${teacher?.block(teacher.practice[entry.id],state.furigana)||""}${teacher?.blocks(teacher.novemberPractice[entry.id],state.furigana)||""}${entry.example?`<div class="textbook-example"><b>課本例</b><p>${multiline(entry.example)}</p></div>`:""}${entry.framework?`<div class="story-framework"><b>枠組み</b>${entry.framework.map(line=>`<p>${ruby(line)}</p>`).join("")}</div>`:""}${entry.tasks.map(renderActivityTask).join("")}</div>`;}
         return renderActivityTask(entry);
       }).join("")}</section>`;
     }).join("")}</div>`;

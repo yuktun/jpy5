@@ -92,15 +92,43 @@ window.JPY5_L14_TEACHER = (() => {
     [118,"謎、謎團","c31","2"],[119,"美女；講義對照美男","c31","2"],[121,"講故事；storytelling","c31","2"],[123,"感想","c31","2"],[61,"民間故事、傳說","c31","3"],[62,"說話者；對照聞き手（聽者）","c31","3"],[72,"咖啡店","c31","11"],[74,"影視畫面、影像","c31","11"],[75,"神秘的；な形容詞","c31","11"],[199,"講義譯為安達羅星雲；會話故事中的目的地","c31","16"],[79,"太空船","c31","16"],[77,"宇宙列車","c31","16"],[80,"機械化","c31","16"],[81,"使……化的後綴","c31","16"],[82,"留下、落下；課文用被動取り残された","c31","18"],[83,"血肉之軀、非機械身體","c31","18"],[84,"他們","c31","18"],[85,"歧視","c31","18"],[86,"狩獵","c31","18"],[89,"遇到、遇見","c31","19"],[90,"土星","c31","21"],[91,"列車中的餐車","c31","21"],[93,"血液流動；血の通った体＝有血肉的身體","c31","21"],[94,"幻覺","c31","21"],[96,"身體、自身","c31","22"],[98,"粉碎、碎片狀","c31","22"],[99,"玻璃珠、玻璃球","c31","22"]
   ];
   for(const [id,text,source,pages] of glosses)vocab(id,"老師詞彙補充",text,source,pages);
+  sources.n7c = "7nov26 2026-27ver 第14課　話す・聞く - Google スライド.pdf";
+  sources.n7w = "11月7日.docx";
+  sources.n7g = "7nov26 26-27 第14課　文法 - Google スライド.pdf";
+  const novemberPractice = {
+    "practice-1": [
+      n("六步介紹作品與兩／三人角色分工", "依次是：話題提供 → 表示興趣 → 一句介紹主角 → あいづち（重複關鍵詞）→ 一句介紹內容 → 感想。套用下列會話框架；三人一組可輪流分擔介紹和回應。", "n7c", "4–6", [["このあいだ、やっと、（作品名）を読み終わった／見終わったんだ。", "最近終於讀完／看完某作品。"],["へえ。（作品名）ってどんな話？", "表示興趣並問故事內容。"],["えーっと、主人公は（名前）っていう（人物）。", "先用一句話介紹主角。"],["へえ、（人物）ね。／そう、（内容）っていう話。／（感想）ね。", "重複人物特徵作回應，再簡述內容，最後表達感想。"]]),
+      n("老師會話示例：徐倫、Harry Potter、哆啦A夢", "以下是11月7日的課堂示例，用作替換主角／特徵／內容的口說材料，不是要背誦的唯一答案。原稿「～と戦う」保留為需要自己填入對象的框架；「徐倫」讀じょりーん，名字按作品慣用寫法整理。", "n7w", "1–8", [["{主人公|しゅじんこう}は{徐倫|じょりーん}っていうかっこいい{少女|しょうじょ}（だよ）。／へぇ、かっこいい{少女|しょうじょ}ね。／～と{戦|たたか}うっていう{話|はなし}。", "主角是名叫徐倫的帥氣少女；聽者重複特徵，再由說者補上戰鬥對象。"],["{主人公|しゅじんこう}はハリーポッターっていう{魔法世界|まほうせかい}に{行|い}ってしまった{少年|しょうねん}。／{魔法学校|まほうがっこう}で{勉強|べんきょう}するっていう{話|はなし}。", "以進入魔法世界的少年及魔法學校生活作簡短介紹。"],["{主人公|しゅじんこう}はドラえもんっていうネコ{型|がた}ロボット。／へえ、ネコ{型|がた}ロボットね。かわいい{話|はなし}だね。／そう、のび{太|た}という{友達|ともだち}と{一緒|いっしょ}に{生活|せいかつ}するっていう{話|はなし}。", "示範重複人物特徵、感想及補充內容。"]])
+    ],
+    "practice-2": [n("珍聞會話的七步結構", "話題提供 → 表示興趣並催促 → 說明 → 感想1 → 催促結局 → 結局 → 感想2。智利礦難的例子和課本原題已存在，這裡補上老師標示的各句功能。『で、どうなったの？ 結局。』用於追問已發生事件的結果。", "n7c", "7、9–11", [["え？ そう、どこで？ いつ？", "表示興趣並請對方繼續說明。"],["えーっ、怖い。／で、どうなったの？ 結局。／そう、よかったね。", "依次為感想1、催促結局、感想2。"]])],
+    "practice-2-1": [n("留在叢林的士兵：說明與結局的分工", "老師提供的說明是『不知道第二次世界大戰已結束，繼續住在菲律賓叢林』；結局是青年找到他、拍照後，其存在廣為人知，終能平安回日本。聽者自行加入興趣、感想及追問結局；三人一組可把說明與結局分給不同說者。這是講義的會話情境，並非補充歷史人物傳記。", "n7c", "10–11")],
+    "practice-3": [n("用故事框架整理口說", "先一句介紹主人公和內容，再交代あらすじ中的時代、場面、誰做了甚麼及如何發展，最後說結末。枠組み是整體組織，あらすじ是故事梗概；三人可分擔介紹、發展、結局。", "n7c", "12")]
+  };
+  for (const [id,title,text,source,pages] of [
+    [5,"ちまき與地方差異","日本ちまき的形狀、顏色隨地區而異；投影片的照片是例子，不能當成唯一形狀。","n7g","7–8"],
+    [6,"かしわもち","柏葉包著的甜糯米點心；和ちまき是『昔からの菓子』的具體例。","n7g","7–8"],
+    [7,"受賞者","獲獎者；湯川秀樹與利根川進是投影片列舉的諾貝爾獎得主。","n7g","9"],
+    [8,"出身者","出身於某地或某校的人；大學語境可譯校友／畢業生。","n7g","9"],
+    [9,"砂漠與範圍","砂漠（さばく）＝沙漠；東西450キロにわたって広がる是地理範圍。","n7g","11"],
+    [102,"美形","容貌俊美的人／美貌；源氏物語的主角介紹例用美形の男性。","n7c","4–5"],
+    [103,"鉱山","礦山；課本珍聞的話題是智利礦難。","n7c","7–9"],
+    [104,"閉じ込める","把人關在裡面；他動詞、下一段動詞。閉じ込められる是被困住。","n7c","7–8"],
+    [105,"知恵","智慧、解決問題的辦法；礦難例子說大家一起運用智慧與技術。","n7c","7–9"],
+    [106,"出し合う","互相拿出、共同貢獻；可說お金を出し合う。","n7c","8–9"],
+    [108,"ジャングル","叢林、熱帶雨林；用於士兵的會話情境。","n7c","10"],
+    [109,"兵士","士兵，讀へいし。","n7c","10"],
+    [110,"枠組み","大體結構、框架：主角及內容 → 梗概 → 結局。","n7c","12"],
+    [111,"あらすじ","故事梗概，交代時代、場面、誰做了甚麼及事情發展。","n7c","12"]
+  ]) vocab(id,title,text,source,pages);
   const esc = value => String(value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
   const jp = (text,furigana=true) => esc(text).replace(/\{([^{}|]+)\|([^{}|]+)\}/g,(_,base,kana)=>furigana?`<ruby>${base}<rt>${kana}</rt></ruby>`:base);
-  const source = entry => [entry,...(entry.also||[])].map(ref=>`<small class="teacher-source">來源：${esc(sources[ref.source])} · PDF 第 ${esc(ref.pages)} 頁</small>`).join("");
-  const block = (entry,furigana=true) => entry ? `<details class="teacher-addition l14-teacher-note"><summary><span>老師補充 · 24–31 OCT</span> ${esc(entry.title)}</summary><div class="teacher-addition-body"><p>${esc(entry.text)}</p>${entry.examples.map(([ja,zh])=>`<div class="teacher-example"><p lang="ja">${jp(ja,furigana)}</p><p lang="zh-Hant">${esc(zh)}</p></div>`).join("")}${source(entry)}</div></details>` : "";
+  const source = entry => [entry,...(entry.also||[])].map(ref=>`<small class="teacher-source">來源：${esc(sources[ref.source])} · ${ref.source==="n7w"?"第 "+esc(ref.pages)+" 段":"PDF 第 "+esc(ref.pages)+" 頁"}</small>`).join("");
+  const block = (entry,furigana=true) => entry ? `<details class="teacher-addition l14-teacher-note"><summary><span>老師補充 · ${entry.source.startsWith("n7")?"7 NOV":"24–31 OCT"}</span> ${esc(entry.title)}</summary><div class="teacher-addition-body"><p>${esc(entry.text)}</p>${entry.examples.map(([ja,zh])=>`<div class="teacher-example"><p lang="ja">${jp(ja,furigana)}</p><p lang="zh-Hant">${esc(zh)}</p></div>`).join("")}${source(entry)}</div></details>` : "";
   const blocks = (entries,furigana=true) => (entries||[]).map(entry=>block(entry,furigana)).join("");
   const paragraph = (id,furigana) => blocks(reading[id],furigana);
   const dialogue = (text,furigana) => blocks(conversation.filter(entry=>text.includes(entry.match)),furigana);
   function exercises(furigana=true) {
     return `<section id="teacher-response-practice" class="teacher-review-shortcuts"><h3>老師練習 · あいづち與結局</h3><p>按情境選擇回應。答案是投影片的紅框選項；不計分。最後兩題為情境節錄。</p>${responsePractice.map((q,i)=>`<article class="l14-response-task"><p lang="ja">${i+1}. ${jp(q.prompt,furigana)}</p><ol>${q.choices.map(choice=>`<li lang="ja">${jp(choice,furigana)}</li>`).join("")}</ol><details class="l14-teacher-answer"><summary>顯示老師答案</summary><p lang="ja">${q.answer+1}. ${jp(q.choices[q.answer],furigana)}</p><p>${esc(q.why)}</p>${source({source:"c31",pages:q.page})}</details></article>`).join("")}</section>`;
   }
-  return {sources,reading,readingAnswers,conversation,listeningGuide,endingGuide,background,practice,responsePractice,vocabulary,block,blocks,paragraph,dialogue,exercises,jp};
+  return {novemberPractice,sources,reading,readingAnswers,conversation,listeningGuide,endingGuide,background,practice,responsePractice,vocabulary,block,blocks,paragraph,dialogue,exercises,jp};
 })();
