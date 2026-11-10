@@ -42,7 +42,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const questionText=q=>esc(q.q);
   const optionText=(q,option)=>esc(option);
   function original(){
-    return shell(ruby(data.title),"先掌握論述：動畫發展 → 漫畫產業 → 表現手法 → 世界品牌。",`<article class="reading-paper" style="--reading-size:${[.98,1.1,1.24][state.font]}rem"><div class="reading-badge">第14課</div>${data.paragraphs.map(p=>`<p data-paragraph="${p.id}">${ruby(p.jp)}</p>${teacher?.paragraph(p.id,state.furigana)||""}`).join("")}<footer>（${ruby(data.author)}）</footer></article>`);
+    return shell(ruby(data.title),"",`<article class="reading-paper" style="--reading-size:${[.98,1.1,1.24][state.font]}rem"><div class="reading-badge">第14課</div>${data.paragraphs.map(p=>`<p data-paragraph="${p.id}">${ruby(p.jp)}</p>`).join("")}<footer>（${ruby(data.author)}）</footer></article>`);
+  }
+  function teacherNotes(){
+    return shell("老師筆記","先掌握論述：動畫發展 → 漫畫產業 → 表現手法 → 世界品牌。",`<article class="reading-paper teacher-paper" style="--reading-size:${[.98,1.1,1.24][state.font]}rem"><h3>${ruby(data.title)}</h3>${data.paragraphs.map(p=>`<section class="teacher-paragraph" data-teacher-paragraph="${p.id}"><div class="teacher-paragraph-meta"><span>原文第 ${p.id} 段</span></div><p>${ruby(p.jp)}</p>${teacher?.paragraph(p.id,state.furigana)||""}</section>`).join("")}<footer>（${ruby(data.author)}）</footer></article>`);
   }
   function translation(){
     return shell("繁體中文翻譯","每段中文下方附有完整日文原文。點按日文句子，只播放該句原聲；再按可重播。",`<div class="translation-list" style="--reading-size:${[.98,1.1,1.24][state.font]}rem">${data.paragraphs.map(p=>`<article data-reading-paragraph="${p.id}"><span>0${p.id}</span><p>${esc(p.zh)}<span class="translation-original" lang="ja">${ruby(p.jp)}</span></p></article>`).join("")}</div>`);
@@ -74,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const words=data.vocab.filter((_,i)=>state.wrong.includes(`v${i}`));
     return shell("錯題重溫","模擬考試答錯或標記的單字會集中在這裡。",`${!qs.length&&!words.length?'<div class="empty-state"><h2>暫時冇錯題</h2><p>完成模擬考試或標記單字後，內容會自動出現在這裡。</p></div>':`<div class="mistake-list">${qs.map(q=>`<article><span>模擬考試</span><h3>${questionText(q)}</h3><p>答案：${optionText(q,q.options[q.answer])}</p><p>${esc(q.why)}</p><button class="chip" data-clear-wrong="${q.id}">標記已掌握</button></article>`).join("")}${words.map(([jp,zh])=>`<article><span>單字</span><h3>${ruby(jp)}</h3><p>${esc(zh)}</p></article>`).join("")}</div>`}`);
   }
-  const renderers={original,translation,questions:questionCards,find:findAnswers,vocab,exam,mistakes};
+  const renderers={original,teacher:teacherNotes,translation,questions:questionCards,find:findAnswers,vocab,exam,mistakes};
   function setMode(mode){state.mode=mode;state.vocabFlipped=false;findIndex=0;examAnswers={};save();render()}
   function scoreQuestion(button){
     const q=data.questions.find(x=>x.id===button.dataset.q), chosen=Number(button.dataset.option), card=button.closest(".reading-question"), ok=chosen===q.answer;
