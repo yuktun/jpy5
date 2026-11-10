@@ -117,3 +117,22 @@ Passed after the corrections:
 - `node scripts/test-lesson13-teacher.mjs`: existing supplementary exercises, answer disclosure, word help, and layouts.
 - `node scripts/test-pwa.mjs`: 73 pages and 215 cached resources, including corrected notes and data.
 - JavaScript syntax checks and `git diff --check`.
+
+
+## Core study accuracy follow-up — 11 November 2026
+
+This review covered both lessons' core grammar summaries (8 + 11 patterns), vocabulary rows (191 + 227), reading translations/questions and textbook listening answer banks, using the previous teacher/textbook page audits and targeted dictionary checks. It is not a fresh page-by-page recertification of every scan or every optional exercise. Original Japanese passages, source answer keys, question IDs, audio timings and progress keys are preserved. The classroom sources remain authoritative for course-specific tasks; app translations and summaries are learning aids and remain open to correction.
+
+| Location | Correction / clarification | Evidence |
+| --- | --- | --- |
+| L13 んだって | State the plain-form connection and distinguish nonpast affirmative なんだって from past だったんだって and negative じゃないんだって. The existing quiz explanation now explicitly limits its noun/な-adjective rule to nonpast affirmative. | 10/17 OCT teacher notes: のだ／んだ + quotation って; standard predicate conjugation. |
+| L13 reading paragraph 3 | Translate 一部上場 as listing on the historical Tokyo Stock Exchange First Section, instead of the unclear 一部上市公司. Retain the original Japanese and the author's conjectural wording. | Existing vocabulary entry 133; [JPX market restructuring](https://www.jpx.co.jp/equities/improvements/market-structure/index.html). |
+| L13 Review | Update vocabulary count from the original 159 to the current 191. | Actual bank, including 32 previously added textbook entries. |
+| L14 欠かす | Clarify transitive omission / making something lacking; distinguish 欠かせない = indispensable. The prior 欠く vs 欠かす source distinction remains. | [Shogakukan dictionary](https://kotobank.jp/word/欠かす-459349). |
+| L14 取り残す | Make the transitive meaning explicit; distinguish passive 取り残される = being left behind. | Textbook dialogue and [Shogakukan bilingual dictionary](https://kotobank.jp/jeword/取り残す). |
+| L14 夏日 | Explain the meteorological sense: a day with maximum temperature of at least 25°C. | [Japan Meteorological Agency](https://www.jma-net.go.jp/toyama/kisyou_data/1_summer_stats2.html). |
+| L14 ～げ | Qualify the verb-stem connection as limited to certain established combinations, matching the existing extension note; do not encourage arbitrary verb/adjective + げ. | [Shogakukan 気, げ section](https://kotobank.jp/word/気-49796); existing extension notes and source 不満ありげ. |
+
+Retained source distinctions: 月極's lexical reading is つきぎめ, but the reading passage deliberately quotes ゲッキョク as a misreading; 在日６年目 is the sixth year, not a precise synonym of six years later; 池袋 vs 青森 remains the ending's contrast. L14's industry figures and First Section wording are historical passage content, not current market/statistics claims. No new finding justifies replacing the original Japanese or official listening answers.
+
+Checks: `scripts/test-study-accuracy-13-14.mjs` compares all 73 grammar quiz IDs/answer indices, vocabulary identities and pronunciations, original Japanese passages, reading question banks and complete listening datasets against pre-review commit `65182e5`. It also prevents the corrected meanings from regressing. Existing reading, listening, teacher-note, quiz compatibility and offline tests provide functional coverage; test results do not themselves establish linguistic correctness.

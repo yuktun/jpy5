@@ -23,7 +23,7 @@ vm.runInContext(await readFile('assets/quiz-progress.js','utf8'),fixture.ctx);
 const {JPY5_DATA:data,JPY5QuizChoices:choices,JPY5QuizProgress:progress}=fixture.ctx.window;
 assert.equal(data.patterns.length,11);assert.equal(data.questions.length,33);
 assert.deepEqual(Array.from(data.questions,q=>q.id),Array.from(original.questions,q=>q.id));
-assert.deepEqual(Array.from(data.questions,q=>q.options[q.answer]),Array.from(original.questions,q=>q.options[q.answer]),'correct canonical answer meanings remain unchanged');
+assert.deepEqual(Array.from(data.questions,q=>q.options[q.answer]),Array.from(original.questions,q=>q.id==='ge-formation'?'いA 去い／なA 語幹／部分 V ます形語幹＋げ（に／な）':q.options[q.answer]),'Only the reviewed ge restriction may refine a canonical answer; all other correct meanings remain unchanged');
 for(const q of data.questions.filter(q=>q.kind==='meaning')) {
   assert.equal(new Set(q.options).size,4);
   assert(q.options.every(text=>!/[ぁ-ゖァ-ヺ]/.test(text)),'meaning options must all be Chinese');
