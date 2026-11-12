@@ -133,9 +133,28 @@ try {
   await page.locator('[data-reading-mode="exam"]').click();
   assert.equal(await page.locator(".exam-list article").count(), 13, "mock exam question count changed");
   assert.deepEqual(await page.locator(".exam-list input").evaluateAll(inputs => [...new Set(inputs.map(input => input.name))]), Array.from({ length: 13 }, (_, index) => `q${index + 1}`), "mock exam question IDs changed");
+  const furigana = page.locator("#furigana-toggle");
+  if ((await furigana.innerText()).includes("OFF")) await furigana.click();
+  assert(await page.locator(".exam-list rt").count() > 0, "exam keeps furigana for other words");
+  assert.equal(await page.locator(".exam-list rt").filter({hasText:"つきぎめ"}).count(), 0, "exam ruby must not reveal the tested reading");
+  const choices = () => page.locator(".exam-list input").evaluateAll(inputs => inputs.map(input => input.value));
+  const optionOrder = await choices();
+  const positions = data.questions.map((question, index) => optionOrder.slice(index * 4, index * 4 + 4).indexOf(String(question.answer)));
+  assert.deepEqual([0, 1, 2, 3].map(position => positions.filter(choice => choice === position).length).sort(), [3, 3, 3, 4]);
+  const firstAnswer = page.locator('input[name="q1"][value="2"]');
+  await firstAnswer.check();
+  await page.reload();
+  assert(await firstAnswer.isChecked(), "a saved answer must retain its original option index");
+  assert.deepEqual(await choices(), optionOrder, "option order must survive reload");
   for(const [index,question] of data.questions.entries())await page.locator(`input[name="${question.id}"][value="${index===0?(question.answer+1)%question.options.length:question.answer}"]`).check();
   await page.locator("#submit-reading-exam").click();
   assert.equal(await page.locator(".reading-result strong").innerText(),"12 / 13","mock exam scoring changed");
+  await page.locator("#furigana-toggle").click();
+  assert.equal(await page.locator(".reading-result strong").innerText(), "12 / 13", "furigana toggle must keep the submitted score");
+  assert.equal(await page.locator("#submit-reading-exam").count(), 0);
+  await page.locator("#restart-reading-exam").click();
+  assert.equal(await page.locator(".exam-list input:checked").count(), 0);
+  assert.equal(await page.locator("#exam-status").innerText(), "已答 0 / 13");
   assert.equal(errors.length, 0, errors.join("\n"));
   console.log("Lesson 13 textbook reading checks passed for desktop, iPad, and mobile layouts.");
 } finally {

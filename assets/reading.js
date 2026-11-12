@@ -146,8 +146,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const [jp,zh]=data.vocab[state.vocabIndex%data.vocab.length];
     return shell("單字練習","點卡翻面；鍵盤可用 Space、←、→。",`<button class="reading-vocab-card ${state.vocabFlipped?'flipped':''}" id="reading-vocab-card"><span>${state.vocabIndex+1} / ${data.vocab.length}</span><strong>${ruby(jp)}</strong>${state.vocabFlipped?`<b class="reading-card-answer">${esc(zh)}</b><small>點擊或按 Space 返回題目</small>`:`<small>點擊查看中文意思</small>`}</button><div class="card-actions"><button data-vocab-nav="prev">← 上一個</button><button data-vocab-star>${state.wrong.includes(`v${state.vocabIndex}`)?"★ 重溫中":"☆ 加入重溫"}</button><button data-vocab-nav="next">下一個 →</button></div><div class="vocab-overview">${data.vocab.map((v,i)=>`<button data-vocab-jump="${i}" class="${i===state.vocabIndex?'active':''}">${ruby(v[0])}</button>`).join("")}</div>`);
   }
+  const examRuby = text => String(text).split(/(月極め?|月決め)/).map(part =>
+    /^(月極め?|月決め)$/.test(part) ? esc(part) : ruby(part)).join("");
+  const readingExam = window.JPY5ReadingExam({
+    state, questions: data.questions, save, render,
+    prompt: question => examRuby(question.q),
+    option: (question, text) => question.optionLanguage === "zh" ? esc(text) : examRuby(text),
+    thresholds: [11, 8], shuffle: true
+  });
   function exam(){
-    return shell("模擬考試","13 題一次完成，提交後才顯示答案及分數。",`<div class="exam-list">${data.questions.map((q,i)=>`<article><span>${String(i+1).padStart(2,"0")}</span><h3>${questionRuby(q)}</h3><div>${q.options.map((o,n)=>`<label><input type="radio" name="${q.id}" value="${n}" ${state.examAnswers[q.id]===n?'checked':''}> ${optionText(q,o)}</label>`).join("")}</div></article>`).join("")}</div><div class="exam-submit"><p id="exam-status">已答 ${Object.keys(state.examAnswers).length} / ${data.questions.length}</p><button class="primary-button" id="submit-reading-exam">提交試卷 →</button></div><section class="reading-result" hidden></section>`);
+    return shell("模擬考試","13 題一次完成，提交後顯示分數。",readingExam.content());
   }
   function mistakes(){
     const qs=data.questions.filter(q=>state.wrong.includes(q.id));
@@ -203,8 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
     JPY5.bindSwipe(stage.querySelector("#reading-vocab-card"),{next:()=>stage.querySelector('[data-vocab-nav="next"]')?.click(),previous:()=>stage.querySelector('[data-vocab-nav="prev"]')?.click()});
     stage.querySelectorAll("[data-vocab-jump]").forEach(b=>b.onclick=()=>{state.vocabIndex=Number(b.dataset.vocabJump);state.vocabFlipped=false;save();render()});
     stage.querySelector("[data-vocab-star]")?.addEventListener("click",()=>{const id=`v${state.vocabIndex}`;state.wrong=state.wrong.includes(id)?state.wrong.filter(x=>x!==id):[...state.wrong,id];save();render()});
-    stage.querySelectorAll('.exam-list input').forEach(input=>input.onchange=()=>{state.examAnswers[input.name]=Number(input.value);save();stage.querySelector("#exam-status").textContent=`已答 ${Object.keys(state.examAnswers).length} / ${data.questions.length}`});
-    stage.querySelector("#submit-reading-exam")?.addEventListener("click",()=>{if(Object.keys(state.examAnswers).length<data.questions.length){stage.querySelector("#exam-status").textContent="請先完成全部題目。";return}let score=0;const results=data.questions.map(q=>{const ok=state.examAnswers[q.id]===q.answer;if(ok){score++;state.wrong=state.wrong.filter(x=>x!==q.id)}else if(!state.wrong.includes(q.id))state.wrong.push(q.id);return {id:q.id,ok}});state.attempts.push({date:new Date().toISOString(),score,total:data.questions.length,results});state.examAnswers={};save();stage.querySelector(".reading-result").hidden=false;stage.querySelector(".reading-result").innerHTML=`<strong>${score} / ${data.questions.length}</strong><h2>${score>=11?'掌握得很好！':score>=8?'再重溫幾個段落。':'先回原文找答案。'}</h2><p>錯題已自動加入「錯題重溫」。</p>`;stage.querySelector("#submit-reading-exam").disabled=true});
+    readingExam.bind(stage);
     stage.querySelectorAll("[data-clear-wrong]").forEach(b=>b.onclick=()=>{state.wrong=state.wrong.filter(x=>x!==b.dataset.clearWrong);save();render()});
   }
   function render(){closeTeacherPopup({restoreFocus:false});document.querySelectorAll("[data-reading-mode]").forEach(b=>b.classList.toggle("active",b.dataset.readingMode===state.mode));stage.innerHTML=(renderers[state.mode]||original)();bind()}
