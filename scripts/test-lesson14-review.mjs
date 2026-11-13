@@ -8,9 +8,14 @@ import {createHash} from 'node:crypto';
 import {chromium} from 'playwright';
 const root=process.cwd(),source=await readFile('chapter-14-review.html','utf8');
 const original=execFileSync('git',['show','8a4a519af833679e37d334a9aa20a7b86be7d27c:chapter-14-review.html'],{encoding:'utf8'});
-const section=html=>html.match(/<section class="teacher-review-shell"[\s\S]*?<\/section>/)?.[0].replace(/\r\n/g,'\n');
+const section=html=>html.match(/<section class="teacher-review-shell"[\s\S]*?<\/section>/)?.[0]
+  .replace(/\r\n/g,'\n').replace('<details class="teacher-exercise" open>','<details class="teacher-exercise">');
+const withoutAddedHelp=html=>html
+  .replace(/<p class="teacher-word-help-hint" data-exercise-help>[^<]*<\/p>/g,'')
+  .replace(/<button type="button" class="teacher-word-inline" lang="zh-Hant" data-exercise-help[^>]*>[^<]*<\/button>/g,'')
+  .replace(/<button type="button" class="teacher-word-inline" lang="ja"[^>]*>([\s\S]*?)<\/button>/g,'$1');
 const hash=value=>createHash('sha256').update(value).digest('hex');
-assert.equal(hash(section(source)),hash(section(original)),'Public wording, ruby, definitions, answers and source markup must match the original');
+assert.equal(hash(withoutAddedHelp(section(source))),hash(section(original)),'The new explanations must preserve worksheet wording, ruby, existing definitions, answers and source markup');
 assert.doesNotMatch(source,/data-teacher-section|teacher-access\.mjs/);
 const server=createServer(async(req,res)=>{
  const file=resolve(root,'.'+new URL(req.url,'http://localhost').pathname);
@@ -32,13 +37,51 @@ try{
   await page.waitForFunction(()=>document.querySelector('#teacher-exercise a .internet-required'));
   assert.equal((await shell.locator('a[href*="drive.google.com"]').textContent()).split('需網絡').length-1,1);
   assert.equal(await page.locator('[data-teacher-login],[data-teacher-section]').count(),0);
+  await shell.locator('[data-review-group-toggle]').click();
   const button=shell.locator('.teacher-word-bank button').first();await button.hover();await help.waitFor({state:'visible'});
   assert(await help.evaluate(node=>node.parentNode===document.body&&getComputedStyle(node).position==='fixed'));
   await page.keyboard.press('Escape');await help.waitFor({state:'hidden'});
   await button.focus();await page.keyboard.press('Tab');await help.waitFor({state:'visible'});await page.keyboard.press('Escape');
+  const inline=shell.locator('.teacher-word-inline');
+  assert.equal(await shell.locator('.teacher-word-inline[lang="ja"]').count(),27);
+  assert.equal(await shell.locator('.teacher-word-inline[data-exercise-help]').count(),11);
+  for(const option of await inline.all()){
+   await option.hover();
+   await help.waitFor({state:'visible'});
+   const usage=await option.getAttribute('data-word-usage');
+   assert(usage?.trim());
+   assert.equal(await help.locator('.teacher-word-usage').textContent(),usage);
+   assert.equal(await option.getAttribute('aria-describedby'),'teacher-word-help');
+   const box=await help.boundingBox();
+   assert(box.x>=0 && box.x+box.width<=width+1 && box.y>=0 && box.y+box.height<=901);
+  }
+  await page.keyboard.press('Escape');await help.waitFor({state:'hidden'});
+  await inline.first().evaluate(node=>{
+   node.scrollIntoView({behavior:'instant',block:'center'});
+   node.focus({preventScroll:true});
+  });
+  await page.evaluate(()=>new Promise(done=>requestAnimationFrame(()=>requestAnimationFrame(done))));
+  await page.keyboard.press('Tab');await help.waitFor({state:'visible'});
+  assert.equal(await inline.nth(1).getAttribute('aria-describedby'),'teacher-word-help');
+  await page.keyboard.press('Escape');await help.waitFor({state:'hidden'});
+  assert.equal(await shell.locator('.teacher-answer:not([hidden])').count(),0);
   await context.setOffline(true);assert.equal(await shell.locator('[data-answer-toggle]').count(),13);await context.setOffline(false);
   await page.reload();assert.equal(await help.count(),1);assert.equal(await shell.locator('.teacher-answer:visible').count(),0);
  }
+ const touch=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
+ const mobile=await touch.newPage();
+ await mobile.route('https://**/*',route=>route.abort());
+ await mobile.goto(url);
+ await mobile.locator('#teacher-exercise [data-review-group-toggle]').tap();
+ const option=mobile.locator('.teacher-word-inline[lang="ja"]').first();
+ await option.evaluate(node=>node.scrollIntoView({behavior:'instant',block:'center'}));
+ await mobile.evaluate(()=>new Promise(done=>requestAnimationFrame(()=>requestAnimationFrame(done))));
+ const mobileHelp=mobile.locator('.teacher-word-help-popover');
+ await option.tap();await mobileHelp.waitFor({state:'visible'});
+ await mobile.touchscreen.tap(2,2);await mobileHelp.waitFor({state:'hidden'});
+ await option.tap();await mobileHelp.waitFor({state:'visible'});
+ await option.tap();await mobileHelp.waitFor({state:'hidden'});
+ await touch.close();
  assert.equal(protectedReads,0);assert.deepEqual(errors,[]);
- console.log('Public review passed: original wording/ruby/definitions/answers/source parity, 3 widths, signed-out without Firebase, 6 top/33 total words, 13 answer panels, focus/hover, one source/network label, navigation, offline retention, zero protected reads.');
+ console.log('Lesson 14 review passed: original worksheet parity, 33 word bank explanations, 27 inline choices, 11 open-ended hints, 13 hidden answer panels, three widths, keyboard, hover, and touch.');
 }finally{await browser.close();server.closeAllConnections();await new Promise(done=>server.close(done));}

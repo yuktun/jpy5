@@ -52,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   // Reuse one popover; renderers can initialize newly inserted word banks.
   window.JPY5WordHelp ||= (() => {
+    const triggerSelector = ".teacher-word-bank [data-word-meaning], .teacher-word-inline[data-word-meaning]";
     const initialized = new WeakSet();
     const popover = document.createElement("div");
     popover.className = "teacher-word-help-popover";
@@ -73,7 +74,9 @@ document.addEventListener("DOMContentLoaded", () => {
       trigger?.removeAttribute("aria-describedby");
       trigger = button;
       interaction = source;
-      popover.querySelector("h2").textContent = button.textContent;
+      const title = popover.querySelector("h2");
+      title.textContent = button.dataset.wordTitle || button.textContent;
+      title.lang = button.lang || "ja";
       popover.querySelector(".teacher-word-meaning").textContent = button.dataset.wordMeaning;
       popover.querySelector(".teacher-word-usage").textContent = button.dataset.wordUsage;
       button.setAttribute("aria-describedby", popover.id);
@@ -89,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     const dismissAfterLeave = () => { cancelDismiss(); dismissTimer = setTimeout(hide, 120); };
     function init(root = document) {
-      root.querySelectorAll(".teacher-word-bank [data-word-meaning]").forEach(button => {
+      root.querySelectorAll(triggerSelector).forEach(button => {
         if (initialized.has(button)) return;
         initialized.add(button);
         button.addEventListener("pointerenter", event => {
@@ -114,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
     popover.addEventListener("pointerleave", () => { if (interaction === "hover") dismissAfterLeave(); });
     document.addEventListener("pointerdown", event => {
       pointerType = event.pointerType;
-      if (!event.target.closest(".teacher-word-bank [data-word-meaning]") && !popover.contains(event.target)) hide();
+      if (!event.target.closest(triggerSelector) && !popover.contains(event.target)) hide();
     });
     document.addEventListener("keydown", event => {
       if (event.key === "Tab") pointerType = "";

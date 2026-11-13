@@ -1,6 +1,10 @@
 .teacher-word-bank button{min-height:44px;padding:7px 12px;color:var(--ink);background:var(--white);border:1px solid var(--line);border-radius:99px;font:inherit;font-size:.88rem;cursor:pointer}
 .teacher-word-bank button:hover{border-color:var(--primary);background:var(--primary-light)}
 .teacher-word-bank button:focus-visible{outline:3px solid var(--primary);outline-offset:3px}
+.teacher-word-inline{max-width:100%;min-height:44px;padding:3px 9px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);font:inherit;text-align:start;overflow-wrap:anywhere;cursor:pointer}
+.teacher-word-inline:hover,.teacher-word-inline[aria-describedby="teacher-word-help"]{border-color:var(--primary);background:var(--primary-light)}
+.teacher-word-inline:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+.teacher-word-inline[lang="zh-Hant"]{display:block;margin-top:5px;color:var(--primary-dark);font-size:.8rem}
 .teacher-word-help-hint{margin:10px 0 0;color:var(--muted);font-size:.8rem}
 .teacher-word-help-popover[hidden]{display:none}
 .teacher-word-help-popover{position:fixed;z-index:1000;width:min(360px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow:auto;padding:16px 18px;color:var(--ink);background:var(--white);border:1px solid var(--primary);border-radius:12px;box-shadow:var(--shadow);overflow-wrap:anywhere}
