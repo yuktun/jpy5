@@ -29,7 +29,9 @@ The default is online mode. Opening or installing the app does **not** download 
 
 **All PDFs (including same-origin PDFs), external links, all MP3 audio (including same-origin recordings) and Google sync require internet and are excluded.** Links and audio players are labelled accordingly. Device pronunciation also requires an installed local Japanese voice; test it before relying on it offline.
 
-Updates download only when selected. The small service worker/inventory can update automatically, and the dialog reports when the saved package has a newer version available. Each file is checked against the release hash (text line endings are normalized for Windows/Git portability). A new package becomes active only after every required file is present. Failed, interrupted or inconsistent deployments never replace a complete saved package. Choose **重新載入新版本** after an update to reload the current page; other open pages can be reloaded when convenient.
+Updates download only when selected. The small service worker/inventory can update automatically, and the dialog reports when the saved package has a newer version available. The updater checks cached files against the new release's SHA-256 hashes and reuses matching files, including from older packages without per-file hash metadata. It downloads and verifies the remaining files with up to four requests at a time. The dialog shows how many files were checked, reused and downloaded. Text line endings are normalized for Windows/Git portability.
+
+The complete saved package stays active while the verified replacement is prepared. **取消下載**, an interrupted connection or a storage or integrity error leaves the saved package available. Both packages may occupy browser storage during an update. Choose **重新載入新版本** after an update to reload the current page. Reload other open lesson tabs to use the new version there.
 
 **移除離線內容** cancels any download and removes only this app scope's offline package, metadata and legacy precache entries. It does not clear localStorage, IndexedDB, cookies, login state, learning progress, quiz drafts or unrelated app caches. Existing users move to the online default when the new worker activates and can explicitly enable offline use. Old automatically downloaded files are not treated as consent or as a verified new package; they are retained until an explicit download succeeds or the user selects removal. Existing Home Screen shortcuts need not be reinstalled.
 
@@ -50,7 +52,9 @@ node scripts/test-flashcard-prompts-layout.mjs
 node scripts/test-flashcard-update.mjs
 ```
 
-The browser suite requires Playwright and an installed Edge (or set JPY5_BROWSER_CHANNEL). It uses isolated profiles, a local server and no live accounts. It covers the online default, download/retry/cancellation, persistent-profile cold start, all 73 pages offline, PDFs/external links, update detection and integrity failures, removal/re-enabling, partial eviction and scoped legacy-cache cleanup. The adverb update suite exercises explicit package update from published revision `2cb386d9fe158d8ccc18b6d43c3f09d93afd8fee`; override `JPY5_PREVIOUS_REF` only when testing another prior release. The older teacher-exercise migration suite uses the pre-opt-in worker.
+The browser suite requires Playwright and an installed Edge (or set JPY5_BROWSER_CHANNEL). It uses isolated profiles, a local server and no live accounts. It covers the online default, download/retry/cancellation, persistent-profile cold start, all 73 pages offline, PDFs/external links, incremental downloads, integrity failures, removal/re-enabling, partial eviction and scoped legacy-cache cleanup. Set `JPY5_OFFLINE_BASELINE_REF` to a prior Git revision to benchmark its service worker, or `JPY5_OFFLINE_BENCHMARK_ONLY=1` to benchmark the current worker. Both benchmark modes perform three single-file updates and log request count, response-body bytes, peak concurrent requests and elapsed time. `JPY5_OFFLINE_BENCHMARK_DELAY` controls the simulated server delay per asset in milliseconds and defaults to 20.
+
+The adverb update suite exercises explicit package update from published revision `2cb386d9fe158d8ccc18b6d43c3f09d93afd8fee`; override `JPY5_PREVIOUS_REF` only when testing another prior release. The older teacher-exercise migration suite uses the pre-opt-in worker.
 
 ## Structure
 

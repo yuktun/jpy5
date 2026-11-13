@@ -6,7 +6,7 @@ import('./teacher-progress-privacy.mjs').catch(()=>{});
   let registration;
   let state = {};
   let initialVersion;
-  let status, dialog, details, progress, download, remove, check, reload;
+  let status, dialog, details, progress, download, cancel, remove, check, reload;
 
   const send = type => (navigator.serviceWorker?.controller || registration?.active)?.postMessage({ type });
   const refresh = () => { activateWaiting(); send("JPY5_CACHE_STATUS"); };
@@ -26,22 +26,30 @@ import('./teacher-progress-privacy.mjs').catch(()=>{});
     const busy = state.downloading;
     const available = !!registration?.active;
     status.dataset.state = busy ? "pending" : state.error ? "error" : state.ready ? "ready" : "online";
-    const label = busy ? `下載中 ${state.completed}/${state.total}` : state.ready ? (state.updateAvailable ? "離線內容有更新" : "離線已就緒") : "離線設定";
+    const transfer = state.transfer;
+    const checking = transfer?.phase === "checking";
+    const verifying = transfer?.phase === "verifying";
+    const label = busy ? (checking ? "檢查離線內容中" : verifying ? "確認離線內容中" : `下載中 ${transfer?.downloaded ?? state.completed}/${transfer?.needed ?? state.total}`) : state.ready ? (state.updateAvailable ? "離線內容有更新" : "離線已就緒") : "離線設定";
     status.textContent = label;
     let message = state.ready ? "已完整下載，可離線開啟及使用本站學習內容。" : "預設使用網上模式，不會自動下載離線包。";
-    if (busy) message = `正在下載 ${state.completed} / ${state.total} 個檔案。請保持此頁開啟。`;
+    const counts = transfer && `已檢查 ${transfer.checked} 個，重用 ${transfer.reused} 個，已下載 ${transfer.downloaded} 個。`;
+    if (busy) message = transfer ? `${label}。${counts}請保持此頁開啟。` : `正在下載 ${state.completed} / ${state.total} 個檔案。請保持此頁開啟。`;
     else if (state.error) message = `${errors[state.error] || "此瀏覽器暫時無法使用離線儲存。"}${state.ready ? " 原有完整離線版本仍可使用。" : " 尚未準備好離線使用。"}`;
+    else if (transfer?.phase === "cancelled") message = `已取消下載。${state.ready ? "原有完整離線版本仍可使用。" : "可隨時重新下載。"}`;
     else if (state.updateAvailable) message += " 有新版本可供下載；目前保留已下載版本。";
+    else if (state.ready && transfer?.phase === "done") message += ` ${counts}`;
     if (!online) message += " 目前沒有網絡。";
     details.textContent = message;
     progress.hidden = !busy;
-    progress.max = state.total || 1;
-    progress.value = state.completed || 0;
+    progress.max = (checking ? state.total : transfer?.needed ?? state.total) || 1;
+    progress.value = checking ? transfer.checked : transfer?.downloaded ?? state.completed ?? 0;
     download.textContent = state.error ? "重新下載" : state.updateAvailable ? "下載離線更新" : "下載離線內容";
     download.disabled = !available || !online || busy || state.unavailable;
     download.hidden = !!state.ready && !state.updateAvailable && !state.error;
-    remove.disabled = !available;
-    remove.textContent = busy ? "取消並移除離線內容" : "移除離線內容";
+    cancel.hidden = !busy || !transfer;
+    cancel.disabled = !available || !state.canCancel;
+    remove.disabled = !available || (busy && !!transfer);
+    remove.textContent = busy && !transfer ? "取消並移除離線內容" : "移除離線內容";
     check.disabled = !available || !online || busy;
     reload.hidden = !(state.ready && initialVersion && state.version !== initialVersion);
     dialog.querySelector("[data-offline-size]").textContent = state.bytes ? `約 ${(state.bytes / 1024 / 1024).toFixed(1)} MB（${state.total} 個檔案）。` : "";
@@ -100,12 +108,13 @@ import('./teacher-progress-privacy.mjs').catch(()=>{});
       <p>自行選擇下載本站頁面、課文、詞彙、練習及所需程式。<span data-offline-size></span></p>
       <p><strong>所有 PDF、外部連結、外部音訊及 Google 同步均需網絡，不包括在離線包內。</strong>發音需裝置已安裝日語語音。</p>
       <p data-offline-status role="status" aria-live="polite"></p>
-      <progress aria-label="離線下載進度" hidden></progress>
+      <progress aria-label="離線更新進度" hidden></progress>
       <p>iPhone／Safari 請保持此頁開啟直到完成。瀏覽器可能回收儲存空間；使用前請確認「離線已就緒」。</p>
       <p>移除只會刪除本站離線內容，保留學習進度、登入資料及其他網站資料。</p>
       <div class="pwa-offline-actions">
         <button type="button" data-offline-download class="primary-button">下載離線內容</button>
         <button type="button" data-offline-check class="secondary-button">檢查更新</button>
+        <button type="button" data-offline-cancel class="secondary-button" hidden>取消下載</button>
         <button type="button" data-offline-remove class="secondary-button">移除離線內容</button>
         <button type="button" data-offline-reload class="primary-button" hidden>重新載入新版本</button>
         <button type="button" data-offline-close class="secondary-button">關閉</button>
@@ -114,6 +123,7 @@ import('./teacher-progress-privacy.mjs').catch(()=>{});
     details = dialog.querySelector("[data-offline-status]");
     progress = dialog.querySelector("progress");
     download = dialog.querySelector("[data-offline-download]");
+    cancel = dialog.querySelector("[data-offline-cancel]");
     remove = dialog.querySelector("[data-offline-remove]");
     check = dialog.querySelector("[data-offline-check]");
     reload = dialog.querySelector("[data-offline-reload]");
@@ -121,10 +131,11 @@ import('./teacher-progress-privacy.mjs').catch(()=>{});
     dialog.querySelector("[data-offline-close]").addEventListener("click", () => dialog.close());
     dialog.addEventListener("close", () => status.focus({ preventScroll: true }));
     download.addEventListener("click", () => {
-      state = { ...state, downloading: true, completed: 0, error: null };
+      state = { ...state, downloading: true, completed: 0, transfer: null, canCancel: false, error: null };
       render();
       send("JPY5_DOWNLOAD");
     });
+    cancel.addEventListener("click", () => { cancel.disabled = true; send("JPY5_CANCEL"); });
     remove.addEventListener("click", () => { remove.disabled = true; send("JPY5_REMOVE"); });
     check.addEventListener("click", async () => {
       check.disabled = true;

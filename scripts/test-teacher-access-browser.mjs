@@ -5,7 +5,9 @@ import {resolve,sep,extname} from 'node:path';
 import {chromium} from 'playwright';
 import {firestoreFixture} from './teacher-test-fixtures.mjs';
 const root=process.cwd();
+let disconnected=false;
 const server=createServer(async(req,res)=>{
+  if(disconnected){req.socket.destroy();return;}
   if(req.url==='/protected-test.html')return res.writeHead(200,{'Content-Type':'text/html'}).end('<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="data:,"><link rel="stylesheet" href="assets/teacher-access.css"><script type="module" src="assets/teacher-access.mjs"></script></head><body><details data-teacher-section="adverbs"><summary>Synthetic protected notes</summary><p data-teacher-status></p><button data-teacher-login hidden>Login</button><button data-teacher-load hidden>Retry</button><div data-teacher-content></div></details></body></html>');
   const file=resolve(root,'.'+new URL(req.url,'http://localhost').pathname);
   if(!file.startsWith(root+sep)||file.includes('private-migration')||file.includes('node_modules')||file.includes(`${sep}.git`))return res.writeHead(403).end();
@@ -79,16 +81,24 @@ try {
   await migrationPage.waitForFunction(async()=>{const scope=new URL('./',location.href).href,cache=await caches.open(`jpy5-offline-${encodeURIComponent(scope)}-package-old`),ruby=await cache.match(new URL('assets/grammar-ruby.js',scope));return ruby&&!(await ruby.text()).includes('SYNTHETIC OLD SECRET')&&!await cache.match(new URL('assets/ch14-data.js',scope));});
   assert.equal(await migrationPage.evaluate(async()=>{const scope=new URL('./',location.href).href;return(await(await caches.open(`jpy5-offline-${encodeURIComponent(scope)}-package-old`)).match(new URL('chapter-14-vocabulary.html',scope))).text();}),'PUBLIC ADVERBS RETAINED');
   await migrationContext.close();
-  await page.goto(base+'chapter-14-vocabulary.html');await page.evaluate(async()=>{const r=await navigator.serviceWorker.ready;r.active.postMessage({type:'JPY5_DOWNLOAD'});});
-  await page.waitForFunction(async()=>{const scope=new URL('./',location.href).href,response=await(await caches.open(`jpy5-offline-${encodeURIComponent(scope)}-metadata`)).match(new URL('__offline_state__',scope));return response&&(await response.json()).teacherProtection===2;},{},{timeout:90000});
-  assert.equal(await page.evaluate(async()=>{for(const name of await caches.keys())for(const req of await(await caches.open(name)).keys()){const text=await(await(await caches.open(name)).match(req)).text();if(text.includes('SYNTHETIC PROTECTED TEXT'))return true;}return false;}),false);
-  await context.setOffline(true);
+  const offlineContext=await browser.newContext();
+  await offlineContext.route('https://**/*',route=>route.abort());
+  const downloadPage=await offlineContext.newPage();
+  await downloadPage.goto(base+'chapter-14-vocabulary.html');
+  await downloadPage.waitForFunction(()=>!!navigator.serviceWorker.controller);
+  await downloadPage.evaluate(()=>navigator.serviceWorker.controller.postMessage({type:'JPY5_DOWNLOAD'}));
+  await downloadPage.waitForFunction(()=>document.querySelector('.pwa-status')?.dataset.state==='ready',null,{timeout:90000});
+  assert.equal(await downloadPage.evaluate(async()=>{const scope=new URL('./',location.href).href,response=await(await caches.open(`jpy5-offline-${encodeURIComponent(scope)}-metadata`)).match(new URL('__offline_state__',scope));return (await response.json()).teacherProtection;}),2);
+  assert.equal(await downloadPage.evaluate(async()=>{for(const name of await caches.keys())for(const req of await(await caches.open(name)).keys()){const text=await(await(await caches.open(name)).match(req)).text();if(text.includes('SYNTHETIC PROTECTED TEXT'))return true;}return false;}),false);
+  disconnected=true;
   for(const file of ['chapter-14-review.html','chapter-14-vocabulary.html','chapter-14-notes.html','chapter-14-flashcards.html','chapter-14-quiz.html','chapter-14-history.html','chapter-13-notes.html','chapter-13-vocabulary.html']){
-    await page.goto(base+file);assert(!await page.locator('body').textContent().then(text=>text.includes('SYNTHETIC PROTECTED TEXT')));
-    if(file==='chapter-14-vocabulary.html')assert.equal(await page.locator('.teacher-adverb-card').count(),4);
-    else if(file==='chapter-14-review.html')assert.equal(await page.locator('[data-answer-toggle]').count(),13);
-    else if(file.includes('14'))assert.equal(await page.locator('main').count(),1);
-    else { assert.equal(await page.locator('main').count(),1,`${file}: public page should remain available; retained sentinel=${(await page.locator('body').textContent()).includes('PUBLIC RETAINED')}; url=${page.url()}`); assert(await page.locator('main').textContent()); }
+    const offline=await offlineContext.newPage();
+    const response=await offline.goto(base+file+'?cold-offline=1');assert(response.fromServiceWorker());
+    assert(!await offline.locator('body').textContent().then(text=>text.includes('SYNTHETIC PROTECTED TEXT')));
+    if(file==='chapter-14-vocabulary.html')assert.equal(await offline.locator('.teacher-adverb-card').count(),4);
+    else if(file==='chapter-14-review.html')assert.equal(await offline.locator('[data-answer-toggle]').count(),13);
+    else assert(await offline.locator('main').textContent(),`${file}: public page should remain available`);
+    await offline.close();
   }
   assert.deepEqual(errors,[]);
   console.log('Teacher browser checks passed: synthetic protected content at 3 widths/2 themes, sign-in/denied/authorized/account switch/logout/offline, sanitizer, private cache retirement, approved public review/adverb cache retention and offline pages.');
