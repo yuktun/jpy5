@@ -60,6 +60,9 @@ document.addEventListener("DOMContentLoaded", () => {
     popover.setAttribute("role", "tooltip");
     popover.hidden = true;
     popover.innerHTML = '<span class="teacher-label">本題語境</span><h2 lang="ja"></h2><p class="teacher-word-meaning"></p><p class="teacher-word-usage"></p>';
+    const title = popover.querySelector("h2");
+    const meaning = popover.querySelector(".teacher-word-meaning");
+    const usage = popover.querySelector(".teacher-word-usage");
     document.body.append(popover);
     let trigger = null, dismissTimer = null, pointerType = "", interaction = "";
     const cancelDismiss = () => clearTimeout(dismissTimer);
@@ -74,11 +77,17 @@ document.addEventListener("DOMContentLoaded", () => {
       trigger?.removeAttribute("aria-describedby");
       trigger = button;
       interaction = source;
-      const title = popover.querySelector("h2");
-      title.textContent = button.dataset.wordTitle || button.textContent;
+      if (button.dataset.wordTitle) {
+        title.textContent = button.dataset.wordTitle;
+      } else {
+        const label = button.cloneNode(true);
+        label.querySelectorAll("rt, rp").forEach(node => node.remove());
+        title.textContent = label.textContent.trim();
+      }
       title.lang = button.lang || "ja";
-      popover.querySelector(".teacher-word-meaning").textContent = button.dataset.wordMeaning;
-      popover.querySelector(".teacher-word-usage").textContent = button.dataset.wordUsage;
+      meaning.textContent = button.dataset.wordMeaning;
+      meaning.hidden = !button.dataset.wordMeaning;
+      usage.textContent = button.dataset.wordUsage;
       button.setAttribute("aria-describedby", popover.id);
       popover.hidden = false;
       const anchor = button.getBoundingClientRect(), bounds = popover.getBoundingClientRect();

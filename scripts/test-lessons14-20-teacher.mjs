@@ -15,6 +15,8 @@ const pagesInSource = { 14: 6, 15: 6, 16: 5, 17: 6, 18: 6, 19: 6, 20: 6 };
 // Reconciled against each PDF, including separate checks of nested blanks and
 // subquestions recorded in LESSONS14_20_EXERCISE_AUDIT.md.
 const promptInventory = { 14: 45, 15: 37, 16: 31, 17: 44, 18: 38, 19: 63, 20: 59 };
+const inlineChoiceCount = { 14: 27, 15: 7, 16: 8, 17: 9, 18: 25, 19: 13, 20: 20 };
+const openHintCount = { 14: 11, 15: 5, 16: 13, 17: 14, 18: 17, 19: 20, 20: 20 };
 const sourceIds = {
   14: "1S6fJRP1c0NIT5wtkQtxU0weSVxGaZifk", 15: "1jUrKiCQxhXOrfXK4DNLozXE1DRX3q9qL",
   16: "1Kd2LzsJ7KmJWAEFyR4sz2SMzInYiAf4I", 17: "125QqxLD7rXefPpe2zygGa0yDo-WBC5KT",
@@ -97,17 +99,25 @@ try {
         await button.click();
         assert.equal(await answer.isVisible(), false, `${label}: answer did not hide`);
       }
-      const words = shell.locator(".teacher-word-bank button");
-      assert(await words.count() > 0, `${label}: missing contextual word help`);
+      const words = shell.locator(".teacher-word-bank button, .teacher-word-inline");
+      assert.equal(await shell.locator('.teacher-word-inline[lang="ja"]').count(), inlineChoiceCount[lesson]);
+      assert.equal(await shell.locator(".teacher-word-inline[data-exercise-help]").count(), openHintCount[lesson]);
       const help = page.locator(".teacher-word-help-popover");
       const wordButtons = await words.all();
       for (const word of (smoke ? wordButtons.slice(0, 1) : wordButtons)) {
-        assert((await word.getAttribute("data-word-meaning"))?.trim(), `${label}: empty Chinese meaning`);
+        const meaning = await word.getAttribute("data-word-meaning");
+        assert(meaning !== null, `${label}: missing explanation trigger`);
         assert((await word.getAttribute("data-word-usage"))?.trim(), `${label}: empty contextual usage`);
         await word.hover();
         assert.equal(await help.isVisible(), true);
-        assert.equal(await help.locator("h2").textContent(), await word.textContent());
-        assert.equal(await help.locator(".teacher-word-meaning").textContent(), await word.getAttribute("data-word-meaning"));
+        const title = await word.evaluate(node => {
+          const label = node.cloneNode(true);
+          label.querySelectorAll("rt, rp").forEach(reading => reading.remove());
+          return node.dataset.wordTitle || label.textContent.trim();
+        });
+        assert.equal(await help.locator("h2").textContent(), title);
+        assert.equal(await help.locator(".teacher-word-meaning").textContent(), meaning);
+        assert.equal(await help.locator(".teacher-word-meaning").isVisible(), Boolean(meaning));
         assert.equal(await help.locator(".teacher-word-usage").textContent(), await word.getAttribute("data-word-usage"));
         assert.equal(await shell.locator(".teacher-answer:not([hidden])").count(), 0, `${label}: word help exposed answers`);
         const box = await help.boundingBox();
@@ -139,7 +149,7 @@ try {
     await touchPage.goto(urlFor(lesson));
     await touchPage.locator(".lesson-quick-switcher").waitFor({ state: "visible" });
     await touchPage.locator("#teacher-exercise [data-review-group-toggle]").tap();
-    const word = touchPage.locator("#teacher-exercise .teacher-word-bank button").first();
+    const word = touchPage.locator('#teacher-exercise .teacher-word-inline[lang="ja"]').first();
     const help = touchPage.locator(".teacher-word-help-popover");
     // Do not let tap's automatic scroll race dismissal or a late navigation
     // layout shift on the live site.

@@ -50,9 +50,11 @@ try {
         assert.notEqual(await target.getAttribute("hidden"), null, "answer did not hide again");
       }
       if (file === "chapter-13-review.html") {
-        const words = page.locator(".teacher-word-bank button");
+        const words = page.locator("#teacher-exercise .teacher-word-bank button");
+        const inline = page.locator("#teacher-exercise .teacher-word-inline");
         const dialog = page.locator(".teacher-word-help-popover");
         assert.equal(await words.count(), 18);
+        assert.equal(await inline.count(), 31);
         assert.equal(await dialog.isVisible(), false, "word explanations should start closed");
         const storageBefore = await page.evaluate(() => JSON.stringify({...localStorage}));
         for (let i = 0; i < await words.count(); i += 1) {
@@ -80,6 +82,16 @@ try {
         await words.first().click();
         await page.mouse.click(2, 2);
         await dialog.waitFor({state:"hidden"});
+        for (const option of await inline.all()) {
+          await option.hover();
+          await dialog.waitFor({state:"visible"});
+          const usage = await option.getAttribute("data-word-usage");
+          assert(usage?.trim());
+          assert.equal(await dialog.locator(".teacher-word-usage").textContent(), usage);
+          assert.equal(await option.getAttribute("aria-describedby"), "teacher-word-help");
+        }
+        await page.keyboard.press("Escape");
+        await dialog.waitFor({state:"hidden"});
         assert.equal(await page.evaluate(() => JSON.stringify({...localStorage})), storageBefore, "reading word help must not change saved progress");
       }
       await page.screenshot({ path: `${artifacts}/${file.replace(".html", "")}-${viewport.width}.png`, fullPage: true });
@@ -91,7 +103,7 @@ try {
   touchPage.on("pageerror", error => errors.push(error.message));
   await touchPage.goto(`${base}/chapter-13-review.html`);
   await touchPage.locator("#teacher-exercise [data-review-group-toggle]").tap();
-  const touchWords = touchPage.locator(".teacher-word-bank button"), touchHelp = touchPage.locator(".teacher-word-help-popover");
+  const touchWords = touchPage.locator("#teacher-exercise .teacher-word-bank button"), touchHelp = touchPage.locator(".teacher-word-help-popover");
   await touchWords.first().evaluate(node => node.scrollIntoView({behavior:"instant",block:"center"}));
   await touchPage.evaluate(() => new Promise(done => requestAnimationFrame(() => requestAnimationFrame(done))));
   await touchWords.first().tap();
@@ -112,7 +124,7 @@ try {
   await touchContext.close();
 
   await page.goto(`${base}/chapter-13-vocabulary.html`);
-  assert.match(await page.locator(".vocab-summary").innerText(), /159/);
+  assert.equal(await page.locator(".vocab-summary strong").first().innerText(), "191");
   assert.equal(await page.locator("#teacher-adverbs .teacher-adverb-card").count(), 4);
   assert.equal(await page.locator("#teacher-adverbs [data-answer-toggle]").count(), 2);
 
