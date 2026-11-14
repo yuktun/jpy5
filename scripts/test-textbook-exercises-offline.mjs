@@ -94,11 +94,17 @@ try{
     assert.ok(await page.locator('.textbook-practice a[href*="#page="] .internet-required').count()>0);
     if(lesson==='17')assert.equal(await page.locator('[data-textbook-unmatched-pattern="ue"]').count(),1);
     if(lesson==='14'){
-      assert.equal(await page.locator('[data-teacher-demo-content]').count(),11);
-      assert.equal((await page.locator('[data-teacher-demo-content]').allTextContents()).join(''),'');
+      assert.equal(await page.locator('[data-teacher-grammar]').count(),11);
+      assert.equal(await page.locator('[data-teacher-grammar][open]').count(),0);
+      assert.equal(await page.locator('[data-teacher-grammar] .teacher-example').count(),75);
+      const teacherPanel=page.locator('[data-teacher-grammar]').nth(4);
+      await teacherPanel.locator('summary').click();
+      assert.equal(await teacherPanel.locator('.teacher-addition-body').isVisible(),true);
+      assert.equal(await teacherPanel.locator('rt').filter({hasText:'じごく'}).count(),1);
+      assert.match(await teacherPanel.locator('.teacher-source').textContent(),/14 Nov 2026\.pdf/);
     }
     await retained(page);await page.close();console.log(`Lesson ${lesson}: ${groups} groups/${items} items rendered from package on cold offline navigation; first/last answers and saved progress passed.`);
   }
   assert.equal(protectedRequests,0);assert.equal(sourceRequests,0);assert.deepEqual(errors,[]);
-  await context.close();console.log('PASS actual-package cold offline exercises: all199items, closed defaults, ruby, independent native disclosures, progress retained, empty protected teacher bodies and zero source/private requests.');
+  await context.close();console.log('PASS actual-package cold offline exercises: all199items, closed defaults, ruby, independent native disclosures, progress retained, 75 public teacher examples and zero source/private requests.');
 }finally{if(browser)await browser.close();await new Promise(done=>server.close(done));}

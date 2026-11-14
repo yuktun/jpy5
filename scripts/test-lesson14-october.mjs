@@ -1,34 +1,30 @@
 import assert from 'node:assert/strict';
 import {readFile,mkdir} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
 import {createServer} from 'node:http';
 import {resolve,extname} from 'node:path';
 import vm from 'node:vm';
 import {chromium} from 'playwright';
 const c={window:{}};
-for(const name of ['data','vocabulary-data','conversation-data','reading-data','teacher-additions'])vm.runInNewContext(await readFile(`assets/ch14-${name}.js`,'utf8'),c);
+for(const name of ['data','vocabulary-data','conversation-data','reading-data','teacher-additions','teacher-grammar'])vm.runInNewContext(await readFile(`assets/ch14-${name}.js`,'utf8'),c);
 const t=c.window.JPY5_L14_TEACHER,ids=Array.from(c.window.JPY5_DATA.patterns,p=>p.id);
 assert.equal(Object.keys(t.vocabulary).length,118);
 assert.equal(t.responsePractice.length,7);
 for(const id of Object.keys(t.vocabulary))assert(c.window.JPY5_VOCABULARY.items.some(v=>v.id==id));
-const synthetic={version:1,notes:Object.fromEntries(ids.map(id=>[id,{title:`PRIVATE ${id}`,text:`UNIQUE_PRIVATE_${id} <img src=x onerror=alert(1)>\n\nUNIQUE_PRIVATE_SECOND_${id}`,source:'synthetic.pdf；synthetic.docx',pages:'PDF 1；DOCX 2–3',examples:[['{確認|かくにん}する。','測試。']]}]))};
-let payload=synthetic;
-if(process.env.JPY5_TEST_PRIVATE==='1')payload=JSON.parse(await readFile('private-migration/lesson14-oct2026/grammar.json','utf8'));
-// Invalid/missing payloads must never be accepted by the protected loader.
-const {fetchTeacherGrammar}=await import('../assets/teacher-grammar-notes.mjs');
-const fetchRecord=fields=>fetchTeacherGrammar({user:{getIdToken:async()=>'synthetic'},signal:new AbortController().signal,fetchImpl:async()=>({ok:true,json:async()=>({fields})})});
-await assert.rejects(fetchRecord({schemaVersion:{integerValue:'2'}}));
-await assert.rejects(fetchRecord({schemaVersion:{integerValue:'2'},teacherGrammarOct2026Json:{stringValue:'invalid JSON'}}));
-await assert.rejects(fetchRecord({schemaVersion:{integerValue:'2'},teacherGrammarOct2026Json:{stringValue:JSON.stringify({version:1,notes:{}})}}));
-await assert.rejects(fetchRecord({schemaVersion:{integerValue:'9'},teacherGrammarOct2026Json:{stringValue:JSON.stringify(payload)}}));
-assert.equal(Object.keys((await fetchRecord({schemaVersion:{integerValue:'2'},teacherGrammarOct2026Json:{stringValue:JSON.stringify(payload)}})).notes).length,11);
+const {grammar,block}=c.window.JPY5_TEACHER;
+assert.deepEqual(Object.keys(grammar),ids);
+assert.equal(Object.values(grammar).flatMap(note=>note.examples).length,75);
+// Canonical digest of the previously live notes, including every title, example and source.
+assert.equal(createHash('sha256').update(JSON.stringify({version:1,notes:grammar})).digest('hex'),
+  'fb39b7ee4d5b0a1b63d1782e42f9a2a8b3a0b8e906c37a4a6041af260c3e5e6c');
+const hostile='<img src=x onerror=alert(1)>';
+assert(!block({title:hostile,text:hostile,source:hostile,pages:hostile,examples:[['{<|&}',hostile]]}).includes(hostile));
 const manifest={self:{}};vm.runInNewContext(await readFile('assets/offline-assets.js','utf8'),manifest);
 const allowed=new Set([...manifest.self.JPY5_OFFLINE_MANIFEST.assets,'assets/offline-assets.js','sw.js']);
 assert(![...allowed].some(path=>/private-migration|\.pdf$/.test(path)));
-for(const file of allowed){
-  if(!/\.(?:js|mjs|html|json|md)$/.test(file))continue;
-  const content=await readFile(file,'utf8');
-  for(const note of Object.values(payload.notes))for(const paragraph of note.text.split(/\r?\n\s*\r?\n/))assert(!content.includes(paragraph),`private body leaked: ${file}`);
-}
+assert(allowed.has('assets/ch14-teacher-grammar.js'));
+assert(!allowed.has('assets/ch14-teacher-placeholders.js'));
+assert(!allowed.has('assets/teacher-grammar-notes.mjs'));
 const server=createServer(async(req,res)=>{
   const path=new URL(req.url,'http://localhost').pathname.slice(1);
   if(!allowed.has(path))return res.writeHead(404).end();
@@ -39,18 +35,16 @@ const base=`http://127.0.0.1:${server.address().port}`,folder=resolve('tmp/lesso
 const browser=await chromium.launch({headless:true,channel:process.env.JPY5_BROWSER_CHANNEL||'msedge'});
 const context=await browser.newContext({serviceWorkers:'block'}),page=await context.newPage(),errors=[];
 page.on('pageerror',e=>errors.push(e.message));
-let reads=0,status=200;
-await context.route('**/assets/teacher-access.mjs',route=>route.fulfill({contentType:'text/javascript',body:`export async function createAuthService(){return {subscribe(cb){window.testAccount=uid=>cb(uid?{uid,getIdToken:async()=>'synthetic-token'}:null);window.testAccount(null);},login:async()=>window.testAccount('approved')};}`}));
-await context.route('https://**/*',route=>{
-  if(new URL(route.request().url()).hostname!=='firestore.googleapis.com')return route.abort();
-  const url=new URL(route.request().url());assert.deepEqual(url.searchParams.getAll('mask.fieldPaths'),['schemaVersion','teacherGrammarOct2026Json']);
-  reads++;
-  return route.fulfill({status,contentType:'application/json',body:JSON.stringify({fields:{schemaVersion:{integerValue:'2'},teacherGrammarOct2026Json:{stringValue:JSON.stringify(payload)}}})});
+const protectedRequests=[];
+page.on('request',request=>{
+  if(/jpy5TeacherNotes|jpy5TeacherAccess/.test(request.url()))protectedRequests.push(request.url());
 });
+await context.route('https://**/*',route=>route.abort());
 const reviewPage=await readFile('chapter-14-review.html','utf8');
 assert.match(reviewPage,/chapter-14-reading\.html\?mode=teacher/);
 assert.match(reviewPage,/7 NOV 會話框架與老師示例/);
 assert.match(reviewPage,/24 OCT–14 NOV 2026/);
+assert.match(reviewPage,/<a href="chapter-14-notes.html">老師文法筆記<\/a>/);
 const noOverflow=async()=>assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'horizontal overflow');
 try{
   for(const width of [390,810,1280]){
@@ -102,36 +96,22 @@ try{
     await page.locator('#vocab-list').screenshot({path:resolve(folder,`vocab-${width}.png`)});
   }
   await page.goto(`${base}/chapter-14-notes.html`);
-  await page.waitForFunction(()=>[...document.querySelectorAll('[data-teacher-grammar-id]')].every(n=>n.dataset.accessState==='signed-out'));
-  assert.equal(await page.locator('[data-teacher-grammar-id]').count(),11);assert.equal(reads,0);
-  assert.equal(await page.locator('[data-teacher-grammar-id] > summary').filter({hasText:'24 OCT–14 NOV'}).count(),11);
-  assert((await page.locator('[data-teacher-demo-content]').allTextContents()).every(text=>text===''));
-  await page.evaluate(()=>window.testAccount('approved'));
-  await page.waitForFunction(()=>document.querySelector('[data-teacher-grammar-id]').dataset.accessState==='loaded');assert.equal(reads,1);
-  for(const id of ids){
-    const note=payload.notes[id],content=page.locator(`[data-teacher-grammar-id="${id}"] [data-teacher-demo-content]`);
-    assert.equal(await content.locator('h4').textContent(),note.title);
+  const panels=page.locator('.note-card > details[data-teacher-grammar]');
+  assert.equal(await panels.count(),11);
+  assert.equal(await page.locator('[data-teacher-grammar][open]').count(),0);
+  assert.equal(await panels.locator(':scope > summary').filter({hasText:'24 OCT–14 NOV'}).count(),11);
+  assert.equal(await page.locator('[data-teacher-demo],[data-teacher-demo-login],[data-teacher-demo-retry]').count(),0);
+  for(const [index,id] of ids.entries()){
+    const note=grammar[id],panel=panels.nth(index),content=panel.locator('.teacher-addition-body');
+    assert.equal(await panel.locator(':scope > summary').textContent(),'老師補充 · 24 OCT–14 NOV '+note.title);
     assert.deepEqual(await content.locator(':scope > p').allTextContents(),note.text.split(/\r?\n\s*\r?\n/));
-    assert.deepEqual(await content.locator('p[lang="zh-Hant"]').allTextContents(),note.examples.map(([,zh])=>zh));
-    assert.equal(await content.locator('rt').count(),note.examples.reduce((total,[ja])=>total+[...ja.matchAll(/\{[^{}|]+\|[^{}|]+\}/g)].length,0));
-    assert.equal(await content.locator('.teacher-source').textContent(),`來源 · ${note.source} · 頁碼／段落 ${note.pages}`);
+    assert.deepEqual(await content.locator('p[lang="zh-Hant"]').allTextContents(),Array.from(note.examples,([,zh])=>zh));
+    assert.deepEqual(await content.locator('p[lang="ja"]').allTextContents(),Array.from(note.examples,([ja])=>ja.replace(/\{([^{}|]+)\|([^{}|]+)\}/g,'$1$2')));
+    assert.deepEqual(await content.locator('rt').allTextContents(),Array.from(note.examples).flatMap(([ja])=>Array.from(ja.matchAll(/\{[^{}|]+\|([^{}|]+)\}/g),match=>match[1])));
+    assert.equal(await content.locator('.teacher-source').textContent(),'來源 · '+note.source+' · 頁碼／段落 '+note.pages);
   }
-  assert.equal(await page.locator('[data-teacher-demo-content] img').count(),0);
-  await page.locator('[data-teacher-grammar-id]').evaluateAll(nodes=>nodes.forEach(n=>n.open=true));await noOverflow();
-  for(const width of [390,810,1280]){
-    await page.setViewportSize({width,height:900});
-    for(const theme of ['light','dark']){
-      await page.evaluate(theme=>document.documentElement.dataset.theme=theme,theme);await noOverflow();
-      await page.locator('.note-card').first().screenshot({path:resolve(folder,`protected-grammar-${width}-${theme}.png`)});
-    }
-  }
-  assert(!await page.evaluate(()=>JSON.stringify({...localStorage,...sessionStorage}).includes('UNIQUE_PRIVATE')));
-  await context.setOffline(true);await page.waitForFunction(()=>document.querySelector('[data-teacher-grammar-id]').dataset.accessState==='offline');
-  assert((await page.locator('[data-teacher-demo-content]').allTextContents()).every(text=>text===''));
-  status=403;await context.setOffline(false);await page.waitForFunction(()=>document.querySelector('[data-teacher-grammar-id]').dataset.accessState==='denied');
-  assert((await page.locator('[data-teacher-demo-content]').allTextContents()).every(text=>text===''));
-  status=200;await page.evaluate(()=>window.testAccount('approved-again'));await page.waitForFunction(()=>document.querySelector('[data-teacher-grammar-id]').dataset.accessState==='loaded');
-  await page.evaluate(()=>window.testAccount(null));assert((await page.locator('[data-teacher-demo-content]').allTextContents()).every(text=>text===''));
+  assert.equal(await panels.locator('img').count(),0);
+  assert.deepEqual(protectedRequests,[]);
   assert.deepEqual(errors,[]);
-  console.log('Lesson 14 October: source mapping, 118 vocabulary notes, 7 reading notes, 8 dialogue notes, 7 hidden exercises, drafts, 3 widths, and 11 protected grammar notes passed.');
+  console.log('Lesson 14 teacher notes: source mapping, 118 vocabulary notes, 7 reading notes, 8 dialogue notes, 7 hidden exercises, drafts, 3 widths, and 11 public grammar notes and 75 example pairs passed.');
 }finally{await context.close();await browser.close();await new Promise(done=>server.close(done));}

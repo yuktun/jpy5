@@ -128,8 +128,9 @@ try{
   }
   if(module==='notes'){
    assert.equal(await page.locator('.note-card').count(),11);
-   assert.equal(await page.locator('[data-teacher-demo]').count(),11);
-   assert((await page.locator('[data-teacher-demo-content]').allTextContents()).every(text=>text===''));
+   assert.equal(await page.locator('[data-teacher-grammar]').count(),11);
+   assert.equal(await page.locator('[data-teacher-grammar][open]').count(),0);
+   assert.equal(await page.locator('[data-teacher-grammar] .teacher-example').count(),75);
   }
   if(module==='vocabulary')assert.equal(await page.locator('#teacher-adverbs .teacher-adverb-card').count(),4);
   if(module==='review')assert.equal(await page.locator('[data-answer-toggle]').count(),13);

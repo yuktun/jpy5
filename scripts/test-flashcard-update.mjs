@@ -48,8 +48,9 @@ try{
  await cold.locator('#next-card').tap();assert.equal(await cold.locator('#card-back').innerHTML(),'');
  for(const module of ['quiz','history']){await cold.goto(base+`chapter-14-${module}.html`);assert.equal(await cold.locator('.module-lesson-switcher a').count(),6);}
  await cold.goto(base+'chapter-14-notes.html');
- assert.equal(await cold.locator('[data-teacher-demo]').count(),11);
- assert((await cold.locator('[data-teacher-demo-content]').allTextContents()).every(text=>text===''));
+ assert.equal(await cold.locator('[data-teacher-grammar]').count(),11);
+ assert.equal(await cold.locator('[data-teacher-grammar][open]').count(),0);
+ assert.equal(await cold.locator('[data-teacher-grammar] .teacher-example').count(),75);
  await cold.goto(base+'chapter-14-vocabulary.html');assert.equal(await cold.locator('#teacher-adverbs .teacher-adverb-card').count(),4);
- console.log('Microsoft Edge package upgrade passed: old leakage reproduced, explicit update required, fresh offline reverse front/flip/reset and three lesson bars fixed, saved progress retained, grammar gates empty, public adverbs retained.');
+ console.log('Microsoft Edge package upgrade passed: old leakage reproduced, explicit update required, fresh offline reverse front/flip/reset and three lesson bars fixed, saved progress retained, public grammar notes present, public adverbs retained.');
 }finally{await context.close();await browser.close();await new Promise(done=>server.close(done));}

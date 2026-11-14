@@ -100,8 +100,9 @@ try {
   await cold.locator('#teacher-adverbs [data-answer-toggle]').first().click();
   assert.equal(await cold.locator('#adverb-answer-1').isVisible(),true);
   await cold.goto(`${base}chapter-14-notes.html`);
-  assert.equal(await cold.locator('[data-teacher-demo-content]').count(),11);
-  assert((await cold.locator('[data-teacher-demo-content]').allTextContents()).every(text=>text===''));
+  assert.equal(await cold.locator('[data-teacher-grammar]').count(),11);
+  assert.equal(await cold.locator('[data-teacher-grammar][open]').count(),0);
+  assert.equal(await cold.locator('[data-teacher-grammar] .teacher-example').count(),75);
   console.log(`Installed-app update passed: ${previousVersion} → ${nextVersion}; all eight adverb supplements work offline and learner records remain intact.`);
 } finally {
   await browser.close();

@@ -302,7 +302,8 @@ try {
   delay = true;
   await page.locator("[data-offline-download]").click();
   await waitState(page, () => document.querySelector("[data-offline-status]")?.textContent.includes("下載中 0/1"));
-  assert.match(await page.locator("[data-offline-status]").textContent(), /已檢查 254 個，重用 253 個，已下載 0 個/);
+  const assetCount = release.assets.length;
+  assert.match(await page.locator("[data-offline-status]").textContent(), new RegExp(`已檢查 ${assetCount} 個，重用 ${assetCount - 1} 個，已下載 0 個`));
   await page.locator("[data-offline-cancel]").click();
   await waitState(page, () => document.querySelector("[data-offline-status]")?.textContent.includes("已取消下載"));
   await oldVersionStillWorks();

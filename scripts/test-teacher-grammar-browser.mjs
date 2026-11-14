@@ -11,7 +11,7 @@ const root=process.cwd(),server=createServer(async(req,res)=>{
 await new Promise(done=>server.listen(0,'127.0.0.1',done));
 const base=`http://127.0.0.1:${server.address().port}/`,browser=await chromium.launch({headless:true,channel:process.env.JPY5_BROWSER_CHANNEL||'msedge'});
 const context=await browser.newContext({serviceWorkers:'block'}),page=await context.newPage(),errors=[];let protectedReads=0;
-await context.route('https://**/*',route=>{if(route.request().url().includes('jpy5TeacherNotes'))protectedReads++;return route.abort();});
+await context.route('https://**/*',route=>{if(/jpy5TeacherNotes|jpy5TeacherAccess/.test(route.request().url()))protectedReads++;return route.abort();});
 await context.route('**/assets/firebase-sync.mjs',route=>route.fulfill({contentType:'text/javascript',body:'export const initialiseFirebaseSync=()=>{};'}));
 page.on('pageerror',error=>errors.push(error.message));
 try{
@@ -25,11 +25,17 @@ try{
    await page.waitForFunction(()=>scrollY===0);
    await page.screenshot({path:`tmp/lesson14-layout/${width===390?'mobile':'desktop'}.png`,fullPage:false});
   }
-  assert.equal(await page.locator('[data-teacher-demo]').count(),11);
-  assert.equal(await page.locator('[data-teacher-demo][open]').count(),0);
-  await page.locator('[data-teacher-demo] summary').first().click();
-  assert.equal((await page.locator('[data-teacher-demo-content]').allTextContents()).join(''),'');
-  assert.equal(await page.locator('iframe,[data-teacher-status],[data-teacher-logout],[data-teacher-section="grammar"]').count(),0);
+  const panels=page.locator('.note-card > .teacher-addition[data-teacher-grammar]');
+  assert.equal(await panels.count(),11);
+  assert.equal(await page.locator('[data-teacher-grammar][open]').count(),0);
+  await panels.first().locator('summary').focus();
+  await page.keyboard.press('Enter');
+  assert.equal(await panels.first().locator('.teacher-addition-body').isVisible(),true);
+  await page.keyboard.press('Space');
+  assert.equal(await panels.first().locator('.teacher-addition-body').isVisible(),false);
+  await panels.evaluateAll(nodes=>nodes.forEach(node=>node.open=true));
+  assert.equal(await panels.locator('.teacher-example').count(),75);
+  assert.equal(await page.locator('iframe,[data-teacher-demo],[data-teacher-status],[data-teacher-logout],[data-teacher-section="grammar"]').count(),0);
   await page.locator('.lesson-quick-switcher').waitFor();assert.equal(await page.locator('.lesson-quick-switcher').count(),1);assert.equal(await page.locator('.module-lesson-switcher').count(),0);
   assert(await page.evaluate(()=>document.documentElement.scrollHeight>innerHeight),'ordinary document scrolling');
   for(const theme of ['light','dark']){
@@ -37,6 +43,22 @@ try{
    await page.locator('[data-extra-id]').first().click();assert.equal(await page.locator('#grammar-extra-dialog').isVisible(),true);
    const box=await page.locator('#grammar-extra-dialog').boundingBox();assert(box.y>=0&&box.y+box.height<=901,'modal stays inside the page viewport');
    await page.locator('[data-extra-close]').click();assert.equal(await page.locator('#grammar-extra-dialog').isVisible(),false);
+  }
+  if(width===390||width===1280){
+   const sharedStyle=element=>{
+    const summary=getComputedStyle(element.querySelector('summary')),body=getComputedStyle(element.querySelector('.teacher-addition-body'));
+    return [summary.padding,summary.fontWeight,body.padding,body.lineHeight,getComputedStyle(element).borderRadius];
+   };
+   for(const theme of ['light','dark']){
+    await page.evaluate(theme=>document.documentElement.dataset.theme=theme,theme);
+    await panels.nth(4).screenshot({path:'tmp/lesson14-layout/lesson14-'+width+'-'+theme+'.png'});
+   }
+   const lesson14Style=await panels.first().evaluate(sharedStyle);
+   await page.goto(base+'chapter-13-notes.html');
+   const lesson13=page.locator('.note-card > .teacher-addition:not(.textbook-practice)').first();
+   await lesson13.locator(':scope > summary').click();
+   assert.deepEqual(await lesson13.evaluate(sharedStyle),lesson14Style);
+   await lesson13.screenshot({path:'tmp/lesson14-layout/lesson13-'+width+'.png'});
   }
   await page.goto(base+'chapter-14-flashcards.html');await page.locator('#flashcard').waitFor();await page.locator('#flashcard').click();assert.equal(await page.locator('#card-back').isVisible(),true);
   await page.goto(base+'chapter-14-quiz.html');await page.locator('#start-quiz').click();await page.locator('[data-answer="0"]').click();await page.locator('#next-question').click();
@@ -47,6 +69,6 @@ try{
   assert.equal(await page.locator('iframe,[data-teacher-section="grammar"]').count(),0);
   await page.evaluate(()=>localStorage.clear());
  }
- assert.equal(protectedReads,0,'general grammar and placeholders never request teacher data');assert.deepEqual(errors,[]);
-  console.log('Public lesson 14 layout passed: 11 patterns/46 examples, 11 closed access-gated demos, one navigation, no frame/access banner, 3 widths/2 themes, dialogs, flashcards, hash-compatible quiz resume/history and zero protected requests when auth is unavailable.');
+ assert.equal(protectedReads,0,'public grammar does not request approval or teacher database records');assert.deepEqual(errors,[]);
+  console.log('Public lesson 14 layout passed: 11 patterns/46 examples, 11 collapsed public supplements and 75 example pairs, one navigation, no frame/access banner, 3 widths/2 themes, dialogs, flashcards, hash-compatible quiz resume/history and zero teacher database requests.');
 }finally{await context.close();await browser.close();await new Promise(done=>server.close(done));}

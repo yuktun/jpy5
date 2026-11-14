@@ -92,6 +92,6 @@ try{
  assert(await cold.locator('[data-oct17-answer="yone-1"]').isVisible());
  await cold.goto(base+'chapter-13-vocabulary.html');assert.equal(await cold.locator('[data-oct17-vocabulary]').count(),26);
  await cold.goto(base+'chapter-13-review.html');assert.equal(await cold.locator('[data-oct17-index]').count(),1);
- await cold.goto(base+'chapter-14-notes.html');assert.equal(await cold.locator('[data-teacher-demo]').count(),11);assert((await cold.locator('[data-teacher-demo-content]').allTextContents()).every(text=>text===''));
+ await cold.goto(base+'chapter-14-notes.html');assert.equal(await cold.locator('[data-teacher-grammar]').count(),11);assert.equal(await cold.locator('[data-teacher-grammar] .teacher-example').count(),75);
  console.log('Microsoft Edge opt-in offline passed: new public source notes, vocabulary, hidden/working teacher answers and review links in fresh tabs; lesson 14 grammar gates remain empty.');
 }finally{await offline.close();await browser.close();await new Promise(done=>server.close(done));}

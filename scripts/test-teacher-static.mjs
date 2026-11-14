@@ -67,7 +67,7 @@ const approvedStudyCorrections=new Set([
   'assets/ch14-vocabulary-data.js','assets/ch14-vocabulary.js',
   'chapter-13.html','chapter-13-review.html','chapter-13-vocabulary.html'
 ]);
-const priorPublicAdditions=new Set(['assets/ch14-teacher-additions.js','assets/ch14-teacher-additions.css','assets/ch13-quiz1.js','assets/ch13-quiz1.css','assets/ch13-quiz-audio.mjs','assets/ch13-textbook-exercises.js','assets/ch13-teacher-oct17.js','assets/ch14-data.js','assets/ch14-grammar-extra-data.js','assets/ch14-teacher-placeholders.js','assets/ch14-textbook-exercises-data.js']);
+const priorPublicAdditions=new Set(['assets/ch14-teacher-additions.js','assets/ch14-teacher-additions.css','assets/ch13-quiz1.js','assets/ch13-quiz1.css','assets/ch13-quiz-audio.mjs','assets/ch13-textbook-exercises.js','assets/ch13-teacher-oct17.js','assets/ch14-data.js','assets/ch14-grammar-extra-data.js','assets/ch14-teacher-grammar.js','assets/ch14-textbook-exercises-data.js']);
 for(const file of tracked.filter(file=>/^chapter-13|^assets\/(?:ch13|ch14|data\.js|grammar-extra-data\.js|firebase-sync\.mjs)/.test(file)&&!priorPublicAdditions.has(file)&&!approvedStudyCorrections.has(file))){
   const original=execFileSync('git',['show',`${base}:${file}`],{encoding:'utf8'}).replace(/\r\n/g,'\n');
   let current=await readFile(file,'utf8');
@@ -102,9 +102,10 @@ for(const page of ['notes','flashcards','quiz','history']){
   assert.equal((source.match(/class="lesson-pills module-lesson-switcher"/g)||[]).length,page==='notes'?0:1);
   assert.doesNotMatch(source,/data-teacher-section="grammar"|data-grammar-template|teacher-grammar-frame/);
 }
-const placeholder=await readFile('assets/ch14-teacher-placeholders.js','utf8');
-assert.match(placeholder,/data-teacher-demo-content><\/div>/);
-assert.doesNotMatch(placeholder,/Teacher\\'s notes here/);
+const grammarPage=await readFile('chapter-14-notes.html','utf8');
+assert.match(grammarPage,/assets\/ch14-teacher-grammar\.js/);
+assert.doesNotMatch(grammarPage,/teacher-grammar-notes\.mjs|ch14-teacher-placeholders\.js/);
+assert(sandbox.self.JPY5_OFFLINE_MANIFEST.assets.includes('assets/ch14-teacher-grammar.js'));
 assert.match(await readFile('assets/teacher-demo.mjs','utf8'),/verifyTeacherAccess/);
 // The approved public adverbs must match the ignored migration source exactly.
 let payload;try{payload=JSON.parse(await readFile('private-migration/lesson14.json','utf8'));}catch{}
@@ -113,6 +114,6 @@ if(payload){
   const inner=html.match(/<div class="teacher-note-panel-body">([\s\S]*?)<\/div>\s*<\/details>\s*<!-- END SHARED ADVERB NOTES -->/)[1];
   const normalize=s=>s.replace(/\r\n/g,'\n').trim();
   assert.equal(normalize(inner),normalize(payload.adverbs),'Approved public adverbs differ from the migration source');
-  console.log('Public adverb migration parity passed; remaining grammar authorization is unchanged.');
+  console.log('Public adverb migration parity passed; public grammar access is tested separately.');
 }else console.warn('Optional private-migration/lesson14.json fixture unavailable: migration-payload parity not checked; adverb panel parity against the initial checkout passed.');
 console.log('Static authorization boundary, scoped study corrections, Drive link and offline inventory checks passed.');

@@ -96,3 +96,7 @@ Reviewed all 26 pages of `14 Nov 2026.pdf` and all paragraphs and three embedded
 | `wakeda` | 25–26 | |
 
 The textbook exercises retain their existing answers. The protected notes identify classroom proposals, unfinished wording, a reading correction and editorial study suggestions as such. Source attribution distinguishes PDF pages from Word document paragraphs. The public grammar and review labels cover the materials through 14 November.
+
+## Public grammar notes — 14 November 2026
+
+The user made the Lesson 14 study notes public. The eleven grammar supplements and their 75 example pairs exactly match the prior Firestore notes. They use the same collapsed disclosures as Lesson 13 and are included in the optional offline package. The public grammar bank and its later corrections, textbook answers, original reading, and existing study progress are retained. The earlier access-control entries above document the previous release.
