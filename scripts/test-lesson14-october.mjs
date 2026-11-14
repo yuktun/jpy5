@@ -6,7 +6,7 @@ import {resolve,extname} from 'node:path';
 import vm from 'node:vm';
 import {chromium} from 'playwright';
 const c={window:{}};
-for(const name of ['data','vocabulary-data','conversation-data','reading-data','teacher-additions','teacher-grammar'])vm.runInNewContext(await readFile(`assets/ch14-${name}.js`,'utf8'),c);
+for(const name of ['data','vocabulary-data','conversation-data','reading-data','teacher-additions','teacher-grammar','grammar-extra-data'])vm.runInNewContext(await readFile(`assets/ch14-${name}.js`,'utf8'),c);
 const t=c.window.JPY5_L14_TEACHER,ids=Array.from(c.window.JPY5_DATA.patterns,p=>p.id);
 assert.equal(Object.keys(t.vocabulary).length,118);
 assert.equal(t.responsePractice.length,7);
@@ -14,9 +14,14 @@ for(const id of Object.keys(t.vocabulary))assert(c.window.JPY5_VOCABULARY.items.
 const {grammar,block}=c.window.JPY5_TEACHER;
 assert.deepEqual(Object.keys(grammar),ids);
 assert.equal(Object.values(grammar).flatMap(note=>note.examples).length,75);
-// Canonical digest of the previously live notes, including every title, example and source.
+assert.match(block(grammar.toitta),/<ruby>5月<rt>ごがつ<\/rt><\/ruby><ruby>5日<rt>いつか<\/rt><\/ruby>/);
+assert.match(grammar.niwatatte.text,/校對補充[^\n]+手術歷時三小時/);
+const grammarExtras=c.window.JPY5_GRAMMAR_EXTRA;
+assert(grammarExtras.find(note=>note.grammarIds.includes('towa')).explanation.some(text=>text.includes('人生とは一体何だろうか')));
+assert(grammarExtras.find(note=>note.grammarIds.includes('wakeda')).explanation.some(text=>text.includes('「～のではないだろうか」和「～んじゃないでしょうか」都可委婉提出推測')));
+// Canonical digest of the audited notes, including the corrected May 5 reading and span clarification.
 assert.equal(createHash('sha256').update(JSON.stringify({version:1,notes:grammar})).digest('hex'),
-  'fb39b7ee4d5b0a1b63d1782e42f9a2a8b3a0b8e906c37a4a6041af260c3e5e6c');
+  '307d557551127ff64f419d15143f0c80d521a10647c7ed5c5d510fa5d5f0f31e');
 const hostile='<img src=x onerror=alert(1)>';
 assert(!block({title:hostile,text:hostile,source:hostile,pages:hostile,examples:[['{<|&}',hostile]]}).includes(hostile));
 const manifest={self:{}};vm.runInNewContext(await readFile('assets/offline-assets.js','utf8'),manifest);
