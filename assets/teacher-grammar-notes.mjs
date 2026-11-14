@@ -36,14 +36,16 @@ export function renderTeacherGrammar(content,data,root){
   const note=data.notes[root.dataset.teacherGrammarId];
   if(!note)return;
   const heading=document.createElement('h4');heading.textContent=note.title;content.append(heading);
-  const text=document.createElement('p');text.textContent=note.text;content.append(text);
+  for(const paragraph of note.text.split(/\r?\n\s*\r?\n/)){
+    const text=document.createElement('p');text.textContent=paragraph;content.append(text);
+  }
   for(const [ja,zh] of note.examples){
     const example=document.createElement('div');example.className='teacher-example';
     const original=document.createElement('p');original.lang='ja';japanese(original,ja);
     const translation=document.createElement('p');translation.lang='zh-Hant';translation.textContent=zh;
     example.append(original,translation);content.append(example);
   }
-  const source=document.createElement('small');source.className='teacher-source';source.textContent=`來源：${note.source} · PDF 第 ${note.pages} 頁`;content.append(source);
+  const source=document.createElement('small');source.className='teacher-source';source.textContent=`來源 · ${note.source} · 頁碼／段落 ${note.pages}`;content.append(source);
 }
 export const mountTeacherGrammar=(roots,serviceFactory=createAuthService)=>mountTeacherDemos(roots,serviceFactory,{
   load:(user,signal)=>fetchTeacherGrammar({user,signal}),renderNote:renderTeacherGrammar

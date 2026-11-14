@@ -82,3 +82,17 @@ The November grammar material updates only three of the existing eleven records 
 Validation uses the real private payload for authorized/denied/offline/logout states, source placement, all 118 vocabulary notes, hidden answers, unchanged reading text, drafts, ruby and three widths. The historical static suite also fails against an untouched archive of pre-change HEAD at `chapter-13-textbook.html: unexpected public-content change` due to previously published listening-section changes; this is recorded separately from the November feature tests.
 
 The protected field was saved and read back on 10 November at 15:52:12 UTC. The four other fields (schemaVersion, grammarJson, adverbs, exercises) were compared and unchanged. Review now links directly to the reading teacher tab and November conversation activities; its vocabulary count is corrected to the existing 227 entries.
+
+## 14 November 2026 grammar handouts
+
+Reviewed all 26 pages of `14 Nov 2026.pdf` and all paragraphs and three embedded exercise images in `14Noc2026.docx`. Both handouts are mapped to the existing approved-account grammar notes.
+
+| Protected record | PDF pages | Word document material |
+| --- | --- | --- |
+| `uchini` | 1–6 | Classroom examples and the existing practice 2 prompt |
+| `nitotte` | 7–14 | Classroom examples, word help and the existing practice 2 prompt |
+| `towa` | 15–20 | Classroom wording proposals for the definition activity |
+| `nioite` | 21–24 | Classroom examples, an unfinished response and the existing practice 2 prompt |
+| `wakeda` | 25–26 | |
+
+The textbook exercises retain their existing answers. The protected notes identify classroom proposals, unfinished wording, a reading correction and editorial study suggestions as such. Source attribution distinguishes PDF pages from Word document paragraphs. The public grammar and review labels cover the materials through 14 November.

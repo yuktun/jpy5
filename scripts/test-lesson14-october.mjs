@@ -10,7 +10,7 @@ const t=c.window.JPY5_L14_TEACHER,ids=Array.from(c.window.JPY5_DATA.patterns,p=>
 assert.equal(Object.keys(t.vocabulary).length,118);
 assert.equal(t.responsePractice.length,7);
 for(const id of Object.keys(t.vocabulary))assert(c.window.JPY5_VOCABULARY.items.some(v=>v.id==id));
-const synthetic={version:1,notes:Object.fromEntries(ids.map(id=>[id,{title:`PRIVATE ${id}`,text:`UNIQUE_PRIVATE_${id} <img src=x onerror=alert(1)>`,source:'synthetic.pdf',pages:'1',examples:[['{確認|かくにん}する。','測試。']]}]))};
+const synthetic={version:1,notes:Object.fromEntries(ids.map(id=>[id,{title:`PRIVATE ${id}`,text:`UNIQUE_PRIVATE_${id} <img src=x onerror=alert(1)>\n\nUNIQUE_PRIVATE_SECOND_${id}`,source:'synthetic.pdf；synthetic.docx',pages:'PDF 1；DOCX 2–3',examples:[['{確認|かくにん}する。','測試。']]}]))};
 let payload=synthetic;
 if(process.env.JPY5_TEST_PRIVATE==='1')payload=JSON.parse(await readFile('private-migration/lesson14-oct2026/grammar.json','utf8'));
 // Invalid/missing payloads must never be accepted by the protected loader.
@@ -27,7 +27,7 @@ assert(![...allowed].some(path=>/private-migration|\.pdf$/.test(path)));
 for(const file of allowed){
   if(!/\.(?:js|mjs|html|json|md)$/.test(file))continue;
   const content=await readFile(file,'utf8');
-  for(const note of Object.values(payload.notes))assert(!content.includes(note.text),`private body leaked: ${file}`);
+  for(const note of Object.values(payload.notes))for(const paragraph of note.text.split(/\r?\n\s*\r?\n/))assert(!content.includes(paragraph),`private body leaked: ${file}`);
 }
 const server=createServer(async(req,res)=>{
   const path=new URL(req.url,'http://localhost').pathname.slice(1);
@@ -50,6 +50,7 @@ await context.route('https://**/*',route=>{
 const reviewPage=await readFile('chapter-14-review.html','utf8');
 assert.match(reviewPage,/chapter-14-reading\.html\?mode=teacher/);
 assert.match(reviewPage,/7 NOV 會話框架與老師示例/);
+assert.match(reviewPage,/24 OCT–14 NOV 2026/);
 const noOverflow=async()=>assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'horizontal overflow');
 try{
   for(const width of [390,810,1280]){
@@ -103,10 +104,18 @@ try{
   await page.goto(`${base}/chapter-14-notes.html`);
   await page.waitForFunction(()=>[...document.querySelectorAll('[data-teacher-grammar-id]')].every(n=>n.dataset.accessState==='signed-out'));
   assert.equal(await page.locator('[data-teacher-grammar-id]').count(),11);assert.equal(reads,0);
+  assert.equal(await page.locator('[data-teacher-grammar-id] > summary').filter({hasText:'24 OCT–14 NOV'}).count(),11);
   assert((await page.locator('[data-teacher-demo-content]').allTextContents()).every(text=>text===''));
   await page.evaluate(()=>window.testAccount('approved'));
   await page.waitForFunction(()=>document.querySelector('[data-teacher-grammar-id]').dataset.accessState==='loaded');assert.equal(reads,1);
-  for(const id of ids)assert.match(await page.locator(`[data-teacher-grammar-id="${id}"] [data-teacher-demo-content]`).textContent(),new RegExp(payload.notes[id].title.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));
+  for(const id of ids){
+    const note=payload.notes[id],content=page.locator(`[data-teacher-grammar-id="${id}"] [data-teacher-demo-content]`);
+    assert.equal(await content.locator('h4').textContent(),note.title);
+    assert.deepEqual(await content.locator(':scope > p').allTextContents(),note.text.split(/\r?\n\s*\r?\n/));
+    assert.deepEqual(await content.locator('p[lang="zh-Hant"]').allTextContents(),note.examples.map(([,zh])=>zh));
+    assert.equal(await content.locator('rt').count(),note.examples.reduce((total,[ja])=>total+[...ja.matchAll(/\{[^{}|]+\|[^{}|]+\}/g)].length,0));
+    assert.equal(await content.locator('.teacher-source').textContent(),`來源 · ${note.source} · 頁碼／段落 ${note.pages}`);
+  }
   assert.equal(await page.locator('[data-teacher-demo-content] img').count(),0);
   await page.locator('[data-teacher-grammar-id]').evaluateAll(nodes=>nodes.forEach(n=>n.open=true));await noOverflow();
   for(const width of [390,810,1280]){
