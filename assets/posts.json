@@ -1,0 +1,26 @@
+[
+  {
+    "slug": "listening-for-meaning",
+    "title": "聆聽時，先聽懂對方在做甚麼",
+    "summary": "先抓住會話的情境和結果，再重播關鍵句，分辨轉述、確認和尋求認同。",
+    "category": "會話聆聽",
+    "publishedAt": "2026-11-15",
+    "readingMinutes": 4
+  },
+  {
+    "slug": "reading-in-three-passes",
+    "title": "三遍讀完一篇日語課文",
+    "summary": "先找主旨，再追蹤段落怎樣推進，最後合上課文，用兩至三句日語概括。",
+    "category": "課文閱讀",
+    "publishedAt": "2026-11-15",
+    "readingMinutes": 4
+  },
+  {
+    "slug": "study-routine",
+    "title": "把一課拆成三次練習",
+    "summary": "用預習、文法比較和短輸出組成一套可重複的流程，一星期後再做一次小測。",
+    "category": "學習方法",
+    "publishedAt": "2026-11-15",
+    "readingMinutes": 4
+  }
+]

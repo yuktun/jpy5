@@ -9,6 +9,16 @@
     19,
     20
   ],
+  "hubs": {
+    "13": "chapter-13.html",
+    "14": "chapter-14.html",
+    "15": "chapter-15.html",
+    "16": "chapter-16.html",
+    "17": "chapter-17.html",
+    "18": "chapter-18.html",
+    "19": "chapter-19.html",
+    "20": "chapter-20.html"
+  },
   "routes": {
     "13": {
       "flashcards": "chapter-13-flashcards.html",

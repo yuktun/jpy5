@@ -77,7 +77,8 @@
   });
   dialog.addEventListener("close", () => {
     unlockBackground();
-    returnFocus?.focus({ preventScroll: true });
+    const target = section.hidden ? section.closest(".site-utilities")?.querySelector("summary") : returnFocus;
+    target?.focus({ preventScroll: true });
     returnFocus = null;
   });
 })();

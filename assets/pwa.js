@@ -98,15 +98,17 @@ import('./teacher-progress-privacy.mjs').catch(()=>{});
     status.type = "button";
     status.className = "pwa-status";
     status.setAttribute("aria-haspopup", "dialog");
+    const slot = document.querySelector("[data-offline-slot]");
     const brand = document.querySelector(".site-header .brand");
-    if (brand) brand.insertAdjacentElement("afterend", status);
+    if (slot) slot.append(status);
+    else if (brand) brand.insertAdjacentElement("afterend", status);
     else document.body.prepend(status);
     dialog = document.createElement("dialog");
     dialog.className = "pwa-offline-dialog";
     dialog.setAttribute("aria-labelledby", "offline-title");
     dialog.innerHTML = `<h2 id="offline-title">離線使用</h2>
       <p>自行選擇下載本站頁面、課文、詞彙、練習及所需程式。<span data-offline-size></span></p>
-      <p><strong>所有 PDF、外部連結、外部音訊及 Google 同步均需網絡，不包括在離線包內。</strong>發音需裝置已安裝日語語音。</p>
+      <p><strong>所有 PDF、外部連結、音訊及 Google 同步均需網絡，不包括在離線包內。</strong>發音需裝置已安裝日語語音。</p>
       <p data-offline-status role="status" aria-live="polite"></p>
       <progress aria-label="離線更新進度" hidden></progress>
       <p>iPhone／Safari 請保持此頁開啟直到完成。瀏覽器可能回收儲存空間；使用前請確認「離線已就緒」。</p>

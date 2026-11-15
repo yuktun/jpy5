@@ -48,7 +48,7 @@ window.JPY5 = (() => {
       const url=sources.textbooks[link.dataset.textbookLesson]; if(url)link.href=url;
     });
     const footer=document.querySelector("body > footer");
-    if(footer&&!footer.querySelector(".source-credit")){
+    if(footer&&!footer.hasAttribute("data-editorial-footer")&&!footer.querySelector(".source-credit")){
       footer.append(document.createTextNode(" · 教材來源："));
       const credit=document.createElement("a"); credit.className="source-credit"; credit.href=sources.home; credit.target="_blank"; credit.rel="noopener"; credit.textContent="ttrw.jp"; footer.append(credit);
     }

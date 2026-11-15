@@ -29,7 +29,10 @@ const pages = (await readdir(root, { withFileTypes: true }))
   .sort();
 const navigationModules = new Set(["vocabulary", "notes", "reading", "textbook", "review", "quiz", "flashcards", "history"]);
 const navigation = {};
+const hubs = {};
 for (const page of pages) {
+  const hub = page.match(/^chapter-(\d+)\.html$/);
+  if (hub) hubs[hub[1]] = page;
   const match = page.match(/^chapter-(\d+)-([a-z]+)\.html$/);
   if (!match || !navigationModules.has(match[2])) continue;
   const [, lesson, module] = match;
@@ -37,7 +40,7 @@ for (const page of pages) {
 }
 await writeFile(
   join(root, "assets", "lesson-navigation.json"),
-  `${JSON.stringify({ lessons: Object.keys(navigation).map(Number).sort((a, b) => a - b), routes: navigation }, null, 2)}\n`
+  `${JSON.stringify({ lessons: Object.keys(hubs).map(Number).sort((a, b) => a - b), hubs, routes: navigation }, null, 2)}\n`
 );
 const assets = await filesIn(join(root, "assets"));
 const referenced = new Set(pages);

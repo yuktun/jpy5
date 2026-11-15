@@ -1,6 +1,6 @@
 # 日本語 Year 5
 
-A mobile-friendly study site for **みんなの日本語 中級Ⅱ**. Lessons 13–16 provide vocabulary, grammar, reading, listening, flashcards, quizzes, history, and mixed review.
+A mobile-friendly study site for **みんなの日本語 中級Ⅱ**. Lessons 13–20 provide vocabulary, grammar, reading, listening, flashcards, quizzes, history, and mixed review.
 
 ## Run locally
 
@@ -18,7 +18,7 @@ Then open <http://localhost:8000>.
 
 ## Optional offline use and updates
 
-The default is online mode. Opening or installing the app does **not** download an offline package. Normal page requests and browser HTTP caching still work as usual. Open **離線設定** in the header and choose **下載離線內容** to save all 73 study pages, text, vocabulary, exercises and required local assets. The dialog displays the package size, file progress, completion and actionable errors. Keep it open until **離線已就緒** appears.
+The default is online mode. Opening or installing the app does **not** download an offline package. Normal page requests and browser HTTP caching still work as usual. Open **離線設定** in the header (under **工具** on the homepage and article pages). Choose **下載離線內容** to save all 77 pages, including the articles, lesson text, vocabulary, exercises and required local assets. The dialog displays the package size, file progress, completion and actionable errors. Keep it open until **離線已就緒** appears.
 
 **All PDFs (including same-origin PDFs), external links, all MP3 audio (including same-origin recordings) and Google sync require internet and are excluded.** Links and audio players are labelled accordingly. Device pronunciation also requires an installed local Japanese voice; test it before relying on it offline.
 
@@ -45,13 +45,29 @@ node scripts/test-flashcard-prompts-layout.mjs
 node scripts/test-flashcard-update.mjs
 ```
 
-The browser suite requires Playwright and an installed Edge (or set JPY5_BROWSER_CHANNEL). It uses isolated profiles, a local server and no live accounts. It covers the online default, download/retry/cancellation, persistent-profile cold start, all 73 pages offline, PDFs/external links, incremental downloads, integrity failures, removal/re-enabling, partial eviction and scoped legacy-cache cleanup. Set `JPY5_OFFLINE_BASELINE_REF` to a prior Git revision to benchmark its service worker, or `JPY5_OFFLINE_BENCHMARK_ONLY=1` to benchmark the current worker. Both benchmark modes perform three single-file updates and log request count, response-body bytes, peak concurrent requests and elapsed time. `JPY5_OFFLINE_BENCHMARK_DELAY` controls the simulated server delay per asset in milliseconds and defaults to 20.
+The browser suite requires Playwright and an installed Edge (or set JPY5_BROWSER_CHANNEL). It uses isolated profiles, a local server and no live accounts. It covers the online default, download/retry/cancellation, persistent-profile cold start, all 77 pages offline, PDFs/external links, incremental downloads, integrity failures, removal/re-enabling, partial eviction and scoped legacy-cache cleanup. Set `JPY5_OFFLINE_BASELINE_REF` to a prior Git revision to benchmark its service worker, or `JPY5_OFFLINE_BENCHMARK_ONLY=1` to benchmark the current worker. Both benchmark modes perform three single-file updates and log request count, response-body bytes, peak concurrent requests and elapsed time. `JPY5_OFFLINE_BENCHMARK_DELAY` controls the simulated server delay per asset in milliseconds and defaults to 20.
 
 The adverb update suite exercises explicit package update from published revision `2cb386d9fe158d8ccc18b6d43c3f09d93afd8fee`; override `JPY5_PREVIOUS_REF` only when testing another prior release. The older teacher-exercise migration suite uses the pre-opt-in worker.
 
 ## Structure
 
-The dependency-free static site is organized around a homepage, a Chapter 13 learning hub, separate study-tool pages, and shared data/behavior modules under `assets/`.
+The dependency-free static site has a homepage, lesson hubs, study pages, and an article archive. Shared data and scripts live under `assets/`. The homepage activity chooser starts at the current class lesson. When the class advances, update `classLesson` in `assets/lesson-quick-switcher.js` and the matching fallback links and text in `index.html`. The homepage also remembers the last lesson hub or activity opened on the same device, separately from study progress and Google sync.
+
+### Publishing a study article
+
+1. Keep drafts outside the root HTML files and `assets/`, which are inputs to the public inventory.
+2. When the article is ready to publish through a site update, use an existing reader as the template for a root `article-<slug>.html`. Use a unique lowercase hyphenated slug, a Traditional Chinese title and summary, and working links to relevant study pages.
+3. Add the entry to `assets/posts.json` with `slug`, `title`, `summary`, `category`, `publishedAt` (Hong Kong date in YYYY-MM-DD), and `readingMinutes`. Keep the original `publishedAt` for edits. Use the optional `updatedAt` and show the revision date in the reader when applicable. Keep the metadata, reader heading, and dates in agreement.
+4. Update the static fallback cards in `articles.html` (all articles) and `index.html` (latest three). Sort by publication date descending, then by slug ascending for equal dates. The lists load from metadata when JavaScript and the data file are available.
+5. Run the checks below before previewing. Restart a running public preview after regenerating the inventory because the server reads the allowlist at startup. Verify the reader, summary, dates, and related lesson links in the preview.
+
+```bash
+node scripts/generate-offline-manifest.mjs
+node scripts/test-home-navigation.mjs
+node scripts/test-pwa.mjs
+node scripts/test-offline-manifest.mjs
+node scripts/serve-public.mjs
+```
 
 ### Chapter 13 complete edition
 

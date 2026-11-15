@@ -48,6 +48,7 @@ try{
   assert.equal((await status(page)).ready,false,'new profile must start without an offline package');
   assert.equal(await page.evaluate(async()=>(await caches.keys()).filter(key=>key.includes('package-')).length),0);
   await page.evaluate(values=>{for(const [key,value]of Object.entries(values))localStorage.setItem(key,value);},seeded);
+  await page.locator('.site-utilities > summary').click();
   await page.locator('.pwa-status').click();await page.locator('[data-offline-download]').click();
   await page.waitForFunction(()=>document.querySelector('.pwa-status')?.dataset.state==='ready',null,{timeout:90000});
   const downloaded=await status(page);assert.equal(downloaded.ready,true);assert.equal(downloaded.total,manifest.assets.length);

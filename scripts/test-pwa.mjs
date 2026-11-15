@@ -40,7 +40,7 @@ for (const page of pages) {
   assert.match(html, /<script src="assets\/analytics\.js" defer><\/script>/, `${page} does not load production analytics`);
   assert(assetMatches.includes(page), `${page} is missing from the offline inventory`);
 }
-assert.equal(pages.length, 73, "unexpected page count; review the offline inventory");
+assert.equal(pages.length, 77, "unexpected page count; review the offline inventory");
 assert.equal(manifest.scope, "/jpy5/");
 assert.equal(manifest.start_url, "/jpy5/");
 assert.match(serviceWorker, /importScripts\("assets\/offline-assets\.js"\)/);
@@ -50,6 +50,8 @@ assert.doesNotMatch(serviceWorker, /localStorage|indexedDB/, "worker must not to
 assert(assetMatches.every(path => !/\.pdf$/i.test(path) && !/^(?:https?:|\/\/)/i.test(path)), "PDFs and external assets must be excluded");
 assert.match(pwa, /visibilitychange/);
 assert.match(pwa, /addEventListener\("online"/);
+assert.match(pwa, /const slot = document\.querySelector\("\[data-offline-slot\]"\)/);
+assert.match(pwa, /if \(slot\) slot\.append\(status\)/);
 assert.match(pwa, /brand\.insertAdjacentElement\("afterend", status\)/);
 assert.match(styles, /\.pwa-status\{display:inline-flex/);
 assert.match(styles, /\.pwa-status\{grid-column:1\/-1;grid-row:2/, "narrow headers need a second status row");
@@ -57,23 +59,24 @@ assert.match(styles, /@media\(max-width:1200px\)\{\.vocab-complete-layout\{grid-
 assert.match(styles, /\.vocab-row em\{display:block;grid-column:2\/-1\}/, "mobile rows must retain the word type");
 assert.deepEqual(navigation.lessons, [13, 14, 15, 16, 17, 18, 19, 20], "lesson navigation must be generated from the available lesson pages");
 for (const lesson of navigation.lessons) {
-  for (const module of ["vocabulary", "notes", "reading", "textbook", "review"]) {
+  assert.equal(navigation.hubs[lesson], `chapter-${lesson}.html`, `lesson ${lesson} is missing its hub`);
+  for (const module of ["vocabulary", "notes", "reading", "textbook", "review", "flashcards", "quiz", "history"]) {
     assert.equal(navigation.routes[lesson][module], `chapter-${lesson}-${module}.html`, `lesson ${lesson} is missing ${module} navigation`);
   }
 }
-const mainModulePages = pages.filter(page => /^chapter-\d+-(vocabulary|notes|reading|textbook|review)\.html$/.test(page));
-for (const page of mainModulePages) {
+const studyPages = pages.filter(page => /^chapter-\d+(?:-[a-z]+)?\.html$/.test(page));
+for (const page of studyPages) {
   const html = await readFile(join(root, page), "utf8");
-  assert.match(html, /assets\/lesson-quick-switcher\.js\?v=2/, `${page} must load the consolidated navigation`);
+  assert.match(html, /assets\/lesson-quick-switcher\.js\?v=4/, `${page} must load the consolidated navigation`);
 }
-assert.equal(mainModulePages.length, 40, "all five modules must have one consolidated navigation entry per lesson");
+assert.equal(studyPages.length, 72, "each lesson hub and all eight modules must load the consolidated navigation");
 assert.match(quickSwitcher, /\["textbook", "聆聽"\]/, "Listening must remain in module navigation");
 assert.match(quickSwitcher, /\["review", "複習"\]/, "Review must remain in module navigation");
 assert.match(quickSwitcher, /document\.querySelectorAll\("\.module-lesson-switcher,.reading-controls \.lesson-pills"\)\.forEach\(nav => nav\.remove\(\)\)/, "legacy duplicate lesson navigation must be removed");
 assert.doesNotMatch(quickSwitcher, /const lessons\s*=\s*\[/, "available lessons must not be hardcoded in the browser navigation");
 assert.match(home, /class="header-guide-button learning-guide-open"/, "homepage header must retain the learning guide trigger");
 assert.doesNotMatch(home, /learning-guide-preview|learning-guide-card/, "homepage must not render a learning guide content section");
-assert(home.indexOf("header-guide-button") < home.indexOf("<main>"), "learning guide access must stay outside homepage content");
+assert(home.indexOf("header-guide-button") < home.indexOf("<main "), "learning guide access must stay outside homepage content");
 assert.match(learningGuide, /document\.documentElement\.classList\.add\("learning-guide-open"\)/, "guide opening must lock root scrolling");
 assert.match(learningGuide, /document\.documentElement\.classList\.remove\("learning-guide-open"\)/, "guide closing must restore root scrolling");
 assert.match(learningGuide, /window\.scrollTo\(0, savedScrollY\)/, "guide closing must restore the prior scroll position");

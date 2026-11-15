@@ -99,8 +99,14 @@ async function getStatus(page) {
     navigator.serviceWorker.controller.postMessage({ type: "JPY5_CACHE_STATUS" });
   }));
 }
+async function revealOfflineButton(page) {
+  const utilities = page.locator(".site-utilities:not([open]) > summary");
+  if (await utilities.count()) await utilities.click();
+}
 async function open(page) {
-  if (!await page.locator(".pwa-offline-dialog").evaluate(el => el.open)) await page.locator(".pwa-status").click();
+  if (await page.locator(".pwa-offline-dialog").evaluate(el => el.open)) return;
+  await revealOfflineButton(page);
+  await page.locator(".pwa-status").click();
 }
 async function ready(page) {
   await waitState(page, () => document.querySelector(".pwa-status")?.dataset.state === "ready");
@@ -236,6 +242,7 @@ try {
   for (const file of pages) {
     const response = await page.goto(`${base}${file}?offline-test=1`);
     assert.equal(response.status(), 200, file);
+    await revealOfflineButton(page);
     await page.waitForSelector(".pwa-status");
   }
   await page.goto(`${base}chapter-20-vocabulary.html`);
