@@ -41,12 +41,18 @@ try{
  const cold=await context.newPage();await cold.goto(base+'chapter-14-flashcards.html');
  assert.match(await cold.locator('#card-kicker').textContent(),/^\d+\/\d+$/);
  assert.equal(await cold.locator('#card-back').innerHTML(),'');
- assert.equal(await cold.locator('.module-lesson-switcher a').count(),6);
+ await cold.locator('.lesson-select').waitFor();
+ assert.equal(await cold.locator('.lesson-select option').count(),8);
  assert.equal(await cold.evaluate(()=>localStorage.getItem('jpy5.chapter14.flashcards')),saved);
  assert.equal(await cold.evaluate(()=>localStorage.getItem('jpy5.chapter14.updateSentinel')),'keep');
  await cold.locator('#flashcard').tap();assert.equal(await cold.locator('#card-back').isVisible(),true);
  await cold.locator('#next-card').tap();assert.equal(await cold.locator('#card-back').innerHTML(),'');
- for(const module of ['quiz','history']){await cold.goto(base+`chapter-14-${module}.html`);assert.equal(await cold.locator('.module-lesson-switcher a').count(),6);}
+ for(const module of ['quiz','history']){
+  await cold.goto(base+`chapter-14-${module}.html`);
+  const selector=cold.locator('.lesson-select');await selector.waitFor();
+  assert.equal(await selector.locator('option').count(),8);
+  await Promise.all([cold.waitForURL(`**/chapter-20-${module}.html`),selector.selectOption('20')]);
+ }
  await cold.goto(base+'chapter-14-notes.html');
  assert.equal(await cold.locator('[data-teacher-grammar]').count(),11);
  assert.equal(await cold.locator('[data-teacher-grammar][open]').count(),0);

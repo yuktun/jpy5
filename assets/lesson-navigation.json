@@ -11,56 +11,80 @@
   ],
   "routes": {
     "13": {
+      "flashcards": "chapter-13-flashcards.html",
+      "history": "chapter-13-history.html",
       "notes": "chapter-13-notes.html",
+      "quiz": "chapter-13-quiz.html",
       "reading": "chapter-13-reading.html",
       "review": "chapter-13-review.html",
       "textbook": "chapter-13-textbook.html",
       "vocabulary": "chapter-13-vocabulary.html"
     },
     "14": {
+      "flashcards": "chapter-14-flashcards.html",
+      "history": "chapter-14-history.html",
       "notes": "chapter-14-notes.html",
+      "quiz": "chapter-14-quiz.html",
       "reading": "chapter-14-reading.html",
       "review": "chapter-14-review.html",
       "textbook": "chapter-14-textbook.html",
       "vocabulary": "chapter-14-vocabulary.html"
     },
     "15": {
+      "flashcards": "chapter-15-flashcards.html",
+      "history": "chapter-15-history.html",
       "notes": "chapter-15-notes.html",
+      "quiz": "chapter-15-quiz.html",
       "reading": "chapter-15-reading.html",
       "review": "chapter-15-review.html",
       "textbook": "chapter-15-textbook.html",
       "vocabulary": "chapter-15-vocabulary.html"
     },
     "16": {
+      "flashcards": "chapter-16-flashcards.html",
+      "history": "chapter-16-history.html",
       "notes": "chapter-16-notes.html",
+      "quiz": "chapter-16-quiz.html",
       "reading": "chapter-16-reading.html",
       "review": "chapter-16-review.html",
       "textbook": "chapter-16-textbook.html",
       "vocabulary": "chapter-16-vocabulary.html"
     },
     "17": {
+      "flashcards": "chapter-17-flashcards.html",
+      "history": "chapter-17-history.html",
       "notes": "chapter-17-notes.html",
+      "quiz": "chapter-17-quiz.html",
       "reading": "chapter-17-reading.html",
       "review": "chapter-17-review.html",
       "textbook": "chapter-17-textbook.html",
       "vocabulary": "chapter-17-vocabulary.html"
     },
     "18": {
+      "flashcards": "chapter-18-flashcards.html",
+      "history": "chapter-18-history.html",
       "notes": "chapter-18-notes.html",
+      "quiz": "chapter-18-quiz.html",
       "reading": "chapter-18-reading.html",
       "review": "chapter-18-review.html",
       "textbook": "chapter-18-textbook.html",
       "vocabulary": "chapter-18-vocabulary.html"
     },
     "19": {
+      "flashcards": "chapter-19-flashcards.html",
+      "history": "chapter-19-history.html",
       "notes": "chapter-19-notes.html",
+      "quiz": "chapter-19-quiz.html",
       "reading": "chapter-19-reading.html",
       "review": "chapter-19-review.html",
       "textbook": "chapter-19-textbook.html",
       "vocabulary": "chapter-19-vocabulary.html"
     },
     "20": {
+      "flashcards": "chapter-20-flashcards.html",
+      "history": "chapter-20-history.html",
       "notes": "chapter-20-notes.html",
+      "quiz": "chapter-20-quiz.html",
       "reading": "chapter-20-reading.html",
       "review": "chapter-20-review.html",
       "textbook": "chapter-20-textbook.html",

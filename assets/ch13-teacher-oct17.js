@@ -102,4 +102,10 @@
   const keys=new Map(Object.entries(teacher.grammar).map(([id,item])=>[item,id]));
   teacher.block=(item,furigana=true)=>originalBlock(item,furigana)+grammarBlock(keys.get(item),furigana);
   teacher.oct17={source,grammar,vocabulary,answers,sections,grammarBlock,vocabularyBlock,answerBlock,sectionBlock};
+  if(window.location?.hash.startsWith('#teacher-oct17-')){
+    window.addEventListener('load',()=>{
+      const target=document.getElementById(location.hash.slice(1));
+      target?.scrollIntoView({behavior:'instant',block:'start'});
+    },{once:true});
+  }
 })();

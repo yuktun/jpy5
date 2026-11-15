@@ -102,24 +102,19 @@ try{
   await page.goto(base+(module==='hub'?'chapter-14.html':`chapter-14-${module}.html`));
   assert.equal(await page.locator('main').count(),1);
   assert.equal(await page.locator('iframe').count(),0,'No nested protected frames');
-  if(['flashcards','quiz','history'].includes(module)){
-   const nav=page.locator('.module-lesson-switcher');await nav.waitFor();
-   assert.equal(await nav.count(),1);assert.equal(await page.locator('.lesson-quick-switcher').count(),0);
-   assert.equal(await nav.locator('a').count(),6);
-   assert.equal(await nav.locator('[aria-current="page"]').getAttribute('href'),`chapter-14-${module}.html`);
-   const hero=await page.locator('.compact-hero').boundingBox(),bar=await nav.boundingBox();
-   assert(bar.y>=hero.y+hero.height-1,'Lesson bar belongs below the hero');
-   if(module==='flashcards'){
-    await page.locator('[data-direction="zh"]').click();await frontCheck();
-    await nav.locator('a[href="chapter-18-flashcards.html"]').click();
-    assert.match(page.url(),/chapter-18-flashcards.html$/);
-    await page.goto(base+'chapter-14-flashcards.html');
-   }
-  }else if(module!=='hub'){
+  if(module!=='hub'){
    await page.locator('.lesson-quick-switcher').waitFor();
    assert.equal(await page.locator('.lesson-quick-switcher').count(),1);
    assert.equal(await page.locator('.module-lesson-switcher,.reading-controls .lesson-pills').count(),0);
    assert.equal(await page.locator('.lesson-select').inputValue(),'14');
+   if(['flashcards','quiz','history'].includes(module)){
+    assert.equal(await page.locator('.lesson-select option').count(),8);
+    if(module==='flashcards'){
+     await page.locator('[data-direction="zh"]').click();await frontCheck();
+    }
+    await Promise.all([page.waitForURL(`**/chapter-20-${module}.html`),page.locator('.lesson-select').selectOption('20')]);
+    await Promise.all([page.waitForURL(`**/chapter-14-${module}.html`),page.locator('.lesson-select').selectOption('14')]);
+   }
   }else assert.equal(await page.locator('.tool-grid .tool-card').count(),5);
   for(const theme of ['light','dark']){
    await page.evaluate(theme=>window.JPY5.setTheme(theme),theme);
@@ -134,7 +129,7 @@ try{
   }
   if(module==='vocabulary')assert.equal(await page.locator('#teacher-adverbs .teacher-adverb-card').count(),4);
   if(module==='review')assert.equal(await page.locator('[data-answer-toggle]').count(),13);
-  if(width===390)audit.push(`${module}: ${['flashcards','quiz','history'].includes(module)?'six-lesson bar':module==='hub'?'five module cards + grammar subtools':'one compact lesson/module selector'}`);
+  if(width===390)audit.push(`${module}: ${module==='hub'?'five module cards + grammar subtools':'one compact lesson/module selector'}`);
  }
  assert.equal(protectedReads,0);assert.deepEqual(errors,[]);
  console.log(`Microsoft Edge: ${cards} reverse fronts across lessons 13–20, summary/example flips and accessibility, preserved Japanese prompts, state resets/progress and touch/keyboard passed.`);

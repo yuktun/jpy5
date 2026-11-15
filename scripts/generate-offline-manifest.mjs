@@ -27,7 +27,7 @@ const pages = (await readdir(root, { withFileTypes: true }))
   .filter(entry => entry.isFile() && entry.name.endsWith(".html"))
   .map(entry => entry.name)
   .sort();
-const navigationModules = new Set(["vocabulary", "notes", "reading", "textbook", "review"]);
+const navigationModules = new Set(["vocabulary", "notes", "reading", "textbook", "review", "quiz", "flashcards", "history"]);
 const navigation = {};
 for (const page of pages) {
   const match = page.match(/^chapter-(\d+)-([a-z]+)\.html$/);

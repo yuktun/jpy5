@@ -18,5 +18,5 @@
 .teacher-review-shortcuts a { border: 1px solid var(--line); border-radius: 8px; padding: .65rem .9rem; }
 .teacher-writing-guide { line-height: 2; padding-left: 1.5rem; }
 .teacher-writing-count { display: block; color: var(--muted); margin-top: .5rem; }
-#teacher-writing { scroll-margin-top: 220px; }
+#teacher-writing, [data-oct17-grammar] > summary { scroll-margin-top: 220px; }
 @media(max-width:600px) { .dialogue-row > .teacher-addition, .vocab-row > .teacher-addition { grid-column: 1 / -1; } }

@@ -47,8 +47,12 @@ document.addEventListener("DOMContentLoaded", () => {
   function translation(){
     return shell("繁體中文翻譯","每段中文下方附有完整日文原文；翻譯為編輯補充，非教材印刷中譯。 點按日文句子，只播放該句原聲；再按可重播。",`<div class="translation-list" style="--reading-size:${[.98,1.1,1.24][state.font]}rem">${data.paragraphs.map(p=>`<article data-reading-paragraph="${p.id}"><span>0${p.id}</span><p>${esc(p.zh)}<span class="translation-original" lang="ja">${ruby(p.jp)}</span></p></article>`).join("")}</div>`);
   }
+  function sourcePassage(question){
+    const paragraph=data.paragraphs.find(item=>item.id===question.paragraph);
+    return paragraph ? `<blockquote lang="ja">${ruby(paragraph.jp)}</blockquote>` : "";
+  }
   function questionCards(){
-    return shell("應用程式閱讀練習",`${data.questions.length} 題應用程式練習均依據已轉錄原文編寫；作答後即時顯示解釋及原文段落。`,`<div class="reading-question-list">${data.questions.map((q,i)=>{const chosen=state.answered[q.id],answered=chosen!==undefined;const paragraph=answered?data.paragraphs.find(p=>p.id===q.paragraph):null;return `<article class="reading-question" data-question="${q.id}"><span>應用程式閱讀練習 · 問題 ${i+1} · 原文第 ${q.paragraph} 段</span><h3>${questionText(q)}</h3><div>${q.options.map((o,n)=>`<button data-q="${q.id}" data-option="${n}" ${answered?'disabled':''} class="${answered&&n===q.answer?'correct':answered&&n===chosen&&chosen!==q.answer?'wrong':''}">${optionText(q,o)}</button>`).join("")}</div><p class="reading-feedback">${answered?(chosen===q.answer?'答對。':'未正確。')+esc(q.why):''}</p>${paragraph?`<blockquote lang="ja">${ruby(paragraph.jp)}</blockquote>`:""}${answered?`<button class="chip" data-retry-question="${q.id}">重新作答</button>`:""}</article>`}).join("")}</div>`);
+    return shell("應用程式閱讀練習",`${data.questions.length} 題應用程式練習均依據已轉錄原文編寫；作答後即時顯示解釋及原文段落。`,`<div class="reading-question-list">${data.questions.map((q,i)=>{const chosen=state.answered[q.id],answered=chosen!==undefined;return `<article class="reading-question" data-question="${q.id}"><span>應用程式閱讀練習 · 問題 ${i+1} · 原文第 ${q.paragraph} 段</span><h3>${questionText(q)}</h3><div>${q.options.map((o,n)=>`<button data-q="${q.id}" data-option="${n}" ${answered?'disabled':''} class="${answered&&n===q.answer?'correct':answered&&n===chosen&&chosen!==q.answer?'wrong':''}">${optionText(q,o)}</button>`).join("")}</div><p class="reading-feedback">${answered?(chosen===q.answer?'答對。':'未正確。')+esc(q.why):''}</p>${answered?sourcePassage(q):""}${answered?`<button class="chip" data-retry-question="${q.id}">重新作答</button>`:""}</article>`}).join("")}</div>`);
   }
   function findAnswers(){
     const task=data.find[findIndex%data.find.length];
@@ -83,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   function mistakes(){
     const qs=data.questions.filter(q=>state.wrong.includes(q.id)),words=data.vocab.filter((_,i)=>state.wrong.includes('v'+i));
-    return shell("錯題重溫","重新作答可更新掌握；查看解釋本身不會當作答對。",qs.length||words.length?'<div class="mistake-list">'+qs.map(q=>`<article><span>應用程式閱讀練習 · 第 ${q.paragraph} 段</span><h3>${questionText(q)}</h3><button class="chip" data-review-question="${q.id}">重新作答</button><details><summary>查看答案與原文依據（不計掌握）</summary><p>${optionText(q,q.options[q.answer])}</p><p>${esc(q.why)}</p></details></article>`).join('')+words.map(([jp,zh])=>'<article><span>單字重溫</span><h3>'+ruby(jp)+'</h3><p>'+esc(zh)+'</p></article>').join('')+'</div>':'<div class="empty-state"><h2>暫時沒有錯題</h2><p>App閱讀練習、模擬考試錯題及標記的單字會出現在這裏。</p></div>');
+    return shell("錯題重溫","重新作答可更新掌握；查看解釋本身不會當作答對。",qs.length||words.length?'<div class="mistake-list">'+qs.map(q=>`<article><span>應用程式閱讀練習 · 第 ${q.paragraph} 段</span><h3>${questionText(q)}</h3><button class="chip" data-review-question="${q.id}">重新作答</button><details><summary>查看答案與原文依據（不計掌握）</summary><p>${optionText(q,q.options[q.answer])}</p><p>${esc(q.why)}</p>${sourcePassage(q)}</details></article>`).join('')+words.map(([jp,zh])=>'<article><span>單字重溫</span><h3>'+ruby(jp)+'</h3><p>'+esc(zh)+'</p></article>').join('')+'</div>':'<div class="empty-state"><h2>暫時沒有錯題</h2><p>App閱讀練習、模擬考試錯題及標記的單字會出現在這裏。</p></div>');
   }
   const renderers={original,translation,source:sourceQuestions,practice:questionCards,find:findAnswers,vocab,exam,mistakes};
   function setMode(mode){state.mode=mode;state.vocabFlipped=false;findIndex=0;save();render()}
