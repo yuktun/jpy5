@@ -38,7 +38,7 @@ const status=page=>page.evaluate(()=>new Promise((resolve,reject)=>{
 async function retained(page){assert.deepEqual(await page.evaluate(keys=>Object.fromEntries(keys.map(key=>[key,localStorage.getItem(key)])),Object.keys(seeded)),seeded);}
 try{
   browser=await chromium.launch({headless:true,channel:process.env.JPY5_BROWSER_CHANNEL||'msedge'});
-  const context=await browser.newContext({viewport:{width:390,height:1000},serviceWorkers:'allow'});
+  const context=await browser.newContext({viewport:{width:390,height:1000},hasTouch:true,serviceWorkers:'allow'});
   const errors=[];let protectedRequests=0,sourceRequests=0;
   context.on('request',req=>{const url=req.url();if(url.includes('jpy5TeacherNotes'))protectedRequests++;if(/\.pdf(?:[?#]|$)/i.test(url)||/^https:\/\/drive\.google\.com\/file\//.test(url))sourceRequests++;});
   await context.route('**/*',route=>new URL(route.request().url()).origin===new URL(base).origin ? route.continue() : route.abort());
@@ -67,6 +67,30 @@ try{
   assert.equal(sourceRequests,0);assert.ok(!requests.some(path=>/\.pdf$/i.test(path)));
   console.log(`Downloaded actual opt-in package: ${manifest.assets.length} verified public resources; no PDFs, source scans, or private runtime cache.`);
   await context.setOffline(true);disconnected=true;await page.close();
+  // All eight shared mobile notes controls must also survive a cold package load.
+  const grammarCounts={13:[8,25],14:[11,46],15:[9,32],16:[10,40],17:[10,36],18:[8,39],19:[8,36],20:[12,48]};
+  for(const [lesson,[patterns,examples]]of Object.entries(grammarCounts)){
+    page=await context.newPage();page.on('pageerror',error=>errors.push(error.message));
+    const response=await page.goto(`${base}chapter-${lesson}-notes.html?cold-grammar-offline=1`);
+    assert.equal(response.status(),200);assert.equal(response.fromServiceWorker(),true);
+    const trigger=page.locator('.ch14-toc-trigger'),toc=page.locator('.ch14-toc-sheet');
+    await trigger.waitFor({state:'visible'});
+    assert.equal(await page.locator('.grammar-grid[data-group] > .note-card').count(),patterns);
+    assert.equal(await page.locator('.grammar-grid[data-group] > .note-card .examples-list .example').count(),examples);
+    assert.equal(await toc.locator('a').count(),patterns);
+    const first=page.locator('.grammar-grid[data-group] > .note-card').first();
+    const count=await first.locator('.examples-list .example').count();
+    assert.equal(await first.locator('.examples-list .example:visible').count(),Math.min(2,count));
+    const toggle=first.locator('.ch14-examples-toggle');
+    if(count>2){await toggle.click();assert.equal(await first.locator('.example:visible').count(),count);await toggle.click();}
+    await page.evaluate(()=>{document.documentElement.style.scrollBehavior='auto';scrollTo(0,document.documentElement.scrollHeight);});
+    await trigger.tap();assert.equal(await toc.isVisible(),true);
+    await toc.locator('a').first().tap();assert.equal(await toc.isVisible(),false);
+    assert.equal(await first.locator('h3').evaluate(node=>node===document.activeElement),true);
+    if(lesson==='17')assert.equal(await page.locator('[data-textbook-unmatched-pattern="ue"] .ch14-examples-toggle').count(),0);
+    await retained(page);await page.close();
+    console.log(`Lesson ${lesson}: cold offline grammar TOC and example controls passed (${patterns} patterns/${examples} examples).`);
+  }
   for(const [lesson,[groups,items]]of Object.entries(expected)){
     // New tabs have no lesson DOM/module state from an online visit.
     page=await context.newPage();page.on('pageerror',error=>errors.push(error.message));

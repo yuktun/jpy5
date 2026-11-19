@@ -1,28 +1,40 @@
-// Lesson 14 pilot: enhance the shared notes only after their data/DOM agree.
+// Shared notes enhancement; retain the pilot's classes and Lesson 14 anchor IDs.
 (() => {
+  const lesson = location.pathname.match(/(?:^|\/)chapter-([1-9]\d*)-notes\.html$/)?.[1];
+  if (!lesson) return;
+  const prefix = `ch${lesson}`;
   const patterns = window.JPY5_DATA?.patterns;
-  const cards = [...document.querySelectorAll('.note-card')];
-  if (!patterns?.length || cards.length !== patterns.length) return;
+  const cards = [...document.querySelectorAll('.grammar-grid[data-group] > .note-card')];
+  if (!Array.isArray(patterns) || !patterns.length || cards.length !== patterns.length ||
+      patterns.some(pattern => !pattern || typeof pattern.id !== 'string' || !/^[\w-]+$/.test(pattern.id) ||
+        typeof pattern.title !== 'string' || !Array.isArray(pattern.examples)) ||
+      new Set(patterns.map(pattern => pattern.id)).size !== patterns.length) return;
   const groups = [...document.querySelectorAll('.grammar-grid[data-group]')];
   const ordered = groups.flatMap(grid => patterns.filter(pattern => pattern.group === grid.dataset.group));
-  if (ordered.length !== patterns.length || ordered.some((pattern, index) => pattern !== patterns[index] ||
-      !cards[index].querySelector('h3') ||
-      cards[index].closest('[data-group]')?.dataset.group !== pattern.group ||
-      cards[index].querySelectorAll('.examples-list > .example').length !== pattern.examples.length)) return;
+  if (ordered.length !== patterns.length || ordered.some((pattern, index) => {
+    const card = cards[index], lists = card.querySelectorAll(':scope > .examples-list');
+    return pattern !== patterns[index] || !card.querySelector(':scope > h3') ||
+      card.parentElement.dataset.group !== pattern.group || lists.length !== 1 ||
+      lists[0].children.length !== pattern.examples.length ||
+      [...lists[0].children].some(node => !node.matches('.example')) ||
+      document.getElementById(`${prefix}-grammar-${pattern.id}`) ||
+      document.getElementById(`${prefix}-examples-${pattern.id}`);
+  })) return;
+  if (document.getElementById(`${prefix}-grammar-toc`) || document.getElementById(`${prefix}-toc-title`)) return;
 
   const mobile = matchMedia('(max-width: 680px)');
   document.body.classList.add('ch14-notes-mobile');
   const headings = cards.map((card, index) => {
-    const pattern = patterns[index], heading = card.querySelector('h3');
-    heading.id = `ch14-grammar-${pattern.id}`;
+    const pattern = patterns[index], heading = card.querySelector(':scope > h3');
+    heading.id = `${prefix}-grammar-${pattern.id}`;
     heading.tabIndex = -1;
     card.dataset.grammarId = pattern.id;
-    const list = card.querySelector('.examples-list');
+    const list = card.querySelector(':scope > .examples-list');
     const remaining = [...list.children].slice(2);
     if (remaining.length) {
       const rest = document.createElement('div');
       rest.className = 'ch14-examples-rest';
-      rest.id = `ch14-examples-${pattern.id}`;
+      rest.id = `${prefix}-examples-${pattern.id}`;
       rest.append(...remaining);
       const toggle = document.createElement('button');
       toggle.type = 'button';
@@ -49,13 +61,13 @@
   trigger.className = 'ch14-toc-trigger';
   trigger.textContent = '目錄';
   trigger.setAttribute('aria-haspopup', 'dialog');
-  trigger.setAttribute('aria-controls', 'ch14-grammar-toc');
+  trigger.setAttribute('aria-controls', `${prefix}-grammar-toc`);
   trigger.setAttribute('aria-expanded', 'false');
   const sheet = document.createElement('dialog');
-  sheet.id = 'ch14-grammar-toc';
+  sheet.id = `${prefix}-grammar-toc`;
   sheet.className = 'ch14-toc-sheet';
-  sheet.setAttribute('aria-labelledby', 'ch14-toc-title');
-  sheet.innerHTML = '<div class="ch14-toc-head"><h2 id="ch14-toc-title">文法目錄</h2><button type="button" class="ch14-toc-close" aria-label="關閉文法目錄">×</button></div><nav class="ch14-toc-list" aria-label="文法句型"></nav>';
+  sheet.setAttribute('aria-labelledby', `${prefix}-toc-title`);
+  sheet.innerHTML = `<div class="ch14-toc-head"><h2 id="${prefix}-toc-title">文法目錄</h2><button type="button" class="ch14-toc-close" aria-label="關閉文法目錄">×</button></div><nav class="ch14-toc-list" aria-label="文法句型"></nav>`;
   const list = sheet.querySelector('nav');
   const links = patterns.map((pattern, index) => {
     const link = document.createElement('a');

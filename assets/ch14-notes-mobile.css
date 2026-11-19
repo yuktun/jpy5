@@ -1,3 +1,4 @@
+/* Shared by all notes lessons; keep the pilot classes for cached Lesson 14 HTML. */
 .ch14-toc-trigger, .ch14-examples-toggle { display: none; }
 .ch14-examples-rest { display: contents; }
 .ch14-examples-rest > .example:first-child { margin-top: 15px; }
