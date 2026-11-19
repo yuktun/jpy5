@@ -1,0 +1,88 @@
+.ch14-toc-trigger, .ch14-examples-toggle { display: none; }
+.ch14-examples-rest { display: contents; }
+.ch14-examples-rest > .example:first-child { margin-top: 15px; }
+.ch14-toc-sheet { display: none; }
+
+@media (max-width: 680px) {
+  /* The fixed control occupies its own gutter, outside every reading surface. */
+  .ch14-notes-mobile { --ch14-toc-gutter: calc(68px + env(safe-area-inset-right, 0px)); }
+  .ch14-notes-mobile main { padding-right: var(--ch14-toc-gutter); }
+  .ch14-notes-mobile footer { padding-right: calc(20px + var(--ch14-toc-gutter)); }
+  .ch14-notes-mobile .grammar-section { padding-inline: 12px 0; }
+  .ch14-notes-mobile .compact-hero { width: calc(100% - 24px); margin-inline: 12px; }
+  .ch14-notes-mobile .note-card { padding: 24px 16px; min-width: 0; overflow-wrap: anywhere; }
+  .ch14-notes-mobile .note-card h3 { font-size: 1.8rem; }
+  .ch14-notes-mobile .note-card .formation { padding-inline: 12px; }
+  .ch14-notes-mobile .section-heading { gap: 8px; flex-wrap: wrap; }
+  .ch14-toc-trigger {
+    display: grid;
+    place-items: center;
+    position: fixed;
+    z-index: 21;
+    right: calc(8px + env(safe-area-inset-right, 0px));
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    width: 52px;
+    height: 48px;
+    padding: 0;
+    border: 1px solid var(--primary);
+    border-radius: 14px;
+    color: var(--button-text);
+    background: var(--button-bg);
+    box-shadow: var(--shadow);
+    font: inherit;
+    font-size: .85rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .ch14-examples-toggle {
+    display: block;
+    min-height: 44px;
+    width: 100%;
+    margin-top: 18px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--ink);
+    background: var(--paper);
+    font: inherit;
+    font-size: .82rem;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+    overflow-anchor: none;
+  }
+  .ch14-examples-rest { display: none; }
+  .ch14-examples-rest.is-expanded { display: contents; }
+  .ch14-toc-open { position: fixed; width: 100%; overflow: hidden; }
+  .ch14-toc-open .ch14-toc-trigger { visibility: hidden; }
+  .ch14-toc-sheet[open] {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    inset: auto 0 0;
+    width: 100%;
+    max-width: 680px;
+    max-height: calc(100dvh - 12px - env(safe-area-inset-top, 0px));
+    margin: 0 auto;
+    padding: 0 0 env(safe-area-inset-bottom, 0px);
+    color: var(--ink);
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-bottom: 0;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -16px 60px rgba(0, 0, 0, .24);
+    overflow: hidden;
+  }
+  .ch14-toc-sheet::backdrop { background: rgba(8, 10, 8, .65); }
+  .ch14-toc-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 18px; border-bottom: 1px solid var(--line); }
+  .ch14-toc-head h2 { margin: 0; font-size: 1.15rem; }
+  .ch14-toc-close { flex-shrink: 0; width: 44px; height: 44px; border: 1px solid var(--line); border-radius: 50%; color: var(--ink); background: var(--paper); font-size: 1.5rem; cursor: pointer; }
+  .ch14-toc-list { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 2px 10px 4px; }
+  .ch14-toc-list a { display: grid; grid-template-columns: 24px minmax(0, 1fr) 28px; align-items: center; gap: 8px; min-height: 44px; padding: 8px; border-radius: 8px; color: var(--ink); font-size: .83rem; line-height: 1.45; text-decoration: none; overflow-wrap: anywhere; }
+  .ch14-toc-number { color: var(--muted); font-size: .7rem; }
+  .ch14-toc-current { visibility: hidden; font-size: .68rem; font-weight: 700; }
+  .ch14-toc-list a[aria-current] { background: var(--sage); font-weight: 700; }
+  .ch14-toc-list a[aria-current] .ch14-toc-current { visibility: visible; }
+  .ch14-toc-trigger:focus-visible, .ch14-examples-toggle:focus-visible, .ch14-toc-sheet :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .ch14-notes-mobile .note-card h3:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
+}
