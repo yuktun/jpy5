@@ -114,26 +114,30 @@ async function ready(page) {
 }
 async function badge(page, pending) {
   await page.waitForFunction(pending => {
-    const badge = document.querySelector(".pwa-update-badge");
+    const badge = document.querySelector("summary .pwa-update-badge");
+    const inlineBadge = document.querySelector(".pwa-status .pwa-update-badge");
     const description = document.querySelector(".site-utilities > summary")?.getAttribute("aria-describedby");
-    return badge?.hidden === !pending && description === (pending ? "offline-update-notice" : null);
+    return badge?.hidden === !pending && inlineBadge?.hidden === !pending && description === (pending ? "offline-update-notice" : null);
   }, pending);
-  assert.deepEqual(await page.evaluate(() => {
-    const badge = document.querySelector(".pwa-update-badge");
+  const badgeState = await page.evaluate(() => {
+    const badge = document.querySelector("summary .pwa-update-badge");
+    const inlineBadge = document.querySelector(".pwa-status .pwa-update-badge");
     return {
       count: document.querySelectorAll(".pwa-update-badge").length,
       visible: !!badge.getClientRects().length,
+      inlineHidden: inlineBadge.hidden,
       text: badge.textContent,
       ariaHidden: badge.getAttribute("aria-hidden"),
       description: document.querySelector(".site-utilities > summary").getAttribute("aria-describedby"),
       notice: document.querySelector("#offline-update-notice").textContent
     };
-  }), { count: 1, visible: pending, text: "1", ariaHidden: "true", description: pending ? "offline-update-notice" : null, notice: pending ? "離線內容有更新，可在工具內下載。" : "" });
+  });
+  assert.deepEqual(badgeState, { count: 2, visible: pending, inlineHidden: !pending, text: "1", ariaHidden: "true", description: pending ? "offline-update-notice" : null, notice: pending ? "離線內容有更新，可在工具內下載。" : "" });
 }
 async function checkUpdate(page, version) {
   const before = requests.length;
   await page.locator("[data-offline-check]").click();
-  await waitState(page, () => document.querySelector(".pwa-status")?.textContent === "離線內容有更新");
+  await waitState(page, () => document.querySelector(".pwa-status-label")?.textContent === "離線內容有更新");
   assert.equal((await getStatus(page)).availableVersion, version);
   assert(!requests.slice(before).some(path => release.hashes[path.slice(6)]), "update check must not fetch package assets");
 }
@@ -296,7 +300,7 @@ try {
   // Startup discovers metadata with the menu closed and never downloads a pack.
   const beforeAutomaticCheck = requests.length;
   await page.reload();
-  await waitState(page, () => document.querySelector(".pwa-status")?.textContent === "離線內容有更新");
+  await waitState(page, () => document.querySelector(".pwa-status-label")?.textContent === "離線內容有更新");
   assert.equal((await getStatus(page)).availableVersion, release.version);
   assert(!requests.slice(beforeAutomaticCheck).some(path => release.hashes[path.slice(6)]), "automatic update detection must not fetch package assets");
   assert.equal(await page.locator(".site-utilities").getAttribute("open"), null);
@@ -378,7 +382,7 @@ try {
     };
   });
   await page.locator("[data-offline-download]").click();
-  await waitState(page, () => document.querySelector(".pwa-status")?.textContent === "確認離線內容中");
+  await waitState(page, () => document.querySelector(".pwa-status-label")?.textContent === "確認離線內容中");
   await page.locator("[data-offline-cancel]").click();
   await updateWorker.evaluate(() => {
     return new Promise((resolve, reject) => {

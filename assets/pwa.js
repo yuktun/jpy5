@@ -6,8 +6,8 @@ import('./teacher-progress-privacy.mjs').catch(()=>{});
   let registration;
   let state = {};
   let initialVersion;
-  let status, dialog, details, progress, download, cancel, remove, check, reload;
-  let utilitySummary, updateBadge, updateNotice;
+  let status, statusLabel, dialog, details, progress, download, cancel, remove, check, reload;
+  let utilitySummary, updateBadge, inlineUpdateBadge, updateNotice;
   let updatePending = false;
 
   const send = type => (navigator.serviceWorker?.controller || registration?.active)?.postMessage({ type });
@@ -28,6 +28,7 @@ import('./teacher-progress-privacy.mjs').catch(()=>{});
     if (updateBadge && pending !== updatePending) {
       updatePending = pending;
       updateBadge.hidden = !pending;
+      inlineUpdateBadge.hidden = !pending;
       const descriptions = (utilitySummary.getAttribute("aria-describedby") || "").split(/\s+/).filter(id => id && id !== updateNotice.id);
       if (pending) descriptions.push(updateNotice.id);
       if (descriptions.length) utilitySummary.setAttribute("aria-describedby", descriptions.join(" "));
@@ -42,7 +43,7 @@ import('./teacher-progress-privacy.mjs').catch(()=>{});
     const checking = transfer?.phase === "checking";
     const verifying = transfer?.phase === "verifying";
     const label = busy ? (checking ? "檢查離線內容中" : verifying ? "確認離線內容中" : `下載中 ${transfer?.downloaded ?? state.completed}/${transfer?.needed ?? state.total}`) : state.ready ? (state.updateAvailable ? "離線內容有更新" : "離線已就緒") : "離線設定";
-    status.textContent = label;
+    statusLabel.textContent = label;
     let message = state.ready ? "已完整下載，可離線開啟及使用本站學習內容。" : "預設使用網上模式，不會自動下載離線包。";
     const counts = transfer && `已檢查 ${transfer.checked} 個，重用 ${transfer.reused} 個，已下載 ${transfer.downloaded} 個。`;
     if (busy) message = transfer ? `${label}。${counts}請保持此頁開啟。` : `正在下載 ${state.completed} / ${state.total} 個檔案。請保持此頁開啟。`;
@@ -110,6 +111,9 @@ import('./teacher-progress-privacy.mjs').catch(()=>{});
     status.type = "button";
     status.className = "pwa-status";
     status.setAttribute("aria-haspopup", "dialog");
+    statusLabel = document.createElement("span");
+    statusLabel.className = "pwa-status-label";
+    status.append(statusLabel);
     const slot = document.querySelector("[data-offline-slot]");
     const utilities = slot?.closest(".site-utilities");
     utilitySummary = utilities?.querySelector("summary");
@@ -120,6 +124,8 @@ import('./teacher-progress-privacy.mjs').catch(()=>{});
       updateBadge.hidden = true;
       updateBadge.setAttribute("aria-hidden", "true");
       utilitySummary.append(updateBadge);
+      inlineUpdateBadge = updateBadge.cloneNode(true);
+      status.append(inlineUpdateBadge);
       // Keep the live announcement outside the disclosure so it is available
       // while the tools menu is closed. The summary keeps its original name.
       updateNotice = document.createElement("span");

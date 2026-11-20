@@ -390,10 +390,14 @@ try {
       node.closest("details").after(note);
     });
     await page.evaluate(() => navigator.serviceWorker.dispatchEvent(new MessageEvent("message", { data: { type: "JPY5_OFFLINE_STATUS", ready: true, updateAvailable: true } })));
-    const badge = page.locator(".pwa-update-badge");
+    const badge = trigger.locator(".pwa-update-badge");
+    const status = page.locator(".site-utility-panel .pwa-status");
+    const inlineBadge = status.locator(".pwa-update-badge");
     assert.equal(await badge.count(), 1);
     assert.equal(await badge.isVisible(), true);
     assert.equal(await badge.getAttribute("aria-hidden"), "true");
+    assert.equal(await inlineBadge.count(), 1);
+    assert.equal(await inlineBadge.isVisible(), false, "inline badge stays inside the closed menu");
     assert.equal(await trigger.getAttribute("aria-describedby"), "existing-tools-description offline-update-notice");
     assert.match(accessibleBefore, /工具/);
     assert.equal(await trigger.ariaSnapshot(), accessibleBefore, "badge must preserve the summary's accessible name");
@@ -410,10 +414,20 @@ try {
       return { color: style.color, background: style.backgroundColor, pointerEvents: style.pointerEvents };
     });
     assert.deepEqual(colors, { color: "rgb(255, 255, 255)", background: "rgb(197, 34, 51)", pointerEvents: "none" });
+    await trigger.click();
+    assert.equal(await inlineBadge.isVisible(), true);
+    assert.equal(await inlineBadge.textContent(), "1");
+    assert.equal(await page.getByRole("button", { name: "離線內容有更新", exact: true }).count(), 1);
+    const labelBounds = await status.locator(".pwa-status-label").boundingBox();
+    const inlineBounds = await inlineBadge.boundingBox();
+    assert(inlineBounds.x >= labelBounds.x + labelBounds.width && inlineBounds.x - labelBounds.x - labelBounds.width <= 10,
+      "inline badge sits immediately after the label");
     await page.evaluate(() => navigator.serviceWorker.dispatchEvent(new MessageEvent("message", { data: { type: "JPY5_OFFLINE_STATUS", ready: true, updateAvailable: false } })));
     assert.equal(await badge.isVisible(), false);
+    assert.equal(await inlineBadge.isVisible(), false);
     assert.equal(await trigger.getAttribute("aria-describedby"), "existing-tools-description");
     assert.equal(await page.locator("#offline-update-notice").textContent(), "");
+    await page.keyboard.press("Escape");
   }
 
   async function noOverflow(width, selector) {

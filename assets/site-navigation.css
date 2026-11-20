@@ -31,12 +31,10 @@
 
 .site-utilities { position: relative; z-index: 24; margin-left: auto; }
 .site-utilities summary { position: relative; gap: 8px; border: 1px solid var(--line); cursor: pointer; }
-.site-utilities summary .pwa-update-badge {
-  position: absolute;
-  top: -7px;
-  right: -7px;
+.site-utilities .pwa-update-badge {
   display: grid;
   place-items: center;
+  flex: none;
   width: 20px;
   height: 20px;
   color: #fff;
@@ -46,7 +44,8 @@
   font: 700 12px/1 system-ui, sans-serif;
   pointer-events: none;
 }
-.site-utilities summary .pwa-update-badge[hidden] { display: none; }
+.site-utilities summary .pwa-update-badge { position: absolute; top: -7px; right: -7px; }
+.site-utilities .pwa-update-badge[hidden] { display: none; }
 .site-utilities summary::-webkit-details-marker { display: none; }
 .site-utilities summary::after {
   content: "";
@@ -96,6 +95,7 @@
 .site-account-link { cursor: pointer; }
 .site-utility-panel button:hover,
 .site-account-link:hover { background: var(--sage); }
+.site-utility-panel .pwa-status { justify-content: flex-start; gap: 8px; }
 .site-utility-panel .pwa-status[data-state="ready"] { color: var(--success-text); }
 .site-utility-panel .pwa-status[data-state="error"] { color: var(--danger-dark); }
 .site-utility-panel .install-app-feedback { padding-inline: 10px; }
