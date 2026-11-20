@@ -346,6 +346,37 @@ try {
   }
   console.log("PASS keyboard opening, dialog Escape, visible trigger focus, and disclosure Escape");
 
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await summary.click();
+  await page.locator(".home-page h1").click();
+  assert.equal(await page.locator(".site-utilities").getAttribute("open"), null);
+  await summary.click();
+  await siteLinks.last().click();
+  await page.waitForURL(base + "articles.html");
+
+  const touchContext = await isolatedContext({ hasTouch: true, isMobile: true });
+  try {
+    const touchPage = await touchContext.newPage();
+    await home(touchPage);
+    const menu = touchPage.locator(".site-utilities");
+    await menu.locator("summary").tap();
+    await menu.locator(".site-utility-panel").tap({ position: { x: 4, y: 4 } });
+    assert.equal(await menu.getAttribute("open"), "");
+    await menu.locator(".pwa-status").tap();
+    await touchPage.locator(".pwa-offline-dialog[open] [data-offline-close]").tap();
+    assert.equal(await menu.getAttribute("open"), "", "closing the dialog must preserve its menu");
+    await touchPage.waitForFunction(() => document.activeElement.matches(".site-utility-panel .pwa-status"));
+    const blank = { x: 6, y: 125 };
+    assert(await touchPage.evaluate(({ x, y }) => {
+      const target = document.elementFromPoint(x, y);
+      return target && !target.closest(".site-utilities, a, button, summary, label, input");
+    }, blank), "dismissal must work on non-interactive space");
+    await touchPage.touchscreen.tap(blank.x, blank.y);
+    assert.equal(await menu.getAttribute("open"), null);
+    assert.equal(touchPage.url(), base + "index.html");
+  } finally { await touchContext.close(); }
+  console.log("PASS outside-click navigation and touch dismissal with dialog focus restoration");
+
   async function pendingBadge() {
     const trigger = page.locator(".site-utilities > summary");
     const before = await trigger.boundingBox();
