@@ -30,7 +30,23 @@
 }
 
 .site-utilities { position: relative; z-index: 24; margin-left: auto; }
-.site-utilities summary { gap: 8px; border: 1px solid var(--line); cursor: pointer; }
+.site-utilities summary { position: relative; gap: 8px; border: 1px solid var(--line); cursor: pointer; }
+.site-utilities summary .pwa-update-badge {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  color: #fff;
+  background: #c52233;
+  border: 2px solid var(--white);
+  border-radius: 50%;
+  font: 700 12px/1 system-ui, sans-serif;
+  pointer-events: none;
+}
+.site-utilities summary .pwa-update-badge[hidden] { display: none; }
 .site-utilities summary::-webkit-details-marker { display: none; }
 .site-utilities summary::after {
   content: "";

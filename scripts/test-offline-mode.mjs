@@ -112,6 +112,24 @@ async function ready(page) {
   await waitState(page, () => document.querySelector(".pwa-status")?.dataset.state === "ready");
   assert.equal((await getStatus(page)).ready, true);
 }
+async function badge(page, pending) {
+  await page.waitForFunction(pending => {
+    const badge = document.querySelector(".pwa-update-badge");
+    const description = document.querySelector(".site-utilities > summary")?.getAttribute("aria-describedby");
+    return badge?.hidden === !pending && description === (pending ? "offline-update-notice" : null);
+  }, pending);
+  assert.deepEqual(await page.evaluate(() => {
+    const badge = document.querySelector(".pwa-update-badge");
+    return {
+      count: document.querySelectorAll(".pwa-update-badge").length,
+      visible: !!badge.getClientRects().length,
+      text: badge.textContent,
+      ariaHidden: badge.getAttribute("aria-hidden"),
+      description: document.querySelector(".site-utilities > summary").getAttribute("aria-describedby"),
+      notice: document.querySelector("#offline-update-notice").textContent
+    };
+  }), { count: 1, visible: pending, text: "1", ariaHidden: "true", description: pending ? "offline-update-notice" : null, notice: pending ? "離線內容有更新，可在工具內下載。" : "" });
+}
 async function checkUpdate(page, version) {
   const before = requests.length;
   await page.locator("[data-offline-check]").click();
@@ -176,6 +194,8 @@ try {
   await waitState(page, () => !!navigator.serviceWorker.controller && document.querySelector(".pwa-status")?.dataset.state === "online");
   const first = await getStatus(page);
   assert.equal(first.ready, false);
+  await badge(page, false);
+  assert.equal(await page.locator(".site-utilities").getAttribute("open"), null);
   assert(!requests.includes("/jpy5/chapter-20-review.html"), "default must not fetch other lessons");
   assert.equal(await page.evaluate(async () => (await caches.keys()).filter(key => key.includes("package-")).length), 0);
   if (benchmarkOnly) {
@@ -232,6 +252,7 @@ try {
   delay = false;
   await page.locator("[data-offline-download]").click();
   await ready(page); await retained(page);
+  await badge(page, false);
   assert.equal((await getStatus(page)).total, manifest.assets.length);
   assert.equal(await page.evaluate(async () => !!(await (await caches.open("jpy5-precache-abcd1234")).match("/jpy5/legacy-fixture"))), false);
   console.log("PASS explicit download, progress, HTTP/quota/disconnection failure and retry, cross-tab cancellation, and progress retention");
@@ -269,12 +290,33 @@ try {
   console.log("PASS PDF/external labels, online PDF response, and no offline PDF or external caching");
 
   await setOffline(false);
+  await page.locator("[data-offline-close]").click();
+  await page.keyboard.press("Escape");
   await publish("single-file-update", [changedFile]);
-  await checkUpdate(page, release.version);
+  // Startup discovers metadata with the menu closed and never downloads a pack.
+  const beforeAutomaticCheck = requests.length;
+  await page.reload();
+  await waitState(page, () => document.querySelector(".pwa-status")?.textContent === "離線內容有更新");
+  assert.equal((await getStatus(page)).availableVersion, release.version);
+  assert(!requests.slice(beforeAutomaticCheck).some(path => release.hashes[path.slice(6)]), "automatic update detection must not fetch package assets");
+  assert.equal(await page.locator(".site-utilities").getAttribute("open"), null);
+  assert.equal(await page.locator(".pwa-offline-dialog").evaluate(el => el.open), false);
+  await badge(page, true);
+  await mkdir("tmp/offline-update-badge", { recursive: true });
+  await page.screenshot({ path: "tmp/offline-update-badge/mobile-update.png" });
+  await page.evaluate(() => {
+    window.badgeAnnouncements = 0;
+    new MutationObserver(() => window.badgeAnnouncements++).observe(document.querySelector("#offline-update-notice"), { childList: true });
+  });
+  await open(page);
+  await badge(page, true);
+  console.log("PASS closed-menu automatic update badge: no package download, accessible description and live notice");
   async function oldVersionStillWorks() {
     const { ready, version } = await getStatus(page);
     assert.equal(ready, true);
     assert.equal(version, manifest.version);
+    await badge(page, true);
+    assert.equal(await page.evaluate(() => window.badgeAnnouncements), 0, "progress, cancellation and errors must not repeat the announcement");
     assert.equal(await page.evaluate(async () => (await caches.keys()).filter(key => key.includes("package-")).length), 1);
     await setOffline(true);
     const oldTab = await context.newPage();
@@ -309,6 +351,7 @@ try {
   delay = true;
   await page.locator("[data-offline-download]").click();
   await waitState(page, () => document.querySelector("[data-offline-status]")?.textContent.includes("下載中 0/1"));
+  await badge(page, true);
   const assetCount = release.assets.length;
   assert.match(await page.locator("[data-offline-status]").textContent(), new RegExp(`已檢查 ${assetCount} 個，重用 ${assetCount - 1} 個，已下載 0 個`));
   await page.locator("[data-offline-cancel]").click();
@@ -358,6 +401,7 @@ try {
   await waitState(page, () => document.querySelector("[data-offline-status]")?.textContent.includes("已取消下載"));
   await oldVersionStillWorks();
   const { status: singleStatus, ...singleMetrics } = await measureDownload(page, [changedFile]);
+  await badge(page, false);
   assert.equal(singleStatus.transfer.reused, manifest.assets.length - 1);
   assert.equal(await page.locator("[data-offline-reload]").isVisible(), true);
   await retained(page);
@@ -399,9 +443,15 @@ try {
   await verifiedTab.close();
   console.log("PASS addition, deletion, missing/corrupt cache repair, four concurrent requests, offline new page and teacher exercise, and every target hash", inventoryMetrics);
 
+  await setOffline(false);
+  release = { ...release, version: "removal-pending-update" };
+  await checkUpdate(page, release.version);
+  await badge(page, true);
   await setOffline(true);
   await page.locator("[data-offline-remove]").click();
   await waitState(page, () => document.querySelector(".pwa-status")?.dataset.state === "online");
+  assert.equal((await getStatus(page)).ready, false);
+  await badge(page, false);
   await retained(page);
   assert.equal(await page.evaluate(async () => (await caches.keys()).filter(key => key.includes("package-")).length), 0);
   assert.equal(await page.evaluate(async () => { try { await fetch("chapter-20-review.html?removed=1"); return true; } catch { return false; } }), false);

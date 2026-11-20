@@ -346,6 +346,45 @@ try {
   }
   console.log("PASS keyboard opening, dialog Escape, visible trigger focus, and disclosure Escape");
 
+  async function pendingBadge() {
+    const trigger = page.locator(".site-utilities > summary");
+    const before = await trigger.boundingBox();
+    const accessibleBefore = await trigger.ariaSnapshot();
+    await trigger.evaluate(node => {
+      node.setAttribute("aria-describedby", "existing-tools-description");
+      const note = document.createElement("span");
+      note.id = "existing-tools-description";
+      note.hidden = true;
+      note.textContent = "工具選單";
+      node.closest("details").after(note);
+    });
+    await page.evaluate(() => navigator.serviceWorker.dispatchEvent(new MessageEvent("message", { data: { type: "JPY5_OFFLINE_STATUS", ready: true, updateAvailable: true } })));
+    const badge = page.locator(".pwa-update-badge");
+    assert.equal(await badge.count(), 1);
+    assert.equal(await badge.isVisible(), true);
+    assert.equal(await badge.getAttribute("aria-hidden"), "true");
+    assert.equal(await trigger.getAttribute("aria-describedby"), "existing-tools-description offline-update-notice");
+    assert.match(accessibleBefore, /工具/);
+    assert.equal(await trigger.ariaSnapshot(), accessibleBefore, "badge must preserve the summary's accessible name");
+    assert.equal(await page.locator("#offline-update-notice").getAttribute("role"), "status");
+    assert.equal(await page.locator("#offline-update-notice").getAttribute("aria-live"), "polite");
+    assert.equal(await page.locator(".site-utilities #offline-update-notice").count(), 0);
+    assert.equal(await page.locator(".site-utilities").getAttribute("open"), null);
+    assert.deepEqual(await trigger.boundingBox(), before, "badge must not move or resize the tools control");
+    const bounds = await badge.boundingBox();
+    assert(bounds.x >= before.x + before.width / 2 && bounds.y < before.y, "badge belongs on the upper-right corner");
+    assert(bounds.x + bounds.width <= await page.evaluate(() => innerWidth), "badge must fit the viewport");
+    const colors = await badge.evaluate(node => {
+      const style = getComputedStyle(node);
+      return { color: style.color, background: style.backgroundColor, pointerEvents: style.pointerEvents };
+    });
+    assert.deepEqual(colors, { color: "rgb(255, 255, 255)", background: "rgb(197, 34, 51)", pointerEvents: "none" });
+    await page.evaluate(() => navigator.serviceWorker.dispatchEvent(new MessageEvent("message", { data: { type: "JPY5_OFFLINE_STATUS", ready: true, updateAvailable: false } })));
+    assert.equal(await badge.isVisible(), false);
+    assert.equal(await trigger.getAttribute("aria-describedby"), "existing-tools-description");
+    assert.equal(await page.locator("#offline-update-notice").textContent(), "");
+  }
+
   async function noOverflow(width, selector) {
     const sizing = await page.evaluate(selector => ({
       document: document.documentElement.scrollWidth, viewport: innerWidth,
@@ -378,10 +417,14 @@ try {
         const bounds = await noOverflow(width, selector);
         if (name === "home" && width === 390) assert(bounds.every(({ bottom }) => bottom < height), "all eight shortcuts must fit in the initial mobile viewport");
         if (name !== "study") {
+          await pendingBadge();
           await summary.click();
           await noOverflow(width, ".site-utility-panel button,.site-utility-panel a");
           await page.keyboard.press("Escape");
           await page.locator(".home-page h1,.reader-heading h1,.archive-page h1").click();
+        } else {
+          assert.equal(await page.locator(".pwa-update-badge,#offline-update-notice").count(), 0);
+          assert.equal(await page.locator(".site-header > .pwa-status").isVisible(), true);
         }
         if (screenshots && (layout === "desktop" || layout === "mobile") && name !== "archive") {
           await page.screenshot({ path: join(screenshots, `${name}-${layout}-${theme}.png`) });

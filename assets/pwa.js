@@ -7,6 +7,8 @@ import('./teacher-progress-privacy.mjs').catch(()=>{});
   let state = {};
   let initialVersion;
   let status, dialog, details, progress, download, cancel, remove, check, reload;
+  let utilitySummary, updateBadge, updateNotice;
+  let updatePending = false;
 
   const send = type => (navigator.serviceWorker?.controller || registration?.active)?.postMessage({ type });
   const refresh = () => { activateWaiting(); send("JPY5_CACHE_STATUS"); };
@@ -22,6 +24,16 @@ import('./teacher-progress-privacy.mjs').catch(()=>{});
   };
 
   function render() {
+    const pending = Boolean(state.ready && state.updateAvailable);
+    if (updateBadge && pending !== updatePending) {
+      updatePending = pending;
+      updateBadge.hidden = !pending;
+      const descriptions = (utilitySummary.getAttribute("aria-describedby") || "").split(/\s+/).filter(id => id && id !== updateNotice.id);
+      if (pending) descriptions.push(updateNotice.id);
+      if (descriptions.length) utilitySummary.setAttribute("aria-describedby", descriptions.join(" "));
+      else utilitySummary.removeAttribute("aria-describedby");
+      updateNotice.textContent = pending ? "離線內容有更新，可在工具內下載。" : "";
+    }
     const online = navigator.onLine;
     const busy = state.downloading;
     const available = !!registration?.active;
@@ -99,6 +111,25 @@ import('./teacher-progress-privacy.mjs').catch(()=>{});
     status.className = "pwa-status";
     status.setAttribute("aria-haspopup", "dialog");
     const slot = document.querySelector("[data-offline-slot]");
+    const utilities = slot?.closest(".site-utilities");
+    utilitySummary = utilities?.querySelector("summary");
+    if (utilitySummary) {
+      updateBadge = document.createElement("span");
+      updateBadge.className = "pwa-update-badge";
+      updateBadge.textContent = "1";
+      updateBadge.hidden = true;
+      updateBadge.setAttribute("aria-hidden", "true");
+      utilitySummary.append(updateBadge);
+      // Keep the live announcement outside the disclosure so it is available
+      // while the tools menu is closed. The summary keeps its original name.
+      updateNotice = document.createElement("span");
+      updateNotice.id = "offline-update-notice";
+      updateNotice.className = "sr-only";
+      updateNotice.setAttribute("role", "status");
+      updateNotice.setAttribute("aria-live", "polite");
+      updateNotice.setAttribute("aria-atomic", "true");
+      utilities.insertAdjacentElement("afterend", updateNotice);
+    }
     const brand = document.querySelector(".site-header .brand");
     if (slot) slot.append(status);
     else if (brand) brand.insertAdjacentElement("afterend", status);
