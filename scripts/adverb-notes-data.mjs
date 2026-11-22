@@ -2,7 +2,7 @@
 // Japanese explanations/examples/questions are transcribed; Chinese help and
 // reference answers are editorial additions, not an official answer key.
 const card = (word, category, meaning, teacher, nuance, examples) => ({word, category, meaning, teacher, nuance, examples});
-const practice = (instruction, questions, answers, note = '', open = false) => ({instruction, questions, answers, note, open});
+const practice = (instruction, questions, answers, note = '', open = false, teacherMarked = false) => ({instruction, questions, answers, note, open, teacherMarked});
 const choose = '適当なものを選んでください。';
 const complete = '副詞の使い方に注意して、文を完成させてください。';
 const incorrect = '適当ではないものが一つあります。×をつけてください。';
@@ -33,9 +33,10 @@ export const lessons = {
  ],['飲まれていた','別れたよ','イギリスの統治下にあった'],'',true)]
 },
 14: {
+ supplementSource:'https://drive.google.com/file/d/1h2qvngTT6QBR5x8Yat2K70UvJ5f9FVS8/view',
  title:'時間関係の副詞（２）', summary:'同樣指未來，分清「快要發生」、「時間未定」、「情況將改變」和「終有一天」。',
  cards:[
- card('まもなく','近い未来','不久、即將','「そのまま待っていれば、すぐに実現」という短い時間を表す。フォーマル。','常用於車站廣播、活動通知等較正式場合；預期很快就會發生。',[
+ card('まもなく','近い未来','不久、即將','「そのまま待っていれば、すぐに実現」という短い時間を表す。フォーマル。','常用於車站廣播、活動通知等較正式場合。21 NOV 講義用列車到站和會議開始示範已安排、即將發生的事，並舉「すぐに」為較口語的說法。「まもなく」也可用來預告其他即將發生的事。',[
  ['まもなく１番線に電車が参ります。','列車即將駛入一號月台。'],['まもなく会議が始まります。みなさんお集まりください。','會議即將開始，請大家集合。']]),
  card('そのうち','いつなのかわからない未来','遲些、總有一天','「いつなのかわからない未来」を表す。話している人もわかっていない。','時間未定，語氣較隨意。說「そのうち」不代表已作出具體安排。',[
  ['そのうちあなたも大人になるのよ。','總有一天你也會長大的。'],['雨はそのうち止むでしょう。','雨過一會兒大概就會停吧。']]),
@@ -49,8 +50,8 @@ export const lessons = {
  'A：（そのうち・まもなく）時間ができたら、ご飯でも食べに行きませんか。\nB：いいですね。そうしましょう。',
  '全然休まないで働いてばかりだったら、（すでに・今に）病気になってしまうだろう。',
  'この国の教育は、変えなければならないと思う。このままだったら、（かつて・いずれ）この国はだめになるだろう。'
- ],['まもなく — 五分鐘後便關門。','そのうち — 未定時間的邀約。','今に — 對未來的警告。','いずれ — 照此下去終有一天會變差。']),
- practice(complete,['まもなく（　　　　　）。早くお入りください。','（　　　　　）てばかりいると、今に（　　　　　）てしまう。','うそをついても、いずれ（　　　　　）。'],['開演します','遊んでばかりいると、今に試験に落ちてしまう。','本当のことがわかる'],'第2題顯示完整例句，留意空格外已有「て」。',true)]
+ ],['まもなく — 「6時5分前」是 5:55，距六時關門只剩五分鐘。','そのうち — 未定時間的邀約。','今に — 對未來的警告。','いずれ — 照此下去終有一天會變差。'], '', false, true),
+ practice(complete,['まもなく（　　　　　）。早くお入りください。','（　　　　　）てばかりいると、今に（　　　　　）てしまう。','うそをついても、いずれ（　　　　　）。'],['開演します','遊んでばかりいると、今に試験に落ちてしまう。','うそがばれる'],'21 NOV 講義：動詞て形＋ばかりいる，表示老是做同一件事，常含說話者的不滿。第2題的空格外已有「て」，參考答案顯示完整句。第3題可用自動詞「ばれる」表示謊話或秘密被人知道。',true)]
 },
 15: {
  title:'否定の副詞（１）', summary:'分清完全否定、程度不高與頻率低；不要把「不太」和「很少」混在一起。',

@@ -230,8 +230,14 @@ try {
   await page.goto(`${base}chapter-14-notes.html`);
   await page.locator('#ch14-grammar-sai').waitFor();
   await page.unroute('**/chapter-14-notes.html');
-  // Malformed source or DOM must leave the rendered lesson entirely untouched.
+  // Malformed source or DOM must leave the rendered grammar notes untouched.
+  // Dictogloss manages its own form and audio notice independently.
   const script = await readFile('assets/ch14-notes-mobile.js', 'utf8');
+  const snapshotNotes = () => {
+    const main = document.querySelector('main').cloneNode(true);
+    main.querySelector('#grammar-dictogloss')?.remove();
+    return main.innerHTML;
+  };
   for (const mutation of [
     'window.JPY5_DATA.patterns[1].id = window.JPY5_DATA.patterns[0].id;',
     'window.JPY5_DATA.patterns.reverse();',
@@ -239,10 +245,11 @@ try {
     'document.querySelector(".examples-list").append(document.createElement("span"));',
     'document.querySelector(".grammar-grid").dataset.group = "invalid";'
   ]) {
-    await page.route(assetRoute, route => route.fulfill({ contentType: 'text/javascript', body: `${mutation} window.__beforeEnhancement = { main: document.querySelector('main').innerHTML, bodyClass: document.body.className };\n${script}` }));
+    await page.route(assetRoute, route => route.fulfill({ contentType: 'text/javascript', body: `${mutation} window.__beforeEnhancement = { main: (${snapshotNotes})(), bodyClass: document.body.className };\n${script}` }));
     await page.goto(`${base}chapter-14-notes.html`);
     assert.equal(await trigger.count(), 0, 'invalid shape does not enhance');
-    assert.equal(await page.locator('main').innerHTML(), await page.evaluate(() => window.__beforeEnhancement.main));
+    assert.equal(await page.evaluate(snapshotNotes), await page.evaluate(() => window.__beforeEnhancement.main));
+    assert.equal(await page.locator('#grammar-dictogloss input').count(),11);
     assert.equal(await page.locator('body').getAttribute('class') || '', await page.evaluate(() => window.__beforeEnhancement.bodyClass));
     assert.equal(await page.locator('.ch14-examples-rest, .ch14-examples-toggle, [data-grammar-id]').count(), 0);
     await page.unroute(assetRoute);

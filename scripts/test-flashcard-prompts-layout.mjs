@@ -125,7 +125,7 @@ try{
    assert.equal(await page.locator('.note-card').count(),11);
    assert.equal(await page.locator('[data-teacher-grammar]').count(),11);
    assert.equal(await page.locator('[data-teacher-grammar][open]').count(),0);
-   assert.equal(await page.locator('[data-teacher-grammar] .teacher-example').count(),75);
+   assert.equal(await page.locator('[data-teacher-grammar] .teacher-example').count(),91);
   }
   if(module==='vocabulary')assert.equal(await page.locator('#teacher-adverbs .teacher-adverb-card').count(),4);
   if(module==='review')assert.equal(await page.locator('[data-answer-toggle]').count(),13);

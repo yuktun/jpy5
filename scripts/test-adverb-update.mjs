@@ -102,7 +102,7 @@ try {
   await cold.goto(`${base}chapter-14-notes.html`);
   assert.equal(await cold.locator('[data-teacher-grammar]').count(),11);
   assert.equal(await cold.locator('[data-teacher-grammar][open]').count(),0);
-  assert.equal(await cold.locator('[data-teacher-grammar] .teacher-example').count(),75);
+  assert.equal(await cold.locator('[data-teacher-grammar] .teacher-example').count(),91);
   console.log(`Installed-app update passed: ${previousVersion} → ${nextVersion}; all eight adverb supplements work offline and learner records remain intact.`);
 } finally {
   await browser.close();

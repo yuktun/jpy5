@@ -46,8 +46,11 @@ try {
         assert.equal(await shell.evaluate(node=>node.open),false);
         if(width===390)await summary.tap();else await summary.click();
         assert.equal(await shell.evaluate(node=>node.open),true);
-        assert.match(await page.locator('.vocab-summary').innerText(),/208/);
+        assert.equal(await page.locator('.vocab-summary strong').first().textContent(),'227');
         assert.equal(await page.locator('script[src*="teacher-access"]').count(),0);
+        assert.match(await shell.locator('.adverb-help').first().textContent(),/すぐに/);
+        assert.match(await shell.locator('#adverb-answer-1').textContent(),/講義紅框答案.*5:55/s);
+        assert.match(await shell.locator('#adverb-answer-2').textContent(),/建議答案.*ばれる.*て形＋ばかりいる/s);
       }
       assert.equal(await shell.getAttribute('data-source-page'),String(Number(n)-12));
       assert.equal(await shell.locator('.teacher-adverb-card').count(),cards);
@@ -90,7 +93,7 @@ try {
     }
   }
   await page.goto(`${base}/chapter-13-vocabulary.html`);
-  assert.match(await page.locator('.vocab-summary').innerText(),/159/);
+  assert.equal(await page.locator('.vocab-summary strong').first().textContent(),'191');
   await page.locator('#vocab-card').click();
   assert.equal(await page.locator('#vocab-card-back').isVisible(),true,'Existing vocabulary flip broke');
   await page.goto(`${base}/chapter-20-vocabulary.html#teacher-adverbs`);

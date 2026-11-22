@@ -56,7 +56,7 @@ try{
  await cold.goto(base+'chapter-14-notes.html');
  assert.equal(await cold.locator('[data-teacher-grammar]').count(),11);
  assert.equal(await cold.locator('[data-teacher-grammar][open]').count(),0);
- assert.equal(await cold.locator('[data-teacher-grammar] .teacher-example').count(),75);
+ assert.equal(await cold.locator('[data-teacher-grammar] .teacher-example').count(),91);
  await cold.goto(base+'chapter-14-vocabulary.html');assert.equal(await cold.locator('#teacher-adverbs .teacher-adverb-card').count(),4);
  console.log('Microsoft Edge package upgrade passed: old leakage reproduced, explicit update required, fresh offline reverse front/flip/reset and three lesson bars fixed, saved progress retained, public grammar notes present, public adverbs retained.');
 }finally{await context.close();await browser.close();await new Promise(done=>server.close(done));}

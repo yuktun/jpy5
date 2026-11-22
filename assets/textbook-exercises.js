@@ -3,7 +3,7 @@
 //   orphanTitles?:{unmatchedPatternId:'Japanese title with explicit ruby'}}.
 // section: {title,page,printedPage?,source?,instruction,japaneseInstruction?,model?,
 //   bank?,answerSource?:{url,page},items:[{id,prompt,options?,answer?,
-//   answerKind:'official'|'suggested'|'personal'|'missing',answerSource?,answerNote?,explanation?}]}.
+//   answerKind:'official'|'suggested'|'personal'|'missing',answerSource?,answerNote?,explanation?,classroom?}]}.
 // page always means the 1-based PDF page index; printedPage is the printed label.
 // Japanese fields accept explicit {base|ひらがな} ruby. readings is an optional
 // base-to-hiragana object (longest match first). All source strings remain text.
@@ -53,7 +53,9 @@ window.JPY5_TEXTBOOK_EXERCISES = (() => {
     const label = labels[missing ? 'missing' : kind] || labels.suggested;
     const note = item.answerNote || (missing ? '此題未提供固定答案；不以推測答案取代原稿。' : personalOmission ? '此題為自行作答；答案冊標記省略，沒有固定答案。' : kind === 'personal' ? '此題為自行作答，沒有固定答案；請依自己的情況回答。' : kind === 'official' ? '' : '此為開放題參考示例，並非唯一答案；請參閱所附答案來源。');
     const provenance = sourceLink(item.answerSource || section.answerSource, '答案來源');
-    return `<details class="textbook-answer" data-answer-kind="${escape(missing ? 'missing' : kind)}"><summary>${escape(section.title)} ${index+1} · ${label}</summary><div class="textbook-answer-body">${note ? `<p class="textbook-practice-note">${escape(note)}</p>` : ''}${missing || !item.answer ? '' : `<p lang="ja">${jp(item.answer)}</p>`}${item.explanation ? `<p>${escape(item.explanation)}</p>` : ''}${provenance ? `<p class="textbook-practice-note">${provenance}</p>` : ''}</div></details>`;
+    const classroom = item.classroom;
+    const classroomExamples = classroom ? `<div class="teacher-addition-correction" data-classroom-examples><b>課堂建議 · ${escape(classroom.source)}</b><ul lang="ja">${classroom.examples.map(example => `<li>${jp(example)}</li>`).join('')}</ul><p>${escape(classroom.note)}</p></div>` : '';
+    return `<details class="textbook-answer" data-answer-kind="${escape(missing ? 'missing' : kind)}"><summary>${escape(section.title)} ${index+1} · ${label}</summary><div class="textbook-answer-body">${note ? `<p class="textbook-practice-note">${escape(note)}</p>` : ''}${missing || !item.answer ? '' : `<p lang="ja">${jp(item.answer)}</p>`}${item.explanation ? `<p>${escape(item.explanation)}</p>` : ''}${provenance ? `<p class="textbook-practice-note">${provenance}</p>` : ''}${classroomExamples}</div></details>`;
   }
   function render(id) {
     const sections = Object.hasOwn(groups, id) ? groups[id] : null;

@@ -100,3 +100,10 @@ The textbook exercises retain their existing answers. The protected notes identi
 ## Public grammar notes — 14 November 2026
 
 The user made the Lesson 14 study notes public. The eleven grammar supplements and their 75 example pairs exactly match the prior Firestore notes. They use the same collapsed disclosures as Lesson 13 and are included in the optional offline package. The public grammar bank and its later corrections, textbook answers, original reading, and existing study progress are retained. The earlier access-control entries above document the previous release.
+
+## 21 November 2026 update
+
+- Grammar slides pp. 1–4, 5–8, 9–10 and 11–14 supplement わけだ, のではないだろうか, っけ and げ, respectively. Repeated textbook prompts and their answer keys stay in the existing exercise panels.
+- `11月21日.docx` contributes 23 classroom suggestions under the two わけだ 練習2 items and the two のではないだろうか 練習1 items. Its two embedded images repeat those prompts. The notes distinguish register, possible causes, and the evidence needed for a conclusion.
+- The six adverb slides update the existing four cards and seven prompts, including the four teacher-marked choices. The three open completions use suggested responses.
+- `L14ディクトグロス.pdf` p. 2 supplies the listening procedure and p. 3 supplies the passage and 11 answers. The original MP3 decodes to 50.97 seconds. A local speech transcription matches the target phrases on the worksheet. The player uses the source MP3, and the exercise keeps only its draft in local storage.

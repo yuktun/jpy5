@@ -34,7 +34,7 @@ try{
   await page.keyboard.press('Space');
   assert.equal(await panels.first().locator('.teacher-addition-body').isVisible(),false);
   await panels.evaluateAll(nodes=>nodes.forEach(node=>node.open=true));
-  assert.equal(await panels.locator('.teacher-example').count(),75);
+  assert.equal(await panels.locator('.teacher-example').count(),91);
   assert.equal(await page.locator('iframe,[data-teacher-demo],[data-teacher-status],[data-teacher-logout],[data-teacher-section="grammar"]').count(),0);
   await page.locator('.lesson-quick-switcher').waitFor();assert.equal(await page.locator('.lesson-quick-switcher').count(),1);assert.equal(await page.locator('.module-lesson-switcher').count(),0);
   assert(await page.evaluate(()=>document.documentElement.scrollHeight>innerHeight),'ordinary document scrolling');
@@ -70,5 +70,5 @@ try{
   await page.evaluate(()=>localStorage.clear());
  }
  assert.equal(protectedReads,0,'public grammar does not request approval or teacher database records');assert.deepEqual(errors,[]);
-  console.log('Public lesson 14 layout passed: 11 patterns/46 examples, 11 collapsed public supplements and 75 example pairs, one navigation, no frame/access banner, 3 widths/2 themes, dialogs, flashcards, hash-compatible quiz resume/history and zero teacher database requests.');
+  console.log('Public lesson 14 layout passed: 11 patterns/46 examples, 11 collapsed public supplements and 91 example pairs, one navigation, no frame/access banner, 3 widths/2 themes, dialogs, flashcards, hash-compatible quiz resume/history and zero teacher database requests.');
 }finally{await context.close();await browser.close();await new Promise(done=>server.close(done));}

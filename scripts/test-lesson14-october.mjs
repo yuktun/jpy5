@@ -13,7 +13,11 @@ assert.equal(t.responsePractice.length,7);
 for(const id of Object.keys(t.vocabulary))assert(c.window.JPY5_VOCABULARY.items.some(v=>v.id==id));
 const {grammar,block}=c.window.JPY5_TEACHER;
 assert.deepEqual(Object.keys(grammar),ids);
-assert.equal(Object.values(grammar).flatMap(note=>note.examples).length,75);
+assert.equal(Object.values(grammar).flatMap(note=>note.examples).length,91);
+for(const [id,pages] of Object.entries({wakeda:'1–4',nodewanaidarouka:'5–8',kke:'9–10',ge:'11–14'})){
+  assert.match(grammar[id].text,/21 NOV 講義/);
+  assert(grammar[id].pages.includes(`21 NOV PDF 第 ${pages} 頁`));
+}
 assert.match(block(grammar.toitta),/<ruby>5月<rt>ごがつ<\/rt><\/ruby><ruby>5日<rt>いつか<\/rt><\/ruby>/);
 assert.match(grammar.niwatatte.text,/校對補充[^\n]+手術歷時三小時/);
 const grammarExtras=c.window.JPY5_GRAMMAR_EXTRA;
@@ -21,7 +25,7 @@ assert(grammarExtras.find(note=>note.grammarIds.includes('towa')).explanation.so
 assert(grammarExtras.find(note=>note.grammarIds.includes('wakeda')).explanation.some(text=>text.includes('「～のではないだろうか」和「～んじゃないでしょうか」都可委婉提出推測')));
 // Canonical digest of the audited notes, including the corrected May 5 reading and span clarification.
 assert.equal(createHash('sha256').update(JSON.stringify({version:1,notes:grammar})).digest('hex'),
-  '307d557551127ff64f419d15143f0c80d521a10647c7ed5c5d510fa5d5f0f31e');
+  '329a35b3c36154ffd3cf60e230ade34913ab0977aa0676926cd1fe5ac3b47d1d');
 const hostile='<img src=x onerror=alert(1)>';
 assert(!block({title:hostile,text:hostile,source:hostile,pages:hostile,examples:[['{<|&}',hostile]]}).includes(hostile));
 const manifest={self:{}};vm.runInNewContext(await readFile('assets/offline-assets.js','utf8'),manifest);
@@ -48,7 +52,7 @@ await context.route('https://**/*',route=>route.abort());
 const reviewPage=await readFile('chapter-14-review.html','utf8');
 assert.match(reviewPage,/chapter-14-reading\.html\?mode=teacher/);
 assert.match(reviewPage,/7 NOV 會話框架與老師示例/);
-assert.match(reviewPage,/24 OCT–14 NOV 2026/);
+assert.match(reviewPage,/24 OCT–21 NOV 2026/);
 assert.match(reviewPage,/<a href="chapter-14-notes.html">老師文法筆記<\/a>/);
 const noOverflow=async()=>assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'horizontal overflow');
 try{
@@ -101,14 +105,20 @@ try{
     await page.locator('#vocab-list').screenshot({path:resolve(folder,`vocab-${width}.png`)});
   }
   await page.goto(`${base}/chapter-14-notes.html`);
+  for(const [id,count] of Object.entries({'14-wakeda-2-1':7,'14-wakeda-2-2':5,'14-nodewanaidarouka-1-1':5,'14-nodewanaidarouka-1-2':6})){
+    const question=page.locator(`[data-textbook-question="${id}"]`);
+    assert.equal(await question.locator('[data-classroom-examples] li').count(),count);
+    assert.match(await question.locator('[data-classroom-examples] b').textContent(),/課堂建議 · 11月21日\.docx/);
+    assert.equal(await question.locator('[data-classroom-examples]').isVisible(),false);
+  }
   const panels=page.locator('.note-card > details[data-teacher-grammar]');
   assert.equal(await panels.count(),11);
   assert.equal(await page.locator('[data-teacher-grammar][open]').count(),0);
-  assert.equal(await panels.locator(':scope > summary').filter({hasText:'24 OCT–14 NOV'}).count(),11);
+  assert.equal(await panels.locator(':scope > summary').filter({hasText:'24 OCT–21 NOV'}).count(),11);
   assert.equal(await page.locator('[data-teacher-demo],[data-teacher-demo-login],[data-teacher-demo-retry]').count(),0);
   for(const [index,id] of ids.entries()){
     const note=grammar[id],panel=panels.nth(index),content=panel.locator('.teacher-addition-body');
-    assert.equal(await panel.locator(':scope > summary').textContent(),'老師補充 · 24 OCT–14 NOV '+note.title);
+    assert.equal(await panel.locator(':scope > summary').textContent(),'老師補充 · 24 OCT–21 NOV '+note.title);
     assert.deepEqual(await content.locator(':scope > p').allTextContents(),note.text.split(/\r?\n\s*\r?\n/));
     assert.deepEqual(await content.locator('p[lang="zh-Hant"]').allTextContents(),Array.from(note.examples,([,zh])=>zh));
     assert.deepEqual(await content.locator('p[lang="ja"]').allTextContents(),Array.from(note.examples,([ja])=>ja.replace(/\{([^{}|]+)\|([^{}|]+)\}/g,'$1$2')));
@@ -118,5 +128,5 @@ try{
   assert.equal(await panels.locator('img').count(),0);
   assert.deepEqual(protectedRequests,[]);
   assert.deepEqual(errors,[]);
-  console.log('Lesson 14 teacher notes: source mapping, 118 vocabulary notes, 7 reading notes, 8 dialogue notes, 7 hidden exercises, drafts, 3 widths, and 11 public grammar notes and 75 example pairs passed.');
+  console.log('Lesson 14 teacher notes: source mapping, 118 vocabulary notes, 7 reading notes, 8 dialogue notes, 7 hidden exercises, drafts, 3 widths, and 11 public grammar notes and 91 example pairs passed.');
 }finally{await context.close();await browser.close();await new Promise(done=>server.close(done));}

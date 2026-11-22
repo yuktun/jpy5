@@ -6,8 +6,8 @@ const start = '<!-- BEGIN SHARED ADVERB NOTES -->';
 const end = '<!-- END SHARED ADVERB NOTES -->';
 const render = (lesson, data) => `${start}
     <section class="teacher-supplement adverb-notes" id="teacher-adverbs" aria-labelledby="teacher-adverbs-title" data-source-page="${lesson-12}">
-      <header class="teacher-supplement-header"><div><span class="teacher-label">老師補充 · 第 ${lesson} 課</span><h2 id="teacher-adverbs-title" lang="ja">${esc(data.title)}</h2><p>${esc(data.summary)}</p><a class="adverb-source" href="${source}#page=${lesson-12}" target="_blank" rel="noopener">老師原講義 · PDF 第 ${lesson-12} 頁 ↗</a></div></header>
-      <p class="teacher-source-note">老師例句與練習按原講義整理。中文翻譯、語感及參考答案為學習補充，非老師原文或官方解答；不計入詞彙數目或學習進度。</p>
+      <header class="teacher-supplement-header"><div><span class="teacher-label">老師補充 · 第 ${lesson} 課</span><h2 id="teacher-adverbs-title" lang="ja">${esc(data.title)}</h2><p>${esc(data.summary)}</p><a class="adverb-source" href="${source}#page=${lesson-12}" target="_blank" rel="noopener">老師原講義 · PDF 第 ${lesson-12} 頁 ↗</a>${data.supplementSource ? ` · <a class="adverb-source" href="${esc(data.supplementSource)}" target="_blank" rel="noopener">21 NOV 課堂投影片 · PDF 第 1–6 頁 ↗</a>` : ''}</div></header>
+      <p class="teacher-source-note">老師例句與練習按原講義整理。${data.practices.some(practice=>practice.teacherMarked) ? '標明「講義紅框答案」的選項來自老師投影片。中文翻譯、語感及開放題建議答案為學習補充；不計入詞彙數目或學習進度。' : '中文翻譯、語感及參考答案為學習補充，非老師原文或官方解答；不計入詞彙數目或學習進度。'}</p>
       <nav class="adverb-lesson-nav" aria-label="各課副詞補充">${Object.keys(lessons).map(n=>`<a href="chapter-${n}-vocabulary.html#teacher-adverbs"${Number(n)===lesson?' aria-current="page"':''}>第 ${n} 課</a>`).join('')}</nav>
       <div class="teacher-adverb-grid">
 ${data.cards.map(c=>`        <article class="teacher-adverb-card">
@@ -24,7 +24,7 @@ ${data.practices.map((p,i)=>`      <article class="teacher-practice" data-questi
         <h3 lang="ja">問題${data.practices.length>1?i+1:''}．${esc(p.instruction)}</h3>
         <ol class="teacher-question-list" lang="ja">${p.questions.map(q=>`<li>${esc(q)}</li>`).join('')}</ol>
         <button class="teacher-answer-toggle" type="button" data-answer-toggle aria-controls="adverb-answer-${i+1}" aria-expanded="false">${p.open?'顯示建議答案':'顯示答案'}</button>
-        <div class="teacher-answer" id="adverb-answer-${i+1}" hidden><span class="suggested-note">${p.open?'建議答案：其他自然、符合副詞用法的答案也可以。':'參考答案與解說（學習補充，非官方解答）'}</span><ol>${p.answers.map(a=>`<li>${esc(a)}</li>`).join('')}</ol>${p.note?`<p class="adverb-answer-note">${esc(p.note)}</p>`:''}</div>
+        <div class="teacher-answer" id="adverb-answer-${i+1}" hidden><span class="suggested-note">${p.open?'建議答案：其他自然、符合副詞用法的答案也可以。':p.teacherMarked?'21 NOV 講義紅框答案 · 中文解說為學習補充':'參考答案與解說（學習補充，非官方解答）'}</span><ol>${p.answers.map(a=>`<li>${esc(a)}</li>`).join('')}</ol>${p.note?`<p class="adverb-answer-note">${esc(p.note)}</p>`:''}</div>
       </article>`).join('\n')}
     </section>
     ${end}`;

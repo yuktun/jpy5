@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {once} from 'node:events';
 import {readFile,readdir} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
 import {chromium} from 'playwright';
 import vm from 'node:vm';
 
@@ -10,7 +11,10 @@ const recordings=[];
 for(const kind of ['reading','listening']) {
   for(const name of await readdir(`assets/audio/${kind}`)) recordings.push(`assets/audio/${kind}/${name}`);
 }
-assert.equal(recordings.length,16);
+assert.equal(recordings.length,17);
+const dictoglossPath='assets/audio/listening/lesson-14-dictogloss.mp3';
+assert(recordings.includes(dictoglossPath));
+assert.equal(createHash('sha256').update(await readFile(dictoglossPath)).digest('hex'),'4fda0d8b5ee0ba769cc99f5b68c21d2b8faa9433e5abb426ef32228fb6d01e43');
 const context={self:{}};
 vm.runInNewContext(await readFile('assets/offline-assets.js','utf8'),context);
 assert(context.self.JPY5_OFFLINE_MANIFEST.assets.every(path=>!path.endsWith('.mp3')));
@@ -67,8 +71,39 @@ try {
     }
     console.log(`PASS lesson ${lesson} ${module}: published file, native playback and seeking`);
   }
+  for(const width of [390,1280]) {
+    await page.setViewportSize({width,height:900});
+    await page.goto(base+'chapter-14-review.html');
+    await page.locator('a[href="chapter-14-notes.html#grammar-dictogloss"]').click();
+    const exercise=page.locator('#grammar-dictogloss');
+    await page.locator('.lesson-quick-switcher').waitFor();
+    await page.waitForFunction(()=>{
+      const title=document.getElementById('dictogloss-title').getBoundingClientRect();
+      const navigation=document.querySelector('.lesson-quick-switcher').getBoundingClientRect();
+      return title.top>=navigation.bottom && title.bottom<=innerHeight;
+    });
+    assert.equal(await exercise.locator('input').count(),11);
+    const audio=exercise.locator('audio');
+    assert.equal(await audio.getAttribute('src'),dictoglossPath);
+    assert.equal(await audio.getAttribute('autoplay'),null);
+    const answers=exercise.locator('[data-dictogloss-answer]');
+    assert.equal(await answers.locator('li:visible').count(),0);
+    await answers.locator('summary').press('Enter');
+    assert.equal(await answers.locator('li:visible').count(),11);
+    await answers.locator('summary').press('Space');
+    assert.equal(await answers.locator('li:visible').count(),0);
+    if(width===390){
+      await audio.evaluate(element=>element.play());
+      await page.waitForFunction(()=>document.querySelector('#grammar-dictogloss audio').currentTime>.1);
+      await audio.evaluate(element=>{element.currentTime=25;});
+      await page.waitForFunction(()=>document.querySelector('#grammar-dictogloss audio').currentTime>25.1);
+      await audio.evaluate(element=>{element.currentTime=0;});
+      await page.waitForFunction(()=>{const a=document.querySelector('#grammar-dictogloss audio');return a.currentTime>.1&&a.currentTime<3&&!a.paused;});
+      await audio.evaluate(element=>element.pause());
+    }
+  }
   assert.deepEqual(errors,[]);
-  console.log('PASS 16 recordings, original missing links, offline exclusion, range responses and protected-file exclusion');
+  console.log('PASS 17 recordings, dictogloss playback and shortcuts, offline exclusion, range responses and protected-file exclusion');
 } finally {
   await browser?.close();server.kill();
 }

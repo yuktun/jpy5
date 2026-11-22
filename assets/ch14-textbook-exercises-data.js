@@ -3,7 +3,56 @@ window.JPY5_TEXTBOOK_EXERCISE_DATA = (() => {
   const source='https://drive.google.com/file/d/1JWHjSZ8Zx4VTOK_4KdkyqXCPwg-1coTa/view';
   const key='https://drive.google.com/file/d/11B7PYBhsThVzk6VA0RMB-h2nfBK8JfSt/view';
   const g=(title,page,keyPage,items,extra={})=>({title,page,printedPage:page+14,instruction:'依例完成句子。',answerSource:{url:key,page:keyPage},items,...extra});
-  const i=(id,prompt,answer,answerKind='official',extra={})=>({id,prompt,answer,answerKind,...extra});
+  const classroom = {
+    '14-wakeda-2-1': {
+      source:'11月21日.docx · わけだ 練習2（1）',
+      examples:[
+        '明日の野球の試合を行わないわけですね。',
+        '傘を持つのが必要なわけですね。',
+        '傘を持っていく必要があるわけですね。',
+        '{郊外|こうがい}のバーベキューに行けないわけですね。',
+        '郊外でバーベキューができないわけですね。',
+        '学校のピクニックは／をキャンセルするわけですね。',
+        '運動会は{延期|えんき}するわけですね。'
+      ],
+      note:'校對補充：第3句「傘を持っていく必要がある」較自然。比賽或野餐是否取消、延期，以及戶外活動能否舉行，要視主辦方安排和實際情況。斜線是原筆記提供的兩種助詞。'
+    },
+    '14-wakeda-2-2': {
+      source:'11月21日.docx · わけだ 練習2（2）',
+      examples:[
+        'つまりダイビングにいい場所があるわけです。',
+        '{漁業資源|ぎょぎょうしげん}が豊かなわけです。',
+        'いろいろな魚がいるわけです。',
+        '刺身料理が多いわけです。',
+        'いろいろな魚の料理があるわけです。'
+      ],
+      note:'校對補充：從四面環海聯想到漁業和魚類料理是合理的課堂推論。漁業資源是否豐富、某處是否適合潛水，仍要看當地的海況等條件。'
+    },
+    '14-nodewanaidarouka-1-1': {
+      source:'11月21日.docx · のではないだろうか 練習1（1）',
+      examples:[
+        'パソコンが古すぎるんじゃないだろうか。',
+        'パソコンが古すぎじゃないだろうか。',
+        '説明書が間違ってるんじゃないだろうか。',
+        'ソフトウエアのバージョンを間違えたんじゃないだろうか。',
+        'ソフトウエアが{壊|こわ}れているのではないだろうか。'
+      ],
+      note:'語體補充：「古すぎ」是口語用法。要練習動詞「古すぎる」接續，或寫成較正式的句子，可用「古すぎるのではないだろうか」。「壊れる」是自動詞，「壊す」是他動詞。'
+    },
+    '14-nodewanaidarouka-1-2': {
+      source:'11月21日.docx · のではないだろうか 練習1（2）',
+      examples:[
+        '{景気|けいき}の悪化と関係があるのではないだろうか。',
+        '車の{品質|ひんしつ}がよくないのではないだろうか。',
+        '車の値段が高かったのではないだろうか。',
+        'ほかの国の車より値段が高かったのではないだろうか。',
+        '{輸送費|ゆそうひ}が急に上がったのではないだろうか。',
+        'ほかの国の電気自動車の生産量が増えたのではないだろうか。'
+      ],
+      note:'學習補充：這些都是可能原因。問題只交代出口量減少，需要資料才能判斷是哪個因素所致。「上がる」是自動詞，「上げる」是他動詞。'
+    }
+  };
+  const i=(id,prompt,answer,answerKind='official',extra={})=>({id,prompt,answer,answerKind,...extra,...(classroom[id] ? {classroom:classroom[id]} : {})});
   const check=(id,page,kp,prompt,options,answer)=>g('理解確認',page,kp,[i(id,prompt,answer,'official',{options})],{instruction:'選擇與題目意思相符的選項。'});
   return {lesson:14,source,readings:{},groups:{
     sai:[check('14-sai-check',9,7,'お{引|ひ}っ{越|こ}しなどでガスの{使用|しよう}を{中止|ちゅうし}される{際|さい}は、（　）。',['{係員|かかりいん}がお{宅|たく}に{行|い}きます','{係|かかり}の{者|もの}がお{宅|たく}に{伺|うかが}います'],'b. {係|かかり}の{者|もの}がお{宅|たく}に{伺|うかが}います')],
