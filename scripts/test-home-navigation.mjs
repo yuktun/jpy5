@@ -26,6 +26,8 @@ assert.equal(storage.getItem(progressKey), '{"score":2}');
 
 const readJson = async file => JSON.parse(await readFile(file, "utf8"));
 const navigation = await readJson("assets/lesson-navigation.json");
+const classLesson = 15;
+const classHub = navigation.hubs[classLesson];
 const posts = await readJson("assets/posts.json");
 const slugs = posts.map(post => post.slug);
 const readerPath = post => `article-${post.slug}.html`;
@@ -110,18 +112,19 @@ try {
   const quickLinks = page.locator(".lesson-quick-sections a");
   const switcher = page.locator(".lesson-quick-switcher");
   const classHint = page.locator("[data-home-lesson-hint]");
+  const classLinks = modules.map(([module]) => navigation.routes[classLesson][module]);
 
   async function assertClassChoice() {
     await page.waitForFunction(() => !document.querySelector("[data-home-lesson-picker] select").disabled);
-    assert.equal(await picker.inputValue(), "14");
-    assert.equal(await classHint.innerText(), "課堂進度・第 14 課");
-    assert.deepEqual(await links(chapterLinks), modules.map(([module]) => navigation.routes[14][module]));
-    assert.equal(await page.locator("[data-selected-hub]").getAttribute("href"), navigation.hubs[14]);
+    assert.equal(await picker.inputValue(), String(classLesson));
+    assert.equal(await classHint.innerText(), `課堂進度・第 ${classLesson} 課`);
+    assert.deepEqual(await links(chapterLinks), classLinks);
+    assert.equal(await page.locator("[data-selected-hub]").getAttribute("href"), classHub);
   }
 
   await home(page);
   await assertClassChoice();
-  assert.equal(await resume.getAttribute("href"), "chapter-14.html");
+  assert.equal(await resume.getAttribute("href"), classHub);
   assert.match(await resume.innerText(), /開始學習/);
   assert.match(await page.locator("[data-last-visit-description]").innerText(), /跟隨課堂進度/);
   assert.deepEqual(await links(siteLinks), expectedSiteLinks);
@@ -131,7 +134,7 @@ try {
   for (const lesson of navigation.lessons) {
     await picker.selectOption(String(lesson));
     assert.equal(page.url(), base + "index.html");
-    assert.equal(await classHint.isVisible(), lesson === 14);
+    assert.equal(await classHint.isVisible(), lesson === classLesson);
     assert.deepEqual(await links(chapterLinks), modules.map(([module]) => navigation.routes[lesson][module]));
     assert.deepEqual(await chapterLinks.evaluateAll(nodes => nodes.map(node => node.lastChild.textContent.trim())), modules.map(([, label]) => label));
     assert.equal(await page.locator("[data-selected-hub]").getAttribute("href"), navigation.hubs[lesson]);
@@ -203,8 +206,8 @@ try {
   for (const invalid of ["{", "null", JSON.stringify({ ...visit, version: 2 }), JSON.stringify({ ...visit, lesson: 99 }), JSON.stringify({ ...visit, module: "../index" }), JSON.stringify({ ...visit, visitedAt: "invalid" })]) {
     await setVisit(page, invalid);
     await home(page);
-    assert.equal(await picker.inputValue(), "14");
-    assert.equal(await resume.getAttribute("href"), "chapter-14.html");
+    assert.equal(await picker.inputValue(), String(classLesson));
+    assert.equal(await resume.getAttribute("href"), classHub);
   }
   await setVisit(page, JSON.stringify({ ...visit, url: "https://example.invalid/escape", route: "javascript:throw 1" }));
   await home(page);
@@ -214,7 +217,7 @@ try {
   const staleRoute = route => route.fulfill({ json: stale });
   await page.route("**/assets/lesson-navigation.json", staleRoute);
   await home(page);
-  assert.equal(await resume.getAttribute("href"), "chapter-14.html");
+  assert.equal(await resume.getAttribute("href"), classHub);
   await goto(page, "chapter-14-reading.html");
   await switcher.locator("select").selectOption("19");
   await page.waitForURL(base + "chapter-19.html");
@@ -234,7 +237,7 @@ try {
   await goto(deniedPage, "chapter-15-history.html");
   await deniedPage.locator(".lesson-quick-switcher").waitFor();
   await home(deniedPage);
-  assert.equal(await deniedPage.locator("[data-last-visit-link]").getAttribute("href"), "chapter-14.html");
+  assert.equal(await deniedPage.locator("[data-last-visit-link]").getAttribute("href"), classHub);
   await denied.close();
   console.log("PASS device-only resume, malformed or missing routes, and disabled storage");
 
@@ -304,7 +307,9 @@ try {
   await page.route("**/assets/lesson-navigation.json", failedFetch);
   await goto(page, "index.html");
   assert.equal(await picker.isDisabled(), true);
-  assert.deepEqual(await links(chapterLinks), modules.map(([module]) => navigation.routes[14][module]));
+  assert.equal(await picker.inputValue(), String(classLesson));
+  assert.equal(await resume.getAttribute("href"), classHub);
+  assert.deepEqual(await links(chapterLinks), classLinks);
   await assertCards(page, sortedPosts.slice(0, 3));
   await goto(page, "articles.html");
   await assertCards(page, sortedPosts);
@@ -492,6 +497,8 @@ try {
   await offline.setOffline(true);
   const freshHome = await offline.newPage();
   await home(freshHome);
+  assert.equal(await freshHome.locator("[data-home-lesson-picker] select").inputValue(), String(classLesson));
+  assert.deepEqual(await links(freshHome.locator(".home-module-nav a")), classLinks);
   await freshHome.locator("[data-posts-ready]").waitFor();
   await assertCards(freshHome, sortedPosts.slice(0, 3));
   const freshArchive = await offline.newPage();

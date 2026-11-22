@@ -1,6 +1,6 @@
 (() => {
   const visitKey = "jpy5-navigation-last-visit-v1";
-  const classLesson = 14;
+  const classLesson = 15;
   const modules = [
     ["vocabulary", "詞彙"],
     ["notes", "文法"],
