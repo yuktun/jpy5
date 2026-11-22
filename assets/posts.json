@@ -1,5 +1,85 @@
 [
   {
+    "slug": "lesson-13-asking-about-proverbs",
+    "title": "聽到一句日本諺語，怎樣問清楚意思",
+    "summary": "用「住めば都」和「猿も木から落ちる」練習問意思、用自己的話確認，再為諺語找一個生活情境。",
+    "category": "溫故知新",
+    "publishedAt": "2026-11-22",
+    "readingMinutes": 6
+  },
+  {
+    "slug": "lesson-13-empathy-after-mistakes",
+    "title": "朋友講起一次尷尬經歷，怎樣接話",
+    "summary": "用叫錯名字和看錯時間的原創對話，練習先回應對方的感受，再分享相似經驗。",
+    "category": "溫故知新",
+    "publishedAt": "2026-11-22",
+    "readingMinutes": 6
+  },
+  {
+    "slug": "lesson-13-igo-iko-irai",
+    "title": "以後、以降、以来：怎樣講清楚時間起點",
+    "summary": "用開放時間、活動安排和持續至今的習慣，分辨三個詞的重點及可互換的地方。",
+    "category": "溫故知新",
+    "publishedAt": "2026-11-22",
+    "readingMinutes": 6
+  },
+  {
+    "slug": "lesson-13-tsukigime-signs",
+    "title": "從一塊招牌讀懂〈ゲッキョク株式会社〉",
+    "summary": "分開作者見過的線索、當時的推測和後來的發現，再讀一次池袋與青森的結尾。",
+    "category": "溫故知新",
+    "publishedAt": "2026-11-22",
+    "readingMinutes": 6
+  },
+  {
+    "slug": "lesson-13-writing-a-timeline",
+    "title": "用四個時間提示寫一段經歷",
+    "summary": "從初時的想法、逐漸的改變寫到今天，用第 13 課老師的四個時間提示串起個人經歷。",
+    "category": "溫故知新",
+    "publishedAt": "2026-11-22",
+    "readingMinutes": 7
+  },
+  {
+    "slug": "lesson-14-aizuchi-and-storytelling",
+    "title": "一句「それで？」怎樣令對方講下去",
+    "summary": "用一段原創的失物故事，練習四種聽者回應，並在恰當的時機追問後續及結局。",
+    "category": "溫故知新",
+    "publishedAt": "2026-11-22",
+    "readingMinutes": 6
+  },
+  {
+    "slug": "lesson-14-dictogloss-reconstruction",
+    "title": "第 14 課ディクトグロス：由關鍵詞重組短文",
+    "summary": "用第 14 課錄音練習聽大意、記關鍵詞、重組內容，再打開原文核對句型與意思。",
+    "category": "溫故知新",
+    "publishedAt": "2026-11-22",
+    "readingMinutes": 7
+  },
+  {
+    "slug": "lesson-14-examples-and-definitions",
+    "title": "舉例同下定義，各用哪個句型？",
+    "summary": "用校園活動和工具說明比較「といった」與「とは」，練習補上共同類別，再寫出一個概念的核心意思。",
+    "category": "溫故知新",
+    "publishedAt": "2026-11-22",
+    "readingMinutes": 6
+  },
+  {
+    "slug": "lesson-14-nitotte-and-nioite",
+    "title": "對誰而言？在哪個場合？",
+    "summary": "用同一場校內展覽分辨評價的立場與事情發生的範圍，再練習兩個句型的名詞修飾形式。",
+    "category": "溫故知新",
+    "publishedAt": "2026-11-22",
+    "readingMinutes": 6
+  },
+  {
+    "slug": "lesson-14-reading-evidence-and-inference",
+    "title": "讀動畫評論，怎樣分辨結論同推測",
+    "summary": "用兩段原創短評找出觀察、解釋和仍待確認的推測，練習分辨「わけだ」和「のではないだろうか」。",
+    "category": "溫故知新",
+    "publishedAt": "2026-11-22",
+    "readingMinutes": 6
+  },
+  {
     "slug": "lesson-13-confirm-and-rephrase",
     "title": "聽說、換句話說、再確認：第13課的三個會話句尾",
     "summary": "用一次集合安排的對話，練習核實聽來的消息、重述重點和確認共同理解。",
