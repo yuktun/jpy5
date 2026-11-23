@@ -32,6 +32,7 @@ const posts = await readJson("assets/posts.json");
 const slugs = posts.map(post => post.slug);
 const readerPath = post => `article-${post.slug}.html`;
 const sortedPosts = [...posts].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt) || a.slug.localeCompare(b.slug, "en"));
+const topicLabels = { grammar: "文法詞彙", conversation: "會話聆聽", reading: "閱讀理解", writing: "寫作練習", study: "學習方法" };
 const modules = [
   ["vocabulary", "詞彙"], ["notes", "文法"], ["reading", "閱讀"], ["textbook", "聆聽"],
   ["review", "複習"], ["flashcards", "文法記憶卡"], ["quiz", "文法測驗"], ["history", "測驗紀錄"]
@@ -47,6 +48,8 @@ for (const post of posts) {
     assert(post.updatedAt >= post.publishedAt);
   }
   assert(post.title && post.category && post.summary && Number.isInteger(post.readingMinutes));
+  if (post.topic !== undefined) assert(Object.hasOwn(topicLabels, post.topic) && typeof post.topic === "string", `invalid topic: ${post.slug}`);
+  if (post.lesson !== undefined) assert(Number.isInteger(post.lesson) && post.lesson > 0, `invalid lesson: ${post.slug}`);
   await stat(readerPath(post));
 }
 
@@ -263,11 +266,80 @@ try {
     assert(related.length >= 1 && related.every(file => Object.values(navigation.routes).some(routes => Object.values(routes).includes(file))));
     assert.deepEqual(await links(target.locator(".reader-returns a")), ["articles.html", "index.html"]);
   }
+  async function archiveFilters(target) {
+    const visible = target.locator(".post-card:visible");
+    const search = target.locator("[data-archive-search]");
+    const lesson = target.locator("[data-archive-lesson]");
+    const topic = value => target.locator(`[data-archive-topics] [data-topic="${value}"]`);
+    const reset = target.locator("[data-archive-reset]");
+    await target.locator("[data-archive-controls]").waitFor();
+    assert.equal(await visible.count(), posts.length);
+    for (const value of Object.keys(topicLabels)) {
+      const count = posts.filter(post => post.topic === value).length;
+      if (!count) continue;
+      assert.equal(await topic(value).innerText(), `${topicLabels[value]} ${count}`);
+      await topic(value).click();
+      assert.equal(await topic(value).getAttribute("aria-pressed"), "true");
+      assert.equal(await visible.count(), count);
+      assert.equal(await topic(value).evaluate(node => node === document.activeElement), true);
+    }
+    await topic("all").click();
+    for (const value of new Set(posts.map(post => String(post.lesson ?? "general")))) {
+      const count = posts.filter(post => String(post.lesson ?? "general") === value).length;
+      await lesson.selectOption(value);
+      assert.equal(await visible.count(), count);
+    }
+    await lesson.selectOption("14");
+    await topic("grammar").click();
+    const grammar14 = posts.filter(post => post.topic === "grammar" && post.lesson === 14);
+    assert.equal(await visible.count(), grammar14.length);
+    await search.fill("定義");
+    assert.equal(await visible.count(), grammar14.filter(post => `${post.title} ${post.summary}`.includes("定義")).length);
+    await reset.click();
+    for (const query of ["諺語", "といった", "  ～たて  ", "第 １４ 課"]) {
+      await search.fill(query);
+      const normalized = query.normalize("NFKC").trim().toLowerCase();
+      const expected = sortedPosts.filter(post => `${post.title} ${post.summary}`.normalize("NFKC").trim().toLowerCase().includes(normalized));
+      assert(expected.length > 0);
+      assert.deepEqual(await links(visible.locator("a")), expected.map(readerPath));
+    }
+    await search.fill("not-a-match.[*");
+    assert.equal(await visible.count(), 0);
+    assert.equal(await target.locator("[data-archive-empty]").isVisible(), true);
+    assert.match(await target.locator("[data-archive-status]").innerText(), new RegExp(`顯示 0 / ${posts.length}`));
+    await target.locator("[data-archive-empty] button").click();
+    assert.equal(await visible.count(), posts.length);
+    assert.equal(await search.evaluate(node => node === document.activeElement), true);
+    await search.dispatchEvent("compositionstart");
+    await search.fill("找不到的組字");
+    assert.equal(await visible.count(), posts.length, "IME composition must defer filtering");
+    await search.dispatchEvent("compositionend");
+    assert.equal(await visible.count(), 0);
+    await reset.click();
+    await topic("grammar").click();
+    await lesson.selectOption("14");
+    await reset.focus();
+    await target.keyboard.press("Tab");
+    const href = await target.evaluate(() => document.activeElement.getAttribute("href"));
+    assert.equal(href, readerPath(sortedPosts.find(post => post.topic === "grammar" && post.lesson === 14)));
+    await target.keyboard.press("Enter");
+    await target.waitForURL(base + href);
+    await target.goBack();
+    await target.locator("[data-archive-controls]").waitFor();
+    // BFCache can retain filters; a fresh document starts with the complete archive.
+    const selectedTopic = await target.locator('[data-archive-topics] [aria-pressed="true"]').getAttribute("data-topic");
+    const selectedLesson = await lesson.inputValue();
+    const expectedBack = sortedPosts.filter(post => (selectedTopic === "all" || post.topic === selectedTopic)
+      && (selectedLesson === "all" || String(post.lesson ?? "general") === selectedLesson));
+    assert.deepEqual(await links(visible.locator("a")), expectedBack.map(readerPath));
+    await reset.click();
+  }
   for (const file of ["index.html", "articles.html"]) {
     await goto(page, file);
     await page.locator("[data-posts-ready]").waitFor();
     await assertCards(page, file === "index.html" ? sortedPosts.slice(0, 3) : sortedPosts);
   }
+  await archiveFilters(page);
   for (const post of posts) {
     await goto(page, readerPath(post));
     await assertReader(page, post);
@@ -290,6 +362,42 @@ try {
     await assertCards(page, expected);
   }
   await page.unroute("**/assets/posts.json", fixturePosts);
+  const optionalFixture = route => route.fulfill({ json: [
+    { ...firstPost, slug: "fixture-legacy", title: "Dictogloss ABC", topic: undefined, lesson: undefined },
+    { ...firstPost, slug: "fixture-invalid", topic: ["grammar"], lesson: "13" },
+    { ...firstPost, slug: "fixture-unknown", topic: "unknown", lesson: -1 },
+    { ...firstPost, slug: "fixture-valid", topic: "reading", lesson: 15 }
+  ] });
+  await page.route("**/assets/posts.json", optionalFixture);
+  await goto(page, "articles.html");
+  await page.locator("[data-posts-ready]").waitFor();
+  assert.equal(await page.locator('[data-archive-topics] [data-topic="other"]').innerText(), "其他 3");
+  assert.equal(await page.locator('[data-archive-lesson] option[value="general"]').innerText(), "通用（3）");
+  assert.equal(await page.locator('[data-archive-lesson] option[value="15"]').innerText(), "第 15 課（1）");
+  await page.locator("[data-archive-search]").fill("ｄＩＣＴＯＧＬＯＳＳ abc");
+  assert.deepEqual(await links(page.locator(".post-card:visible a")), ["article-fixture-legacy.html"]);
+  await page.unroute("**/assets/posts.json", optionalFixture);
+
+  let releaseMetadata;
+  const delayedMetadata = new Promise(resolve => { releaseMetadata = resolve; });
+  const delayedFixture = async route => { await delayedMetadata; await route.fulfill({ json: posts }); };
+  await page.route("**/assets/posts.json", delayedFixture);
+  await goto(page, "articles.html");
+  await page.locator('[data-archive-topics] [data-topic="grammar"]').click();
+  await page.locator("[data-archive-lesson]").selectOption("14");
+  await page.locator("[data-archive-search]").fill("定義");
+  await page.locator("[data-archive-search]").dispatchEvent("compositionstart");
+  await page.locator("[data-archive-search]").fill("尚未完成的組字");
+  await page.locator('[data-archive-topics] [data-topic="grammar"]').focus();
+  releaseMetadata();
+  await page.locator("[data-posts-ready]").waitFor();
+  assert.equal(await page.locator(".post-card:visible").count(), posts.filter(post => post.topic === "grammar" && post.lesson === 14 && `${post.title} ${post.summary}`.includes("定義")).length);
+  assert.equal(await page.locator("[data-archive-lesson]").inputValue(), "14");
+  assert.equal(await page.locator('[data-archive-topics] [data-topic="grammar"]').evaluate(node => document.activeElement === node), true);
+  await page.locator("[data-archive-search]").dispatchEvent("compositionend");
+  assert.equal(await page.locator(".post-card:visible").count(), 0);
+  await page.unroute("**/assets/posts.json", delayedFixture);
+  console.log("PASS archive topic/lesson/search AND filters, IME, keyboard, live refresh, and optional metadata recovery");
   for (const bad of [
     [...posts, { ...firstPost, slug: "../unsafe" }],
     [...posts, { ...firstPost, slug: "bad-date", publishedAt: "2026-02-30" }],
@@ -300,6 +408,8 @@ try {
     await goto(page, "articles.html");
     await assertCards(page, sortedPosts);
     assert.equal(await page.locator("[data-posts-ready]").count(), 0);
+    await page.locator('[data-archive-topics] [data-topic="grammar"]').click();
+    assert.equal(await page.locator(".post-card:visible").count(), posts.filter(post => post.topic === "grammar").length);
     await page.unroute("**/assets/posts.json", invalidPosts);
   }
   const failedFetch = route => route.fulfill({ status: 503 });
@@ -313,6 +423,7 @@ try {
   await assertCards(page, sortedPosts.slice(0, 3));
   await goto(page, "articles.html");
   await assertCards(page, sortedPosts);
+  await archiveFilters(page);
   await page.unroute("**/assets/posts.json", failedFetch);
   await page.unroute("**/assets/lesson-navigation.json", failedFetch);
   const noScript = await isolatedContext({ javaScriptEnabled: false });
@@ -323,6 +434,14 @@ try {
   await assertReader(staticPage, firstPost);
   await staticPage.locator(".reader-returns a").first().click();
   await assertCards(staticPage, sortedPosts);
+  assert.equal(await staticPage.locator("[data-archive-controls]").isVisible(), false);
+  for (const [index, post] of sortedPosts.entries()) {
+    const row = staticPage.locator(".post-card").nth(index);
+    assert.equal(await row.getAttribute("data-topic"), post.topic);
+    assert.equal(await row.getAttribute("data-lesson"), String(post.lesson ?? "general"));
+    assert.match(await row.locator(".post-meta").innerText(), new RegExp(topicLabels[post.topic]));
+    assert.match(await row.locator(".post-meta").innerText(), new RegExp(post.lesson ? `第 ${post.lesson} 課` : "通用"));
+  }
   await noScript.close();
   console.log("PASS article metadata, publication sorting, links, attribution, and static fallbacks");
 
@@ -476,7 +595,11 @@ try {
           assert.equal(await page.locator(".pwa-update-badge,#offline-update-notice").count(), 0);
           assert.equal(await page.locator(".site-header > .pwa-status").isVisible(), true);
         }
-        if (screenshots && (layout === "desktop" || layout === "mobile") && name !== "archive") {
+        if (name === "archive") {
+          await noOverflow(width, ".archive-controls input,.archive-controls select,.archive-controls button");
+          assert.equal(await page.locator(".post-list").evaluate(node => getComputedStyle(node).gridTemplateColumns.split(" ").length), 1);
+        }
+        if (screenshots && (layout === "desktop" || layout === "mobile")) {
           await page.screenshot({ path: join(screenshots, `${name}-${layout}-${theme}.png`) });
         }
       }
@@ -505,6 +628,7 @@ try {
   await goto(freshArchive, "articles.html");
   await freshArchive.locator("[data-posts-ready]").waitFor();
   await assertCards(freshArchive, sortedPosts);
+  await archiveFilters(freshArchive);
   for (const post of posts) {
     const freshReader = await offline.newPage();
     await goto(freshReader, readerPath(post));

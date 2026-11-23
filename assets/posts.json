@@ -5,7 +5,9 @@
     "summary": "用「住めば都」和「猿も木から落ちる」練習問意思、用自己的話確認，再為諺語找一個生活情境。",
     "category": "溫故知新",
     "publishedAt": "2026-11-22",
-    "readingMinutes": 6
+    "readingMinutes": 6,
+    "topic": "conversation",
+    "lesson": 13
   },
   {
     "slug": "lesson-13-empathy-after-mistakes",
@@ -13,7 +15,9 @@
     "summary": "用叫錯名字和看錯時間的原創對話，練習先回應對方的感受，再分享相似經驗。",
     "category": "溫故知新",
     "publishedAt": "2026-11-22",
-    "readingMinutes": 6
+    "readingMinutes": 6,
+    "topic": "conversation",
+    "lesson": 13
   },
   {
     "slug": "lesson-13-igo-iko-irai",
@@ -21,7 +25,9 @@
     "summary": "用開放時間、活動安排和持續至今的習慣，分辨三個詞的重點及可互換的地方。",
     "category": "溫故知新",
     "publishedAt": "2026-11-22",
-    "readingMinutes": 6
+    "readingMinutes": 6,
+    "topic": "grammar",
+    "lesson": 13
   },
   {
     "slug": "lesson-13-tsukigime-signs",
@@ -29,7 +35,9 @@
     "summary": "分開作者見過的線索、當時的推測和後來的發現，再讀一次池袋與青森的結尾。",
     "category": "溫故知新",
     "publishedAt": "2026-11-22",
-    "readingMinutes": 6
+    "readingMinutes": 6,
+    "topic": "reading",
+    "lesson": 13
   },
   {
     "slug": "lesson-13-writing-a-timeline",
@@ -37,7 +45,9 @@
     "summary": "從初時的想法、逐漸的改變寫到今天，用第 13 課老師的四個時間提示串起個人經歷。",
     "category": "溫故知新",
     "publishedAt": "2026-11-22",
-    "readingMinutes": 7
+    "readingMinutes": 7,
+    "topic": "writing",
+    "lesson": 13
   },
   {
     "slug": "lesson-14-aizuchi-and-storytelling",
@@ -45,7 +55,9 @@
     "summary": "用一段原創的失物故事，練習四種聽者回應，並在恰當的時機追問後續及結局。",
     "category": "溫故知新",
     "publishedAt": "2026-11-22",
-    "readingMinutes": 6
+    "readingMinutes": 6,
+    "topic": "conversation",
+    "lesson": 14
   },
   {
     "slug": "lesson-14-dictogloss-reconstruction",
@@ -53,7 +65,9 @@
     "summary": "用第 14 課錄音練習聽大意、記關鍵詞、重組內容，再打開原文核對句型與意思。",
     "category": "溫故知新",
     "publishedAt": "2026-11-22",
-    "readingMinutes": 7
+    "readingMinutes": 7,
+    "topic": "conversation",
+    "lesson": 14
   },
   {
     "slug": "lesson-14-examples-and-definitions",
@@ -61,7 +75,9 @@
     "summary": "用校園活動和工具說明比較「といった」與「とは」，練習補上共同類別，再寫出一個概念的核心意思。",
     "category": "溫故知新",
     "publishedAt": "2026-11-22",
-    "readingMinutes": 6
+    "readingMinutes": 6,
+    "topic": "grammar",
+    "lesson": 14
   },
   {
     "slug": "lesson-14-nitotte-and-nioite",
@@ -69,7 +85,9 @@
     "summary": "用同一場校內展覽分辨評價的立場與事情發生的範圍，再練習兩個句型的名詞修飾形式。",
     "category": "溫故知新",
     "publishedAt": "2026-11-22",
-    "readingMinutes": 6
+    "readingMinutes": 6,
+    "topic": "grammar",
+    "lesson": 14
   },
   {
     "slug": "lesson-14-reading-evidence-and-inference",
@@ -77,7 +95,9 @@
     "summary": "用兩段原創短評找出觀察、解釋和仍待確認的推測，練習分辨「わけだ」和「のではないだろうか」。",
     "category": "溫故知新",
     "publishedAt": "2026-11-22",
-    "readingMinutes": 6
+    "readingMinutes": 6,
+    "topic": "reading",
+    "lesson": 14
   },
   {
     "slug": "lesson-13-confirm-and-rephrase",
@@ -85,7 +105,9 @@
     "summary": "用一次集合安排的對話，練習核實聽來的消息、重述重點和確認共同理解。",
     "category": "溫故知新",
     "publishedAt": "2026-11-20",
-    "readingMinutes": 7
+    "readingMinutes": 7,
+    "topic": "conversation",
+    "lesson": 13
   },
   {
     "slug": "lesson-13-even-if-never",
@@ -93,7 +115,9 @@
     "summary": "用假設和回應練習たとえ～ても、～たりしない，分辨堅定承諾與日常安撫的語氣。",
     "category": "溫故知新",
     "publishedAt": "2026-11-20",
-    "readingMinutes": 6
+    "readingMinutes": 6,
+    "topic": "grammar",
+    "lesson": 13
   },
   {
     "slug": "lesson-13-hodo-degree",
@@ -101,7 +125,9 @@
     "summary": "用眼前的景象、身體反應和誇張比喻，把抽象的程度寫得具體。",
     "category": "溫故知新",
     "publishedAt": "2026-11-20",
-    "readingMinutes": 6
+    "readingMinutes": 6,
+    "topic": "grammar",
+    "lesson": 13
   },
   {
     "slug": "lesson-13-nagara-although",
@@ -109,7 +135,9 @@
     "summary": "從合作、報告和通知裏的落差辨認逆接～ながら，再和初級的同時進行用法對照。",
     "category": "溫故知新",
     "publishedAt": "2026-11-20",
-    "readingMinutes": 6
+    "readingMinutes": 6,
+    "topic": "grammar",
+    "lesson": 13
   },
   {
     "slug": "lesson-13-tate-freshness",
@@ -117,7 +145,9 @@
     "summary": "從食物、油漆到新身份，掌握～たて的常見搭配，分清它和～たばかり各自強調甚麼。",
     "category": "溫故知新",
     "publishedAt": "2026-11-20",
-    "readingMinutes": 6
+    "readingMinutes": 6,
+    "topic": "grammar",
+    "lesson": 13
   },
   {
     "slug": "lesson-14-patterns-in-four-groups",
@@ -125,7 +155,9 @@
     "summary": "第14課有十一個句型，分成時間場合、舉例定義、立場判斷和會話表達四組，再比較容易混淆的用法。",
     "category": "溫故知新",
     "publishedAt": "2026-11-20",
-    "readingMinutes": 9
+    "readingMinutes": 9,
+    "topic": "grammar",
+    "lesson": 14
   },
   {
     "slug": "listening-for-meaning",
@@ -133,7 +165,8 @@
     "summary": "先抓住會話的情境和結果，再重播關鍵句，分辨轉述、確認和尋求認同。",
     "category": "會話聆聽",
     "publishedAt": "2026-11-15",
-    "readingMinutes": 4
+    "readingMinutes": 4,
+    "topic": "conversation"
   },
   {
     "slug": "reading-in-three-passes",
@@ -141,7 +174,8 @@
     "summary": "先找主旨，再追蹤段落怎樣推進，最後合上課文，用兩至三句日語概括。",
     "category": "課文閱讀",
     "publishedAt": "2026-11-15",
-    "readingMinutes": 4
+    "readingMinutes": 4,
+    "topic": "reading"
   },
   {
     "slug": "study-routine",
@@ -149,6 +183,7 @@
     "summary": "用預習、文法比較和短輸出組成一套可重複的流程，一星期後再做一次小測。",
     "category": "學習方法",
     "publishedAt": "2026-11-15",
-    "readingMinutes": 4
+    "readingMinutes": 4,
+    "topic": "study"
   }
 ]

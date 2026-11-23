@@ -46,157 +46,178 @@
     </header>
     <main class="archive-page">
       <h1>文章</h1>
-      <p class="archive-intro">站內學習筆記，整理中級日語的練習方法。</p>
-      <ul class="post-list" data-posts="all">
-          <li class="post-card">
+      <p class="archive-intro">按學習主題和課次整理的中級日語筆記。先讀簡介，再揀一篇練習。</p>
+      <section class="archive-controls" data-archive-controls aria-label="篩選文章" hidden>
+        <div class="archive-search">
+          <label for="archive-search">搜尋文章</label>
+          <input id="archive-search" data-archive-search type="search" placeholder="輸入中文或日文關鍵字" aria-controls="archive-posts">
+        </div>
+        <fieldset class="archive-topics">
+          <legend>學習主題</legend>
+          <div data-archive-topics></div>
+        </fieldset>
+        <div class="archive-filter-footer">
+          <label class="archive-lesson" for="archive-lesson">課次
+            <select id="archive-lesson" data-archive-lesson aria-controls="archive-posts"></select>
+          </label>
+          <button type="button" data-archive-reset>清除篩選</button>
+        </div>
+        <p class="archive-status" data-archive-status role="status" aria-live="polite" aria-atomic="true"></p>
+      </section>
+      <div class="archive-empty" data-archive-empty hidden>
+        <p>找不到符合條件的文章。試試其他關鍵字，或清除篩選再揀。</p>
+        <button type="button">清除篩選，顯示全部文章</button>
+      </div>
+      <ul id="archive-posts" class="post-list" data-posts="all">
+          <li class="post-card" data-topic="conversation" data-lesson="13">
             <a href="article-lesson-13-asking-about-proverbs.html">
-              <p class="post-meta"><span>溫故知新</span><time datetime="2026-11-22">2026.11.22</time><span>約 6 分鐘</span></p>
               <h2>聽到一句日本諺語，怎樣問清楚意思</h2>
               <p>用「住めば都」和「猿も木から落ちる」練習問意思、用自己的話確認，再為諺語找一個生活情境。</p>
+              <p class="post-meta"><span>會話聆聽</span><span>第 13 課</span><span>溫故知新</span><time datetime="2026-11-22">2026.11.22</time><span>約 6 分鐘</span></p>
               <span class="post-arrow" aria-hidden="true">↗</span>
             </a>
           </li>
-          <li class="post-card">
+          <li class="post-card" data-topic="conversation" data-lesson="13">
             <a href="article-lesson-13-empathy-after-mistakes.html">
-              <p class="post-meta"><span>溫故知新</span><time datetime="2026-11-22">2026.11.22</time><span>約 6 分鐘</span></p>
               <h2>朋友講起一次尷尬經歷，怎樣接話</h2>
               <p>用叫錯名字和看錯時間的原創對話，練習先回應對方的感受，再分享相似經驗。</p>
+              <p class="post-meta"><span>會話聆聽</span><span>第 13 課</span><span>溫故知新</span><time datetime="2026-11-22">2026.11.22</time><span>約 6 分鐘</span></p>
               <span class="post-arrow" aria-hidden="true">↗</span>
             </a>
           </li>
-          <li class="post-card">
+          <li class="post-card" data-topic="grammar" data-lesson="13">
             <a href="article-lesson-13-igo-iko-irai.html">
-              <p class="post-meta"><span>溫故知新</span><time datetime="2026-11-22">2026.11.22</time><span>約 6 分鐘</span></p>
               <h2>以後、以降、以来：怎樣講清楚時間起點</h2>
               <p>用開放時間、活動安排和持續至今的習慣，分辨三個詞的重點及可互換的地方。</p>
+              <p class="post-meta"><span>文法詞彙</span><span>第 13 課</span><span>溫故知新</span><time datetime="2026-11-22">2026.11.22</time><span>約 6 分鐘</span></p>
               <span class="post-arrow" aria-hidden="true">↗</span>
             </a>
           </li>
-          <li class="post-card">
+          <li class="post-card" data-topic="reading" data-lesson="13">
             <a href="article-lesson-13-tsukigime-signs.html">
-              <p class="post-meta"><span>溫故知新</span><time datetime="2026-11-22">2026.11.22</time><span>約 6 分鐘</span></p>
               <h2>從一塊招牌讀懂〈ゲッキョク株式会社〉</h2>
               <p>分開作者見過的線索、當時的推測和後來的發現，再讀一次池袋與青森的結尾。</p>
+              <p class="post-meta"><span>閱讀理解</span><span>第 13 課</span><span>溫故知新</span><time datetime="2026-11-22">2026.11.22</time><span>約 6 分鐘</span></p>
               <span class="post-arrow" aria-hidden="true">↗</span>
             </a>
           </li>
-          <li class="post-card">
+          <li class="post-card" data-topic="writing" data-lesson="13">
             <a href="article-lesson-13-writing-a-timeline.html">
-              <p class="post-meta"><span>溫故知新</span><time datetime="2026-11-22">2026.11.22</time><span>約 7 分鐘</span></p>
               <h2>用四個時間提示寫一段經歷</h2>
               <p>從初時的想法、逐漸的改變寫到今天，用第 13 課老師的四個時間提示串起個人經歷。</p>
+              <p class="post-meta"><span>寫作練習</span><span>第 13 課</span><span>溫故知新</span><time datetime="2026-11-22">2026.11.22</time><span>約 7 分鐘</span></p>
               <span class="post-arrow" aria-hidden="true">↗</span>
             </a>
           </li>
-          <li class="post-card">
+          <li class="post-card" data-topic="conversation" data-lesson="14">
             <a href="article-lesson-14-aizuchi-and-storytelling.html">
-              <p class="post-meta"><span>溫故知新</span><time datetime="2026-11-22">2026.11.22</time><span>約 6 分鐘</span></p>
               <h2>一句「それで？」怎樣令對方講下去</h2>
               <p>用一段原創的失物故事，練習四種聽者回應，並在恰當的時機追問後續及結局。</p>
+              <p class="post-meta"><span>會話聆聽</span><span>第 14 課</span><span>溫故知新</span><time datetime="2026-11-22">2026.11.22</time><span>約 6 分鐘</span></p>
               <span class="post-arrow" aria-hidden="true">↗</span>
             </a>
           </li>
-          <li class="post-card">
+          <li class="post-card" data-topic="conversation" data-lesson="14">
             <a href="article-lesson-14-dictogloss-reconstruction.html">
-              <p class="post-meta"><span>溫故知新</span><time datetime="2026-11-22">2026.11.22</time><span>約 7 分鐘</span></p>
               <h2>第 14 課ディクトグロス：由關鍵詞重組短文</h2>
               <p>用第 14 課錄音練習聽大意、記關鍵詞、重組內容，再打開原文核對句型與意思。</p>
+              <p class="post-meta"><span>會話聆聽</span><span>第 14 課</span><span>溫故知新</span><time datetime="2026-11-22">2026.11.22</time><span>約 7 分鐘</span></p>
               <span class="post-arrow" aria-hidden="true">↗</span>
             </a>
           </li>
-          <li class="post-card">
+          <li class="post-card" data-topic="grammar" data-lesson="14">
             <a href="article-lesson-14-examples-and-definitions.html">
-              <p class="post-meta"><span>溫故知新</span><time datetime="2026-11-22">2026.11.22</time><span>約 6 分鐘</span></p>
               <h2>舉例同下定義，各用哪個句型？</h2>
               <p>用校園活動和工具說明比較「といった」與「とは」，練習補上共同類別，再寫出一個概念的核心意思。</p>
+              <p class="post-meta"><span>文法詞彙</span><span>第 14 課</span><span>溫故知新</span><time datetime="2026-11-22">2026.11.22</time><span>約 6 分鐘</span></p>
               <span class="post-arrow" aria-hidden="true">↗</span>
             </a>
           </li>
-          <li class="post-card">
+          <li class="post-card" data-topic="grammar" data-lesson="14">
             <a href="article-lesson-14-nitotte-and-nioite.html">
-              <p class="post-meta"><span>溫故知新</span><time datetime="2026-11-22">2026.11.22</time><span>約 6 分鐘</span></p>
               <h2>對誰而言？在哪個場合？</h2>
               <p>用同一場校內展覽分辨評價的立場與事情發生的範圍，再練習兩個句型的名詞修飾形式。</p>
+              <p class="post-meta"><span>文法詞彙</span><span>第 14 課</span><span>溫故知新</span><time datetime="2026-11-22">2026.11.22</time><span>約 6 分鐘</span></p>
               <span class="post-arrow" aria-hidden="true">↗</span>
             </a>
           </li>
-          <li class="post-card">
+          <li class="post-card" data-topic="reading" data-lesson="14">
             <a href="article-lesson-14-reading-evidence-and-inference.html">
-              <p class="post-meta"><span>溫故知新</span><time datetime="2026-11-22">2026.11.22</time><span>約 6 分鐘</span></p>
               <h2>讀動畫評論，怎樣分辨結論同推測</h2>
               <p>用兩段原創短評找出觀察、解釋和仍待確認的推測，練習分辨「わけだ」和「のではないだろうか」。</p>
+              <p class="post-meta"><span>閱讀理解</span><span>第 14 課</span><span>溫故知新</span><time datetime="2026-11-22">2026.11.22</time><span>約 6 分鐘</span></p>
               <span class="post-arrow" aria-hidden="true">↗</span>
             </a>
           </li>
-          <li class="post-card">
+          <li class="post-card" data-topic="conversation" data-lesson="13">
             <a href="article-lesson-13-confirm-and-rephrase.html">
-              <p class="post-meta"><span>溫故知新</span><time datetime="2026-11-20">2026.11.20</time><span>約 7 分鐘</span></p>
               <h2>聽說、換句話說、再確認：第13課的三個會話句尾</h2>
               <p>用一次集合安排的對話，練習核實聽來的消息、重述重點和確認共同理解。</p>
+              <p class="post-meta"><span>會話聆聽</span><span>第 13 課</span><span>溫故知新</span><time datetime="2026-11-20">2026.11.20</time><span>約 7 分鐘</span></p>
               <span class="post-arrow" aria-hidden="true">↗</span>
             </a>
           </li>
-          <li class="post-card">
+          <li class="post-card" data-topic="grammar" data-lesson="13">
             <a href="article-lesson-13-even-if-never.html">
-              <p class="post-meta"><span>溫故知新</span><time datetime="2026-11-20">2026.11.20</time><span>約 6 分鐘</span></p>
               <h2>即使如此，也絕不會那樣做</h2>
               <p>用假設和回應練習たとえ～ても、～たりしない，分辨堅定承諾與日常安撫的語氣。</p>
+              <p class="post-meta"><span>文法詞彙</span><span>第 13 課</span><span>溫故知新</span><time datetime="2026-11-20">2026.11.20</time><span>約 6 分鐘</span></p>
               <span class="post-arrow" aria-hidden="true">↗</span>
             </a>
           </li>
-          <li class="post-card">
+          <li class="post-card" data-topic="grammar" data-lesson="13">
             <a href="article-lesson-13-hodo-degree.html">
-              <p class="post-meta"><span>溫故知新</span><time datetime="2026-11-20">2026.11.20</time><span>約 6 分鐘</span></p>
               <h2>用具體畫面說出程度：～ほど</h2>
               <p>用眼前的景象、身體反應和誇張比喻，把抽象的程度寫得具體。</p>
+              <p class="post-meta"><span>文法詞彙</span><span>第 13 課</span><span>溫故知新</span><time datetime="2026-11-20">2026.11.20</time><span>約 6 分鐘</span></p>
               <span class="post-arrow" aria-hidden="true">↗</span>
             </a>
           </li>
-          <li class="post-card">
+          <li class="post-card" data-topic="grammar" data-lesson="13">
             <a href="article-lesson-13-nagara-although.html">
-              <p class="post-meta"><span>溫故知新</span><time datetime="2026-11-20">2026.11.20</time><span>約 6 分鐘</span></p>
               <h2>第13課的～ながら，不是「一邊……一邊」</h2>
               <p>從合作、報告和通知裏的落差辨認逆接～ながら，再和初級的同時進行用法對照。</p>
+              <p class="post-meta"><span>文法詞彙</span><span>第 13 課</span><span>溫故知新</span><time datetime="2026-11-20">2026.11.20</time><span>約 6 分鐘</span></p>
               <span class="post-arrow" aria-hidden="true">↗</span>
             </a>
           </li>
-          <li class="post-card">
+          <li class="post-card" data-topic="grammar" data-lesson="13">
             <a href="article-lesson-13-tate-freshness.html">
-              <p class="post-meta"><span>溫故知新</span><time datetime="2026-11-20">2026.11.20</time><span>約 6 分鐘</span></p>
               <h2>剛出爐的狀態，用～たて來記</h2>
               <p>從食物、油漆到新身份，掌握～たて的常見搭配，分清它和～たばかり各自強調甚麼。</p>
+              <p class="post-meta"><span>文法詞彙</span><span>第 13 課</span><span>溫故知新</span><time datetime="2026-11-20">2026.11.20</time><span>約 6 分鐘</span></p>
               <span class="post-arrow" aria-hidden="true">↗</span>
             </a>
           </li>
-          <li class="post-card">
+          <li class="post-card" data-topic="grammar" data-lesson="14">
             <a href="article-lesson-14-patterns-in-four-groups.html">
-              <p class="post-meta"><span>溫故知新</span><time datetime="2026-11-20">2026.11.20</time><span>約 9 分鐘</span></p>
               <h2>把第14課的句型分成四組來記</h2>
               <p>第14課有十一個句型，分成時間場合、舉例定義、立場判斷和會話表達四組，再比較容易混淆的用法。</p>
+              <p class="post-meta"><span>文法詞彙</span><span>第 14 課</span><span>溫故知新</span><time datetime="2026-11-20">2026.11.20</time><span>約 9 分鐘</span></p>
               <span class="post-arrow" aria-hidden="true">↗</span>
             </a>
           </li>
-          <li class="post-card">
+          <li class="post-card" data-topic="conversation" data-lesson="general">
             <a href="article-listening-for-meaning.html">
-              <p class="post-meta"><span>會話聆聽</span><time datetime="2026-11-15">2026.11.15</time><span>約 4 分鐘</span></p>
               <h2>聆聽時，先聽懂對方在做甚麼</h2>
               <p>先抓住會話的情境和結果，再重播關鍵句，分辨轉述、確認和尋求認同。</p>
+              <p class="post-meta"><span>會話聆聽</span><span>通用</span><time datetime="2026-11-15">2026.11.15</time><span>約 4 分鐘</span></p>
               <span class="post-arrow" aria-hidden="true">↗</span>
             </a>
           </li>
-          <li class="post-card">
+          <li class="post-card" data-topic="reading" data-lesson="general">
             <a href="article-reading-in-three-passes.html">
-              <p class="post-meta"><span>課文閱讀</span><time datetime="2026-11-15">2026.11.15</time><span>約 4 分鐘</span></p>
               <h2>三遍讀完一篇日語課文</h2>
               <p>先找主旨，再追蹤段落怎樣推進，最後合上課文，用兩至三句日語概括。</p>
+              <p class="post-meta"><span>閱讀理解</span><span>通用</span><span>課文閱讀</span><time datetime="2026-11-15">2026.11.15</time><span>約 4 分鐘</span></p>
               <span class="post-arrow" aria-hidden="true">↗</span>
             </a>
           </li>
-          <li class="post-card">
+          <li class="post-card" data-topic="study" data-lesson="general">
             <a href="article-study-routine.html">
-              <p class="post-meta"><span>學習方法</span><time datetime="2026-11-15">2026.11.15</time><span>約 4 分鐘</span></p>
               <h2>把一課拆成三次練習</h2>
               <p>用預習、文法比較和短輸出組成一套可重複的流程，一星期後再做一次小測。</p>
+              <p class="post-meta"><span>學習方法</span><span>通用</span><time datetime="2026-11-15">2026.11.15</time><span>約 4 分鐘</span></p>
               <span class="post-arrow" aria-hidden="true">↗</span>
             </a>
           </li>
