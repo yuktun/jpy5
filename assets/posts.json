@@ -1,5 +1,77 @@
 [
   {
+    "slug": "foundation-00-checkup",
+    "title": "前四年文法自測",
+    "summary": "用 14 題檢查助詞、活用及中級Ⅰ常見句型，再跟答案連結溫習最弱的兩個專題。",
+    "category": "舊課文法重溫",
+    "topic": "grammar",
+    "publishedAt": "2026-11-23",
+    "readingMinutes": 12
+  },
+  {
+    "slug": "foundation-01-particles",
+    "title": "助詞點揀",
+    "summary": "用找座位、還書和搭車的情境重溫「は・が」「に・で」和「を」，再試用助詞改寫句子。",
+    "category": "舊課文法重溫",
+    "topic": "grammar",
+    "publishedAt": "2026-11-23",
+    "readingMinutes": 6
+  },
+  {
+    "slug": "foundation-02-verb-forms",
+    "title": "動詞活用快速重溫",
+    "summary": "用一張活動準備清單練習三類動詞的て形、た形、ない形，再將動詞放入請求、經驗和禁止的句子。",
+    "category": "舊課文法重溫",
+    "topic": "grammar",
+    "publishedAt": "2026-11-23",
+    "readingMinutes": 6
+  },
+  {
+    "slug": "foundation-03-states-and-preparation",
+    "title": "打開咗、開住，定係特登開定？",
+    "summary": "由一扇窗的不同情況比較自動詞、他動詞同「ている・てある・ておく」，練習分辨狀態和準備。",
+    "category": "舊課文法重溫",
+    "topic": "grammar",
+    "publishedAt": "2026-11-23",
+    "readingMinutes": 6
+  },
+  {
+    "slug": "foundation-04-conditions",
+    "title": "四種條件句點分",
+    "summary": "用指路、約時間和報名的情境比較「と・たら・ば・なら」，練習按後句的意思選條件句。",
+    "category": "舊課文法重溫",
+    "topic": "grammar",
+    "publishedAt": "2026-11-23",
+    "readingMinutes": 7
+  },
+  {
+    "slug": "foundation-05-passive-and-causative",
+    "title": "邊個做，邊個受影響？",
+    "summary": "用同一間課室的例句分辨受身、使役和使役受身，再回到第 15 課辨認「雨に降られる」。",
+    "category": "舊課文法重溫",
+    "topic": "grammar",
+    "publishedAt": "2026-11-23",
+    "readingMinutes": 7
+  },
+  {
+    "slug": "foundation-06-time-and-deadlines",
+    "title": "持續到幾點，幾點前要做？",
+    "summary": "用圖書館開放時間、借還書和等候的情境比較「まで・までに」同「間・間に」，再連回第 14 課。",
+    "category": "舊課文法重溫",
+    "topic": "grammar",
+    "publishedAt": "2026-11-23",
+    "readingMinutes": 6
+  },
+  {
+    "slug": "foundation-07-hazu",
+    "title": "點解我原本以為會係咁？",
+    "summary": "用場地預約和時間表比較「はずだ・はずだった・はずがない」，練習說出預期背後的根據。",
+    "category": "舊課文法重溫",
+    "topic": "grammar",
+    "publishedAt": "2026-11-23",
+    "readingMinutes": 6
+  },
+  {
     "slug": "lesson-13-asking-about-proverbs",
     "title": "聽到一句日本諺語，怎樣問清楚意思",
     "summary": "用「住めば都」和「猿も木から落ちる」練習問意思、用自己的話確認，再為諺語找一個生活情境。",
