@@ -69,6 +69,14 @@ node scripts/test-offline-manifest.mjs
 node scripts/serve-public.mjs
 ```
 
+### Article answers and explanations
+
+Exercise articles load `assets/article-answers.css?v=1` and the deferred `assets/article-answers.js?v=1`. Assign each question a unique number across the whole article, including split lists, and explicitly point to its corresponding answer. Keep the existing answer list or disclosure as the source of truth. For example, pair `<li data-article-question="2" data-answer-id="article-answer-2">` with `<li id="article-answer-2" data-article-answer>`. Each answer ID must be unique in the document and inside the same `.reader-article`.
+
+Wrap only the actual blank characters in `<span data-answer-blank>＿＿</span>`, or wrap the original fullwidth spaces inside the parentheses. Preserve the original characters, surrounding Japanese spans, options and list numbering. Multiple blanks in a question share one complete answer. Questions without a blank receive an `答案與解釋` button automatically. The feature clones only the explicitly linked answer into one reusable native dialog. Keep a concise Traditional Chinese explanation beside each source answer, preserve reference-answer labels, and mark Japanese phrases with `lang="ja"`. Do not copy answers into JavaScript. Existing answer sections remain usable with JavaScript disabled or native dialogs unavailable. These pop-ups do not score or save progress.
+
+After editing, run `node scripts/generate-offline-manifest.mjs` and `node scripts/test-article-answers.mjs`, followed by the navigation and offline checks above. The focused suite compares the original 24 exercise articles against Git revision `35b33d9` independently of the new annotations, permits append-only explanations, derives counts from that source, and checks future annotated articles generically. `JPY5_ARTICLE_BASELINE_REF` may select a compatible unannotated historical revision. The suite covers every question/control, fallback answer access, keyboard focus, mobile light/dark layout, a fresh optional offline package and updating the installed package from the baseline while retaining a progress sentinel. Screenshots go to the temporary `jpy5-article-answers` folder, or `JPY5_ARTICLE_SCREENSHOTS`.
+
 ### Chapter 13 complete edition
 
 - Vocabulary: 191 entries: the original 159-entry bank plus 32 source-linked textbook 問題 vocabulary entries, with stable original IDs, searchable/filterable lists, two-way cards, keyboard controls, retained random order, marking, starred and targeted review queues, and saved progress. Lesson 14 similarly retains its original 208 IDs and appends 18 問題 entries plus 生産 for 227 entries; the original handbooks do not contain all newly appended entries.

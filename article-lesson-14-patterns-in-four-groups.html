@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="assets/styles.css?v=31">
     <link rel="stylesheet" href="assets/site-navigation.css?v=3">
     <link rel="stylesheet" href="assets/editorial.css?v=1">
+    <link rel="stylesheet" href="assets/article-answers.css?v=1">
+    <script src="assets/article-answers.js?v=1" defer></script>
     <script src="assets/common.js?v=5" defer></script>
     <script src="assets/learning-guide.js?v=2" defer></script>
     <script src="assets/install-app.js?v=2" defer></script>
@@ -159,19 +161,19 @@
         <h2>五題快速練習</h2>
         <p>先選答案或改寫句子，再說一遍你選那個句型的原因。</p>
         <ol>
-          <li>你想提醒同學趁雨還未停，先拍下窗上的水珠。<span lang="ja">雨（あめ）がやまない（際（さい）に／うちに）、窓（まど）の水滴（すいてき）を撮（と）っておこう。</span></li>
-          <li>從括號選出能直接修飾「<span lang="ja">工事（こうじ）</span>」的形式。<span lang="ja">二週間（にしゅうかん）（にわたって／にわたる）工事（こうじ）が終（お）わった。</span></li>
-          <li>用「<span lang="ja">にとって</span>」和「<span lang="ja">において</span>」各填一次。<span lang="ja">この町（まち）（　　　）、来月（らいげつ）からバスの試験運行（しけんうんこう）が始（はじ）まる。車（くるま）を持（も）たない人（ひと）（　　　）、バスは大切（たいせつ）な交通手段（こうつうしゅだん）だ。</span></li>
-          <li>已得知店舖今天休息。選出能表達「難怪」的句末。<span lang="ja">今日（きょう）は休（やす）みなのか。店（みせ）の電気（でんき）が消（き）えている（わけだ／のではないだろうか）。</span></li>
-          <li>你記得同學之前提過集合地點，但一時想不起來。用「<span lang="ja">っけ</span>」改寫下面的問句。<span lang="ja">集合場所（しゅうごうばしょ）はどこですか。</span></li>
+          <li data-article-question="1" data-answer-id="article-answer-1">你想提醒同學趁雨還未停，先拍下窗上的水珠。<span lang="ja">雨（あめ）がやまない（際（さい）に／うちに）、窓（まど）の水滴（すいてき）を撮（と）っておこう。</span></li>
+          <li data-article-question="2" data-answer-id="article-answer-2">從括號選出能直接修飾「<span lang="ja">工事（こうじ）</span>」的形式。<span lang="ja">二週間（にしゅうかん）（にわたって／にわたる）工事（こうじ）が終（お）わった。</span></li>
+          <li data-article-question="3" data-answer-id="article-answer-3">用「<span lang="ja">にとって</span>」和「<span lang="ja">において</span>」各填一次。<span lang="ja">この町（まち）（<span data-answer-blank>　　　</span>）、来月（らいげつ）からバスの試験運行（しけんうんこう）が始（はじ）まる。車（くるま）を持（も）たない人（ひと）（<span data-answer-blank>　　　</span>）、バスは大切（たいせつ）な交通手段（こうつうしゅだん）だ。</span></li>
+          <li data-article-question="4" data-answer-id="article-answer-4">已得知店舖今天休息。選出能表達「難怪」的句末。<span lang="ja">今日（きょう）は休（やす）みなのか。店（みせ）の電気（でんき）が消（き）えている（わけだ／のではないだろうか）。</span></li>
+          <li data-article-question="5" data-answer-id="article-answer-5">你記得同學之前提過集合地點，但一時想不起來。用「<span lang="ja">っけ</span>」改寫下面的問句。<span lang="ja">集合場所（しゅうごうばしょ）はどこですか。</span></li>
         </ol>
         <h2>答案與重點</h2>
         <ol>
-          <li><span lang="ja">うちに</span>。趁雨還未停，先把窗上的水珠拍下來。</li>
-          <li><span lang="ja">にわたる</span>。「<span lang="ja">にわたる</span>」可直接修飾「<span lang="ja">工事（こうじ）</span>」，指出工程歷時兩星期。</li>
-          <li><span lang="ja">において、にとって</span>。「<span lang="ja">この町（まち）</span>」交代試驗運行在哪裏進行。「<span lang="ja">車（くるま）を持（も）たない人（ひと）</span>」是評價巴士重要性的立場。</li>
-          <li><span lang="ja">わけだ</span>。知道店舖今天休息後，便明白為甚麼店裏沒有開燈。</li>
-          <li><span lang="ja">集合場所（しゅうごうばしょ）はどこだっけ？</span> 「<span lang="ja">だっけ</span>」帶出原先知道、現在想再確認的語氣。</li>
+          <li id="article-answer-1" data-article-answer><span lang="ja">うちに</span>。趁雨還未停，先把窗上的水珠拍下來。</li>
+          <li id="article-answer-2" data-article-answer><span lang="ja">にわたる</span>。「<span lang="ja">にわたる</span>」可直接修飾「<span lang="ja">工事（こうじ）</span>」，指出工程歷時兩星期。</li>
+          <li id="article-answer-3" data-article-answer><span lang="ja">において、にとって</span>。「<span lang="ja">この町（まち）</span>」交代試驗運行在哪裏進行。「<span lang="ja">車（くるま）を持（も）たない人（ひと）</span>」是評價巴士重要性的立場。</li>
+          <li id="article-answer-4" data-article-answer><span lang="ja">わけだ</span>。知道店舖今天休息後，便明白為甚麼店裏沒有開燈。</li>
+          <li id="article-answer-5" data-article-answer><span lang="ja">集合場所（しゅうごうばしょ）はどこだっけ？</span> 「<span lang="ja">だっけ</span>」帶出原先知道、現在想再確認的語氣。</li>
         </ol>
         <aside class="reader-practice" aria-labelledby="practice-heading">
           <h2 id="practice-heading">到課程練習</h2>
