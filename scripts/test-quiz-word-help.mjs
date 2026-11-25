@@ -6,7 +6,11 @@ import {createRequire} from 'node:module';
 import {execFileSync} from 'node:child_process';
 const {chromium} = createRequire(resolve('package.json'))('playwright');
 const root = process.cwd();
-const parse = s => JSON.parse(s.match(/const data = ([\s\S]*?);\n  const host/)[1]);
+function parse(source) {
+  const match=source.match(/const data = ([\s\S]*?);\r?\n  const host/);
+  assert.ok(match,'Expected the embedded Lesson 13 quiz data before the host element');
+  return JSON.parse(match[1]);
+}
 assert.deepEqual(parse(await readFile('assets/ch13-quiz1.js','utf8')), parse(execFileSync('git',['show','HEAD:assets/ch13-quiz1.js'],{encoding:'utf8'})), 'Existing lesson data must be identical');
 const server = createServer(async(req,res) => {
   const file=resolve(root,'.'+new URL(req.url,'http://localhost').pathname);
@@ -15,7 +19,7 @@ const server = createServer(async(req,res) => {
 });
 await new Promise(r=>server.listen(0,'127.0.0.1',r));
 const base=`http://127.0.0.1:${server.address().port}`;
-const browser=await chromium.launch({headless:true,channel:'msedge'});
+const browser=await chromium.launch({headless:true,channel:process.env.JPY5_BROWSER_CHANNEL||'msedge'});
 const errors=[];
 const context=await browser.newContext({serviceWorkers:'block'});
 context.on('page',p=>p.on('pageerror',e=>errors.push(e.message)));
