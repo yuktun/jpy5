@@ -27,6 +27,83 @@ for(const lesson of [19,20]){
   const legacy=mergeSnapshots({[prefix+'history']:JSON.stringify([{id:'new-id',date:'2026-01-01',results:[{questionId:'pattern-app-1',selected:0,correct:true}]}]),[prefix+'lastWrong']:'[]'},{[prefix+'lastWrong']:'["pattern-1","other-2"]'});
   assert.deepEqual(JSON.parse(legacy[prefix+'lastWrong']),['other-app-2'],'legacy review aliases cannot resurrect a corrected mistake');
 }
+// Drive the reading exam controller so merge fixtures use the persisted learner actions.
+{
+  const controller = {window:{}, JPY5:{shuffle:values=>[...values].reverse()}};
+  vm.runInNewContext(await readFile('assets/reading-exam.js','utf8'),controller);
+  const questions=['q1','q2'].map(id=>({id,options:['a','b'],answer:1}));
+  const state={answered:{},wrong:[],attempts:[],examAnswers:{}};
+  const clicks={}, inputs=questions.map(({id})=>({name:id,value:'1'}));
+  const stage={
+    querySelectorAll:()=>inputs,
+    querySelector:selector=>({
+      addEventListener:(_event,handler)=>{clicks[selector]=handler;},
+      focus(){}
+    })
+  };
+  const exam=controller.window.JPY5ReadingExam({
+    state,questions,shuffle:true,save(){},render(){exam.content();exam.bind(stage);},
+    prompt:q=>q.id,option:(_q,text)=>text,thresholds:[2,1]
+  });
+  exam.content();exam.bind(stage);
+  const untouched=structuredClone(state);
+  assert.equal(untouched.examRevision,undefined,'opening the exam does not claim a newer session');
+  inputs[0].onchange();
+  const draft=structuredClone(state);
+  inputs[1].onchange();
+  clicks['#submit-reading-exam']();
+  const complete=structuredClone(state);
+  assert(complete.examRevision>draft.examRevision);
+  assert.deepEqual(complete.examResult,{score:2,total:2});
+  clicks['#restart-reading-exam']();
+  const restarted=structuredClone(state);
+  assert(restarted.examGeneration>complete.examRevision);
+  assert.equal(restarted.examResult,null);
+  inputs[1].value='0'; inputs[1].onchange();
+  const partial=structuredClone(state);
+  assert(partial.examRevision>restarted.examRevision);
+  const key='jpy5.chapter19.reading';
+  const merge=(a,b)=>JSON.parse(mergeSnapshots({[key]:JSON.stringify(a)},{[key]:JSON.stringify(b)})[key]);
+  function expectSession(actual,expected) {
+    for(const field of ['examGeneration','examRevision','examAnswers','examOrder','examResult']) {
+      assert.deepEqual(actual[field],expected[field],field);
+    }
+  }
+  function both(a,b,winner) {
+    for(const resolved of [merge(a,b),merge(b,a)])expectSession(resolved,winner);
+  }
+  const staleComplete={...complete,examOrder:{q1:[1,0],q2:[0,1]}};
+  both(untouched,draft,draft);
+  both(draft,staleComplete,staleComplete);
+  both(staleComplete,restarted,restarted);
+  both(staleComplete,partial,partial);
+  both(restarted,partial,partial);
+  both({},partial,partial);
+  const legacyComplete={...staleComplete}, legacyPartial={...draft};
+  delete legacyComplete.examRevision; delete legacyPartial.examRevision;
+  both(legacyComplete,legacyPartial,legacyComplete);
+  both(legacyPartial,untouched,legacyPartial);
+  both(legacyComplete,restarted,restarted);
+  const alternate={...draft,examAnswers:{q2:0},examOrder:{q1:[1,0],q2:[0,1]}};
+  assert.notDeepEqual(draft.examOrder,alternate.examOrder);
+  const edited={...alternate,examRevision:draft.examRevision+1};
+  both(draft,edited,edited);
+  const tie=merge(draft,alternate);
+  assert([draft,alternate].some(candidate=>JSON.stringify(candidate.examAnswers)===JSON.stringify(tie.examAnswers)
+    &&JSON.stringify(candidate.examOrder)===JSON.stringify(tie.examOrder)));
+  expectSession(merge(alternate,draft),tie);
+  assert.deepEqual(JSON.parse(mergeSnapshots({}, {[key]:JSON.stringify(partial)})[key]),partial);
+  const otherAttempt={date:'2025-01-02',score:0,total:2,results:[]};
+  const older={...staleComplete,attempts:[otherAttempt],sourceNotes:{before:'old note'}};
+  const newer={...partial,sourceNotes:{after:'new note'}};
+  for(const result of [merge(older,newer),merge(newer,older)]) {
+    expectSession(result,partial);
+    assert.deepEqual(new Set(result.attempts.map(x=>x.date)),new Set([otherAttempt.date,complete.attempts[0].date]));
+    assert.deepEqual(result.sourceNotes,{before:'old note',after:'new note'});
+    expectSession(merge(result,older),partial);
+  }
+}
+
 // Two independent local devices and a mock owner-only Firestore document.
 // No Firebase SDK, credentials, login or real cloud writes are used.
 const source=(await readFile('assets/firebase-sync.mjs','utf8')).replace(/^import .*firebase-config.*;\r?\n/,'').replace(/export /g,'');

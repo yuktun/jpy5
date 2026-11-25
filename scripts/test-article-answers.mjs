@@ -10,11 +10,26 @@ import { chromium } from "playwright";
 
 const root = process.cwd();
 const baselineRef = process.env.JPY5_ARTICLE_BASELINE_REF || "35b33d9";
-const historicalFiles = execFileSync("git", ["ls-tree", "-r", "--name-only", baselineRef], { encoding: "utf8" }).split("\n").filter(file => /^article-(?:foundation-|lesson-).*\.html$/.test(file));
-const historical = new Map(historicalFiles.map(file => [file, execFileSync("git", ["show", `${baselineRef}:${file}`], { encoding: "utf8" })]));
 const articles = (await readdir(root)).filter(file => /^article-.*\.html$/.test(file));
 const manifestText = await readFile("assets/offline-assets.js", "utf8");
 const oldManifest = execFileSync("git", ["show", `${baselineRef}:assets/offline-assets.js`], { encoding: "utf8" });
+const oldFiles = [...JSON.parse(oldManifest.match(/assets: Object\.freeze\((\[[\s\S]*?\])\)/)[1]), "sw.js", "assets/offline-assets.js"];
+// Read the previous package once so Git process startup cannot time out the install.
+const archive = execFileSync("git", ["cat-file", "--batch"], {
+  input: oldFiles.map(file => `${baselineRef}:${file}\n`).join(""), maxBuffer: 32 * 1024 * 1024
+});
+const oldBodies = new Map();
+let offset = 0;
+for (const file of oldFiles) {
+  const headerEnd = archive.indexOf(10, offset);
+  const header = archive.toString("ascii", offset, headerEnd);
+  assert.match(header, /^\w+ blob \d+$/, file);
+  const end = headerEnd + 1 + Number(header.split(" ")[2]);
+  oldBodies.set(file, archive.subarray(headerEnd + 1, end));
+  offset = end + 1;
+}
+const historical = new Map(oldFiles.filter(file => /^article-(?:foundation-|lesson-).*\.html$/.test(file))
+  .map(file => [file, oldBodies.get(file).toString("utf8")]));
 let previousRelease = false;
 const types = { ".html": "text/html", ".js": "text/javascript", ".mjs": "text/javascript", ".css": "text/css", ".json": "application/json", ".png": "image/png", ".webmanifest": "application/manifest+json" };
 const server = createServer(async (request, response) => {
@@ -23,8 +38,8 @@ const server = createServer(async (request, response) => {
     if (!path.startsWith("/jpy5/")) return response.writeHead(404).end();
     const file = path.slice(6) || "index.html", absolute = resolve(root, file);
     if (!absolute.startsWith(root + sep)) return response.writeHead(403).end();
-    if (previousRelease && /^assets\/article-answers\./.test(file)) return response.writeHead(404).end();
-    const body = previousRelease ? execFileSync("git", ["show", `${baselineRef}:${file}`], { maxBuffer: 16 * 1024 * 1024 }) : await readFile(absolute);
+    if (previousRelease && !oldBodies.has(file)) return response.writeHead(404).end();
+    const body = previousRelease ? oldBodies.get(file) : await readFile(absolute);
     response.writeHead(200, { "Content-Type": types[extname(file)] || "application/octet-stream", "Cache-Control": "no-store" }).end(body);
   } catch { response.writeHead(404).end(); }
 });
@@ -46,7 +61,7 @@ try {
   for (const file of articles) {
     if (historical.has(file)) {
       const original = historical.get(file);
-      let source = await readFile(file, "utf8");
+      let source = (await readFile(file, "utf8")).replace(/\r\n/g, "\n");
       source = source.replace('    <link rel="stylesheet" href="assets/article-answers.css?v=1">\n', "").replace('    <script src="assets/article-answers.js?v=1" defer></script>\n', "");
       // Remove only the deliberate exercise edits. Everything else must still
       // be byte-identical to the pristine article after portable line endings.

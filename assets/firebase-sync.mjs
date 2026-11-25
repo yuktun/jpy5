@@ -51,6 +51,39 @@ export function snapshotFromStorage(storage=localStorage){
 export const hasProgress=progress=>Object.keys(progress||{}).length>0;
 function decode(value){try{return JSON.parse(value);}catch{return value;}}
 function encode(value){return typeof value==='string'?value:JSON.stringify(value);}
+const readingExamFields=['examGeneration','examRevision','examAnswers','examOrder','examResult'];
+function splitReadingExam(state) {
+  const other={...state}, exam={};
+  for(const field of readingExamFields) {
+    if(Object.hasOwn(other,field)) { exam[field]=other[field]; delete other[field]; }
+  }
+  return {other,exam};
+}
+function selectReadingExam(left,right) {
+  const revision=value=>Number.isSafeInteger(value)&&value>0?value:0;
+  // A restart supersedes every edit to the earlier exam. Within the same
+  // generation a submission closes the exam; an undated legacy draft falls
+  // back to its answer count before considering a saved choice permutation.
+  const rank=exam=>[
+    revision(exam.examGeneration),
+    Number(Boolean(exam.examResult)),
+    revision(exam.examRevision),
+    Object.keys(exam.examAnswers||{}).length,
+    Object.keys(exam.examOrder||{}).length
+  ];
+  const a=rank(left),b=rank(right);
+  for(let index=0;index<a.length;index++) {
+    if(a[index]!==b[index])return a[index]>b[index]?left:right;
+  }
+  // Legacy undated drafts or simultaneous edits need a direction-independent tie break.
+  return JSON.stringify(left)>=JSON.stringify(right)?left:right;
+}
+function mergeReading(local,cloud) {
+  if(!local||typeof local!=='object'||Array.isArray(local))return cloud;
+  if(!cloud||typeof cloud!=='object'||Array.isArray(cloud))return local;
+  const left=splitReadingExam(local),right=splitReadingExam(cloud);
+  return {...mergeValue(left.other,right.other),...selectReadingExam(left.exam,right.exam)};
+}
 function mergeValue(local,cloud){
   if(Array.isArray(local)&&Array.isArray(cloud)){
     const byId=new Map();
@@ -68,7 +101,10 @@ function mergeValue(local,cloud){
 // conservative local-default conflict handling.
 export function mergeSnapshots(local={},cloud={}){
   const progress=Object.fromEntries(Object.entries(cloud).filter(([key])=>syncableKey(key)));
-  for(const [key,value] of Object.entries(local))if(syncableKey(key))progress[key]=key in progress?encode(mergeValue(decode(value),decode(progress[key]))):value;
+  for(const [key,value] of Object.entries(local))if(syncableKey(key)) {
+    const merge=/^jpy5\.chapter(?:1[3-9]|20)\.reading$/.test(key)?mergeReading:mergeValue;
+    progress[key]=key in progress?encode(merge(decode(value),decode(progress[key]))):value;
+  }
   for(let lesson=13;lesson<=20;lesson++){
     const prefix=`jpy5.chapter${lesson}.quiz.`,historyKey=prefix+'history',wrongKey=prefix+'lastWrong';
     const left=decode(local[historyKey]),right=decode(cloud[historyKey]);

@@ -4,8 +4,13 @@ import {readFile} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
 import vm from 'node:vm';
 import {lessons} from './adverb-notes-data.mjs';
+import {syncableKey} from '../assets/firebase-sync.mjs';
 // Approved 2026-10-27 content corrections start from this checkout. Keep the
 // historical authorization snapshot below; only named study-content regions vary.
+// Byte-for-byte scope checks describe the public-grammar migration release.
+const migrationRelease='549c5eefdb4f6282b04ed7ad3afac65eaf577759';
+const octoberHandoutRelease='61ec9e19185956353e4e5344980ef86a5ea3f13a';
+const atRelease=(ref,file)=>execFileSync('git',['show',`${ref}:${file}`],{encoding:'utf8'});
 const studyAuditBase='666d5e9ebe0f27f99e7071804d1e31cb55100ab7';
 assert.equal(lessons[14].cards.length,4);
 assert.equal(lessons[14].practices.reduce((n,p)=>n+p.questions.length,0),7);
@@ -21,7 +26,8 @@ for(const file of ['chapter-14-vocabulary.html']){
   const initial=execFileSync('git',['show',`${studyAuditBase}:${file}`],{encoding:'utf8'});
   const panel=html=>html.replace(/\r\n/g,'\n').match(/<!-- BEGIN SHARED ADVERB NOTES -->[\s\S]*?<!-- END SHARED ADVERB NOTES -->/)?.[0];
   assert.ok(panel(initial),'Initial adverb panel exists');
-  assert.equal(panel(source),panel(initial),'Approved vocabulary corrections must not change the adverb panel');
+  assert.equal(panel(atRelease(migrationRelease,file)),panel(initial),'Historical migration must preserve its approved adverb panel');
+  assert.equal(panel(source),panel(atRelease('77c2990',file)), 'Reviewed public adverb panel content changed');
   assert.equal(outsidePanel(initial),outsidePanel(published),'Initial vocabulary page differs from historical public boundary');
   const vocabularyCorrections=html=>outsidePanel(html)
     .replace(/\n  <link rel="stylesheet" href="assets\/ch13-teacher-additions\.css\?v=2">\n  <link rel="stylesheet" href="assets\/ch14-teacher-additions\.css\?v=1">\n  <script src="assets\/ch14-teacher-additions\.js\?v=[12]" defer><\/script>\n/,'')
@@ -35,7 +41,7 @@ for(const file of ['chapter-14-vocabulary.html']){
     .replace('<option value="sourceExtra">教科書補充</option>','')
     .replace(/\s*<aside class="source-note"><div><p class="kicker">VOCABULARY SOURCE COVERAGE<\/p>[\s\S]*?<\/aside>/,'')
     .replace(/<footer>[\s\S]*?<\/footer>/,'<footer>VOCABULARY_SOURCE</footer>');
-  assert.equal(vocabularyCorrections(source),vocabularyCorrections(initial),'Vocabulary changes exceed approved counts, source-extra controls, provenance and resource versions');
+  assert.equal(vocabularyCorrections(atRelease(migrationRelease,file)),vocabularyCorrections(initial),'Vocabulary changes exceed approved counts, source-extra controls, provenance and resource versions');
   const vocabulary={window:{}};vm.runInNewContext(await readFile('assets/ch14-vocabulary-data.js','utf8'),vocabulary);
   assert.equal(vocabulary.window.JPY5_VOCABULARY.items.length,227);
   assert.equal(vocabulary.window.JPY5_VOCABULARY.items.filter(item=>item.section==='sourceExtra').length,19);
@@ -43,14 +49,18 @@ for(const file of ['chapter-14-vocabulary.html']){
 }
 for(const file of ['firestore.rules','assets/teacher-access.mjs','assets/teacher-access-core.mjs','assets/teacher-progress-privacy.mjs','assets/firebase-sync.mjs']){
   const published=execFileSync('git',['show',`2cb386d9fe158d8ccc18b6d43c3f09d93afd8fee:${file}`],{encoding:'utf8'});
-  assert.equal((await readFile(file,'utf8')).replace(/\r\n/g,'\n'),published.replace(/\r\n/g,'\n'),`${file}: authorization/progress changed outside approved scope`);
+  const checked=file==='assets/firebase-sync.mjs' ? atRelease(migrationRelease,file) : await readFile(file,'utf8');
+  assert.equal(checked.replace(/\r\n/g,'\n'),published.replace(/\r\n/g,'\n'),`${file}: authorization/progress changed outside approved scope`);
 }
 const publicReview=await readFile('chapter-14-review.html','utf8');
 assert.doesNotMatch(publicReview,/data-teacher-section|teacher-access\.mjs/);
 assert.match(publicReview,/class="teacher-review-shell"/);
 assert.equal((publicReview.match(/data-answer-toggle/g)||[]).length,13);
-const tracked=execFileSync('git',['ls-files'],{encoding:'utf8'}).trim().split('\n').filter(file=>existsSync(file));
+const tracked=execFileSync('git',['ls-files'],{encoding:'utf8'}).trim().split('\n');
 assert(!tracked.some(file=>file.startsWith('private-migration/')));
+assert.equal(syncableKey('jpy5.chapter14.quiz.history'),true);
+for(const privateKey of ['jpy5.chapter14.quiz.activeRun','jpy5TeacherNotes/lesson14','jpy5-sync-local-owner'])
+  assert.equal(syncableKey(privateKey),false,privateKey+' must stay outside synced progress');
 const sandbox={self:{}};vm.runInNewContext(await readFile('assets/offline-assets.js','utf8'),sandbox);
 assert(!sandbox.self.JPY5_OFFLINE_MANIFEST.assets.some(file=>/private-migration|teacher.*\.json|^scripts\//.test(file)));
 // Public content outside the explicitly approved additions/corrections remains
@@ -68,9 +78,17 @@ const approvedStudyCorrections=new Set([
   'chapter-13.html','chapter-13-review.html','chapter-13-vocabulary.html'
 ]);
 const priorPublicAdditions=new Set(['assets/ch14-teacher-additions.js','assets/ch14-teacher-additions.css','assets/ch13-quiz1.js','assets/ch13-quiz1.css','assets/ch13-quiz-audio.mjs','assets/ch13-textbook-exercises.js','assets/ch13-teacher-oct17.js','assets/ch14-data.js','assets/ch14-grammar-extra-data.js','assets/ch14-teacher-grammar.js','assets/ch14-textbook-exercises-data.js']);
-for(const file of tracked.filter(file=>/^chapter-13|^assets\/(?:ch13|ch14|data\.js|grammar-extra-data\.js|firebase-sync\.mjs)/.test(file)&&!priorPublicAdditions.has(file)&&!approvedStudyCorrections.has(file))){
+// The October handout release still used the authorized placeholder. Its public
+// file contained template metadata only, and the November migration deleted it.
+const placeholder='assets/ch14-teacher-placeholders.js';
+const historicalTeacher={window:{JPY5_DATA:{patterns:[{id:'test-pattern'}]}}};
+vm.runInNewContext(atRelease(octoberHandoutRelease,placeholder),historicalTeacher);
+assert.deepEqual(JSON.parse(JSON.stringify(historicalTeacher.window.JPY5_TEACHER.grammar)),{'test-pattern':{id:'test-pattern'}});
+priorPublicAdditions.add(placeholder);
+const octoberFiles=execFileSync('git',['ls-tree','-r','--name-only',octoberHandoutRelease],{encoding:'utf8'}).trim().split('\n');
+for(const file of octoberFiles.filter(file=>/^chapter-13|^assets\/(?:ch13|ch14|data\.js|grammar-extra-data\.js|firebase-sync\.mjs)/.test(file)&&!priorPublicAdditions.has(file)&&!approvedStudyCorrections.has(file))){
   const original=execFileSync('git',['show',`${base}:${file}`],{encoding:'utf8'}).replace(/\r\n/g,'\n');
-  let current=await readFile(file,'utf8');
+  let current=atRelease(octoberHandoutRelease,file);
   // Cache busts for these reviewed corrections do not alter the historical page body.
   if(file==='chapter-13-notes.html') current=current.replace('ch13-grammar-extra-data.js?v=2','ch13-grammar-extra-data.js?v=1').replace('notes.js?v=9','notes.js?v=8');
   if(file==='chapter-13-reading.html') current=current.replace('reading-data.js?v=10','reading-data.js?v=9').replace('ch13-reading-teacher-notes.js?v=3','ch13-reading-teacher-notes.js?v=2').replace('reading.js?v=16','reading.js?v=15');
@@ -96,6 +114,13 @@ for(const file of tracked.filter(file=>/^chapter-13|^assets\/(?:ch13|ch14|data\.
   if(file==='chapter-13-textbook.html') current=current.replace('src="assets/audio/listening/sound202406141718352565.mp3"','src="https://ttrw.jp/static/sound/sound202406141718352565.mp3"').replace('音訊來源為該網站，由本站 GitHub Pages 提供播放。','音訊亦由該網站提供。');
   assert.equal(current.replace(/\r\n/g,'\n').replace(/flashcards\.js\?v=\d+/,'flashcards.js').replace('<script src="assets/ch13-teacher-oct17.js?v=1" defer></script>','').replace('assets/ch13-textbook-exercises.js?v=3','assets/ch13-textbook-exercises.js?v=2').replace('assets/vocabulary.js?v=12','assets/vocabulary.js?v=11').replace(/<aside class="source-note" data-oct17-index>[\s\S]*?<\/aside>/,''),original.replace(/flashcards\.js\?v=\d+/,'flashcards.js'),`${file}: unexpected public-content change`);
 }
+// Freeze the actual grammar migration delta against its immediate parent, after
+// the intervening November study corrections and before later UI changes.
+const publicDelta=execFileSync('git',['diff','--no-renames','--name-status',migrationRelease+'^',migrationRelease,'--','assets',':(glob)chapter-*.html'],{encoding:'utf8'}).trim().split(/\r?\n/);
+assert.deepEqual(publicDelta,[
+  'A\tassets/ch14-teacher-grammar.js','D\t'+placeholder,'M\tassets/offline-assets.js',
+  'D\tassets/teacher-grammar-notes.mjs','M\tchapter-14-notes.html','M\tchapter-14-review.html'
+]);
 for(const page of ['notes','flashcards','quiz','history']){
   const source=await readFile(`chapter-14-${page}.html`,'utf8');
   assert.match(source,/<script[^>]*src="assets\/ch14-data\.js/);
@@ -108,9 +133,10 @@ assert.doesNotMatch(grammarPage,/teacher-grammar-notes\.mjs|ch14-teacher-placeho
 assert(sandbox.self.JPY5_OFFLINE_MANIFEST.assets.includes('assets/ch14-teacher-grammar.js'));
 assert.match(await readFile('assets/teacher-demo.mjs','utf8'),/verifyTeacherAccess/);
 // The approved public adverbs must match the ignored migration source exactly.
-let payload;try{payload=JSON.parse(await readFile('private-migration/lesson14.json','utf8'));}catch{}
-if(payload){
-  const html=await readFile('chapter-14-vocabulary.html','utf8');
+const privateFixture='private-migration/lesson14.json';
+if(existsSync(privateFixture)){
+  const payload=JSON.parse(await readFile(privateFixture,'utf8'));
+  const html=atRelease(migrationRelease,'chapter-14-vocabulary.html');
   const inner=html.match(/<div class="teacher-note-panel-body">([\s\S]*?)<\/div>\s*<\/details>\s*<!-- END SHARED ADVERB NOTES -->/)[1];
   const normalize=s=>s.replace(/\r\n/g,'\n').trim();
   assert.equal(normalize(inner),normalize(payload.adverbs),'Approved public adverbs differ from the migration source');

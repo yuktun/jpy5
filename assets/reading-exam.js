@@ -1,6 +1,11 @@
 window.JPY5ReadingExam = ({state, questions, save, render, prompt, option, thresholds, shuffle = false, recordAnswer}) => {
   state.examAnswers ??= {};
 
+  function markExamChange() {
+    const previous = Number.isSafeInteger(state.examRevision) ? state.examRevision : 0;
+    state.examRevision = Math.max(Date.now(), previous + 1);
+  }
+
   function optionOrder(question) {
     const indices = question.options.map((_, index) => index);
     return state.examOrder?.[question.id] ?? indices;
@@ -49,6 +54,7 @@ window.JPY5ReadingExam = ({state, questions, save, render, prompt, option, thres
     stage.querySelectorAll(".exam-list input").forEach(input => {
       input.onchange = () => {
         state.examAnswers[input.name] = Number(input.value);
+        markExamChange();
         save();
         statusNode.textContent = status();
       };
@@ -73,6 +79,7 @@ window.JPY5ReadingExam = ({state, questions, save, render, prompt, option, thres
       state.wrong = [...wrong];
       state.examResult = {score, total: questions.length};
       state.attempts.push({date: new Date().toISOString(), ...state.examResult, results});
+      markExamChange();
       save();
       render();
       stage.querySelector(".reading-result").focus();
@@ -81,6 +88,9 @@ window.JPY5ReadingExam = ({state, questions, save, render, prompt, option, thres
       state.examAnswers = {};
       state.examResult = null;
       delete state.examOrder;
+      markExamChange();
+      // Keep an empty restart distinguishable from a device opening its first exam.
+      state.examGeneration = state.examRevision;
       save();
       render();
       stage.querySelector(".exam-list input").focus();

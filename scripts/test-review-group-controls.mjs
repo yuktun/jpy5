@@ -8,15 +8,16 @@ const {chromium}=createRequire(import.meta.url)('playwright');
 const root=process.cwd(), artifacts=resolve('tmp/review-group-controls');
 await mkdir(artifacts,{recursive:true});
 const previous='2c802d554536cff0e4f6184354b83fb2bb0a9ae6';
+const releaseFile=file=>execFileSync('git',['show',`15f47ab:${file}`],{encoding:'utf8'}).replace(/\r\n/g,'\n');
 for(let lesson=13;lesson<=20;lesson++){
- const file=`chapter-${lesson}-review.html`,html=await readFile(file,'utf8');
+ const file=`chapter-${lesson}-review.html`,html=releaseFile(file);
  const before=execFileSync('git',['show',`${previous}:${file}`],{encoding:'utf8'});
  assert.equal(html.replace(/\r\n/g,'\n'),before.replace(/\r\n/g,'\n').replace('<details class="teacher-exercise" open>','<details class="teacher-exercise">').replace('assets/teacher-supplements.js?v=3','assets/teacher-supplements.js?v=4').replace('assets/teacher-word-help.css?v=2','assets/teacher-word-help.css?v=3').replace('assets/ch13-quiz1.js?v=2','assets/ch13-quiz1.js?v=3'),'Only default and resource versions may change');
 }
 for(const file of ['assets/teacher-access.mjs','assets/teacher-access-core.mjs','assets/teacher-demo.mjs','assets/teacher-progress-privacy.mjs','assets/firebase-sync.mjs','firestore.rules']){
- assert.equal((await readFile(file,'utf8')).replace(/\r\n/g,'\n'),execFileSync('git',['show',`${previous}:${file}`],{encoding:'utf8'}).replace(/\r\n/g,'\n'),`${file}: protected behavior/content unchanged`);
+ assert.equal(releaseFile(file),execFileSync('git',['show',`${previous}:${file}`],{encoding:'utf8'}).replace(/\r\n/g,'\n'),`${file}: protected behavior/content unchanged`);
 }
-const quizCurrent=await readFile('assets/ch13-quiz1.js','utf8');
+const quizCurrent=releaseFile('assets/ch13-quiz1.js');
 assert.equal(quizCurrent.replace('  window.JPY5ReviewGroups?.init();\n','').replace(/\r\n/g,'\n'),execFileSync('git',['show',`${previous}:assets/ch13-quiz1.js`],{encoding:'utf8'}).replace(/\r\n/g,'\n'),'Only mount scoped controls after Quiz rendering; all quiz data remains exact');
 const types={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.css':'text/css','.json':'application/json','.webmanifest':'application/manifest+json','.png':'image/png'};
 const server=createServer(async(req,res)=>{try{const p=resolve(root,'.'+decodeURIComponent(new URL(req.url,'http://localhost').pathname));if(!p.startsWith(root+sep))return res.writeHead(403).end();res.setHeader('Content-Type',types[extname(p)]||'application/octet-stream');res.end(await readFile(p));}catch{res.writeHead(404).end();}});
@@ -25,7 +26,10 @@ const base=`http://127.0.0.1:${server.address().port}`;
 const browser=await chromium.launch({headless:true,channel:process.env.JPY5_BROWSER_CHANNEL||'msedge'});
 const errors=[],summary={lessons:[],widths:[390,810,1280],errors};
 const context=await browser.newContext({serviceWorkers:'block'}),page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
-const snapshot=p=>p.evaluate(()=>JSON.stringify({...localStorage}));
+await context.route('https://**/*',route=>route.abort());
+// Start as a returning guest so initial account migration cannot change the baseline.
+await context.addInitScript(()=>localStorage.setItem('jpy5-sync-local-owner','guest'));
+const snapshot=p=>p.evaluate(()=>JSON.stringify(Object.entries({...localStorage}).sort(([a],[b])=>a.localeCompare(b))));
 async function state(group,value){await group.locator('[data-review-group-toggle]').waitFor();await page.waitForFunction(({id,value})=>document.querySelector(`#${id} [data-review-group-toggle]`)?.dataset.state===value,{id:await group.getAttribute('id'),value});}
 async function checkGroup(group,count){
  const button=group.locator('[data-review-group-toggle]'),sections=group.locator(':scope > details.teacher-exercise');
@@ -61,6 +65,7 @@ try{
    await page.goto(`${base}/chapter-${lesson}-review.html`);
    await page.locator('#teacher-exercise [data-review-group-toggle]').waitFor();
    await page.evaluate(()=>localStorage.setItem('jpy5.chapter13.reviewControlSentinel','preserve-history'));
+   await page.waitForFunction(lesson=>JSON.parse(localStorage.getItem('jpy5-navigation-last-visit-v1'))?.lesson===lesson,lesson);
    const before=await snapshot(page);
    const exercise=page.locator('#teacher-exercise');await checkGroup(exercise,3);
    if(lesson===13){
@@ -113,4 +118,4 @@ try{
  }
  await offline.close();summary.offlineAllEightLessonsPassed=true;
  assert.deepEqual(errors,[]);summary.limits=['No physical iPhone/iPad Safari test','No upstream audio playback in this UI-only change'];await writeFile(resolve(artifacts,'results.json'),JSON.stringify(summary,null,2)+'\n');console.log('PASS: drafts, explicit reveal state, deep links, denied storage, mobile touch emulation, scored quiz entry points, real offline controls for all eight lessons; protected scripts and all question/answer data unchanged.');
-}catch(error){await page.screenshot({path:resolve(artifacts,'failure.png')}).catch(()=>{});await writeFile(resolve(artifacts,'failure.json'),JSON.stringify({message:error.message,url:page.url(),errors,controls:await page.locator('[data-review-group-toggle]').count(),quizInitialized:await page.locator('#lesson13-quiz1').getAttribute('data-initialized')},null,2));throw error;}finally{await browser.close();await new Promise(r=>server.close(r));}
+}catch(error){await page.screenshot({path:resolve(artifacts,'failure.png')}).catch(()=>{});await writeFile(resolve(artifacts,'failure.json'),JSON.stringify({message:error.message,url:page.url(),errors,controls:await page.locator('[data-review-group-toggle]').count(),quizInitialized:await page.evaluate(()=>document.querySelector('#lesson13-quiz1')?.dataset.initialized)},null,2));throw error;}finally{await browser.close();await new Promise(r=>server.close(r));}

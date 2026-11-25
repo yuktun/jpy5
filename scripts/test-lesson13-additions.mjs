@@ -121,7 +121,7 @@ try {
   }
   await page.goto(`${base}/chapter-13-review.html`);
   await page.locator('.teacher-review-shortcuts a[href*="teacher-writing"]').click();
-  assert(await page.locator("#teacher-writing").isVisible());
+  await page.locator("#teacher-writing").waitFor({state:"visible"});
   await page.goto(`${base}/chapter-14-notes.html`);
   for(const note of Object.values(teacher.grammar))assert.equal(await page.locator(".teacher-addition > summary").filter({hasText:note.title}).count(),0);
   assert.equal(await page.locator("[data-teacher-grammar]").count(),11);
