@@ -41,12 +41,12 @@ const firestoreSdk={doc:(db,collection,uid)=>{refs.push([collection,uid]);return
   },
   onSnapshot:(ref,callback)=>{observers.add(callback);callback(docSnapshot());return()=>observers.delete(callback);}
 };
-function device(initial){
+function device(initial, database=firestoreSdk){
   let handle;const events={},storage=makeStorage(initial),context={console:{warn(){}},Intl,Date,JSON,Map,Set,Object,Array,navigator:{onLine:true},localStorage:storage,clearTimeout(){},setTimeout(){return 1;},window:{addEventListener:(name,cb)=>events[name]=cb},document:{querySelector:()=>null}};
   vm.runInNewContext(source,context);
-  const service={db:{},auth:{},firestoreSdk,authSdk:{onAuthStateChanged:(auth,cb)=>handle=cb,signOut:async()=>handle(null)}};
+  const service={db:{},auth:{},firestoreSdk:database,authSdk:{onAuthStateChanged:(auth,cb)=>handle=cb,signOut:async()=>handle(null)}};
   const sync=context.initialiseFirebaseSync(async()=>service);
-  return {storage,sync,context,events,login:async()=>{await Promise.resolve();await handle({uid:'fixture-owner'});}};
+  return {storage,sync,context,events,login:async(uid='fixture-owner')=>{await Promise.resolve();await handle(uid?{uid}:null);}};
 }
 const a=device({...fixture(19),...fixture(20),'jpy5.chapter19.quiz.activeRun':'{"id":"a-run"}'});await a.login();assert.equal(transactions,1);assert.equal(Object.keys(cloud.progress).length,12);
 const b=device({'jpy5-sync-migration-fixture-owner':'merged'});await b.login();assert.deepEqual(snapshotFromStorage(b.storage),cloud.progress,'returning empty device restores both lessons');
@@ -64,8 +64,66 @@ assert(JSON.parse(cloud.progress['jpy5.chapter20.quiz.history']).some(h=>h.id===
 assert(refs.every(([collection,uid])=>collection==='jpy5Users'&&uid==='fixture-owner'));
 const before=JSON.stringify(cloud);cloud={schemaVersion:999,progress:{private:'other schema'}};a.sync.localChanged();assert.equal(await a.sync.flush(),false);assert.equal(cloud.schemaVersion,999,'unknown future schema never overwritten');
 assert.notEqual(before,JSON.stringify(cloud));
+// Unknown schema must also block logout until the pending save succeeds.
 let release;queue=new Promise(resolve=>release=resolve);const retained=JSON.stringify(cloud);
-a.sync.localChanged();const inFlight=a.sync.flush();await a.sync.logout();release();
-assert.equal(await inFlight,false,'auth transition cancels a queued old-account write');
-assert.equal(JSON.stringify(cloud),retained,'sign-out cannot copy guest storage into the previous account');
-console.log('Lessons 19–20 sync roundtrip, history/bookmarks/wrongs, returning migration, live updates, offline retry and owner-only mock transaction tests passed.');
+a.sync.localChanged();const inFlight=a.sync.flush(), logout=a.sync.logout();
+release();
+assert.equal(await inFlight,false);
+await assert.rejects(logout,/未同步/);
+assert.equal(a.sync.user.uid,'fixture-owner');
+assert.equal(JSON.stringify(cloud),retained);
+
+cloud=JSON.parse(before);
+await a.sync.logout();
+assert.equal(a.sync.user,null);
+assert(!a.storage.getItem('jpy5.chapter20.quiz.starred')?.includes('offline-star'),'guest snapshot restored exactly');
+
+const localGuestKey='jpy5.chapter13.reading', accountOnly='jpy5.chapter17.conversation';
+const draft='jpy5.chapter17.quiz.activeRun';
+const accountClouds=new Map();
+const isolatedService={
+  doc:(_db,_collection,uid)=>uid, serverTimestamp:()=>100,
+  getDoc:async uid=>({exists:()=>accountClouds.has(uid),data:()=>accountClouds.get(uid)}),
+  runTransaction:async (_db,write)=>write({
+    get:uid=>isolatedService.getDoc(uid),
+    set:(uid,data)=>accountClouds.set(uid,structuredClone(data))
+  }), onSnapshot:()=>()=>{}
+};
+const userA='learner-a', userB='learner-b';
+const shared=device({[localGuestKey]:'{"guest":1}',[draft]:'{"id":"guest"}'},isolatedService);
+await shared.login(userA);
+shared.storage.setItem(accountOnly,'{"owner":"A"}');
+shared.storage.setItem(draft,'{"id":"draft-A"}');
+shared.sync.localChanged();
+await shared.sync.logout();
+assert.equal(shared.storage.getItem(accountOnly),null);
+assert.equal(shared.storage.getItem(draft),'{"id":"guest"}');
+shared.storage.setItem(localGuestKey,'{"guest":2}');
+await shared.login(userB);
+assert.equal(shared.storage.getItem(accountOnly),null);
+assert.equal(accountClouds.get(userB).progress[accountOnly],undefined);
+await shared.login(userA);
+assert.equal(shared.storage.getItem(accountOnly),'{"owner":"A"}');
+assert.equal(shared.storage.getItem(draft),'{"id":"draft-A"}');
+// A fresh page on the same account must keep the previous guest snapshot intact.
+const reopened=device(Object.fromEntries(Array.from({length:shared.storage.length},(_,i)=>{
+  const key=shared.storage.key(i);return [key,shared.storage.getItem(key)];
+})),isolatedService);
+await reopened.login(userA);
+await reopened.sync.logout();
+assert.equal(reopened.storage.getItem(localGuestKey),'{"guest":2}');
+assert.equal(reopened.storage.getItem(accountOnly),null);
+assert.equal(reopened.storage.getItem(draft),'{"id":"guest"}');
+for (const initialUser of [null, userB]) {
+  const legacy=device({
+    'jpy5-sync-guest-progress':'{}',
+    'jpy5-sync-migration-learner-a':'merged',
+    [accountOnly]:'{"owner":"A"}'
+  },isolatedService);
+  await legacy.login(initialUser);
+  if (!initialUser) await legacy.login(userB);
+  assert.equal(legacy.storage.getItem(accountOnly),null);
+  assert.equal(accountClouds.get(userB).progress[accountOnly],undefined);
+  assert.equal(JSON.parse(legacy.storage.getItem('jpy5-sync-recovery-before-owner-tracking'))[accountOnly],'{"owner":"A"}');
+}
+console.log('Progress sync roundtrip, owner transitions, guest restoration, draft isolation and pending writes passed.');

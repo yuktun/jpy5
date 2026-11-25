@@ -18,7 +18,7 @@ Then open <http://localhost:8000>.
 
 ## Optional offline use and updates
 
-The default is online mode. Opening or installing the app does **not** download an offline package. Normal page requests and browser HTTP caching still work as usual. Open **離線設定** in the header (under **工具** on the homepage and article pages). Choose **下載離線內容** to save all 77 pages, including the articles, lesson text, vocabulary, exercises and required local assets. The dialog displays the package size, file progress, completion and actionable errors. Keep it open until **離線已就緒** appears.
+The default is online mode. Opening or installing the app does **not** download an offline package. Normal page requests and browser HTTP caching still work as usual. Open **離線設定** in the header (under **工具** on the homepage and article pages). Choose **下載離線內容** to save all study pages, including the articles, lesson text, vocabulary, exercises and required local assets. The dialog displays the package size, file progress, completion and actionable errors. Keep it open until **離線已就緒** appears.
 
 **All PDFs (including same-origin PDFs), external links, all MP3 audio (including same-origin recordings) and Google sync require internet and are excluded.** Links and audio players are labelled accordingly. Device pronunciation also requires an installed local Japanese voice; test it before relying on it offline.
 
@@ -45,7 +45,7 @@ node scripts/test-flashcard-prompts-layout.mjs
 node scripts/test-flashcard-update.mjs
 ```
 
-The browser suite requires Playwright and an installed Edge (or set JPY5_BROWSER_CHANNEL). It uses isolated profiles, a local server and no live accounts. It covers the online default, download/retry/cancellation, persistent-profile cold start, all 77 pages offline, PDFs/external links, incremental downloads, integrity failures, removal/re-enabling, partial eviction and scoped legacy-cache cleanup. Set `JPY5_OFFLINE_BASELINE_REF` to a prior Git revision to benchmark its service worker, or `JPY5_OFFLINE_BENCHMARK_ONLY=1` to benchmark the current worker. Both benchmark modes perform three single-file updates and log request count, response-body bytes, peak concurrent requests and elapsed time. `JPY5_OFFLINE_BENCHMARK_DELAY` controls the simulated server delay per asset in milliseconds and defaults to 20.
+The browser suite requires Playwright and an installed Edge (or set JPY5_BROWSER_CHANNEL). It uses isolated profiles, a local server and no live accounts. It covers the online default, download/retry/cancellation, persistent-profile cold start, all study pages offline, PDFs/external links, incremental downloads, integrity failures, removal/re-enabling, partial eviction and scoped legacy-cache cleanup. Set `JPY5_OFFLINE_BASELINE_REF` to a prior Git revision to benchmark its service worker, or `JPY5_OFFLINE_BENCHMARK_ONLY=1` to benchmark the current worker. Both benchmark modes perform three single-file updates and log request count, response-body bytes, peak concurrent requests and elapsed time. `JPY5_OFFLINE_BENCHMARK_DELAY` controls the simulated server delay per asset in milliseconds and defaults to 20.
 
 The adverb update suite exercises explicit package update from published revision `2cb386d9fe158d8ccc18b6d43c3f09d93afd8fee`; override `JPY5_PREVIOUS_REF` only when testing another prior release. The older teacher-exercise migration suite uses the pre-opt-in worker.
 
@@ -146,6 +146,8 @@ Most lesson material and audio are adapted for study use from [ttrw.jp](https://
 # Optional Google progress sync
 
 JPY5 works without an account and retains progress in browser localStorage. Google login is optional; after first login the app merges the existing local records with the account's cloud records, keeps a local guest snapshot for sign-out, and writes future changes locally first before batching them to Firestore. Cloud state is one owner-only document at `jpy5Users/{uid}` with `schemaVersion`, `progress` (the existing localStorage payloads keyed by their original localStorage keys), and a server `updatedAt` timestamp.
+
+Guest and account sessions keep separate local progress and unfinished quizzes. On upgrading an older installation with a guest backup but no recorded owner, the app keeps the previous device snapshot in localStorage under `jpy5-sync-recovery-before-owner-tracking` and restores the known guest snapshot.
 
 Sync includes Lessons 13–20. Returning logins merge offline records, writes use a Firestore transaction, and an account listener receives other-device progress. Histories merge by attempt ID, bookmarks retain the existing conservative union behavior, and dated quiz results resolve stale wrong-answer flags without removing unattempted mistakes. Theme preferences and unfinished quiz drafts remain device-local. The existing schema version, account path and owner-only rules are unchanged.
 

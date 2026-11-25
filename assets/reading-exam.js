@@ -1,4 +1,6 @@
-window.JPY5ReadingExam = ({state, questions, save, render, prompt, option, thresholds, shuffle = false}) => {
+window.JPY5ReadingExam = ({state, questions, save, render, prompt, option, thresholds, shuffle = false, recordAnswer}) => {
+  state.examAnswers ??= {};
+
   function optionOrder(question) {
     const indices = question.options.map((_, index) => index);
     return state.examOrder?.[question.id] ?? indices;
@@ -29,7 +31,8 @@ window.JPY5ReadingExam = ({state, questions, save, render, prompt, option, thres
         const checked = state.examAnswers[question.id] === choice ? " checked" : "";
         return `<label><input type="radio" name="${question.id}" value="${choice}"${checked}${result ? " disabled" : ""}> ${option(question, question.options[choice])}</label>`;
       }).join("");
-      return `<article><span>${String(index + 1).padStart(2, "0")}</span><h3>${prompt(question)}</h3><div>${choices}</div></article>`;
+      const answer = result ? `<p>正確答案：${option(question, question.options[question.answer])}</p>` : "";
+      return `<article><span>${String(index + 1).padStart(2, "0")}</span><h3>${prompt(question)}</h3><div>${choices}</div>${answer}</article>`;
     }).join("");
     const [strong, review] = thresholds;
     const message = result?.score >= strong ? "掌握得很好！"
@@ -58,7 +61,10 @@ window.JPY5ReadingExam = ({state, questions, save, render, prompt, option, thres
       }
       const wrong = new Set(state.wrong);
       const results = questions.map(question => {
-        const ok = state.examAnswers[question.id] === question.answer;
+        const choice = state.examAnswers[question.id];
+        const ok = choice === question.answer;
+        if (recordAnswer) recordAnswer(question, choice);
+        else state.answered[question.id] = choice;
         if (ok) wrong.delete(question.id);
         else wrong.add(question.id);
         return {id: question.id, ok};

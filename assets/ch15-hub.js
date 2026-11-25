@@ -7,7 +7,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const set = (name, value) => { const node=document.querySelector(`[data-progress="${name}"]`); if(node)node.textContent=value; };
   const vocabDone = Object.keys(vocab.results || {}).length;
   const grammarDone = Object.keys(flashcards.results || {}).length;
-  const readingDone = Object.keys(reading.answered || {}).length;
+  const completed = new Set(Object.keys(reading.answered || {}));
+  // Older reading exams recorded question IDs only in the attempt history.
+  for (const attempt of Array.isArray(reading.attempts) ? reading.attempts : []) {
+    for (const result of attempt?.results || []) if (result?.id) completed.add(result.id);
+  }
+  const readingDone = Math.min(completed.size, 7);
   const listeningDone = Object.keys(conversation.comprehensionAnswers || {}).length;
   set("vocabulary", `${vocabDone}/146 已評估`);
   set("grammar", `${grammarDone}/41 張已評估`);
