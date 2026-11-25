@@ -81,6 +81,7 @@ try{
   await page.locator('[data-pattern="all"]').click();await page.locator('[data-pattern="nichigainai"]').click();await page.locator('#start-quiz').click();assert.match(await page.locator('#quiz-star').innerText(),/已標記/);
   await page.locator('#quiz-star').click();assert(!(await state('quiz.starred')).includes(gqs[0].id));
   for(const [i,q] of gqs.slice(0,4).entries()){await page.locator(`[data-answer="${i===1?(q.answer+1)%4:q.answer}"]`).click();assert.match(await page.locator('#answer-explanation').innerText(),/答對|正確答案/);await page.locator('#next-question').click();}
+  await page.locator('#quiz-result').waitFor();
   const wrong=await state('quiz.lastWrong');assert(!wrong.includes(gqs[0].id));assert(wrong.includes(gqs[1].id));assert(wrong.includes(gqs[4].id),'unattempted wrong question erased');
   await go('chapter-18-history.html');assert.equal(await page.locator('.history-card').count(),1);await page.locator('.history-card summary').click();assert.equal(await page.locator('.history-answer').count(),4);
   // Existing 16-question histories still resolve the old options, without content rewrites.

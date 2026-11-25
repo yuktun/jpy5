@@ -79,6 +79,13 @@ for(const lesson of [19,20]){
   both(staleComplete,partial,partial);
   both(restarted,partial,partial);
   both({},partial,partial);
+  const versions=[staleComplete,restarted,partial];
+  for(const first of versions)for(const second of versions) {
+    if(first===second)continue;
+    const third=versions.find(version=>version!==first&&version!==second);
+    expectSession(merge(merge(first,second),third),partial);
+    expectSession(merge(first,merge(second,third)),partial);
+  }
   const legacyComplete={...staleComplete}, legacyPartial={...draft};
   delete legacyComplete.examRevision; delete legacyPartial.examRevision;
   both(legacyComplete,legacyPartial,legacyComplete);
