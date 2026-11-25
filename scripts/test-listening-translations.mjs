@@ -41,6 +41,14 @@ page.on("pageerror", error => errors.push(error.message));
 try {
   for (const lesson of lessons) {
     await page.goto(`${base}/chapter-${lesson.number}-textbook.html`);
+    if ([14, 15, 16].includes(lesson.number)) {
+      const marathon = lesson.number === 16;
+      await page.locator(`[data-mode="${marathon ? "activities" : "comprehension"}"]`).click();
+      const ruby = await page.locator("ruby").evaluateAll(nodes => nodes.map(node => [node.firstChild.textContent, node.querySelector("rt").textContent]));
+      const expected = marathon ? [["市民", "しみん"], ["大会", "たいかい"], ["幸", "さいわ"]] : [["聞", "き"], ["取", "と"]];
+      for (const [baseText, kana] of expected) assert(ruby.some(([base, rt]) => base === baseText && rt === kana), `Lesson ${lesson.number} listening reading of ${baseText}`);
+      assert(ruby.every(([, rt]) => rt.length > 0), "each annotated base must have a reading");
+    }
     await page.locator('[data-mode="translation"]').click();
     assert.equal(await page.locator('[data-mode="translation"]').evaluate(node => node.classList.contains("active")), true, `Lesson ${lesson.number} tab active`);
     assert.equal(await page.locator(".translation-list .dialogue-row").count(), lesson.count, `Lesson ${lesson.number} rendered translation count`);

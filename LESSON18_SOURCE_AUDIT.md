@@ -106,11 +106,11 @@ pass also inspected answer-book pages 5–7 and independently audited MP3 1–18
 - All source `-` writing cells are preserved. Printed verb group and transitivity
   are retained in `type`, and also exposed as `verbGroup` / `transitivity`.
   Every record has a source-page reference. Foreign originals are teaching support.
-- Item 53 `言い返す` retains printed `Ⅱ・他`; its note explains ordinary
-  group-I conjugation. Item 74 retains the printed dictionary form `走らす`
-  and polite form `視線を走らせます`; both are explicitly distinguished.
-  Item 97 `超～` retains the source's `接続詞` label with a teaching note about
-  prefix use. Items 13, 33, 81 and 94 likewise retain printed classifications.
+- Item 53 `言い返す` is a group-I transitive verb. Item 74 pairs the printed
+  dictionary form `走らす` with its polite form `走らします`; the note
+  distinguishes the handout's `走らせます`, from `走らせる`. Item 97
+  `超～` is a prefix. The study notes retain the differing handout labels.
+  Items 13, 33, 81 and 94 retain their printed classifications.
 - Context notes distinguish the handout meaning from reading usage, for example
   `修理屋` (source: repair shop; reading: repair worker), `ちらちら` (intermittent
   appearance vs glancing), and `鉛筆削り` (source Chinese: 鉛筆削).
@@ -136,7 +136,7 @@ one Japanese word. Source-supported restorations are:
 
 The source's ものだ example 9 has a Japanese/Chinese discrepancy: Japanese
 `会社の問題` but printed Chinese `社會的問題`. The Japanese is corrected to
-the print; the Chinese meaning already recorded is preserved. The teaching note
+the print. The study translation uses `公司` for the Japanese `会社`. The teaching note
 explicitly identifies this discrepancy and the possibility-negation use of
 `できるものではない`, distinct from moral prohibition.
 

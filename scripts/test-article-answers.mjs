@@ -24,7 +24,7 @@ const server = createServer(async (request, response) => {
     const file = path.slice(6) || "index.html", absolute = resolve(root, file);
     if (!absolute.startsWith(root + sep)) return response.writeHead(403).end();
     if (previousRelease && /^assets\/article-answers\./.test(file)) return response.writeHead(404).end();
-    const body = previousRelease && historical.has(file) ? historical.get(file) : previousRelease && file === "assets/offline-assets.js" ? oldManifest : await readFile(absolute);
+    const body = previousRelease ? execFileSync("git", ["show", `${baselineRef}:${file}`], { maxBuffer: 16 * 1024 * 1024 }) : await readFile(absolute);
     response.writeHead(200, { "Content-Type": types[extname(file)] || "application/octet-stream", "Cache-Control": "no-store" }).end(body);
   } catch { response.writeHead(404).end(); }
 });
@@ -104,7 +104,11 @@ try {
       });
       if (expected) {
         assert.equal(preserved, expected.groups[0][index].html, `${file} Q${number}: preserve original markup and Japanese`);
-        const html = await answer.innerHTML(), old = expected.groups[1][index].html;
+        const html = await answer.innerHTML();
+        // Q3 asks what might have happened at the end, given an observed increase in discussion.
+        const old = file === "article-lesson-14-reading-evidence-and-inference.html" && number === "3"
+          ? '<strong>參考答案</strong> <span lang="ja">ネットでこの作品（さくひん）についての議論（ぎろん）が増（ふ）えている。最後（さいご）に謎（なぞ）が残（のこ）されたのではないだろうか。</span> 網上關於這部作品的討論增加了。會不會是片尾留下了謎團呢？'
+          : expected.groups[1][index].html;
         assert(html.startsWith(old), `${file} Q${number}: only append rationale to original answer`);
         if (html !== old) {
           totals.appendedRationales++;

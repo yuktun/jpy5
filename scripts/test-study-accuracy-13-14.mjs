@@ -11,6 +11,8 @@ for(const lesson of [13,14]){
  assert.deepEqual(JSON.parse(JSON.stringify(now.questions.map(q=>[q.id,q.pattern,q.answer]))),JSON.parse(JSON.stringify(before.questions.map(q=>[q.id,q.pattern,q.answer]))),'Scored question identities and correct answers must not change');
  const v=(await load(prefix+'vocabulary-data')).JPY5_VOCABULARY.items,old=(await load(prefix+'vocabulary-data',true)).JPY5_VOCABULARY.items;
  assert.equal(v.length,lesson===13?191:227);
+ const glosses=lesson===13?[[90,/包括該時間/]]:[[39,/天然能源/],[63,/聆聽/],[64,/簡短回應/],[151,/冊、份/],[201,/動畫.*同名漫畫/]];
+ for(const [id,expected] of glosses)assert.match(v.find(item=>item.id===id).meaning,expected);
  assert.deepEqual(JSON.parse(JSON.stringify(v.map(x=>[x.id,x.kana,x.written,x.type]))),JSON.parse(JSON.stringify(old.map(x=>[x.id,x.kana,x.written,x.type]))),'No vocabulary identity, pronunciation or word class changes');
  for(const name of ['reading-data','conversation-data']){
   const a=(await load(prefix+name))[name==='reading-data'?'JPY5_READING':'JPY5_CONVERSATION'];
@@ -18,7 +20,10 @@ for(const lesson of [13,14]){
   if(name==='reading-data'){
    assert.deepEqual(Array.from(a.paragraphs,p=>p.jp),Array.from(b.paragraphs,p=>p.jp));
    assert.deepEqual(JSON.parse(JSON.stringify(a.questions)),JSON.parse(JSON.stringify(b.questions)));
-  }else assert.deepEqual(JSON.parse(JSON.stringify(a)),JSON.parse(JSON.stringify(b)));
+  }else {
+   if(lesson===14)b.furiganaSegments["聞き取り"]=[["聞","き"],["き"],["取","と"],["り"]];
+   assert.deepEqual(JSON.parse(JSON.stringify(a)),JSON.parse(JSON.stringify(b)));
+  }
  }
  if(lesson===13){assert.match(now.patterns.find(p=>p.id==='ndatte').note,/だったんだって/);assert.match((await load('reading-data')).JPY5_READING.paragraphs[2].zh,/第一部上市/);}
  else {assert.match(now.patterns.find(p=>p.id==='ge').formation,/部分 V/);assert.match(now.patterns.find(p=>p.id==='ge').note,/不能任意/);assert.match(v.find(x=>x.id===16).meaning,/漏掉/);assert.match(v.find(x=>x.id===53).meaning,/最高氣溫25/);assert.match(v.find(x=>x.id===82).meaning,/被留下/);}

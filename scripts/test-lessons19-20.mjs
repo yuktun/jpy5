@@ -139,10 +139,10 @@ const lesson20Files=[
 ];
 for (const file of lesson20Files) assert(!/ワット|いずみ|第77頁/.test(await readFile(file,"utf8")),`${file} contains stale lesson content`);
 const lesson19Controller=await readFile("assets/ch19-conversation.js","utf8"),lesson19Textbook=await readFile("chapter-19-textbook.html","utf8");
-assert.match(lesson19Controller,/data-listen-target/); assert.match(lesson19Controller,/currentTime\s*=/);
+assert.match(lesson19Controller,/data-listen-target/); assert.match(lesson19Controller,/segmentPlayer\.play\(target\)/); assert.match(lesson19Textbook,/assets\/audio-segment-player\.js/);
 assert(!lesson19Textbook.includes("Beta")); assert(lesson19Textbook.includes("印刷第89–92頁"));
 const lesson20Controller=await readFile("assets/ch20-conversation.js","utf8"),lesson20Textbook=await readFile("chapter-20-textbook.html","utf8");
-assert.match(lesson20Controller,/data-listen-target/); assert.match(lesson20Controller,/currentTime\s*=/);
+assert.match(lesson20Controller,/data-listen-target/); assert.match(lesson20Controller,/segmentPlayer\.play\(target\)/); assert.match(lesson20Textbook,/assets\/audio-segment-player\.js/);
 assert(!lesson20Textbook.includes("Beta")); assert(lesson20Textbook.includes("印刷第 103–106 頁"));
 const lesson19RubySource=await readFile("assets/ch19-grammar-ruby.js","utf8"),rubyContext={window:{}};
 vm.createContext(rubyContext);
@@ -191,7 +191,7 @@ assert(lesson20VocabularyController.includes('state.direction === "normal" ? ite
 for (const lesson of [19,20]) {
   const readingController=await readFile(`assets/ch${lesson}-reading.js`,"utf8");
   assert(readingController.includes("data.title")); assert(readingController.includes("data.textbookActivities.sections"));
-  assert(readingController.includes("data.sourceActivities")); assert(readingController.includes("const ratio=score/data.questions.length"));
+  assert(readingController.includes("data.sourceActivities")); assert(readingController.includes("Math.ceil(data.questions.length * .8)")); assert(readingController.includes("Math.ceil(data.questions.length * .5)"));
   assert(!/鉛筆削り|六組|score>=11|score>=8/.test(readingController));
 }
 const navigation=JSON.parse(await readFile("assets/lesson-navigation.json","utf8"));

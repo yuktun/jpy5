@@ -78,6 +78,17 @@ await page.route("**/*.mp3", route => route.abort());
 try {
   for (const lesson of lessons) {
     await page.goto(`${base}/chapter-${lesson.number}-reading.html`);
+    const expectedRuby = {
+      13: [["最", "もっと"]], 14: [["最", "もっと"]],
+      15: [["約", "やく"], ["60％", "ろくじゅっぱーせんと"]],
+      16: [["1週間", "いっしゅうかん"]]
+    }[lesson.number];
+    if (expectedRuby) {
+      const mode = lesson.number === 13 ? "exam" : "questions";
+      await page.locator(`[data-reading-mode="${mode}"]`).click();
+      const ruby = await page.locator("#reading-stage ruby").evaluateAll(nodes => nodes.map(node => [node.firstChild.textContent, node.querySelector("rt").textContent]));
+      for (const [baseText, kana] of expectedRuby) assert(ruby.some(([base, rt]) => base === baseText && rt === kana), `Lesson ${lesson.number} reading of ${baseText}`);
+    }
     await page.locator('[data-reading-mode="original"]').click();
     assert.equal(await page.locator(".reading-paper [data-reading-play]").count(), lesson.paragraphs.length);
     await page.locator('[data-reading-mode="translation"]').click();

@@ -31,7 +31,7 @@ window.JPY5_DATA = (() => {
   patterns.forEach(p=>{
     qs.push({id:`${p.id}-meaning`,pattern:p.id,kind:"meaning",prompt:`「${p.title}」最接近哪個意思？`,options:[p.meaning,...meaningDistractors[p.id]],legacyOptions:[p.meaning,...choices(p)],answer:0,explanation:p.note});
     qs.push({id:`${p.id}-formation`,pattern:p.id,kind:"formation",prompt:`選出「${p.title}」的正確接續。`,options:[p.formation,"只可接動詞ます形","只可接名詞＋で","沒有固定接續"],answer:0,explanation:p.formationNote ?? p.formation});
-    qs.push({id:`${p.id}-source`,pattern:p.id,kind:"source",prompt:`哪一句是來源例句？`,options:[p.examples[0][0],...patterns.filter(x=>x.id!==p.id).slice(0,3).map(x=>x.examples[0][0])],answer:0,explanation:p.examples[0][1]});
+    qs.push({id:`${p.id}-source`,pattern:p.id,kind:"source",prompt:`哪一句是「${p.title}」的來源例句？`,signaturePrompt:"哪一句是來源例句？",options:[p.examples[0][0],...patterns.filter(x=>x.id!==p.id).slice(0,3).map(x=>x.examples[0][0])],answer:0,explanation:p.examples[0][1]});
   });
   return {patterns,questions:qs};
 })();
@@ -51,7 +51,7 @@ window.JPY5QuestionSignatures={"sai-meaning":"sha256:0033f9e7c4745aadfc8d7b26757
     let changed=false;
     const signatures=draft.signatures.map((value,index)=>{
       const question=window.JPY5_DATA.questions.find(item=>item.id===draft.questionIds[index]);
-      if(question&&[question.options,question.legacyOptions].filter(Boolean).some(options=>value===JSON.stringify([question.id,question.pattern,question.prompt,options,question.answer]))){
+      if(question&&[question.options,question.legacyOptions].filter(Boolean).some(options=>value===JSON.stringify([question.id,question.pattern,question.signaturePrompt ?? question.prompt,options,question.answer]))){
         changed=true;return window.JPY5QuestionSignatures[question.id];
       }
       return value;

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { mockSegmentMedia } from './segment-media-fixture.mjs';
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 import { createServer } from "node:http";
@@ -38,10 +39,7 @@ await new Promise(done=>server.listen(0,"127.0.0.1",done));
 const base=`http://127.0.0.1:${server.address().port}`;
 const browser=await chromium.launch({headless:true,...(process.env.JPY5_BROWSER_CHANNEL?{channel:process.env.JPY5_BROWSER_CHANNEL}:{})});
 const browserContext=await browser.newContext({serviceWorkers:"block"});
-await browserContext.addInitScript(()=>{
-  HTMLMediaElement.prototype.play=function(){this.dataset.playCount=String(Number(this.dataset.playCount||0)+1);return Promise.resolve();};
-  HTMLMediaElement.prototype.pause=function(){this.dataset.pauseCount=String(Number(this.dataset.pauseCount||0)+1);};
-});
+await browserContext.addInitScript(mockSegmentMedia);
 const page=await browserContext.newPage(),errors=[];
 page.on("pageerror",error=>errors.push(error.message));
 

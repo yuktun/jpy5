@@ -131,16 +131,20 @@ function homeUi(sync){
 export function initialiseFirebaseSync(serviceFactory=createService){
   if(window.JPY5Sync)return window.JPY5Sync;
   let service,user=null,active=false,timer=null,pending=false,inFlight=null,unsubscribe=null,generation=0;
+  let writingGeneration;
   const sync={
     user:null,ready:false,render:null,setLoginReady:()=>{},
     status(state,message){sync.render?.({user,state,message});},
     localChanged(){if(!active)return;pending=true;sync.status('pending','尚未同步');clearTimeout(timer);timer=setTimeout(()=>sync.flush(),1200);},
     async flush(){
       if(inFlight) {
-        if(!await inFlight) return false;
+        const previousGeneration=writingGeneration;
+        const written=await inFlight;
+        if(!written && generation===previousGeneration) return false;
         if(!pending) return true;
         return sync.flush();
       }
+      writingGeneration=generation;
       inFlight=writeProgress().finally(()=>{inFlight=null;});
       return inFlight;
     },

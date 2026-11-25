@@ -59,7 +59,7 @@ try {
       localStorage.setItem('jpy5.chapter13.bookmarks','["tate"]');
       localStorage.setItem('jpy5.chapter13.quiz.activeRun','{"test":"preserve-draft"}');
     });
-    const before=await page.evaluate(()=>JSON.stringify({...localStorage}));
+    const before=await page.evaluate(()=>JSON.stringify(Object.entries(localStorage).filter(([key]) => key !== 'jpy5-navigation-last-visit-v1').sort()));
     assert.equal(await page.locator('.textbook-answer').count(),21);
     assert.equal(await page.locator('.textbook-answer[open]').count(),0);
     assert.equal(await page.locator('.textbook-practice[open]').count(),0);
@@ -103,11 +103,11 @@ try {
         await page.locator(`[data-textbook-pattern="${id}"]`).screenshot({path:resolve(out,`${id}-${width}-${theme}.png`),style:'.lesson-quick-switcher,.site-header{visibility:hidden}'});
       }
     }
-    assert.equal(await page.evaluate(()=>JSON.stringify({...localStorage})),before);
+    assert.equal(await page.evaluate(()=>JSON.stringify(Object.entries(localStorage).filter(([key]) => key !== 'jpy5-navigation-last-visit-v1').sort())),before);
     await page.reload();await page.waitForSelector('.textbook-practice');
     assert.equal(await page.locator('.textbook-answer[open]').count(),0);
     assert.equal(await page.locator('.textbook-practice[open]').count(),0);
-    assert.equal(await page.evaluate(()=>JSON.stringify({...localStorage})),before);
+    assert.equal(await page.evaluate(()=>JSON.stringify(Object.entries(localStorage).filter(([key]) => key !== 'jpy5-navigation-last-visit-v1').sort())),before);
     for(const lesson of [14,15,16]) {
       await page.goto(base+`chapter-${lesson}-notes.html`);
       await page.waitForSelector('[data-textbook-question]',{state:'attached'});

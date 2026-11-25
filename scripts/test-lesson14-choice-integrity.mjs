@@ -28,6 +28,11 @@ for(const q of data.questions.filter(q=>q.kind==='meaning')) {
   assert.equal(new Set(q.options).size,4);
   assert(q.options.every(text=>!/[ぁ-ゖァ-ヺ]/.test(text)),'meaning options must all be Chinese');
 }
+for(const q of data.questions.filter(q=>q.kind==='source')) {
+  const pattern=data.patterns.find(p=>p.id===q.pattern);
+  assert(q.prompt.includes(pattern.title),'the question must specify which pattern the source example should illustrate');
+  assert.equal(q.options[q.answer],pattern.examples[0][0]);
+}
 const restored=progress.restore(data.questions,['practice','exam']);assert(restored);
 assert.equal(restored.index,legacy.index);assert.deepEqual(JSON.parse(JSON.stringify(restored.answers)),legacy.answers);
 assert.deepEqual(Array.from(restored.questionIds),ids);

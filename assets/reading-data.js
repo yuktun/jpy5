@@ -24,6 +24,7 @@ window.JPY5_READING = {
   },
   // Entries here need lexical segmentation beyond the renderer's normal kanji/okurigana split.
   furiganaSegments:{
+    "最も":[["最","もっと"],["も"]],
     "飲み込む":[["飲","の"],["み"],["込","こ"],["む"]],
     "使い分けたら":[["使","つか"],["い"],["分","わ"],["けたら"]],
     "使い分ける":[["使","つか"],["い"],["分","わ"],["ける"]],

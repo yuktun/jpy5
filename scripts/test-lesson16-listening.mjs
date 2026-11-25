@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { mockSegmentMedia } from './segment-media-fixture.mjs';
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 import { createServer } from "node:http";
@@ -27,9 +28,8 @@ const browser=await chromium.launch({headless:true,...(process.env.JPY5_BROWSER_
 const browserContext=await browser.newContext({serviceWorkers:"block"});
 await browserContext.addInitScript(()=>{
   if(!localStorage.getItem("jpy5.chapter16.conversation"))localStorage.setItem("jpy5.chapter16.conversation",JSON.stringify({mode:"dialogue",card:0,marks:{1:"correct",8:"wrong"},mistakes:{1:2,8:3},stars:{1:true,8:true},attempts:5,comprehensionAnswers:{c1:0},comprehensionMistakes:{},drafts:{}}));
-  HTMLMediaElement.prototype.play=function(){this.dataset.playCount=String(Number(this.dataset.playCount||0)+1);return Promise.resolve();};
-  HTMLMediaElement.prototype.pause=function(){this.dataset.pauseCount=String(Number(this.dataset.pauseCount||0)+1);};
 });
+await browserContext.addInitScript(mockSegmentMedia);
 const page=await browserContext.newPage(),errors=[];page.on("pageerror",error=>errors.push(error.message));
 try{
  for(const [index,viewport] of [{width:1280,height:900},{width:810,height:1080},{width:390,height:844}].entries()){

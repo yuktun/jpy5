@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { mockSegmentMedia } from './segment-media-fixture.mjs';
 import assert from "node:assert/strict";
 import {createRequire} from "node:module";
 import {createServer} from "node:http";
@@ -23,7 +24,7 @@ const server=createServer(async(request,response)=>{try{const path=resolve(root,
 await new Promise(done=>server.listen(0,"127.0.0.1",done));const base=`http://127.0.0.1:${server.address().port}`;
 const browser=await chromium.launch({headless:true,...(process.env.JPY5_BROWSER_CHANNEL?{channel:process.env.JPY5_BROWSER_CHANNEL}:{})});
 const context=await browser.newContext({serviceWorkers:"block"});
-await context.addInitScript(()=>{HTMLMediaElement.prototype.play=function(){this.dataset.playCount=String(Number(this.dataset.playCount||0)+1);this.dispatchEvent(new Event("play"));return Promise.resolve()};HTMLMediaElement.prototype.pause=function(){this.dataset.pauseCount=String(Number(this.dataset.pauseCount||0)+1)}});
+await context.addInitScript(mockSegmentMedia);
 const page=await context.newPage(),errors=[];page.on("pageerror",error=>errors.push(error.message));
 try{
   for(const viewport of [{width:1280,height:900},{width:810,height:1080},{width:390,height:844}]){
@@ -32,7 +33,7 @@ try{
     assert.deepEqual(await page.locator(".mode-tabs [data-mode]").evaluateAll(nodes=>nodes.map(node=>node.dataset.mode)),["dialogue","translation","comprehension","activities","focus","blanks","guide"]);
     assert.equal(await page.locator(".dialogue-row").count(),29);assert.equal(await page.locator("[data-answer-span]").count(),9);assert.equal(await page.locator('.dialogue-row [data-listen-target]').count(),9);assert.equal(await page.locator('.dialogue-row>p [data-listen-target]').count(),0,"replay button must not be inside dialogue text");assert.equal(await page.locator('.dialogue-row>button.listen-button[data-listen-target]').count(),9,"replay controls must use the established row-level action pattern");
     assert.deepEqual(await page.locator("[data-answer-span]").evaluateAll(nodes=>nodes.map(node=>{const copy=node.cloneNode(true);copy.querySelectorAll("rt").forEach(rt=>rt.remove());return copy.textContent})),answers,"a highlighted span is wider or narrower than its official answer");
-    await page.locator('[data-listen-target="1"]').first().click();assert(Math.abs(await page.locator("#lesson-audio").evaluate(audio=>audio.currentTime)-12.30)<.05);
+    await page.locator('[data-listen-target="1"]').first().click();assert(Math.abs(await page.locator("#lesson-audio").evaluate(audio=>audio.currentTime)-data.listeningTargets[0].start)<.05);
     await page.locator('[data-listen-target="2"]').first().click();const pauseBaseline=await page.locator("#lesson-audio").getAttribute("data-pause-count");await page.locator("#lesson-audio").evaluate(audio=>{Object.defineProperty(audio,"currentTime",{configurable:true,writable:true,value:13.7});audio.dispatchEvent(new Event("timeupdate"))});assert.equal(await page.locator("#lesson-audio").getAttribute("data-pause-count"),pauseBaseline,"stale replay stopped a newer target");
     await page.locator("#lesson-audio").evaluate(audio=>{audio.currentTime=window.JPY5_CONVERSATION.listeningTargets[1].end+.1;audio.dispatchEvent(new Event("timeupdate"))});assert.equal(await page.locator("#lesson-audio").getAttribute("data-pause-count"),String(Number(pauseBaseline)+1));assert.equal(await page.locator("#lesson-audio").getAttribute("src"),data.audio);
 

@@ -22,7 +22,7 @@ window.JPY5_DATA=(()=>{
   {id:"contrast-register",pattern:"dakejanaku",kind:"register",prompt:"「だけじゃなく」較正式的書面形式是？",options:["だけでなく","だけという","だけなのである","だけのではないか"],answer:0,explanation:"來源明確指出書面形式為「だけでなく」。"},
   {id:"contrast-topic",pattern:"toieba",kind:"context",prompt:"要從『北海道』引出相關聯想，最自然的是？",options:["北海道といえば……","北海道ほどのもの……","北海道のたびに……","北海道のである……"],answer:0,explanation:"「Nといえば」承接話題並引出聯想。"},
   {id:"formation-kansuru",pattern:"nikansuru",kind:"formation",prompt:"修飾『本』時哪個接續正確？",options:["歴史に関する本","歴史に関して本","歴史に関す本","歴史の関する本"],answer:0,explanation:"名詞修飾形是「Nに関する＋N」。"},
-  {id:"formation-tabini",pattern:"tabini",kind:"formation",prompt:"選出正確句子。",options:["山に行くたびに雨に降られる。","山に行きたびに雨に降られる。","山に行ったのたびに雨に降られる。","山に行くたび雨に降られる。"],answer:0,explanation:"動詞辭書形接「たびに」。"}
+  {id:"formation-tabini",pattern:"tabini",kind:"formation",signaturePrompt:"選出正確句子。",prompt:"哪句用了完整的「動詞辭書形＋たびに」來表示「每當……」？",options:["山に行くたびに雨に降られる。","山に行きたびに雨に降られる。","山に行ったのたびに雨に降られる。","山に行くたび雨に降られる。"],answer:0,explanation:"「行く」是辭書形，接「たびに」。省略「に」的「行くたび」也成立，本題指定用完整形式。"}
  );
  return {patterns,questions};
 })();

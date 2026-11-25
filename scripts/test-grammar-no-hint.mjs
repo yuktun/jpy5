@@ -43,7 +43,7 @@ for(const lesson of [18,19,20]){
   const html=await readFile(resolve(root,`chapter-${lesson}-quiz.html`),"utf8");
   assert.match(html,/data-mode="challenge"/);
   assert.match(html,/App 延伸練習/);
-  assert.match(html,/assets\/grammar-quiz\.js\?v=2/);
+  assert.match(html,/assets\/grammar-quiz\.js\?v=3\b/);
 }
 
 const shared=await readFile(resolve(root,"assets/grammar-quiz.js"),"utf8");
@@ -85,6 +85,25 @@ try{
     const firstGuidedPattern=lessonData[lesson].patterns.find(pattern=>pattern.id===lessonData[lesson].questions[0].pattern);
     assert.match(await plainText(page.locator("#quiz-progress-text")),new RegExp(firstGuidedPattern.title.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")));
     assert.match(await page.locator("#question-kind").innerText(),/應用程式文法練習/);
+    const firstGuided=lessonData[lesson].questions[0];
+    assert.equal(await page.locator('#quiz-options button[lang="zh-Hant"]').count(),firstGuided.options.length);
+    assert.equal(await page.locator('#quiz-options rt').count(),0);
+    if(lesson===18){
+      assert(await page.locator('#question-prompt [lang="ja"] rt').count()>0);
+      await page.locator('[data-answer="'+((firstGuided.answer+1)%firstGuided.options.length)+'"]').click();
+      assert.equal(await page.locator('#answer-explanation [lang="zh-Hant"]').textContent(),firstGuided.options[firstGuided.answer]);
+      assert.equal(await page.locator('#answer-explanation rt').count(),0);
+      await page.locator('#next-question').click();
+      assert.equal(await page.locator('#quiz-options button[lang="ja"]').count(),4);
+      assert(await page.locator('#quiz-options ruby').count()>0);
+      const mixed=lessonData[lesson].questions.find(question=>question.id==='nichigainai-app-4');
+      for(const index of [1,2]){
+        await page.locator('[data-answer="'+lessonData[lesson].questions[index].answer+'"]').click();
+        await page.locator('#next-question').click();
+      }
+      assert.deepEqual(await page.locator('#quiz-options button[lang="zh-Hant"]').allTextContents(),Array.from(mixed.options));
+      assert.equal(await page.locator('#quiz-options rt').count(),0,'Chinese explanations containing Japanese expressions stay in Chinese');
+    }
     await page.locator("#quit-quiz").click();
 
     await page.locator('[data-mode="challenge"]').click();
@@ -95,6 +114,7 @@ try{
 
     const bank=lessonData[lesson].noHintQuestions,first=bank[0],firstPattern=lessonData[lesson].patterns.find(pattern=>pattern.id===first.pattern);
     const firstPrompt=await plainText(page.locator("#question-prompt"));
+    assert.equal(await page.locator('#question-prompt rt').count(),0,'Chinese scenario must not receive Japanese readings');
     assert(!firstPrompt.includes(firstPattern.title),`Lesson ${lesson} revealed the target before answering`);
     assert(!(await plainText(page.locator("#quiz-progress-text"))).includes(firstPattern.title),`Lesson ${lesson} progress revealed the target`);
     assert.match(await page.locator("#question-kind").innerText(),/APP 延伸練習 · 無提示情境辨析/i);
@@ -131,6 +151,13 @@ try{
     assert.match(await page.locator("#history-list").innerText(),/無提示辨析/);
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth),true,`Lesson ${lesson} mobile page overflows horizontally`);
     assert.deepEqual(errors,[],`Lesson ${lesson} browser errors`);
+    if(lesson===18){
+      await page.goto(`${base}/chapter-18-notes.html`);
+      const formula=page.locator('.formation').filter({hasText:'保留必要助詞'});
+      assert.equal(await formula.getAttribute('lang'),'zh-Hant');
+      assert(!(await formula.locator('[lang="ja"]').allTextContents()).some(text=>text.includes('保留')));
+      assert(await formula.locator('[lang="ja"] rt').count()>0);
+    }
     await page.close();
   }
 }finally{

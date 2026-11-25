@@ -14,8 +14,8 @@ assert(vocab.every((v,i)=>v.id===i+1&&v.kana&&v.written&&v.meaning&&v.type&&v.so
 assert.deepEqual(Object.fromEntries(['grammar','speaking','reading'].map(s=>[s,vocab.filter(v=>v.section===s).length])),{grammar:18,speaking:28,reading:62});
 assert(vocab.every((v,i)=>v.section===(i<18?'grammar':i<46?'speaking':'reading')));
 assert(vocab.filter(v=>v.type.startsWith('動詞')).every(v=>v.verbGroup&&v.transitivity));
-assert.equal(vocab.find(v=>v.id===53).type,'動詞・Ⅱ・他');assert.match(vocab.find(v=>v.id===53).note,/來源標示.*Ⅱ.*延伸學習.*Ⅰ/);
-assert.equal(vocab.find(v=>v.id===97).type,'接続詞');assert.match(vocab.find(v=>v.id===97).note,/接頭語/);
+assert.equal(vocab.find(v=>v.id===53).type,'動詞・Ⅰ・他');assert.match(vocab.find(v=>v.id===53).note,/來源標示.*Ⅱ.*延伸學習.*Ⅰ/);
+assert.equal(vocab.find(v=>v.id===97).type,'接頭語');assert.match(vocab.find(v=>v.id===97).note,/接頭語/);
 assert(vocab.every(v=>!v.kana.includes('|辞|')&&!v.type.includes('形／')&&!v.meaning.includes('／')),'PDF line wrapping leaked into fields');
 // Protect all source dashes; teaching originals must never invent a writing cell.
 const prior={window:{}};vm.createContext(prior);
@@ -64,7 +64,7 @@ vm.runInContext(execFileSync('git',['show','e25641e91446486a6e7cadaea60a970aaad0
 assert.equal(hash(listening.dialogue),hash(baseline.window.JPY5_CONVERSATION.dialogue),'visually transcribed dialogue changed');
 const ruby=(await load(['assets/grammar-ruby.js','assets/ch18-grammar-ruby.js'])).JPY5GrammarRuby;
 for(const p of grammar.patterns)for(const [jp] of p.examples){const rendered=ruby.renderExample(jp,p.id);assert.equal(rendered.replace(/<rt>.*?<\/rt>/g,'').replaceAll('<br>','\n').replace(/<[^>]+>/g,''),jp);assert.match(rendered,/grammar-target/);}
-const readingController=await source('assets/ch18-reading.js');assert.match(readingController,/state\.examAnswers\[input\.name\]/);assert.match(readingController,/setAnswer\(q,state\.examAnswers\[q\.id\]\)/);assert.match(readingController,/if\(state\.mode==="source"\)state\.mode="questions"/);assert.match(readingController,/state\.textbookDrafts/);assert.match(readingController,/課本官方答案 \/ 課本解答/);assert.doesNotMatch(readingController,/標記已掌握|data-clear-wrong/);
+const readingController=await source('assets/ch18-reading.js');assert.match(readingController,/window\.JPY5ReadingExam\(/);assert.match(readingController,/recordAnswer: setAnswer/);assert.match(readingController,/if\(state\.mode==="source"\)state\.mode="questions"/);assert.match(readingController,/state\.textbookDrafts/);assert.match(readingController,/課本官方答案 \/ 課本解答/);assert.doesNotMatch(readingController,/標記已掌握|data-clear-wrong/);
 const quiz=await source('assets/ch18-quiz.js');assert.match(quiz,/previous\.filter\(id=>!attempted\.has\(id\)\)/);assert.match(quiz,/question:\{\.\.\.q\}/);
 assert.match(await source('assets/ch18-common.js'),/jpy5\.chapter18\./);
 const progressKeys=['vocabulary.cards.v2','flashcards','quiz.settings','quiz.history','quiz.lastWrong','quiz.starred','reading','conversation'];
@@ -81,7 +81,7 @@ assert.equal(JSON.parse(merged['jpy5.chapter18.conversation']).drafts[13],'my no
 assert.equal(JSON.parse(merged['jpy5.chapter18.reading']).examAnswers['app-reading-1'],0);
 assert.equal(JSON.parse(merged['jpy5.chapter18.reading']).sourceNotes['source-1'],'draft');assert.equal(JSON.parse(merged['jpy5.chapter18.reading']).textbookDrafts['think-collecting'],'postcards');
 const files=(await readdir('.')).filter(f=>/^chapter-18(?:-[a-z]+)?\.html$/.test(f));assert.equal(files.length,9);
-for(const f of files){const html=await source(f);assert.doesNotMatch(html,/只儲存在|裝置內自動保存|裝置內儲存|均儲存在本機|16-QUESTION|chapter-(?:19|20)-/);const module=f.match(/chapter-18-([a-z]+)\.html/)?.[1];if(module)for(const n of [13,14,15,16,17,18])assert(html.includes(`chapter-${n}-${module}.html`));for(const m of html.matchAll(/(?:src|href)="([^"#?]+)(?:[?#][^"]*)?"/g)){if(!/^(https?:|data:)/.test(m[1]))assert((await stat(m[1])).isFile(),`${f}: missing ${m[1]}`);}}
+for(const f of files){const html=await source(f);assert.doesNotMatch(html,/只儲存在|裝置內自動保存|裝置內儲存|均儲存在本機|16-QUESTION|chapter-(?:19|20)-(?!vocabulary\.html#teacher-adverbs)/);const module=f.match(/chapter-18-([a-z]+)\.html/)?.[1];if(module)for(const n of [13,14,15,16,17,18])assert(html.includes(`chapter-${n}-${module}.html`));for(const m of html.matchAll(/(?:src|href)="([^"#?]+)(?:[?#][^"]*)?"/g)){if(!/^(https?:|data:)/.test(m[1]))assert((await stat(m[1])).isFile(),`${f}: missing ${m[1]}`);}}
 const offline=await source('assets/offline-assets.js');for(const f of (await readdir('assets')).filter(f=>f.startsWith('ch18-')))assert(offline.includes(`assets/${f}`));assert(offline.includes('LESSON18_SOURCE_AUDIT.md'));
 for(const f of (await readdir('assets')).filter(f=>/^ch18-.*\.js$/.test(f)))new vm.Script(await source('assets/'+f),{filename:f});
 console.log('Lesson 18: 108 vocabulary, 8/39 grammar, 32 quiz, 8 source paragraphs, 1/3/4/5 textbook reading, preserved 13/5 App reading, 20/13/5 listening, links and offline checks passed.');

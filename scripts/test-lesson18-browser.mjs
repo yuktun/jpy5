@@ -47,12 +47,12 @@ try{
   assert.equal((await state('reading')).sourceNotes['source-1'],'教材原題の下書き');
   await page.locator('#submit-reading-exam').click();assert.equal((await state('reading')).attempts.length,0,'partial exam submitted');
   for(const [i,q] of qs.entries())await page.locator(`input[name="${q.id}"][value="${i===0?(q.answer+1)%4:q.answer}"]`).check();
-  await page.locator('#submit-reading-exam').click();let progress=await state('reading');assert.equal(progress.attempts.at(-1).score,12);assert(progress.wrong.includes(qs[0].id));assert.equal(Object.keys(progress.examAnswers).length,0);
+  await page.locator('#submit-reading-exam').click();let progress=await state('reading');assert.equal(progress.attempts.at(-1).score,12);assert(progress.wrong.includes(qs[0].id));assert.equal(Object.keys(progress.examAnswers).length,qs.length);assert.equal(await page.locator(".exam-list input:enabled").count(),0);
   await mode('mistakes');await page.locator('.mistake-list details summary').click();assert.deepEqual((await state('reading')).answered,progress.answered,'answer reveal changed mastery');
   await page.locator(`[data-review-question="${qs[0].id}"]`).click();await page.locator(`[data-q="${qs[0].id}"][data-option="${qs[0].answer}"]`).click();progress=await state('reading');assert(!progress.wrong.includes(qs[0].id));assert.equal(progress.answered[qs[0].id],qs[0].answer);
   // A later exam mistake replaces earlier mastery; later correct exam clears it.
-  await mode('exam');for(const q of qs)await page.locator(`input[name="${q.id}"][value="${q.id===qs[0].id?(q.answer+1)%4:q.answer}"]`).check();await page.locator('#submit-reading-exam').click();progress=await state('reading');assert.equal(progress.answered[qs[0].id],(qs[0].answer+1)%4);assert(progress.wrong.includes(qs[0].id));
-  await mode('original');await mode('exam');for(const q of qs)await page.locator(`input[name="${q.id}"][value="${q.answer}"]`).check();await page.locator('#submit-reading-exam').click();assert(!(await state('reading')).wrong.includes(qs[0].id));
+  await mode('exam');await page.locator('#restart-reading-exam').click();for(const q of qs)await page.locator(`input[name="${q.id}"][value="${q.id===qs[0].id?(q.answer+1)%4:q.answer}"]`).check();await page.locator('#submit-reading-exam').click();progress=await state('reading');assert.equal(progress.answered[qs[0].id],(qs[0].answer+1)%4);assert(progress.wrong.includes(qs[0].id));
+  await mode('original');await mode('exam');await page.locator('#restart-reading-exam').click();for(const q of qs)await page.locator(`input[name="${q.id}"][value="${q.answer}"]`).check();await page.locator('#submit-reading-exam').click();assert(!(await state('reading')).wrong.includes(qs[0].id));
   await mode('find');const finds=await page.evaluate(()=>window.JPY5_READING.find);for(const task of finds){await page.locator(`[data-find="${task.answer}"]`).click();assert.match(await page.locator('.find-feedback').innerText(),/搵啱/);await page.locator('.find-next').click();}
   await mode('vocab');await page.locator('[data-vocab-star]').click();await page.reload();assert((await state('reading')).wrong.includes('v0'));
   await setState('conversation',{mode:'prompts',furigana:true,drafts:{1:'舊空欄草稿'},promptNotes:{'listen-2':'舊內容筆記'},expressionNotes:{'0-1':'舊表現筆記'},activityNotes:{repeat:'舊版もう一度聞こう筆記',say:'舊版言ってみよう筆記',practice:'舊版練習しよう筆記',challenge:'舊版チャレンジ筆記','activity-1-2':'舊活動草稿'},listenCount:7});
@@ -105,6 +105,10 @@ try{
   await page.evaluate(()=>navigator.serviceWorker.ready);
   await page.reload();
   assert(await page.evaluate(()=>Boolean(navigator.serviceWorker.controller)),'service worker did not take control');
+  await page.locator('.pwa-status').click();
+  await page.locator('[data-offline-download]').click();
+  await page.waitForFunction(() => document.querySelector('.pwa-status')?.dataset.state === 'ready', null, {timeout:60000});
+  await page.getByRole('button',{name:'關閉',exact:true}).click();
   await context.setOffline(true);
   for(const module of ['','vocabulary','notes','reading','textbook','flashcards','quiz','review','history']){
     await go(`chapter-18${module?'-'+module:''}.html`);

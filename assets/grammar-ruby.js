@@ -1331,5 +1331,103 @@ window.JPY5GrammarRuby = (() => {
     return groups.map(group=>group.find(target=>value.includes(target))).filter(Boolean);
   }
   const renderExample = (value, patternId) => targetsFor(String(value ?? ""),patternId).reduce(highlightOnce,render(value));
-  return { render, renderTitleInText, renderPrompt, renderExample, escape };
+  function renderFragment(text,source) {
+    const direct=window.JPY5GrammarRuby.render(text);
+    if(direct.includes('<ruby>'))return direct;
+    // Earlier lessons store hand-annotated complete prompts and formulas. Reuse
+    // their context-specific readings only inside the selected Japanese span.
+    const annotated=map.get(source);
+    if(!annotated)return direct;
+    const terms=new Map(Array.from(annotated.matchAll(/<ruby>([^<]+)<rt>[^<]+<\/rt><\/ruby>/g),match=>[match[1],match[0]]));
+    if(!terms.size)return direct;
+    const words=[...terms.keys()].sort((a,b)=>b.length-a.length).map(word=>word.replace(/[.*+?^\${}()|[\]\\]/g,'\\$&'));
+    return direct.replace(new RegExp(words.join('|'),'g'),word=>terms.get(word));
+  }
+  return { render, renderTitleInText, renderPrompt, renderExample, renderFragment, escape };
+})();
+
+// Quiz instructions and grammar notation use Traditional Chinese. Only authored
+// Japanese examples, quotations and formula fragments go through the lesson reader.
+window.JPY5GrammarText = (() => {
+  const japanese = (text,source) => '<span lang="ja">' + (window.JPY5GrammarRuby.renderFragment?.(text,source) ?? window.JPY5GrammarRuby.render(text)) + '</span>';
+  const chinese = text => window.JPY5GrammarRuby.escape(text);
+  const ids = text => new Set(text.trim().split(/\s+/));
+  const chineseChoices = ids('yone-formation tatoe-source yone-source distinction-niyotte nuance-tomirareru zaruwoenai-4 tehajimete-4 nishitewa-4 datte-app-2 ndatte-app-2');
+  const chineseKinds = ids('meaning 意思 usage intonation example');
+  const japanesePrompts = ids('tatoe-context tarishinai-context hodo-context nagara-context tsumari-context yone-context tate-source tatoe-noun hodo-source nagara-noun nagara-adverb karanaru-3 toshitewa-4 niyori-2 kotokara-2 zaruwoenai-2 nishitewa-2 karaniwa-3 daroudesho-2');
+  const japaneseQuotes = ids(
+    'tsumari-formation tatoe-source tarishinai-nuance tarishinai-source hodo-example ndatte-intonation tsumari-formal tsumari-dialogue yone-contrast yone-source ' +
+    'contrast-register contrast-topic formation-kansuru formation-oujite distinction-niyotte nuance-tomirareru error-tatokoro ' +
+    'karanaru-1 karanaru-2 toshitewa-1 toshitewa-2 toshitewa-3 niyori-1 niyori-3 niyori-4 kotokara-1 kotokara-3 kotokara-4 ' +
+    'zaruwoenai-1 zaruwoenai-3 zaruwoenai-4 tehajimete-1 tehajimete-4 ttara-1 ttara-2 ttara-3 ttara-4 ' +
+    'nishitewa-1 nishitewa-3 nishitewa-4 karaniwa-1 karaniwa-2 karaniwa-4 daroudesho-1 daroudesho-4 ' +
+    'nichigainai-app-1 nichigainai-app-2 nichigainai-app-4 nikurabete-app-1 nikurabete-app-2 nikurabete-app-4 ' +
+    'monoda-app-1 monoda-app-2 monoda-app-4 ta_discovery-app-1 ta_discovery-app-2 ta_discovery-app-4 datte-app-2 datte-app-4 ' +
+    'tatokorode-app-1 tatokorode-app-2 tatokorode-app-4 ndatte-app-1 ndatte-app-2 ndatte-app-4 koso-app-1'
+  );
+  const promptExcerpts = {
+    'ndatte-context':['山田さん、お酒が嫌い＿＿。'],
+    'nichigainai-app-3':['玄関に靴がなく、部屋も空だ。本人にはまだ確認していない。'],
+    'ta_discovery-app-3':['友達を探していて、目の前で見つけた。'],
+    'datte-app-1':['A：どうして来なかったの？ B：だって、急に仕事が入ったんだもん。','だって'],
+    'koso-app-3':['ありがとうございました'], 'challenge-return-thanks':['ありがとうございました']
+  };
+  // Text that describes a grammar formula in Chinese, including mixed formulas
+  // such as 「句首：だって、＋理由（可加もの／もん等口語語尾）」.
+  const formulaLabels = /(?:的非過去肯定|發現語境|保留必要助詞|禁止性內容|消極評價|引用內容|普通形|辭書形|禮貌形|否定形|禁止表現|詞幹|語幹|句首|句末|句子|去|限定|部分|特徵|由來|口語語尾|可加|理由|述語|助詞|副詞|等)/g;
+  function formation(text) {
+    let html='', end=0;
+    for(const match of text.matchAll(formulaLabels)) {
+      if(match.index>end)html+=japanese(text.slice(end,match.index),text);
+      html+=chinese(match[0]);
+      end=match.index+match[0].length;
+    }
+    if(end<text.length)html+=japanese(text.slice(end),text);
+    return html;
+  }
+  function prompt(question,title='') {
+    const value=question.prompt;
+    if(japanesePrompts.has(question.id)||isArchivedJapanese(question))return japanese(value);
+    const parts=[...(promptExcerpts[question.id]||[])];
+    if(japaneseQuotes.has(question.id)) {
+      for(const match of value.matchAll(/[「『]([^」』]+)[」』]/g))parts.push(match[0]);
+    }
+    if(title && value.includes('「'+title+'」'))parts.push('「'+title+'」');
+    // Some early questions embed an unquoted Japanese grammar title.
+    else if(title?.length>1 && value.includes(title))parts.push(title);
+    const ranges=parts.flatMap(part=>{const at=value.indexOf(part);return at<0?[]:[[at,at+part.length]];});
+    ranges.sort((a,b)=>a[0]-b[0]||b[1]-a[1]);
+    let html='', end=0;
+    for(const [start,next] of ranges) {
+      if(start<end)continue;
+      const quoted=value.slice(start,next);
+      const inner=/^[「『]([^」』]+)[」』]$/.exec(quoted);
+      html+=chinese(value.slice(end,start));
+      html+=inner?chinese(quoted[0])+japanese(inner[1],value)+chinese(quoted.at(-1)):japanese(quoted,value);
+      end=next;
+    }
+    return html+chinese(value.slice(end));
+  }
+  function isArchivedJapanese(question) {
+    return !question.kind && window.JPY5_DATA.legacyQuestions?.some(item=>item.id===question.id);
+  }
+  function choiceType(q,i) {
+    if(i===undefined)return 'zh-Hant';
+    if(q.legacyOptions && q.kind==='meaning' && i!==q.answer && q.options[i]===q.legacyOptions[i])return 'ja';
+    if(chineseKinds.has(q.kind)||chineseChoices.has(q.id))return 'zh-Hant';
+    if(q.kind==='contrast' && (q.id==='yone-contrast'||q.id.endsWith('-app-4')&&q.id!=='nikurabete-app-4'))return 'zh-Hant';
+    if(['ndatte-register','tarishinai-nuance'].includes(q.id))return 'zh-Hant';
+    if(q.id==='hodo-formation' && i===3)return 'ja';
+    if(q.legacyOptions && q.kind==='formation')return i===q.answer?'formula':'zh-Hant';
+    if(q.kind==='接續'||['tate-formation','tarishinai-formation','hodo-formation'].includes(q.id))return 'formula';
+    return 'ja';
+  }
+  function choiceLanguage(q,i) { return choiceType(q,i)==='ja'?'ja':'zh-Hant'; }
+  function choice(q,i) {
+    if(i===undefined)return '未作答';
+    const type=choiceType(q,i),value=q.options[i];
+    return type==='formula'?formation(value):type==='ja'?window.JPY5GrammarRuby.render(value):chinese(value);
+  }
+  function answer(q,i) { return '<span lang="'+choiceLanguage(q,i)+'">'+choice(q,i)+'</span>'; }
+  return {prompt,formation,choiceLanguage,choice,answer};
 })();

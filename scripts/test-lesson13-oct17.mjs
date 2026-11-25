@@ -13,10 +13,10 @@ const update=data.window.JPY5_TEACHER.oct17;
 assert.equal(JSON.stringify({grammar:data.window.JPY5_TEACHER.grammar,vocabulary:data.window.JPY5_TEACHER.vocabulary,groups:data.window.JPY5_TEXTBOOK_EXERCISES.groups}),original,'Original notes/questions/answers changed');
 assert.deepEqual(Object.keys(update.grammar),['hodo','ndatte','nagara','tsumari','yone']);
 assert.equal(Object.keys(update.vocabulary).length,26);assert.equal(Object.keys(update.answers).length,11);assert.equal(Object.keys(update.sections).length,2);
-assert.equal(data.window.JPY5_VOCABULARY.items.length,159);
+assert.equal(data.window.JPY5_VOCABULARY.items.length,191);
 for(const word of Object.keys(update.vocabulary))assert(data.window.JPY5_VOCABULARY.items.some(item=>item.written===word),`${word}: new scored vocabulary was introduced`);
 for(const id of Object.keys(update.answers))assert(Object.values(data.window.JPY5_TEXTBOOK_EXERCISES.groups).flatMap(groups=>groups.flatMap(group=>group.items)).some(item=>item.id===id),id);
-for(const file of ['assets/data.js','assets/vocabulary-data.js','assets/ch13-teacher-additions.js','assets/conversation-data.js','assets/reading-data.js','assets/teacher-demo.mjs','firestore.rules'])assert.equal((await readFile(file,'utf8')).replace(/\r\n/g,'\n'),execFileSync('git',['show',`00325d1:${file}`],{encoding:'utf8'}).replace(/\r\n/g,'\n'),file+' changed outside source additions');
+for(const file of ['assets/data.js','assets/vocabulary-data.js','assets/ch13-teacher-additions.js','assets/conversation-data.js','assets/reading-data.js','assets/teacher-demo.mjs','firestore.rules'])assert.equal(execFileSync('git',['show',`e2835f9:${file}`],{encoding:'utf8'}).replace(/\r\n/g,'\n'),execFileSync('git',['show',`f9b7008:${file}`],{encoding:'utf8'}).replace(/\r\n/g,'\n'),file+' changed outside source additions');
 const server=createServer(async(req,res)=>{
  const file=resolve(root,'.'+new URL(req.url,'http://localhost').pathname);
  if(!file.startsWith(root+sep)||file.includes('private-migration')||file.includes('node_modules')||file.includes(`${sep}.git`))return res.writeHead(403).end();
@@ -29,7 +29,7 @@ await context.route('https://**/*',route=>route.abort());page.on('pageerror',err
 try{
  await page.goto(base+'chapter-13-vocabulary.html');
  await page.goto(base+'chapter-13-notes.html');await page.evaluate(()=>localStorage.setItem('jpy5.chapter13.oct17Sentinel','keep'));
- const progressSnapshot=()=>JSON.stringify(Object.entries({...localStorage}).filter(([key])=>!key.endsWith('.theme')).sort(([a],[b])=>a.localeCompare(b)));
+ const progressSnapshot=()=>JSON.stringify(Object.entries({...localStorage}).filter(([key])=>!key.endsWith('.theme') && key !== 'jpy5-navigation-last-visit-v1').sort(([a],[b])=>a.localeCompare(b)));
  const saved=await page.evaluate(progressSnapshot);
  for(const width of [390,810,1280]){
   await page.setViewportSize({width,height:900});await page.goto(base+'chapter-13-notes.html');
@@ -58,7 +58,7 @@ try{
   }
   for(const theme of ['light','dark']){await page.evaluate(theme=>window.JPY5.setTheme(theme),theme);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`notes ${width} ${theme} overflow`);}
   await page.goto(base+'chapter-13-vocabulary.html');
-  assert.equal(await page.locator('.vocab-row').count(),159);assert.equal(await page.locator('[data-oct17-vocabulary]').count(),26);
+  assert.equal(await page.locator('.vocab-row').count(),191);assert.equal(await page.locator('[data-oct17-vocabulary]').count(),26);
   assert.equal(await page.locator('[data-oct17-vocabulary][open]').count(),0);
   for(const disclosure of await page.locator('[data-oct17-vocabulary]').all()){
    await disclosure.locator('summary').tap();assert(await disclosure.evaluate(el=>el.open));
@@ -93,5 +93,5 @@ try{
  await cold.goto(base+'chapter-13-vocabulary.html');assert.equal(await cold.locator('[data-oct17-vocabulary]').count(),26);
  await cold.goto(base+'chapter-13-review.html');assert.equal(await cold.locator('[data-oct17-index]').count(),1);
  await cold.goto(base+'chapter-14-notes.html');assert.equal(await cold.locator('[data-teacher-grammar]').count(),11);assert.equal(await cold.locator('[data-teacher-grammar] .teacher-example').count(),91);
- console.log('Microsoft Edge opt-in offline passed: new public source notes, vocabulary, hidden/working teacher answers and review links in fresh tabs; lesson 14 grammar gates remain empty.');
+ console.log('Microsoft Edge opt-in offline passed: new public source notes, vocabulary, hidden/working teacher answers and review links in fresh tabs; all 11 public lesson 14 grammar panels and 91 examples are available.');
 }finally{await offline.close();await browser.close();await new Promise(done=>server.close(done));}

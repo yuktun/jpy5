@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import {readFile,readdir} from "node:fs/promises";
+import {readFile,readdir,stat} from "node:fs/promises";
 import vm from "node:vm";
 const root=process.cwd();
 const source=file=>readFile(`${root}/${file}`,"utf8");
@@ -57,7 +57,10 @@ assert.doesNotMatch(conversationSource,/audio_confirmation_required|verification
 const hub=await source("assets/ch17-hub.js");
 assert.match(hub,/finiteRatio\(vocabDone,152\)/);assert.match(hub,/finiteRatio\(readingDone,13\)/);assert.match(hub,/finiteRatio\(listeningNotes,9\)/);assert.doesNotMatch(hub,/Beta|待核實|不評分/);
 const readingJs=await source("assets/ch17-reading.js");
-assert.match(readingJs,/examAnswers:\{\}/);assert.match(readingJs,/state\.examAnswers\[input\.name\]/);assert.match(readingJs,/state\.examAnswers=\{\}/);
+assert.match(readingJs,/examAnswers:\{\}/);assert.match(readingJs,/window\.JPY5ReadingExam\(/);
+const examController=await source("assets/reading-exam.js");
+assert.match(examController,/state\.examAnswers\[input\.name\]/);
+assert.match(examController,/state\.examAnswers = \{\}/);
 const quizJs=await source("assets/ch17-quiz.js");
 assert.match(quizJs,/quizProgress\.wrong\(/,"wrong-review merge helper must be used");
 
@@ -65,7 +68,7 @@ const lesson17Files=rootFiles.filter(file=>/^chapter-17(?:-[a-z]+)?\.html$/.test
 for(const file of lesson17Files){
   const html=await source(file);
   assert.doesNotMatch(html,/進度只儲存在|均儲存在本機|裝置內自動保存|裝置內儲存進度/,`${file}: stale persistence wording`);
-  for(const match of html.matchAll(/(?:src|href)="(assets\/[^"?#]+)/g))assert((await readdir(`${root}/assets`)).includes(match[1].slice(7)),`${file}: missing ${match[1]}`);
+  for(const match of html.matchAll(/(?:src|href)="(assets\/[^"?#]+)/g))await stat(`${root}/${match[1]}`);
 }
 for(const file of ["chapter-17-notes.html","chapter-17-vocabulary.html","chapter-17-reading.html","chapter-17-textbook.html","chapter-17-review.html"])assert.match(await source(file),/chapter-16-/,`${file}: Lesson 16 missing from fallback navigation`);
 

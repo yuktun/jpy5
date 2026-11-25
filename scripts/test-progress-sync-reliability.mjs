@@ -114,6 +114,30 @@ await reopened.sync.logout();
 assert.equal(reopened.storage.getItem(localGuestKey),'{"guest":2}');
 assert.equal(reopened.storage.getItem(accountOnly),null);
 assert.equal(reopened.storage.getItem(draft),'{"id":"guest"}');
+let enteredWrite, resumeWrite;
+const entered = new Promise(resolve => enteredWrite=resolve);
+const barrier = new Promise(resolve => resumeWrite=resolve);
+let delayNext=false;
+const switching=device({[localGuestKey]:'{"guest":3}'},{
+  ...isolatedService,
+  async runTransaction(db, write) {
+    if(delayNext) { delayNext=false; enteredWrite(); await barrier; }
+    return isolatedService.runTransaction(db,write);
+  }
+});
+await switching.login(userA);
+switching.storage.setItem(accountOnly,'{"owner":"still A"}');
+switching.sync.localChanged();
+delayNext=true;
+const previousWrite=switching.sync.flush();
+await entered;
+const newLogin=switching.login('new-user');
+await new Promise(resolve=>setImmediate(resolve));
+resumeWrite();
+assert.equal(await previousWrite,false);
+await newLogin;
+assert.equal(accountClouds.get('new-user').progress[localGuestKey],'{"guest":3}');
+assert.equal(accountClouds.get('new-user').progress[accountOnly],undefined);
 for (const initialUser of [null, userB]) {
   const legacy=device({
     'jpy5-sync-guest-progress':'{}',

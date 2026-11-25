@@ -8,7 +8,8 @@ assert.doesNotMatch(html,/install-app-card|install-app-heading/);
 assert.equal((html.match(/data-install-app-section/g)||[]).length,1);
 assert.match(html,/<details class="site-utilities">[\s\S]*?<div class="utility-install-app" data-install-app-section>[\s\S]*?<\/details>/);
 assert.match(html, /data-install-app>加入桌面<\/button>/);
-for(const module of ['vocabulary','notes','reading','textbook','review','flashcards','quiz','history']) assert(html.includes(`href="chapter-14-${module}.html"`));
+const selectedLesson = html.match(/<option value="(\d+)" selected>/)[1];
+for(const module of ['vocabulary','notes','reading','textbook','review','flashcards','quiz','history']) assert(html.includes(`href="chapter-${selectedLesson}-${module}.html"`));
 for(let lesson=13;lesson<=20;lesson++) assert(html.includes(`href="chapter-${lesson}.html"`));
 assert(html.includes('data-sync-login'));
 function fixture({apple=false,ipad=false,standalone=false,navigatorStandalone=false}={}) {

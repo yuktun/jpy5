@@ -10,7 +10,7 @@ const ctx={window:{}};
 for(const name of ["data","vocabulary-data","conversation-data","reading-data","ch13-teacher-additions"])
   vm.runInNewContext(await readFile(`assets/${name}.js`,"utf8"),ctx);
 const {JPY5_TEACHER:teacher,JPY5_VOCABULARY:vocab,JPY5_CONVERSATION:conversation,JPY5_READING:reading}=ctx.window;
-assert.equal(vocab.items.length,159);
+assert.equal(vocab.items.length,191);
 assert.equal(conversation.items.length,5);
 assert.equal(conversation.comprehension.length,7);
 assert.equal(reading.questions.length,13);
@@ -123,7 +123,8 @@ try {
   await page.locator('.teacher-review-shortcuts a[href*="teacher-writing"]').click();
   assert(await page.locator("#teacher-writing").isVisible());
   await page.goto(`${base}/chapter-14-notes.html`);
-  assert.equal(await page.locator(".teacher-addition:not(.textbook-practice)").count(),0);
+  for(const note of Object.values(teacher.grammar))assert.equal(await page.locator(".teacher-addition > summary").filter({hasText:note.title}).count(),0);
+  assert.equal(await page.locator("[data-teacher-grammar]").count(),11);
   assert((await page.locator(".grammar-card").count())>0);
   await page.goto(`${base}/chapter-13-notes.html`);
   await page.locator('[data-theme-select]').selectOption("dark");

@@ -1,5 +1,6 @@
 const {patterns,questions,noHintQuestions=[]}=window.JPY5_DATA;
 const grammarRuby=window.JPY5GrammarRuby;
+const grammarText=window.JPY5GrammarText;
 const allQuestions=[...questions,...noHintQuestions];
 const quizProgress=window.JPY5QuizProgress;
 const storedSettings=JPY5.read("quiz.settings",{});
@@ -77,8 +78,8 @@ function renderQuestion(){
   document.querySelector("#quiz-progress-text").innerHTML=challenge?`${run.index+1} / ${run.questions.length} · 無提示情境辨析`:`${run.index+1} / ${run.questions.length} · <span lang="ja">${grammarRuby.render(pattern.title)}</span>`;
   document.querySelector("#quiz-progress-bar").style.width=`${(run.index+1)/run.questions.length*100}%`;
   document.querySelector("#question-kind").textContent=challenge?"App 延伸練習 · 無提示情境辨析":"應用程式文法練習 · "+(questionKindLabels[question.kind]||question.kind);
-  document.querySelector("#question-prompt").innerHTML=challenge?grammarRuby.render(question.prompt):grammarRuby.renderPrompt(question.prompt,pattern.title);
-  document.querySelector("#quiz-options").innerHTML=question.options.map((option,index)=>`<button data-answer="${index}" lang="ja">${grammarRuby.render(option)}</button>`).join("");
+  document.querySelector("#question-prompt").innerHTML=grammarText.prompt(question,challenge?"":pattern.title);
+  document.querySelector("#quiz-options").innerHTML=question.options.map((option,index)=>`<button data-answer="${index}" lang="${grammarText.choiceLanguage(question,index)}">${grammarText.choice(question,index)}</button>`).join("");
   document.querySelectorAll("[data-answer]").forEach(button=>button.onclick=()=>choose(Number(button.dataset.answer)));
   document.querySelector("#answer-explanation").textContent="";
   document.querySelector("#next-question").textContent=run.index===run.questions.length-1?(challenge?"完成辨析 →":"完成測驗 →"):(challenge?"下一個情境 →":"下一題 →");
@@ -108,7 +109,7 @@ function showAnswer(){
     button.classList.toggle("correct",index===question.answer);
     button.classList.toggle("wrong",index===selected&&index!==question.answer);
   });
-  const verdict=selected===question.answer?"答對了。":`正確答案是「<span lang="ja">${grammarRuby.render(question.options[question.answer])}</span>」。`;
+  const verdict=selected===question.answer?"答對了。":`正確答案是「${grammarText.answer(question,question.answer)}」。`;
   const selectedNuance=challenge&&question.choiceFeedback?.[selected]?`<span class="choice-nuance"><strong>你所選項目的語氣：</strong>${grammarRuby.escape(question.choiceFeedback[selected])}</span>`:"";
   const target=challenge?`<span class="answer-target"><strong>這題重點：</strong><span lang="ja">${grammarRuby.render(pattern.title)}</span></span>`:"";
   document.querySelector("#answer-explanation").innerHTML=`<span>${verdict} ${grammarRuby.escape(question.explanation)}</span>${selectedNuance}${target}`;
@@ -137,7 +138,7 @@ async function finish(){const completedRun=run;const saved=await quizProgress.co
   document.querySelector("#retry-wrong").onclick=()=>start(allQuestions.filter(question=>wrong.includes(question.id)));
   document.querySelector("#result-details").innerHTML=results.map(result=>{
     const question=allQuestions.find(item=>item.id===result.questionId)||result.question,pattern=patterns.find(item=>item.id===question.pattern);
-    return `<details class="result-item"><summary>${result.correct?"✓":"✕"} ${grammarRuby.renderPrompt(question.prompt,pattern?.title||"")}</summary><p>你的答案：<span lang="ja">${result.selected===undefined?"未作答":grammarRuby.render(question.options[result.selected])}</span></p><p>正確答案：<span lang="ja">${grammarRuby.render(question.options[question.answer])}</span></p><p>${grammarRuby.escape(question.explanation)}</p></details>`;
+    return `<details class="result-item"><summary>${result.correct?"✓":"✕"} ${grammarText.prompt(question,pattern?.title||"")}</summary><p>你的答案：${grammarText.answer(question,result.selected)}</p><p>正確答案：${grammarText.answer(question,question.answer)}</p><p>${grammarRuby.escape(question.explanation)}</p></details>`;
   }).join("");
 });if(saved)refreshResume();return saved;}
 

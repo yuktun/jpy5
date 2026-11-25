@@ -7,7 +7,7 @@ import {execFileSync} from 'node:child_process';
 const {chromium}=createRequire(import.meta.url)('playwright');
 const root=process.cwd();
 const source=await readFile('assets/ch13-quiz1.js','utf8');
-const data=JSON.parse(source.match(/const data = ([\s\S]*?);\n  const host/)[1]);
+const data=JSON.parse(source.match(/const data = ([\s\S]*?);\r?\n  const host/)[1]);
 assert.deepEqual(data.sections.map(s=>[s.id,s.items.length]),[['I',2],['II',9],['III',8],['IV',4],['V',4],['VI',4],['VII',3],['VIII',2],['IX',2]]);
 assert.equal(data.sections.flatMap(s=>s.items).filter(i=>i.answer).length,38);
 assert.deepEqual(data.sections[0].items.map(i=>i.answer),['ゆうべはシャワーを浴びずに寝てしまうほど疲れていました。','たとえお金をたくさんもらっても、危ない仕事はしたくないです。']);
@@ -23,7 +23,7 @@ assert(data.sections[5].items.every(i=>i.open&&i.explanation));
 
 // The context audit must never rewrite source questions, choices, answer keys or open models.
 const publishedSource=execFileSync('git',['show','b29bd388:assets/ch13-quiz1.js'],{encoding:'utf8'});
-const publishedData=JSON.parse(publishedSource.match(/const data = ([\s\S]*?);\n  const host/)[1]);
+const publishedData=JSON.parse(publishedSource.match(/const data = ([\s\S]*?);\r?\n  const host/)[1]);
 const withoutAudit=value=>JSON.parse(JSON.stringify(value,(key,value)=>['lessonContext','explanation'].includes(key)?undefined:value));
 assert.deepEqual(withoutAudit(data.sections.slice(1)),withoutAudit(publishedData.sections.slice(1)));
 assert.deepEqual(data.sections[0].items.map(i=>i.prompt),publishedData.sections[0].items.map(i=>i.prompt));
@@ -43,9 +43,10 @@ for(const [file,anchors] of [
 ]){const text=await readFile(file,'utf8');for(const anchor of anchors)assert(text.includes(anchor),file+': missing source anchor '+anchor);}
 
 assert.equal(data.sections[2].items[5].answer,'に／出くわし');
-const html=await readFile('chapter-13-review.html','utf8');
+// Verify the original additive release against its parent. The live page is exercised below.
+const html=execFileSync('git',['show','b29bd38:chapter-13-review.html'],{encoding:'utf8'});
 const baseline=execFileSync('git',['show','33bfbd8:chapter-13-review.html'],{encoding:'utf8'});
-assert.equal(html.replace(/<!-- BEGIN LESSON 13 QUIZ1 (?:RESOURCES|LINK|EXERCISE) -->[\s\S]*?<!-- END LESSON 13 QUIZ1 (?:RESOURCES|LINK|EXERCISE) -->/g,'').replace(/\r\n/g,'\n'),baseline.replace(/\r\n/g,'\n').replace('<details class="teacher-exercise" open>','<details class="teacher-exercise">').replace('assets/teacher-supplements.js?v=3','assets/teacher-supplements.js?v=4').replace('assets/teacher-word-help.css?v=2','assets/teacher-word-help.css?v=3'),'Existing review content changed');
+assert.equal(html.replace(/<!-- BEGIN LESSON 13 QUIZ1 (?:RESOURCES|LINK|EXERCISE) -->[\s\S]*?<!-- END LESSON 13 QUIZ1 (?:RESOURCES|LINK|EXERCISE) -->/g,'').replace(/\r\n/g,'\n'),baseline.replace(/\r\n/g,'\n'),'Existing review content changed');
 const server=createServer(async(req,res)=>{try {const p=resolve(root,'.'+decodeURIComponent(new URL(req.url,'http://localhost').pathname));if(!p.startsWith(root+sep))return res.writeHead(403).end();res.setHeader('Content-Type',({'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.png':'image/png','.webmanifest':'application/manifest+json'})[extname(p)]||'application/octet-stream');res.end(await readFile(p));}catch{res.writeHead(404).end();}});
 await new Promise(r=>server.listen(0,'127.0.0.1',r));
 const base=`http://127.0.0.1:${server.address().port}`;

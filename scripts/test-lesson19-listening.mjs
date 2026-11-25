@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { mockSegmentMedia } from './segment-media-fixture.mjs';
 import assert from "node:assert/strict";
 import {createRequire} from "node:module";
 import {createServer} from "node:http";
@@ -13,7 +14,7 @@ assert.equal(data.sourcePrompts.length,4);assert(data.sourcePrompts.every(item=>
 const html=await readFile(resolve(root,"chapter-19-textbook.html"),"utf8"),controller=await readFile(resolve(root,"assets/ch19-conversation.js"),"utf8");assert.doesNotMatch(html+controller,/Beta|audio_timing_pending|音訊待核實|答案未核實|待音訊核實/);assert.match(html,/ch19-conversation-data\.js\?v=\d+/);
 const types={".html":"text/html",".js":"text/javascript",".css":"text/css",".json":"application/json",".png":"image/png",".webmanifest":"application/manifest+json",".md":"text/plain"};
 const server=createServer(async(request,response)=>{try{const path=resolve(root,`.${decodeURIComponent(new URL(request.url,"http://localhost").pathname)}`);if(!path.startsWith(`${root}${sep}`))return response.writeHead(403).end();response.setHeader("Content-Type",types[extname(path)]||"application/octet-stream");response.end(await readFile(path));}catch{response.writeHead(404).end();}});await new Promise(done=>server.listen(0,"127.0.0.1",done));const base=`http://127.0.0.1:${server.address().port}`;
-const browser=await chromium.launch({headless:true,...(process.env.JPY5_BROWSER_CHANNEL?{channel:process.env.JPY5_BROWSER_CHANNEL}:{})}),context=await browser.newContext({serviceWorkers:"block"});await context.addInitScript(()=>{HTMLMediaElement.prototype.play=function(){this.dataset.playCount=String(Number(this.dataset.playCount||0)+1);this.dispatchEvent(new Event("play"));return Promise.resolve()};HTMLMediaElement.prototype.pause=function(){this.dataset.pauseCount=String(Number(this.dataset.pauseCount||0)+1)}});const page=await context.newPage(),errors=[];page.on("pageerror",error=>errors.push(error.message));const artifacts=resolve("tmp/lesson19-listening");await mkdir(artifacts,{recursive:true});
+const browser=await chromium.launch({headless:true,...(process.env.JPY5_BROWSER_CHANNEL?{channel:process.env.JPY5_BROWSER_CHANNEL}:{})}),context=await browser.newContext({serviceWorkers:"block"});await context.addInitScript(mockSegmentMedia);const page=await context.newPage(),errors=[];page.on("pageerror",error=>errors.push(error.message));const artifacts=resolve("tmp/lesson19-listening");await mkdir(artifacts,{recursive:true});
 const visible=locator=>locator.evaluate(node=>{const copy=node.cloneNode(true);copy.querySelectorAll("rt").forEach(rt=>rt.remove());return copy.textContent});
 try{
  for(const viewport of [{width:1280,height:900},{width:810,height:1080},{width:390,height:844}]){await page.setViewportSize(viewport);await page.goto(`${base}/chapter-19-textbook.html`);await page.evaluate(()=>localStorage.clear());await page.reload();

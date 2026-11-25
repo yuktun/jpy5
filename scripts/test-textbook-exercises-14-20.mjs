@@ -105,7 +105,7 @@ try{
         localStorage.setItem(`jpy5.chapter${n}.bookmarks`,'["textbook-preserve"]');
         localStorage.setItem(`jpy5.chapter${n}.quiz.activeRun`,JSON.stringify(draft));
       },{n:lesson,draft:draftFixtures.get(lesson)});
-      const before=await page.evaluate(()=>JSON.stringify({...localStorage}));
+      const before=await page.evaluate(()=>JSON.stringify(Object.entries(localStorage).filter(([key]) => key !== 'jpy5-navigation-last-visit-v1').sort()));
       for(const group of await page.locator('.textbook-practice').all()){
         const summary=group.locator(':scope > summary');await summary.focus();await page.keyboard.press('Enter');
         assert.equal(await group.evaluate(node=>node.open),true);
@@ -126,10 +126,10 @@ try{
       const first=page.locator('.textbook-practice').first();await first.locator(':scope > summary').tap();
       const answers=first.locator('.textbook-answer');await answers.first().locator('summary').tap();
       if(await answers.count()>1){await answers.nth(1).locator('summary').tap();assert.equal(await page.locator('.textbook-answer[open]').count(),2);}
-      assert.equal(await page.evaluate(()=>JSON.stringify({...localStorage})),before);
+      assert.equal(await page.evaluate(()=>JSON.stringify(Object.entries(localStorage).filter(([key]) => key !== 'jpy5-navigation-last-visit-v1').sort())),before);
       await page.reload();await page.locator('[data-textbook-pattern]').first().waitFor();
       assert.equal(await page.locator('.textbook-practice[open],.textbook-answer[open]').count(),0);
-      assert.equal(await page.evaluate(()=>JSON.stringify({...localStorage})),before);
+      assert.equal(await page.evaluate(()=>JSON.stringify(Object.entries(localStorage).filter(([key]) => key !== 'jpy5-navigation-last-visit-v1').sort())),before);
       if(lesson===17){assert.equal(await page.locator('[data-textbook-unmatched-pattern="ue"]').count(),1);assert.equal(await page.locator('[data-textbook-unmatched-pattern="ue"] > h3 rt').innerText(),'じょう');}
     }
     console.log(`Lesson ${lesson}: browser disclosures/progress passed at all3widths and both themes.`);
