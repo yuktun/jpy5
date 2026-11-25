@@ -2,7 +2,13 @@ import assert from 'node:assert/strict';
 import {createServer} from 'node:http';
 import {readFile,mkdir} from 'node:fs/promises';
 import {resolve,sep,extname} from 'node:path';
+import {execFileSync} from 'node:child_process';
+import vm from 'node:vm';
 import {chromium} from 'playwright';
+// This release wrote the full question tuple into each local draft signature.
+const historical={window:{}};
+vm.runInNewContext(execFileSync('git',['show','9bbe47d59cd954e779294fac3aa90b628e41ffab:assets/ch14-data.js'],{encoding:'utf8'}),historical);
+const plaintextById=new Map(historical.window.JPY5_DATA.questions.map(q=>[q.id,JSON.stringify([q.id,q.pattern,q.prompt,q.options,q.answer])]));
 const root=process.cwd(),server=createServer(async(req,res)=>{
  const file=resolve(root,'.'+new URL(req.url,'http://localhost').pathname);
  if(!file.startsWith(root+sep)||file.includes('private-migration')||file.includes('node_modules')||file.includes(`${sep}.git`))return res.writeHead(403).end();
@@ -61,10 +67,18 @@ try{
    await lesson13.screenshot({path:'tmp/lesson14-layout/lesson13-'+width+'.png'});
   }
   await page.goto(base+'chapter-14-flashcards.html');await page.locator('#flashcard').waitFor();await page.locator('#flashcard').click();assert.equal(await page.locator('#card-back').isVisible(),true);
-  await page.goto(base+'chapter-14-quiz.html');await page.locator('#start-quiz').click();await page.locator('[data-answer="0"]').click();await page.locator('#next-question').click();
+  await page.goto(base+'chapter-14-quiz.html');
+  await page.locator('[data-pattern="all"]').click();await page.locator('[data-pattern="sai"]').click();
+  await page.locator('#start-quiz').click();await page.locator('[data-answer="0"]').click();await page.locator('#next-question').click();
   const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('jpy5.chapter14.quiz.activeRun')));assert.equal(saved.index,1);assert(saved.signatures.every(value=>/^sha256:[a-f0-9]{64}$/.test(value)));
-  await page.evaluate(()=>{const key='jpy5.chapter14.quiz.activeRun',draft=JSON.parse(localStorage.getItem(key));draft.signatures=draft.questionIds.map(id=>{const q=window.JPY5_DATA.questions.find(q=>q.id===id);return JSON.stringify([q.id,q.pattern,q.prompt,q.options,q.answer]);});localStorage.setItem(key,JSON.stringify(draft));});
   await page.reload();await page.locator('#continue-quiz').click();assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('jpy5.chapter14.quiz.activeRun'))),saved);
+  assert.deepEqual(saved.questionIds,['sai-meaning','sai-formation','sai-source']);
+  const {optionBankVersion,...oldRun}=saved;
+  assert.equal(optionBankVersion,2);
+  const legacy={...oldRun,signatures:saved.questionIds.map(id=>plaintextById.get(id))};
+  await page.evaluate(draft=>localStorage.setItem('jpy5.chapter14.quiz.activeRun',JSON.stringify(draft)),legacy);
+  await page.reload();await page.locator('#continue-quiz').click();
+  assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('jpy5.chapter14.quiz.activeRun'))),oldRun);
   await page.goto(base+'chapter-14-history.html');assert.equal(await page.locator('#history-list').count(),1);
   assert.equal(await page.locator('iframe,[data-teacher-section="grammar"]').count(),0);
   await page.evaluate(()=>localStorage.clear());
